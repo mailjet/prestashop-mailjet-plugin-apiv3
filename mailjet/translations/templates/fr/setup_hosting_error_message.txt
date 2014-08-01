@@ -1,0 +1,27 @@
+<div class="mj-text">
+<p>Bonjour,</p>
+
+<p>Avant de pouvoir porcéder à la création de compte nous avons vérifié la configuration de vos serveurs actuels.<br/>
+Il semble que nous devions contacter votre fournisseur pour adapter quelques paramètres.</p>
+
+<p>Ne vous en faites pas, ceci est très fréquent et se résoud très facilement.<br/>
+Ce ne sont que quelques règles de sécurité qui sont tout à fait usuelles.</p>
+
+<p>Le support Mailjet va se charger de ceci pour vous. Il vous suffit de prendre contact ci-dessous en spécifiant bien :</p>
+<ul>
+<li>votre email</li>
+<li>votre téléphone</li>
+<li>le nom de domaine de votre magasin</li>
+<li>si vous le connaissez : votre hébergeur, votre contact, ainsi que le "plan" que vous avez - solution dédiée, mutualisée, etc...</li>
+</ul>
+
+<p>Cette procédure peut prendre quelques heures et parfois plusieurs jours car nous dépendons de la réactivité de votre hébergeur.</p>
+
+<p>Vous serez en tout état de cause tenu au courant quand ce sera résolu.<br/>
+Il vous suffera alors de recommencer le processus de configuration du module Mailjet.</p>
+
+<p>Merci de votre compréhension,</p>
+
+<p>Mailjet.com</p>
+
+</div>

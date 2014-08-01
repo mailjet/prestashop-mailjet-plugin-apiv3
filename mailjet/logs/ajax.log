@@ -1,0 +1,1561 @@
+[30/06/2014 7:57:36] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign added successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 19
+            [title] => A da testdasdasasd
+            [subject] => A da testdasdasasd
+            [from] => astoyanov@titlextechnology.com
+            [sendername] => Default 
+            [reply_to] => 
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/19
+            [previous_step_url] => 
+        )
+
+)
+
+[30/06/2014 7:59:22] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign added successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 20
+            [title] => A da testasddawwad
+            [subject] => A da testasddawwad
+            [from] => astoyanov@titlextechnology.com
+            [sendername] => Default 
+            [reply_to] => 
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/20
+            [previous_step_url] => 
+        )
+
+)
+
+[30/06/2014 7:59:22] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 7:59:22] Array
+(
+    [camp_Id] => 20
+)
+
+[30/06/2014 7:59:51] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 20
+            [next_step_url] => /campaigns/summary/20
+            [previous_step_url] => /campaigns/edit/20
+        )
+
+)
+
+[30/06/2014 7:59:51] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 7:59:51] Array
+(
+    [camp_Id] => 20
+)
+
+[30/06/2014 7:59:56] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => send details saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 20
+            [sending_date] => 2014-06-30 13:59:55
+            [next_step_url] => /campaigns
+            [previous_step_url] => /campaigns/template/20
+        )
+
+)
+
+[30/06/2014 7:59:56] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 8:49:25] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign added successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 21
+            [title] => Must work
+            [subject] => Must work
+            [from] => astoyanov@titlextechnology.com
+            [sendername] => Default 
+            [reply_to] => 
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/21
+            [previous_step_url] => 
+        )
+
+)
+
+[30/06/2014 8:49:25] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 8:49:25] Array
+(
+    [camp_Id] => 21
+)
+
+[30/06/2014 8:49:35] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 21
+            [next_step_url] => /campaigns/summary/21
+            [previous_step_url] => /campaigns/edit/21
+        )
+
+)
+
+[30/06/2014 8:49:35] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 8:49:35] Array
+(
+    [camp_Id] => 21
+)
+
+[30/06/2014 8:49:42] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 21
+            [next_step_url] => /campaigns/summary/21
+            [previous_step_url] => /campaigns/edit/21
+        )
+
+)
+
+[30/06/2014 8:49:42] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 8:49:42] Array
+(
+    [camp_Id] => 21
+)
+
+[30/06/2014 8:49:44] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 21
+            [next_step_url] => /campaigns/summary/21
+            [previous_step_url] => /campaigns/edit/21
+        )
+
+)
+
+[30/06/2014 8:49:44] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 8:49:44] Array
+(
+    [camp_Id] => 21
+)
+
+[30/06/2014 8:49:53] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 21
+            [next_step_url] => /campaigns/summary/21
+            [previous_step_url] => /campaigns/edit/21
+        )
+
+)
+
+[30/06/2014 8:49:53] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 8:49:53] Array
+(
+    [camp_Id] => 21
+)
+
+[30/06/2014 8:50:05] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => send details saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 21
+            [sending_date] => 2014-06-30 14:50:05
+            [next_step_url] => /campaigns
+            [previous_step_url] => /campaigns/template/21
+        )
+
+)
+
+[30/06/2014 8:50:05] Array
+(
+    [work] => yes
+)
+
+[30/06/2014 9:05:58] Array
+(
+)
+
+[30/06/2014 9:08:11] Array
+(
+)
+
+[30/06/2014 9:08:47] Array
+(
+)
+
+[30/06/2014 9:09:03] Array
+(
+)
+
+[30/06/2014 9:09:16] Array
+(
+)
+
+[30/06/2014 9:09:23] Array
+(
+)
+
+[30/06/2014 9:11:38] Array
+(
+)
+
+[30/06/2014 9:11:52] Array
+(
+)
+
+[30/06/2014 9:12:09] Array
+(
+)
+
+[30/06/2014 9:38:24] Array
+(
+)
+
+[30/06/2014 9:39:05] Array
+(
+)
+
+[30/06/2014 9:39:59] Array
+(
+)
+
+[30/06/2014 9:40:10] Array
+(
+)
+
+[30/06/2014 9:41:17] Array
+(
+)
+
+[30/06/2014 9:42:32] Array
+(
+)
+
+[30/06/2014 9:42:45] Array
+(
+)
+
+[30/06/2014 9:43:04] Array
+(
+)
+
+[30/06/2014 9:43:44] Array
+(
+)
+
+[30/06/2014 9:46:55] Array
+(
+)
+
+[30/06/2014 9:47:47] Array
+(
+)
+
+[30/06/2014 9:48:12] Array
+(
+)
+
+[30/06/2014 9:48:46] Array
+(
+)
+
+[30/06/2014 9:49:09] Array
+(
+)
+
+[30/06/2014 9:50:36] Array
+(
+)
+
+[30/06/2014 10:20:56] Array
+(
+)
+
+[30/06/2014 10:21:40] Array
+(
+)
+
+[30/06/2014 10:27:40] Array
+(
+)
+
+[30/06/2014 10:40:21] Array
+(
+)
+
+[30/06/2014 10:40:59] Array
+(
+)
+
+[30/06/2014 10:41:33] Array
+(
+)
+
+[30/06/2014 10:43:06] Array
+(
+)
+
+[30/06/2014 10:45:11] Array
+(
+)
+
+[30/06/2014 10:45:56] Array
+(
+)
+
+[30/06/2014 10:47:00] Array
+(
+)
+
+[30/06/2014 10:47:39] Array
+(
+)
+
+[30/06/2014 10:47:46] Array
+(
+)
+
+[30/06/2014 10:48:33] Array
+(
+)
+
+[30/06/2014 10:50:08] Array
+(
+)
+
+[30/06/2014 10:50:17] Array
+(
+)
+
+[30/06/2014 10:50:22] Array
+(
+)
+
+[30/06/2014 10:50:26] Array
+(
+)
+
+[30/06/2014 10:50:59] Array
+(
+)
+
+[30/06/2014 10:51:12] Array
+(
+)
+
+[30/06/2014 10:58:32] Array
+(
+)
+
+[30/06/2014 10:59:10] Array
+(
+)
+
+[30/06/2014 11:00:04] Array
+(
+)
+
+[30/06/2014 11:00:50] Array
+(
+)
+
+[30/06/2014 11:01:36] Array
+(
+)
+
+[30/06/2014 11:01:50] Array
+(
+)
+
+[30/06/2014 11:02:56] Array
+(
+)
+
+[30/06/2014 11:03:14] Array
+(
+)
+
+[30/06/2014 11:04:28] Array
+(
+)
+
+[30/06/2014 11:04:54] Array
+(
+)
+
+[30/06/2014 11:06:37] Array
+(
+)
+
+[30/06/2014 11:06:57] Array
+(
+)
+
+[30/06/2014 11:07:10] Array
+(
+)
+
+[30/06/2014 11:07:49] Array
+(
+)
+
+[30/06/2014 11:07:52] Array
+(
+)
+
+[30/06/2014 11:11:02] Array
+(
+)
+
+[30/06/2014 11:11:15] Array
+(
+)
+
+[30/06/2014 11:13:39] Array
+(
+)
+
+[30/06/2014 11:17:05] Array
+(
+)
+
+[30/06/2014 11:17:22] Array
+(
+)
+
+[30/06/2014 11:17:37] Array
+(
+)
+
+[30/06/2014 11:27:28] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => contact list added successfully
+        )
+
+    [data] => Array
+        (
+            [contact_list_id] => 9
+            [next_step_url] => https://app.mailjet.com/ajax/contacts/add_contact_list?t=AFDC653ED0D11758C069D75868BD501D63239D2CEE861FD729BF129836C9FF3A773E46246893323A58BF0C995DB7EED3D4FE01556A32A7FF5B1959B95832DBC0DF8939755D96B8C7A7BFF91203CF023A57DF066E2E2D4003C6BF8DFF4317E9891596A3906816345DE463275BAA27BEA15B9808D20FAC6FF6C07056DF2AEAD17&cb=http://prestashop.xpucmo.info/modules/mailjet/callback_campaign.php&r=prestashop&show_menu=none
+        )
+
+)
+
+[30/06/2014 11:27:29] Array
+(
+    [work] => yes
+)
+
+[01/07/2014 4:38:14] Array
+(
+)
+
+[01/07/2014 5:08:06] Array
+(
+)
+
+[01/07/2014 8:21:42] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 18
+            [title] => dawdawdawdaw
+            [subject] => A da testdadawaw
+            [from] => astoyanov@titlextechnology.com
+            [sendername] => Default 
+            [reply_to] => 
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/18
+            [previous_step_url] => /campaigns/edit/18
+        )
+
+)
+
+[01/07/2014 8:21:43] Array
+(
+    [work] => yes
+)
+
+[01/07/2014 8:21:43] Array
+(
+    [camp_Id] => 18
+)
+
+[02/07/2014 10:36:35] Array
+(
+)
+
+[03/07/2014 3:59:13] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => contact list successfully deleted
+        )
+
+    [data] => Array
+        (
+            [contact_list_id] => 2
+            [next_step_url] => /contacts/lists
+            [previous_step_url] => /contacts/lists
+        )
+
+)
+
+[03/07/2014 3:59:18] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => contact list successfully deleted
+        )
+
+    [data] => Array
+        (
+            [contact_list_id] => 1
+            [next_step_url] => /contacts/lists
+            [previous_step_url] => /contacts/lists
+        )
+
+)
+
+[03/07/2014 5:25:53] Array
+(
+)
+
+[03/07/2014 8:06:33] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign added successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 4
+            [title] => asw
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/4
+            [previous_step_url] => 
+        )
+
+)
+
+[03/07/2014 8:07:39] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign added successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 5
+            [title] => A da test
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/5
+            [previous_step_url] => 
+        )
+
+)
+
+[03/07/2014 8:07:39] Array
+(
+    [work] => yes
+)
+
+[03/07/2014 8:07:39] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 8:09:22] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 5
+            [next_step_url] => /campaigns/summary/5
+            [previous_step_url] => /campaigns/edit/5
+        )
+
+)
+
+[03/07/2014 8:09:22] Array
+(
+    [work] => yes
+)
+
+[03/07/2014 8:09:22] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 8:09:26] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 5
+            [next_step_url] => /campaigns/summary/5
+            [previous_step_url] => /campaigns/edit/5
+        )
+
+)
+
+[03/07/2014 8:09:26] Array
+(
+    [work] => yes
+)
+
+[03/07/2014 8:09:26] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 8:09:40] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 5
+            [next_step_url] => /campaigns/summary/5
+            [previous_step_url] => /campaigns/edit/5
+        )
+
+)
+
+[03/07/2014 8:09:40] Array
+(
+    [work] => yes
+)
+
+[03/07/2014 8:09:40] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 8:09:45] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => send details saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 5
+            [sending_date] => 2014-07-03 14:09:45
+            [next_step_url] => /campaigns
+            [previous_step_url] => /campaigns/template/5
+        )
+
+)
+
+[03/07/2014 8:09:45] Array
+(
+    [work] => yes
+)
+
+[03/07/2014 8:10:46] Array
+(
+)
+
+[03/07/2014 8:12:29] Array
+(
+)
+
+[03/07/2014 8:15:46] Array
+(
+)
+
+[03/07/2014 8:16:50] Array
+(
+)
+
+[03/07/2014 8:17:01] Array
+(
+)
+
+[03/07/2014 8:17:09] Array
+(
+)
+
+[03/07/2014 8:17:15] Array
+(
+)
+
+[03/07/2014 8:17:41] Array
+(
+)
+
+[03/07/2014 8:18:13] Array
+(
+)
+
+[03/07/2014 8:18:46] Array
+(
+)
+
+[03/07/2014 8:25:28] Array
+(
+)
+
+[03/07/2014 8:30:22] Array
+(
+)
+
+[03/07/2014 8:31:07] Array
+(
+)
+
+[03/07/2014 8:31:29] Array
+(
+)
+
+[03/07/2014 8:32:02] Array
+(
+)
+
+[03/07/2014 8:32:24] Array
+(
+)
+
+[03/07/2014 8:32:39] Array
+(
+)
+
+[03/07/2014 8:33:04] Array
+(
+)
+
+[03/07/2014 8:33:08] Array
+(
+)
+
+[03/07/2014 8:33:15] Array
+(
+)
+
+[03/07/2014 8:34:01] Array
+(
+)
+
+[03/07/2014 8:34:20] Array
+(
+)
+
+[03/07/2014 8:34:35] Array
+(
+)
+
+[03/07/2014 8:34:45] Array
+(
+)
+
+[03/07/2014 8:35:55] Array
+(
+)
+
+[03/07/2014 8:36:01] Array
+(
+)
+
+[03/07/2014 8:36:10] Array
+(
+)
+
+[03/07/2014 8:36:17] Array
+(
+)
+
+[03/07/2014 8:36:39] Array
+(
+)
+
+[03/07/2014 8:37:11] Array
+(
+)
+
+[03/07/2014 8:37:16] Array
+(
+)
+
+[03/07/2014 8:37:24] Array
+(
+)
+
+[03/07/2014 8:37:30] Array
+(
+)
+
+[03/07/2014 8:38:58] Array
+(
+)
+
+[03/07/2014 8:45:17] Array
+(
+)
+
+[03/07/2014 8:45:41] Array
+(
+)
+
+[03/07/2014 8:46:11] Array
+(
+)
+
+[03/07/2014 8:47:03] Array
+(
+)
+
+[03/07/2014 8:54:26] Array
+(
+)
+
+[03/07/2014 8:54:26] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 8:54:59] Array
+(
+)
+
+[03/07/2014 8:54:59] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 8:55:54] Array
+(
+)
+
+[03/07/2014 8:55:54] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 9:01:45] Array
+(
+)
+
+[03/07/2014 9:01:45] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 9:02:53] Array
+(
+)
+
+[03/07/2014 9:02:53] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 9:03:36] Array
+(
+)
+
+[03/07/2014 9:03:36] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 9:04:15] Array
+(
+)
+
+[03/07/2014 9:04:15] Array
+(
+    [camp_Id] => 5
+)
+
+[03/07/2014 9:08:19] Array
+(
+)
+
+[03/07/2014 9:08:43] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign added successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 6
+            [title] => daw
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/6
+            [previous_step_url] => 
+        )
+
+)
+
+[03/07/2014 9:08:43] Array
+(
+    [camp_Id] => 6
+)
+
+[03/07/2014 9:08:53] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 6
+            [next_step_url] => /campaigns/summary/6
+            [previous_step_url] => /campaigns/edit/6
+        )
+
+)
+
+[03/07/2014 9:08:53] Array
+(
+    [camp_Id] => 6
+)
+
+[03/07/2014 9:09:41] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 6
+            [next_step_url] => /campaigns/summary/6
+            [previous_step_url] => /campaigns/edit/6
+        )
+
+)
+
+[03/07/2014 9:09:41] Array
+(
+    [camp_Id] => 6
+)
+
+[03/07/2014 9:09:50] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => html saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 6
+            [next_step_url] => /campaigns/summary/6
+            [previous_step_url] => /campaigns/edit/6
+        )
+
+)
+
+[03/07/2014 9:09:50] Array
+(
+    [camp_Id] => 6
+)
+
+[03/07/2014 9:09:55] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => send details saved successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 6
+            [sending_date] => 2014-07-03 15:09:55
+            [next_step_url] => /campaigns
+            [previous_step_url] => /campaigns/template/6
+        )
+
+)
+
+[03/07/2014 9:10:46] Array
+(
+    [response] => Array
+        (
+            [code] => 1
+            [message] => campaign added successfully
+        )
+
+    [data] => Array
+        (
+            [campaign_id] => 7
+            [title] => A da test
+            [lang] => en
+            [edition_mode] => tool
+            [next_step_url] => /campaigns/template/7
+            [previous_step_url] => 
+        )
+
+)
+
+[03/07/2014 9:24:15] Array
+(
+    [camp_Id] => 8
+)
+
+[09/07/2014 10:29:58] Array
+(
+    [camp_Id] => 10
+)
+
+[09/07/2014 10:30:09] Array
+(
+    [camp_Id] => 10
+)
+
+[09/07/2014 10:30:14] Array
+(
+    [camp_Id] => 10
+)
+
+[22/07/2014 11:10:30] Array
+(
+    [camp_Id] => 237
+)
+
+[22/07/2014 11:10:32] Array
+(
+    [camp_Id] => 237
+)
+
+[22/07/2014 11:10:57] Array
+(
+    [camp_Id] => 237
+)
+
+[22/07/2014 11:10:59] Array
+(
+    [camp_Id] => 237
+)
+
+[22/07/2014 11:16:23] Array
+(
+    [camp_Id] => 238
+)
+
+[22/07/2014 11:16:25] Array
+(
+    [camp_Id] => 238
+)
+
+[22/07/2014 11:16:44] Array
+(
+    [camp_Id] => 238
+)
+
+[22/07/2014 11:16:46] Array
+(
+    [camp_Id] => 238
+)
+
+[22/07/2014 11:16:56] Array
+(
+    [camp_Id] => 238
+)
+
+[22/07/2014 11:16:58] Array
+(
+    [camp_Id] => 238
+)
+
+[23/07/2014 1:52:07] Array
+(
+    [camp_Id] => 239
+)
+
+[23/07/2014 1:52:09] Array
+(
+    [camp_Id] => 239
+)
+
+[23/07/2014 1:52:28] Array
+(
+    [camp_Id] => 239
+)
+
+[23/07/2014 1:52:30] Array
+(
+    [camp_Id] => 239
+)
+
+[23/07/2014 1:55:38] Array
+(
+    [camp_Id] => 240
+)
+
+[23/07/2014 1:55:40] Array
+(
+    [camp_Id] => 240
+)
+
+[23/07/2014 1:56:07] Array
+(
+    [camp_Id] => 240
+)
+
+[23/07/2014 1:56:09] Array
+(
+    [camp_Id] => 240
+)
+
+[23/07/2014 2:16:31] Array
+(
+    [camp_Id] => 241
+)
+
+[23/07/2014 2:16:33] Array
+(
+    [camp_Id] => 241
+)
+
+[23/07/2014 2:16:45] Array
+(
+    [camp_Id] => 241
+)
+
+[23/07/2014 2:16:47] Array
+(
+    [camp_Id] => 241
+)
+
+[23/07/2014 2:31:17] Array
+(
+    [camp_Id] => 242
+)
+
+[23/07/2014 2:31:19] Array
+(
+    [camp_Id] => 242
+)
+
+[23/07/2014 2:31:37] Array
+(
+    [camp_Id] => 242
+)
+
+[23/07/2014 2:31:39] Array
+(
+    [camp_Id] => 242
+)
+
+[23/07/2014 2:36:13] Array
+(
+    [camp_Id] => 243
+)
+
+[23/07/2014 2:36:15] Array
+(
+    [camp_Id] => 243
+)
+
+[23/07/2014 2:36:27] Array
+(
+    [camp_Id] => 243
+)
+
+[23/07/2014 2:36:29] Array
+(
+    [camp_Id] => 243
+)
+
+[23/07/2014 2:38:22] Array
+(
+    [camp_Id] => 244
+)
+
+[23/07/2014 2:38:24] Array
+(
+    [camp_Id] => 244
+)
+
+[23/07/2014 2:38:33] Array
+(
+    [camp_Id] => 244
+)
+
+[23/07/2014 2:38:35] Array
+(
+    [camp_Id] => 244
+)
+
+[23/07/2014 2:48:07] Array
+(
+    [camp_Id] => 245
+)
+
+[23/07/2014 2:48:07] Array
+(
+    [camp_Id] => 245
+)
+
+[23/07/2014 2:48:09] Array
+(
+    [camp_Id] => 245
+)
+
+[23/07/2014 2:48:23] Array
+(
+    [camp_Id] => 245
+)
+
+[23/07/2014 2:48:23] Array
+(
+    [camp_Id] => 245
+)
+
+[23/07/2014 2:48:26] Array
+(
+    [camp_Id] => 245
+)
+
+[23/07/2014 2:50:18] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 2:50:20] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 2:50:42] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 2:50:42] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 2:50:45] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 2:51:15] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 2:51:15] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 2:51:17] Array
+(
+    [camp_Id] => 246
+)
+
+[23/07/2014 3:05:34] Array
+(
+    [camp_Id] => 248
+)
+
+[23/07/2014 3:05:36] Array
+(
+    [camp_Id] => 248
+)
+
+[23/07/2014 3:09:14] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:09:16] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:10:46] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:10:48] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:11:25] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:11:27] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:12:11] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:12:15] Array
+(
+    [camp_Id] => 249
+)
+
+[23/07/2014 3:40:55] Array
+(
+    [camp_Id] => 251
+)
+
+[23/07/2014 3:41:08] Array
+(
+    [camp_Id] => 251
+)
+
+[23/07/2014 3:41:16] Array
+(
+    [camp_Id] => 251
+)
+
+[23/07/2014 3:42:18] Array
+(
+    [camp_Id] => 252
+)
+
+[23/07/2014 3:42:25] Array
+(
+    [camp_Id] => 252
+)
+
+[23/07/2014 3:44:39] Array
+(
+    [camp_Id] => 253
+)
+
+[23/07/2014 3:44:55] Array
+(
+    [camp_Id] => 253
+)
+
+[23/07/2014 3:44:55] Array
+(
+    [camp_Id] => 253
+)
+
+[23/07/2014 3:45:02] Array
+(
+    [camp_Id] => 253
+)
+
+[23/07/2014 3:45:02] Array
+(
+    [camp_Id] => 253
+)
+
+[23/07/2014 3:45:22] Array
+(
+    [camp_Id] => 253
+)
+
+[23/07/2014 3:45:22] Array
+(
+    [camp_Id] => 253
+)
+
+[23/07/2014 5:40:24] Array
+(
+    [camp_Id] => 1
+)
+
+[23/07/2014 5:40:39] Array
+(
+    [camp_Id] => 1
+)
+
+[23/07/2014 5:40:49] Array
+(
+    [camp_Id] => 1
+)
+
+[23/07/2014 5:52:46] Array
+(
+    [camp_Id] => 254
+)
+
+[23/07/2014 5:57:10] Array
+(
+    [camp_Id] => 254
+)
+
+[23/07/2014 5:57:40] Array
+(
+    [camp_Id] => 254
+)
+
+[23/07/2014 6:00:22] Array
+(
+    [camp_Id] => 254
+)
+
+[23/07/2014 6:01:03] Array
+(
+    [camp_Id] => 254
+)
+
+[23/07/2014 6:04:31] Array
+(
+    [camp_Id] => 255
+)
+
+[23/07/2014 11:21:36] Array
+(
+    [camp_Id] => 2
+)
+
+[23/07/2014 11:31:06] Array
+(
+    [camp_Id] => 256
+)
+

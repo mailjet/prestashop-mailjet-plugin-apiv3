@@ -1,0 +1,27 @@
+<div class="mj-setup">
+
+<div class="mj-text">
+
+	<p>Vous etes a quelques clics de l'activation d'un module vous permettant d'utiliser le canal marketing N°1 de l'ecommerce <strong>l'email</strong><p>
+
+	<p>Selon le baromètre UDA/Opinion Way, les principales actions de marketing en ligne utilisées sont l’<strong>e-mailing</strong> (pour 88%) et l’<strong>e-newsletter</strong> (pour 74%)</p>
+
+	<p>Les meilleurs boutiques eCommerce envoient en moyenne 5 à 10 messages ciblées pas mois à leurs clients et prospects (Amazon, Priceminister, etc.)<br/>
+	L'email ciblé est de loin <strong>votre meilleur outil marketing pour augmenter vos ventes</strong> !</p>
+
+	<p>Mailjet vous permet de créer et envoyer des messages ciblés et professionels <strong>sans connaissances techniques ou graphiques</strong>.</p>
+	<p>C'est une suite de fonctionnalités complémentaires et intégrées. L’efficacité est immédiate. </p>
+
+	<p><strong>Segmentez</strong> : identifiez la bonne cible, envoyez un message de marketing direct</p>
+
+	<p>Créez des <strong>newsletters professionelles</strong> en quelques clics</p>
+
+	<p><strong>Envoyez avec succès et fiabilité</strong> : temps réel pour les emails transactionnels, gestion et supervision de la réputation IP pour déliverabilité améliorée.</p>
+
+	<p><strong>Analysez et améliorez</strong> vos statistiques de campagnes: chiffre d’affaire généré, clics, etc.</p>
+</div>
+
+
+<div class="mj-video">
+	<p>VIDEO</p>
+</div>
