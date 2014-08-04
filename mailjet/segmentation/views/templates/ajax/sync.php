@@ -17,12 +17,14 @@ include_once(realpath(dirname(__FILE__).'/../../..').'/segmentation.php');
 //include_once(realpath(dirname(__FILE__).'/../../../..').'/classes/MailjetAPI.php');
 include_once(realpath(dirname(__FILE__).'/../../../..').'/classes/MailJetTemplate.php'); // **
 
+
 if ($_POST['action'] == "getQuery")
 {
 	Configuration::updateValue("MJ_PERCENTAGE_SYNC", 0);
 	$obj = new Segmentation();
 
 	$res_contacts = Db::getInstance()->executeS($obj->getQuery($_POST, true, false));
+
 // 	echo '<pre>';
 // 	print_r($res_contacts);
 // 	echo 'users';
@@ -81,7 +83,7 @@ if ($_POST['action'] == "getQuery")
 	}
 
 
-	$contacts = $api->getContactsFromList($id_list_contact);
+//	$contacts = $api->getContactsFromList($id_list_contact);
 
 	//echo 'contactlistID:' . $id_list_contact;
 	if (!$id_list_contact) {

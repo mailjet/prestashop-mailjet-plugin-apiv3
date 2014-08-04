@@ -202,6 +202,12 @@ class ApiOverlay
      * @var		array $_errors
      */
     private $_errors = NULL;
+    
+    /**
+     * 
+     * @var array
+     */
+    protected $_contactLists = array();
 
     /**
      * Constructor
@@ -2574,6 +2580,10 @@ class ApiOverlay
      */
     public function getContactsLists(integer $start = null, integer $limit = null, string $orderby = null, integer $cache = null)
     {
+    	if (!empty($this->_contactLists)) {
+    		return $this->_contactLists;
+    	}
+    	
     	$paramsProfile = array(
     			'method'	 	=> 'GET',
     	);
@@ -2584,7 +2594,7 @@ class ApiOverlay
     	$responesProfile = $this->_api->getResponse();
     	
     	if ($responesProfile->Count > 0) {
-    	
+    		$this->_contactLists = $responesProfile->Data;
     		return $responesProfile->Data;
     	}
     	
@@ -2669,10 +2679,10 @@ class ApiOverlay
 
     	$this->_api->resetRequest();
 
-    	$this->_api->listrecipient($params);
-    	
+    	$se = $this->_api->listrecipient($params);
+
     	$response = $this->_api->getResponse();
-    	print_r('dawdaw'); die;
+
     	if ($response && $response->Count > 0) {
     		return $response;
     	}

@@ -1,9 +1,18 @@
 <?php
 
+include_once(dirname(__FILE__).'/../hooks/synchronization/SynchronizationAbstract.php');
+include_once(dirname(__FILE__).'/../hooks/synchronization/Initial.php');
+include_once(dirname(__FILE__).'/../hooks/synchronization/SingleUser.php');
+
 class Segmentation extends Module
 {
 	public $page;
 	public $trad;
+	
+	/**
+     * @author atanas
+	 */
+	protected $_contactListsMap = array();
 	
 	public function __construct()
 	{
@@ -19,7 +28,7 @@ class Segmentation extends Module
 		
 		$this->displayName = $this->l('Segment Module');
 		$this->description = $this->l('Module for Customer Segmentation');
-		$this->page = 10;		
+		$this->page = 10;	
 	}
 	
 	public function initCompatibility()
@@ -1777,7 +1786,7 @@ class Segmentation extends Module
 				WHERE f.assignment_auto = 1';
 		
 		$rows = DB::getInstance()->executeS($sql);
-		
+
 		if (!is_array($rows))
 			return $this;
 		
@@ -1800,7 +1809,7 @@ class Segmentation extends Module
 			$formatRows[$id_filter]["value1"][] = $row["value1"];
 			$formatRows[$id_filter]["value2"][] = $row["value2"];
 		}
-		
+
 		foreach ($formatRows as $formatRow)
 		{
 			$sql = $this->getQuery($formatRow, true) . ' HAVING c.id_customer = '.(int)$id_customer;
@@ -1809,6 +1818,7 @@ class Segmentation extends Module
 
 			if ($result && !$this->belongsToGroup($formatRow["idgroup"], $id_customer))
 			{
+
 				if ($formatRow["replace_customer"])
 				{
 					$sql = 'DELETE 
@@ -1824,13 +1834,32 @@ class Segmentation extends Module
 				);
 				
 				DB::getInstance()->autoExecute(_DB_PREFIX_.'customer_group', $values, 'INSERT');
+				
+				// Mailjet update
+				$customer = new Customer($id_customer);
+	
+				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+					MailjetTemplate::getApi()
+				);
+
+				$initialSynchronization->subscribe($customer->email, $this->_getMailjetContactListId($id_filter));
 			}
 			else if (!$result && $this->belongsToGroup($formatRow["idgroup"], $id_customer))
 			{
+
 				$sql = 'DELETE FROM '._DB_PREFIX_.'customer_group 
 						WHERE id_group = '.(int)$formatRow["idgroup"].' AND id_customer = '.(int)$id_customer;
 			
 				DB::getInstance()->execute($sql);
+				
+				// Mailjet update
+				$customer = new Customer($id_customer);
+				
+				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+					MailjetTemplate::getApi()
+				);
+				
+				$initialSynchronization->remove($customer->email, $this->_getMailjetContactListId($id_filter));
 			}
 		}
 		
@@ -1917,5 +1946,40 @@ class Segmentation extends Module
 
 		
 		return DB::getInstance()->getValue($sql);
+	}
+	
+	/**
+	 * 
+	 * @author atanas
+	 * @param int $filterId
+	 * @return int
+	 */
+	protected function _getMailjetContactListId($filterId)
+	{
+		if (array_key_exists($filterId, $this->_contactListsMap)) {
+			return $this->_contactListsMap[$filterId];
+		}
+		
+		$api = MailjetTemplate::getApi();
+
+		$lists = $api->getContactsLists();
+		$id_list_contact = 0;
+		
+		if ($lists !== false)
+		{
+			foreach ($lists as $l)
+			{
+				$n = explode("idf", $l->Name);
+		
+				if ((string)$n[0] == (string)$filterId)
+				{
+					$this->_contactListsMap[$filterId] = $id_list_contact;
+					$id_list_contact = (int)$l->ID;
+					break;
+				}
+			}
+		}
+		
+		return $id_list_contact;
 	}
 }

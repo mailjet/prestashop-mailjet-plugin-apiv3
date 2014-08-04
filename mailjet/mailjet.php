@@ -342,6 +342,9 @@ class Mailjet extends Module
 				$initialSynchronization->remove($oldEmail);
 			}
 			
+			$segmentation = new Segmentation();
+			$segmentation->checkAutoAssignment($customer->id);
+			
 			if ($customer->active == 0) {
 				$initialSynchronization->unsubscribe($newEmail);
 			} else {
@@ -366,11 +369,16 @@ class Mailjet extends Module
 		);
 	
 		try {
+			$segmentation = new Segmentation();
+			$segmentation->checkAutoAssignment($customer->id);
+			
 			if ($customer->active == 0) {
 				$initialSynchronization->unsubscribe($customer->email);
 			} else {
 				$initialSynchronization->subscribe($customer->email);
 			}
+			
+
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
 		}
@@ -445,6 +453,9 @@ class Mailjet extends Module
 		
 		try {
 			$initialSynchronization->subscribe($params['newCustomer']->email);
+			
+			$segmentation = new Segmentation();
+			$segmentation->checkAutoAssignment($params['newCustomer']->id);
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
 			return false;
@@ -460,9 +471,7 @@ class Mailjet extends Module
 	 */
 	public function hookCustomerAccount($params)
 	{
-		echo '<pre>';
-		print_r($params); die;
-		
+	
 		$initialSynchronization = new \Hooks\Synchronization\SingleUser(
 				MailjetTemplate::getApi()
 		);
@@ -476,27 +485,6 @@ class Mailjet extends Module
 	}
 	
 	
-	/**
-	 *
-	 * @author atanas
-	 * @param unknown_type $params
-	 * @return boolean
-	 */
-	public function hookDeleteAccount($params)
-	{
-		echo '<pre>';
-		print_r($params); die;
-		$initialSynchronization = new \Hooks\Synchronization\SingleUser(
-			MailjetTemplate::getApi()
-		);
-	
-		try {
-			$initialSynchronization->subscribe($params['newCustomer']->email);
-		} catch (Exception $e) {
-			$this->errors_list[] = $this->l($e->getMessage());
-			return false;
-		}
-	}
 
 	public function fetchTemplate($path, $name)
 	{
