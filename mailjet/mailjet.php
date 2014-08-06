@@ -780,7 +780,8 @@ class Mailjet extends Module
 				'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
 				'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
 				'MJ_authentication' => $this->isAccountSet(),
-				'MJ_TOKEN_USER' => isset($this->account['TOKEN_'.$this->context->employee->id]) ? $this->account['TOKEN_'.$this->context->employee->id] : 'ssss'
+				'MJ_TOKEN_USER' => isset($this->account['TOKEN_'.$this->context->employee->id]) ? $this->account['TOKEN_'.$this->context->employee->id] : null,
+				'MJ_user_plan'	=> $this->_getPlan(),
 		));
 
 		return $this->fetchTemplate('/tpl/', 'configuration');
@@ -1145,6 +1146,21 @@ public function checkTokenValidity()
 			
 		}
 	}
+}
+
+
+/**
+ * 
+ * @author atanas
+ * @return mixed
+ */
+protected function _getPlan()
+{
+	if (!$this->isAccountSet()) {
+		return null;
+	}
+	
+	
 }
 
 public function checkPlanValidity()

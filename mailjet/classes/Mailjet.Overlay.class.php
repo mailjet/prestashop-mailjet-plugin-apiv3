@@ -2518,7 +2518,7 @@ class ApiOverlay
             throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
     
-    public function batchJobContacts($listID, $dataID)
+    public function batchJobContacts($listID, $dataID, $status = 'addforce')
     {
 
     	$paramsProfile = array(
@@ -2527,9 +2527,10 @@ class ApiOverlay
     			'DataID' => $dataID,
     			'Status' => 'Upload',
     			'RefId' => $listID,
-    			'Method' => 'addnoforce', // = 'addforce'
+    			'Method' => $status, // = 'addforce,remove,addnoforse'
     			'APIKeyALT'	=> $this->_api->getAPIKey()
     	);
+    	
     	
     	$this->_api->resetRequest();
     	$this->_api->batchjob($paramsProfile);
