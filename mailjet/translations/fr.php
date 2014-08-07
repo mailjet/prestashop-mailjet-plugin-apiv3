@@ -4,13 +4,7 @@ global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{mailjet}prestashop>ajax_210056c8a36e035de0a336f7fa055f27'] = 'Erreur de token';
 $_MODULE['<{mailjet}prestashop>ajax_21a5d428ea929b1e12aa8ea0c57feede'] = 'La méthode appelée n\'existe pas';
-$_MODULE['<{mailjet}prestashop>mailjet_e3e4a2ed183511046825d8937a155a8d'] = 'Vous n’êtes plus qu’à quelques clics de l’activation du plus puissant add-on d’emailing e-commerce conçu pour Prestashop.
-
-Utilisez Mailjet pour générer de l’engagement, analyser et améliorer le retour sur investissement de votre base clientèle Prestashop, grâce à de meilleurs envois, des outils de suivi avancés et une meilleure délivrabilité, à la fois pour vos emails transactionnels et marketing.
-
-Nos fonctionnalités comprennent : la personnalisation et la segmentation de vos envois, un outil de création d’emails en WYSIWYG, des templates de messages e-commerce prêts à l’emploi, l\'envoi d\'emails/campagnes automatisés (panier abandonné, anniversaire…) et des statistiques en temps réel. A cela s\'ajoute la reconnaissance de revenue généré par chacune de vos campagnes marketing.
-
-Inscrivez-vous ou connectez-vous et profitez dès maintenant du meilleur de votre base clientèle grâce à la puissance de Mailjet!';
+$_MODULE['<{mailjet}prestashop>mailjet_e3e4a2ed183511046825d8937a155a8d'] = 'Permet de segmenter des groupes de clients, créer automatiquement des listes d\'envois d\'emails, créer des newsletters, gérer les retours de manière automatique, suivre ses statistiques de manière détaillée et éviter que vos emails tombent en Spam. 6000 emails gratuits par mois.';
 $_MODULE['<{mailjet}prestashop>mailjet_ff01de9408b9c15ff689f4e32fc19f99'] = 'Mailjet';
 $_MODULE['<{mailjet}prestashop>mailjet_b78a3223503896721cca1303f776159b'] = 'Titre';
 $_MODULE['<{mailjet}prestashop>mailjet_bd09d588f425900508bcd88c0ab77723'] = 'E-mails envoyés';

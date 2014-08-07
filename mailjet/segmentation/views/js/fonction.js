@@ -356,7 +356,7 @@ function loadFilterInfo(idfilter)
 	$.post(ajaxFile, {'idfilter' : idfilter, 'action' : 'loadFilterInfo', 'token' : tokenV, 'id_employee': id_employee},
 	   function(data) {
 	   info = jQuery.parseJSON(data);
-	   console.log(info);
+
 	   info = info.return[0];
 	    $("#idfilter").val(idfilter);
 	   	$("#name").val(info["name"]);

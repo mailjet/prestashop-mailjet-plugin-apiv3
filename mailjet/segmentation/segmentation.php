@@ -263,13 +263,13 @@ class Segmentation extends Module
 					'.$this->getFilterList().'
 					<br />
 					<div class="div_new_filter">
-						<h2>'.$this->l('Add a Filter').'</h2>
+						<h2>'.$this->l('Add a Segment').'</h2>
 						<div class="nameFilter">
 						<form method="post" id="mainForm" action="../modules/mailjet/'.$this->name.'/views/templates/admin/export.php">
 						<input type="hidden" id="module_path" value="../modules/mailjet/'.$this->name.'/views/templates/admin/" />
 						<table>
 							<tr>
-								<td class="titleFilter">'.$this->l('Filter name').' <sup>*</sup></td>
+								<td class="titleFilter">'.$this->l('Segment name').' <sup>*</sup></td>
 								<td><input id="name" type="text" value="" name="name" size="43"></td>
 							</tr>
 							<tr>
