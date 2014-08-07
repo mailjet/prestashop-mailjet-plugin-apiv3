@@ -356,6 +356,7 @@ function loadFilterInfo(idfilter)
 	$.post(ajaxFile, {'idfilter' : idfilter, 'action' : 'loadFilterInfo', 'token' : tokenV, 'id_employee': id_employee},
 	   function(data) {
 	   info = jQuery.parseJSON(data);
+	   console.log(info);
 	   info = info.return[0];
 	    $("#idfilter").val(idfilter);
 	   	$("#name").val(info["name"]);
@@ -365,6 +366,26 @@ function loadFilterInfo(idfilter)
 			$("#date_start").val(info.date_start.substr(0,10));
 			$("#date_end").val(info.date_end.substr(0,10));
 	   	}
+	   	
+	   	/**
+	   	 * Populate the group's value after  the ajax call
+	   	 * 
+	   	 * @author atanas
+	   	 */
+	   	$('#groupUser').val(info.id_group != "0" ? info.id_group : -1);
+	   	if (info.id_group == "0") {
+	   		$('#newgrpdiv').show();
+	   	} else {
+	   		$('#newgrpdiv').hide();
+	   	}
+	   	var addReplaceValue = info.replace_customer == "0" ? 'add' : 'rep';
+
+	   	$('[name="add"]').removeAttr('checked');
+	   	$('[name="add"]').filter('[value="'+addReplaceValue+'"]').attr('checked', 'checked');
+	   	$('#assign-auto').val(info.assignment_auto);
+	   	/**
+	   	 * End populate
+	   	 */
 	});
 }
 

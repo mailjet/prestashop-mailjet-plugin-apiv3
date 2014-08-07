@@ -4,7 +4,13 @@ global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{mailjet}prestashop>ajax_210056c8a36e035de0a336f7fa055f27'] = 'Token error';
 $_MODULE['<{mailjet}prestashop>ajax_21a5d428ea929b1e12aa8ea0c57feede'] = 'The requested method doesn\'t exist';
-$_MODULE['<{mailjet}prestashop>mailjet_e3e4a2ed183511046825d8937a155a8d'] = 'Activate Mailjet today to give your marketing and transactional emails a deliverability boost.  Segment, personalize and easily create drag-and-drop HTML newsletters or choose from our eCommerce templates or native triggered emails (abandon cart, etc.) to increase your merchant revenue.  Look at stats in real time including sales and revenue per newsletter.  Get started today with 6000 free emails per month. ';
+$_MODULE['<{mailjet}prestashop>mailjet_e3e4a2ed183511046825d8937a155a8d'] = 'You are just a few clicks away from activating Prestashop’s most powerful eCommerce email add-on.
+
+Use Mailjet to engage, analyse and increase the ROI of your Prestashop client base with enhanced sending, tracking and deliverability of both your transactional and marketing emails.
+
+Features include personalisation, advanced Prestashop segmentation, professional drag-and-drop newsletter creation, eCommerce marketing templates, bulk marketing campaigns, triggered marketing campaigns (e.g. abandon cart, purchase anniversary, etc.) and real-time analytics including knowing how much revenue each of your marketing campaigns has generated for you.
+
+Sign up or sign in and enhance your client base with the power of Mailjet today!';
 $_MODULE['<{mailjet}prestashop>mailjet_ff01de9408b9c15ff689f4e32fc19f99'] = 'Mailjet';
 $_MODULE['<{mailjet}prestashop>mailjet_b78a3223503896721cca1303f776159b'] = 'Title';
 $_MODULE['<{mailjet}prestashop>mailjet_bd09d588f425900508bcd88c0ab77723'] = 'Emails Sent';

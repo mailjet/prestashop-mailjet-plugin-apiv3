@@ -1360,14 +1360,33 @@ class Segmentation extends Module
 	
 	public function saveFilter($post, $auto_assign=false, $replace_customer=false)
 	{		
+	
 		$post = $this->formatDate($post);
-		
-		if ($post['idfilter'] != 0 && $auto_assign == false)
+
+		//if ($post['idfilter'] != 0 && $auto_assign == false)
+		if ($post['idfilter'] != 0)
 		{
 			$id_filter = $post['idfilter'];
 			$this->deleteCondition($id_filter);
-			Db::getInstance()->Execute('UPDATE `'._DB_PREFIX_.'mj_filter` SET `name` = "'.pSQL($post['name']).'", `description` = "'.pSQL($post['description']).'"
+	
+			if ($post['idgroup'] == 0) {
+				Db::getInstance()->Execute('UPDATE `'._DB_PREFIX_.'mj_filter` SET `name` = "'.pSQL($post['name']).'", `description` = "'.pSQL($post['description']).'"
 						WHERE `id_filter`='.(int)$id_filter);
+			} else {
+				$query = '
+					UPDATE `'._DB_PREFIX_.'mj_filter`
+					SET
+						`name` = "'.pSQL($post['name']).'",
+						`description` = "'.pSQL($post['description']).'",
+						`id_group` = "'.(int)$post['idgroup'].'",
+						`assignment_auto` = '.(int)(bool)$auto_assign.',
+						`replace_customer` = '.(int)(bool)$replace_customer.'
+					WHERE `id_filter`='.(int)$id_filter
+				;
+				
+				Db::getInstance()->Execute($query);
+			}
+			
 		}
 		else
 		{

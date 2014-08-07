@@ -1201,7 +1201,8 @@ public function auth($apiKey, $secretKey)
 		Configuration::updateValue('PS_MAIL_PASSWD',$secretKey);
 		Configuration::updateValue('PS_MAIL_METHOD',2);
 		
-		if ($this->account['MASTER_LIST_SYNCHRONIZED'] === 0) {
+		
+		if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0) {
 			
 			$initialSynchronization = new \Hooks\Synchronization\Initial(
 				MailjetTemplate::getApi()
