@@ -1860,8 +1860,8 @@ class Segmentation extends Module
 				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
 					MailjetTemplate::getApi()
 				);
-
-				$initialSynchronization->subscribe($customer->email, $this->_getMailjetContactListId($id_filter));
+				$mailjetListID = $this->_getMailjetContactListId($id_filter);
+				$initialSynchronization->subscribe($customer->email, $mailjetListID);
 			}
 			else if (!$result && $this->belongsToGroup($formatRow["idgroup"], $id_customer))
 			{
@@ -1877,11 +1877,12 @@ class Segmentation extends Module
 				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
 					MailjetTemplate::getApi()
 				);
-				
-				$initialSynchronization->remove($customer->email, $this->_getMailjetContactListId($id_filter));
+				$mailjetListID = $this->_getMailjetContactListId($id_filter);
+				$initialSynchronization->remove($customer->email, $mailjetListID);
+
 			}
 		}
-		
+
 		return $this;
 	}
 	
@@ -1982,6 +1983,7 @@ class Segmentation extends Module
 		$api = MailjetTemplate::getApi();
 
 		$lists = $api->getContactsLists();
+
 		$id_list_contact = 0;
 		
 		if ($lists !== false)
@@ -1992,13 +1994,14 @@ class Segmentation extends Module
 		
 				if ((string)$n[0] == (string)$filterId)
 				{
-					$this->_contactListsMap[$filterId] = $id_list_contact;
 					$id_list_contact = (int)$l->ID;
+					$this->_contactListsMap[$filterId] = $id_list_contact;
+
 					break;
 				}
 			}
 		}
-		
+
 		return $id_list_contact;
 	}
 }

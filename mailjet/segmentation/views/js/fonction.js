@@ -279,7 +279,14 @@ function saveFilter()
 		$("#name").attr('class', 'alertbox');
 		return false;
 	}
-	$.post(ajaxFile, $("#mainForm").serialize() + "&token=" + tokenV,
+	
+	
+	
+	$.post(ajaxFile, $("#mainForm").serialize() + "&token=" + tokenV + 
+			"&assign-auto="+$('#assign-auto').val()
+			+ "&idgroup=" + $('#groupUser').val()
+			+ "&replace-customer=" + $('input[name=add]:checked').val()
+			,
 	   function(data) {
 	   if ($("#idfilter").val() != 0)
 	   {
@@ -293,6 +300,7 @@ function saveFilter()
 	   $(".div_new_filter").hide();
 	   $("#action").val('getQuery');
 	   displayListMessage(trad[23], "result");
+	   $('#newfilter').show();
 	});
 }
 
@@ -383,6 +391,10 @@ function loadFilterInfo(idfilter)
 	   	$('[name="add"]').removeAttr('checked');
 	   	$('[name="add"]').filter('[value="'+addReplaceValue+'"]').attr('checked', 'checked');
 	   	$('#assign-auto').val(info.assignment_auto);
+	   	
+//	   	$('#mainForm').find('#idgroup').val(info.id_group != "0" ? info.id_group : -1);
+//	   	$('#mainForm').find('#mode').val(info.replace_customer == "0" ? '0' : addReplaceValue);
+	   	
 	   	/**
 	   	 * End populate
 	   	 */
@@ -443,8 +455,8 @@ function attribGroup()
 	$("#groupAttrib").hide();
 	$("#wait").show();
 	
-	if ($("select#assign-auto").val() == 1)
-	{
+//	if ($("select#assign-auto").val() == 1)
+//	{
 		$("#action").val('Save');
 		
 		if ($("#name").val().length == 0)
@@ -472,7 +484,7 @@ function attribGroup()
 		});
 		
 		$("#action").val('addGroup');
-	}	
+//	}	
 	
 	$.post(
 		ajaxFile,
