@@ -47,6 +47,7 @@ include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
 include_once(dirname(__FILE__).'/hooks/synchronization/SynchronizationAbstract.php');
 include_once(dirname(__FILE__).'/hooks/synchronization/Initial.php');
 include_once(dirname(__FILE__).'/hooks/synchronization/SingleUser.php');
+include_once(dirname(__FILE__).'/hooks/synchronization/Segment.php');
 
 
 class Mailjet extends Module

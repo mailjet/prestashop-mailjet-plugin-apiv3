@@ -113,7 +113,7 @@ class Segmentation extends Module
 		&& $this->registerHook('invoice') 
 		&& $this->registerHook('updateOrderStatus') 
 		&& $this->registerHook('orderConfirmation') 
-		&& $this->registerHook('createAccount') 
+		//&& $this->registerHook('createAccount') 
 		&& $this->registerHook('orderSlip') 
 		&& $this->registerHook('orderReturn') 
 		&& $this->registerHook('cancelProduct'));
@@ -1966,10 +1966,11 @@ class Segmentation extends Module
 		return '';
 	}
 
-	public function hookCreateAccount($params)
-	{
-		return $this->hookNewOrder($params);
-	}
+// 	public function hookCreateAccount($params)
+// 	{
+// 		return true;
+// 		return $this->hookNewOrder($params);
+// 	}
 	
 	public function hookOrderSlip($params)
 	{

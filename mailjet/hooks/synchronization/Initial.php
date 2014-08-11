@@ -3,7 +3,6 @@
 namespace Hooks\Synchronization;
 
 
-
 /**
  * 
  * @author atanas
@@ -20,7 +19,8 @@ class Initial extends SynchronizationAbstract
 	public function synchronize()
 	{
 		if ($masterListId = $this->_getAlreadyCteatedMasterListId()) {
-			return $masterListId;
+			$segmentSynch = new Segment($this->_getApiOverlay());
+			$segmentSynch->deleteList($masterListId);
 		}
 		
 		$apiOverlay = $this->_getApiOverlay();
