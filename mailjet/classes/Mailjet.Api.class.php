@@ -66,7 +66,7 @@ class Api
      * @access	private
      * @var		integer $_debug
      */
-    private $_debug = 0;
+    private $_debug = 2;
 
     /**
      * Echo debug ?

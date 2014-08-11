@@ -373,7 +373,7 @@ class Segmentation extends Module
 		
 		if (empty($res))
 		{
-			$html .= '<div class="no_filter_string warn">'.$this->l('You have no filter for now').'</div>';
+			$html .= '<div class="no_filter_string warn">'.$this->l('You have no segment for now').'</div>';
 		}
 		
 		$html .= '';
@@ -424,7 +424,7 @@ class Segmentation extends Module
 		$html .= '</table>';
 		
 		$html .= '<br />
-		<button id="newfilter" class="my_button right"><img src="../modules/mailjet/'.$this->name.'/views/img/page_excel.png" />'.$this->l('Create a New filter').'</button>';
+		<button id="newfilter" class="my_button right"><img src="../modules/mailjet/'.$this->name.'/views/img/page_excel.png" />'.$this->l('Create a New Segment').'</button>';
 		
 		return $html;
 	}	
@@ -1860,7 +1860,6 @@ class Segmentation extends Module
 			$formatRows[$id_filter]["value2"][] = $row["value2"];
 		}
 
-
 		foreach ($formatRows as $filterId => $formatRow)
 		{
 			$sql = $this->getQuery($formatRow, true) . ' HAVING c.id_customer = '.(int)$id_customer;
@@ -1889,11 +1888,6 @@ class Segmentation extends Module
 				// Mailjet update
 				$customer = new Customer($id_customer);
 	
-				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
-					MailjetTemplate::getApi()
-				);
-				$mailjetListID = $this->_getMailjetContactListId($filterId);
-				$initialSynchronization->subscribe($customer->email, $mailjetListID);
 			}
 			else if (!$result && $this->belongsToGroup($formatRow["idgroup"], $id_customer))
 			{
@@ -1906,13 +1900,24 @@ class Segmentation extends Module
 				// Mailjet update
 				$customer = new Customer($id_customer);
 				
-				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+			}
+			
+			$customer = new Customer($id_customer);
+			$initialSynchronization = new \Hooks\Synchronization\SingleUser(
 					MailjetTemplate::getApi()
-				);
-				$mailjetListID = $this->_getMailjetContactListId($filterId);
+			);
+			$mailjetListID = $this->_getMailjetContactListId($filterId);
+			
+			if ($result) {
+				$initialSynchronization->subscribe($customer->email, $mailjetListID);
+				//echo ' ADD filterID ' .$filterId . ' - mailjetListID: ' .  $mailjetListID;
+			} else {
 				$initialSynchronization->remove($customer->email, $mailjetListID);
+				//echo ' REMOVE filterID ' .$filterId . ' - mailjetListID: ' .  $mailjetListID;
 			}
 		}
+		
+	
 
 		return $this;
 	}
