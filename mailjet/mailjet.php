@@ -453,9 +453,10 @@ class Mailjet extends Module
 		
 		try {
 			$initialSynchronization->subscribe($params['newCustomer']->email);
-			
+
 			$segmentation = new Segmentation();
 			$segmentation->checkAutoAssignment($params['newCustomer']->id);
+
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
 			return false;

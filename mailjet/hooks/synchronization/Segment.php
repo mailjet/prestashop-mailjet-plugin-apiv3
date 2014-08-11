@@ -32,13 +32,65 @@ class Segment extends SynchronizationAbstract
 	 */
 	public function sychronize($contacts, $filterId, $fiterName)
 	{
-		$existingListId = $this->_getExistingMailjetListId($filterId, $fiterName);
+		$existingListId = $this->_getExistingMailjetListId($filterId);
 
 		if ($existingListId) {
 			return $this->_update($contacts, $existingListId);
 		}
 		
 		return $this->_create($contacts, $filterId, $fiterName);
+	}
+	
+	
+	/**
+	 * 
+	 * @param int $filterId
+	 * @param string $newName	 
+	 * @return bool
+	 */
+	public function updateName($mailjetListId, $prestashopFilterId, $newName)
+	{
+		
+		if ($mailjetListId) {
+			
+			$params = array(
+				'ID'		=> $mailjetListId,
+				'method' 	=> 'JSON',
+				'Name' 		=> $prestashopFilterId."idf".preg_replace("`[^a-zA-Z0-9]`iUs", "", \Tools::strtolower($newName))
+			);
+			
+			# Api call
+			$oldList = $this->_getApiOverlay()->createContactsListP($params);
+			
+			if ($oldList) {
+				$listId = $oldList->ID;
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param int $mailjetListId
+	 */
+	public function deleteList($mailjetListId)
+	{
+		if ($mailjetListId) {
+				
+			$params = array(
+				'ID'		=> $mailjetListId,
+				'method' 	=> 'DELETE'
+			);
+				
+			# Api call
+			$oldList = $this->_getApiOverlay()->createContactsListP($params);
+				
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -188,7 +240,7 @@ class Segment extends SynchronizationAbstract
 	 * @param string $fiterName
 	 * @return int
 	 */
-	private function _getExistingMailjetListId($filterId, $fiterName)
+	private function _getExistingMailjetListId($filterId)
 	{
 		$lists = $this->_getApiOverlay()->getContactsLists();
 

@@ -2586,7 +2586,8 @@ class ApiOverlay
     	}
     	
     	$paramsProfile = array(
-    			'method'	 	=> 'GET',
+    		'method'	 	=> 'GET',
+    		'limit'			=> 0
     	);
     	 
     	$this->_api->resetRequest();

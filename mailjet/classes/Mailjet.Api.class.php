@@ -710,6 +710,10 @@ class Api
                 curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
             break;
+            case 'DELETE':
+            	curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
+            	curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
+            	break;
             case 'JSON':
             	if($is_json_put)
             		curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "PUT");

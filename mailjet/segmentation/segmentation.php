@@ -3,6 +3,10 @@
 include_once(dirname(__FILE__).'/../hooks/synchronization/SynchronizationAbstract.php');
 include_once(dirname(__FILE__).'/../hooks/synchronization/Initial.php');
 include_once(dirname(__FILE__).'/../hooks/synchronization/SingleUser.php');
+include_once(dirname(__FILE__).'/../hooks/synchronization/Segment.php');
+include_once(dirname(__FILE__).'/../classes/Mailjet.Overlay.class.php');
+include_once(dirname(__FILE__).'/../classes/Mailjet.Api.class.php');
+include_once(dirname(__FILE__).'/../classes/MailJetTemplate.php');
 
 class Segmentation extends Module
 {
@@ -1360,7 +1364,8 @@ class Segmentation extends Module
 	
 	public function saveFilter($post, $auto_assign=false, $replace_customer=false)
 	{		
-	
+		ini_set('display_errors', 'on');
+		
 		$post = $this->formatDate($post);
 
 		//if ($post['idfilter'] != 0 && $auto_assign == false)
@@ -1386,7 +1391,17 @@ class Segmentation extends Module
 				
 				Db::getInstance()->Execute($query);
 			}
-			
+
+			try {
+				$segmentSynchronization = new \Hooks\Synchronization\Segment(
+						MailjetTemplate::getApi()
+				);
+				$mailjetFiterid = $this->_getMailjetContactListId($id_filter);
+				$segmentSynchronization->updateName($mailjetFiterid, $id_filter, pSQL($post['name']));
+			} catch (Exception $e) {
+				
+			}
+
 		}
 		else
 		{
@@ -1434,8 +1449,24 @@ class Segmentation extends Module
 			$group = new Group($id_group);
 			$group->delete();
 		}*/
+		$deleteFromDb = Db::getInstance()->Execute('DELETE FROM `'._DB_PREFIX_.'mj_condition` WHERE `id_filter` ='.(int)$id) AND Db::getInstance()->Execute('DELETE FROM `'._DB_PREFIX_.'mj_filter` WHERE `id_filter` ='.(int)$id);
 		
-		return (Db::getInstance()->Execute('DELETE FROM `'._DB_PREFIX_.'mj_condition` WHERE `id_filter` ='.(int)$id) AND Db::getInstance()->Execute('DELETE FROM `'._DB_PREFIX_.'mj_filter` WHERE `id_filter` ='.(int)$id));
+		if ($deleteFromDb) {
+			try {
+				$segmentSynchronization = new \Hooks\Synchronization\Segment(
+					MailjetTemplate::getApi()
+				);
+				$mailjetListId = $this->_getMailjetContactListId($id);
+				
+				if ($mailjetListId) {
+					$segmentSynchronization->deleteList($mailjetListId);
+				}
+			} catch (Exception $e) {
+			
+			}
+		}
+
+		return (bool) ($deleteFromDb);
 	}
 	
 	public function deleteCondition($id)
@@ -1829,10 +1860,11 @@ class Segmentation extends Module
 			$formatRows[$id_filter]["value2"][] = $row["value2"];
 		}
 
-		foreach ($formatRows as $formatRow)
+
+		foreach ($formatRows as $filterId => $formatRow)
 		{
 			$sql = $this->getQuery($formatRow, true) . ' HAVING c.id_customer = '.(int)$id_customer;
-
+		
 			$result = DB::getInstance()->executeS($sql);
 
 			if ($result && !$this->belongsToGroup($formatRow["idgroup"], $id_customer))
@@ -1860,7 +1892,7 @@ class Segmentation extends Module
 				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
 					MailjetTemplate::getApi()
 				);
-				$mailjetListID = $this->_getMailjetContactListId($id_filter);
+				$mailjetListID = $this->_getMailjetContactListId($filterId);
 				$initialSynchronization->subscribe($customer->email, $mailjetListID);
 			}
 			else if (!$result && $this->belongsToGroup($formatRow["idgroup"], $id_customer))
@@ -1877,9 +1909,8 @@ class Segmentation extends Module
 				$initialSynchronization = new \Hooks\Synchronization\SingleUser(
 					MailjetTemplate::getApi()
 				);
-				$mailjetListID = $this->_getMailjetContactListId($id_filter);
+				$mailjetListID = $this->_getMailjetContactListId($filterId);
 				$initialSynchronization->remove($customer->email, $mailjetListID);
-
 			}
 		}
 
