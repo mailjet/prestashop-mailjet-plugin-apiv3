@@ -62,6 +62,9 @@ class Initial extends SynchronizationAbstract
 		);
 		
 		if (!isset($apiResponse->ID)) {
+			$segmentSynch = new Segment($this->_getApiOverlay());
+			$segmentSynch->deleteList($newlyCreatedListId);
+			
 			throw new Exception("There is a problem with the creation of the contacts.");
 		}
 			
@@ -85,7 +88,7 @@ class Initial extends SynchronizationAbstract
 	{
 		return $this->getDbInstance()->executeS("
 			SELECT email 
-			FROM ps_customer 
+			FROM "._DB_PREFIX_."customer 
 			WHERE active = 1 
 			AND deleted = 0
 		");

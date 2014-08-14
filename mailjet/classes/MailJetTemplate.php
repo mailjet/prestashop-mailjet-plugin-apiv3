@@ -151,7 +151,9 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		$lang = 'app.preprod'; // <== pout les Tests : TODO
 
-		$url = "https://".$lang.".mailjet.com/reseller/signup?r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_signup.php&show_menu=none";
+		$token = Tools::getAdminTokenLite('AdminModules');
+		$signUpCallBack = urlencode("http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_signup.php?internaltoken=" . $token);
+		$url = "https://".$lang.".mailjet.com/reseller/signup?r=prestashop&cb={$signUpCallBack}&show_menu=none";
 
 		$this->iframes_url[$name] = $url;
 	}

@@ -110,6 +110,7 @@ class Mailjet extends Module
 	*/
 	public function __construct()
 	{
+		//$this->getAdminFullUrl();
 		// Default module variable
 		$this->name = 'mailjet';
 		$this->displayName = 'Mailjet';
@@ -137,6 +138,8 @@ class Mailjet extends Module
 		}
 
 		$this->initContext();
+
+
 	}
 
 	private function initContext()
@@ -155,6 +158,7 @@ class Mailjet extends Module
 			$this->context->link = new Link();
 			$this->context->shop = new Shop();
 		}
+		
 		
 		//var_dump($this->account); die;
 		
@@ -243,12 +247,12 @@ class Mailjet extends Module
 		if (isset($cookie->tokp))
 		{
 			// On enregistre le ROI
-			$sql = "SELECT campaign_id FROM ps_mj_campaign WHERE token_presta = '".$cookie->tokp."'";
+			$sql = "SELECT campaign_id FROM "._DB_PREFIX_."mj_campaign WHERE token_presta = '".$cookie->tokp."'";
 			$campaign = Db::GetInstance()->GetRow($sql);
 				
 			if (!empty($campaign))
 			{
-				$sql = "REPLACE INTO ps_mj_roi (campaign_id, id_order, total_paid, date_add)
+				$sql = "REPLACE INTO "._DB_PREFIX_."mj_roi (campaign_id, id_order, total_paid, date_add)
 				VALUES (".(int)$campaign['campaign_id'].", ".(int)$params['order']->id.", ".(float)$params['order']->total_paid.", NOW())";
 				Db::GetInstance()->Execute($sql);
 			}
@@ -637,17 +641,10 @@ class Mailjet extends Module
 
 	public function getContent()
 	{
-		$initialSynchronization = new \Hooks\Synchronization\SingleUser(
-			MailjetTemplate::getApi()
-		);
+		if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0) {
 		
-		try {
-			//$initialSynchronization->unsubscribe('astoyanov+7@mailjet.com');
-		} catch (Exception $e) {
-			$this->errors_list[] = $this->l($e->getMessage());
-			return false;
+			$this->initilSynchronize();
 		}
-		
 		
 		$this->mj_template = new MailjetTemplate();
 		$this->page_name = $this->mj_pages->getCurrentPageName($this->isAccountSet());
@@ -882,7 +879,7 @@ public function displayROI()
 	$api = MailjetTemplate::getApi();
 
 	// Traitements
-	$sql = "SELECT * FROM ps_mj_campaign ORDER BY date_add DESC";
+	$sql = "SELECT * FROM "._DB_PREFIX_."mj_campaign ORDER BY date_add DESC";
 	$campaigns = Db::getInstance()->ExecuteS($sql);
 
 	foreach ($campaigns as $key=>$c)
@@ -903,14 +900,14 @@ public function displayROI()
 					$campaigns[$key]['delivered'] =(int)$stats->DeliveredCount;
 				}
 				
-				$sql = "UPDATE ps_mj_campaign
+				$sql = "UPDATE "._DB_PREFIX_."mj_campaign
 				SET stats_campaign_id = ".(int)$mjc->ID.",
 				delivered = ".(int)$stats->DeliveredCount.",
 				title = '".$mjc->Title."'
 				WHERE id_campaign_presta = ".(int)$c['id_campaign_presta'];
 				Db::getInstance()->Execute($sql);
 			} else {
-				$sql = "UPDATE ps_mj_campaign
+				$sql = "UPDATE "._DB_PREFIX_."mj_campaign
 				SET stats_campaign_id = ".(int)$mjc->ID.",
 				title = '".$mjc->Title."'
 				WHERE id_campaign_presta = ".(int)$c['id_campaign_presta'];
@@ -921,7 +918,7 @@ public function displayROI()
 		}
 
 		// Allons chercher le ROI de cette campagne
-		$sql = "SELECT COUNT(id_order) AS nb, SUM(total_paid) AS total FROM ps_mj_roi WHERE campaign_id = ".(int)$c['campaign_id'];
+		$sql = "SELECT COUNT(id_order) AS nb, SUM(total_paid) AS total FROM "._DB_PREFIX_."mj_roi WHERE campaign_id = ".(int)$c['campaign_id'];
 		$totaux = Db::getInstance()->GetRow($sql);
 			
 		if (!empty($totaux['total']))
@@ -1146,6 +1143,11 @@ public function checkTokenValidity()
 			$this->updateAccountSettings();
 			
 		}
+		
+		if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0) {
+		
+			$this->initilSynchronize();
+		}
 	}
 }
 
@@ -1205,21 +1207,7 @@ public function auth($apiKey, $secretKey)
 		
 		if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0) {
 			
-			$initialSynchronization = new \Hooks\Synchronization\Initial(
-				MailjetTemplate::getApi()
-			);
-				
-			try {
-				$newlyCreatedListId = $initialSynchronization->synchronize();
-
-				$this->account['MASTER_LIST_SYNCHRONIZED'] 	= 1;
-				$this->account['MASTER_LIST_ID'] 			= $newlyCreatedListId;
-				
-				$this->updateAccountSettings();
-			} catch (Exception $e) {
-				$this->errors_list[] = $this->l($e->getMessage());
-				return false;
-			}
+			return $this->initilSynchronize();
 		}
 			
 		return true;
@@ -1232,14 +1220,48 @@ public function auth($apiKey, $secretKey)
 }
 
 /**
+ * 
+ * @throws Exception
+ */
+public function initilSynchronize()
+{
+	if (!$this->isAccountSet()) {
+		return false;
+	}
+	
+	$initialSynchronization = new \Hooks\Synchronization\Initial(
+			MailjetTemplate::getApi()
+	);
+	
+	try {
+		$newlyCreatedListId = $initialSynchronization->synchronize();
+	
+		if ($newlyCreatedListId) {
+	
+			$this->account['MASTER_LIST_SYNCHRONIZED'] 	= 1;
+			$this->account['MASTER_LIST_ID'] 			= $newlyCreatedListId;
+				
+			$this->updateAccountSettings();
+		} else {
+			throw new Exception("The master list is not created.");
+		}
+	
+	} catch (Exception $e) {
+		$this->errors_list[] = $this->l($e->getMessage());
+		return false;
+	}
+	
+	return true;
+}
+
+/**
  * Check user authentication from submit form
  */
 public function checkAuthentication()
 {
 	$API_KEY = Tools::getValue('mj_api_key');
 	$SECRET_KEY = Tools::getValue('mj_secret_key');
-	
-	
+
 	if ($this->auth($API_KEY, $SECRET_KEY) === true) {
 		Tools::redirectAdmin($this->getAdminModuleLink(array(MailJetPages::REQUEST_PAGE_TYPE => 'HOME')));
 	}
@@ -1289,14 +1311,22 @@ public function updateAccountSettings()
  * @param $params allow to add or override default key/value
  * @return string
  */
-public function getAdminModuleLink($params, $tab = 'AdminModules')
+public function getAdminModuleLink($params, $tab = 'AdminModules', $token = null)
 {
+	$initArray = array(
+		'tab' => $tab,
+		'configure' => $this->name,
+		'module_name' => $this->name
+	);
+	
+	if (!$token) {
+		$initArray['token'] = Tools::getAdminTokenLite($tab);
+	} else {
+		$initArray['token'] = $token;
+	}
+	
 	$params = array_merge(
-			array(
-					'tab' => $tab,
-					'configure' => $this->name,
-					'token' => Tools::getAdminTokenLite($tab),
-					'module_name' => $this->name),
+			$initArray,
 			$params
 	);
 	return 'index.php?'.http_build_query($params);
@@ -1348,6 +1378,19 @@ public function error_handling()
 public function getToken()
 {
 	return $this->account['TOKEN'];
+}
+
+public function getAdminFullUrl()
+{
+	$adminDirName = null;
+	$maindirs = scandir(realpath(dirname(__FILE__) .'/../../'));
+	foreach ($maindirs as $dirName) {
+		if (strpos($dirName, 'admin') !== false) {
+			$adminDirName = $dirName;
+		}
+	}
+	
+	return $adminDirName;
 }
 
 public static function sendMail($subject,$message,$to)
