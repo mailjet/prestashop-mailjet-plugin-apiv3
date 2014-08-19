@@ -20,13 +20,12 @@
 			<page name="TRIGGERS" />
 			<page name="CONTACTS" />
 			<page name="STATS" />
-			<page name="PRICING" />
+
 			<page name="ROI" />
 			<page name="EVENTS" />
 			<page name="ACCOUNT" />
-			<page name="NEWSLETTER" />
-			<page name="CAMPAIGN1" />
-			<page name="CAMPAIGN2" />
+			<page name="PRICING" />
+
 		</tab>
 	</tabs>
 </groups>

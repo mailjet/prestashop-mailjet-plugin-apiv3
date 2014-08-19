@@ -16,6 +16,7 @@
 			<STATS>Stats</STATS>
 			<ACCOUNT>Account</ACCOUNT>
 			<FAQ>FAQ</FAQ>
+			<PRICING>UPGRADE</PRICING>
 		</iso>
 		<iso code="fr">
 			<SETUP_LANDING>Présentation de l'installation</SETUP_LANDING>
@@ -32,6 +33,7 @@
 			<ROI>R.O.I</ROI>
 			<ACCOUNT>Mon compte</ACCOUNT>
 			<FAQ>FAQ</FAQ>
+			<PRICING>UPGRADE</PRICING>
 		</iso>
 	</pages>
 	<stats>

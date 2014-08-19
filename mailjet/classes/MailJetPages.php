@@ -66,6 +66,7 @@ class MailJetPages
 				$this->require_authentication_pages[] = (string)$page['name'];
 				$this->available_page[(string)$page['name']] = '';
 			}
+			
 
 			// Get translation from xml
 			return (bool)(count($this->available_page) && $this->initPagesTranslation());
