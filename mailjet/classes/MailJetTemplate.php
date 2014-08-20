@@ -164,7 +164,7 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		$lang = 'app.preprod'; // <== pout les Tests : TODO
 
-		$url = "https://".$lang.".mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none";
+		$url = "https://".$lang.".mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
 		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
@@ -192,7 +192,7 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		$lang = 'app.preprod'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/stats?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none";
+		$url = "https://".$lang.".mailjet.com/stats?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
 		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
@@ -203,7 +203,7 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		$lang = 'app.preprod'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/contacts?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none";
+		$url = "https://".$lang.".mailjet.com/contacts?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
 		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
