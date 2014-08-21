@@ -46,7 +46,7 @@
                 {l s='This menu allows you to modify your settings and update them in order to optimise your deliverability. You will also find all your profile and billing details here.' mod='mailjet'}
             </li>
         	<li>
-            	<a href="{$MJ_adminmodules_link}&{$MJ_REQUEST_PAGE_TYPE}=PRICING" class="btn_tab_home">{l s='Upgrade' mod='mailjet'}</a>
+            	<a href="http://www.preprod.mailjet.com/pricing" target="_blank" class="btn_tab_home">{l s='Upgrade' mod='mailjet'}</a>
                 {l s='Click here to change/upgrade your current plan.' mod='mailjet'}
             </li>
             
