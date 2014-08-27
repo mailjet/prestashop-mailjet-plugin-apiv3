@@ -1,7 +1,7 @@
 <?php
 
-// if ($_SERVER['PHP_AUTH_USER'] != "mailjet" || $_SERVER['PHP_AUTH_PW'] != "MJPSMOD9463PWD")
-// 	die("ERROR, no access granted...");
+ if ($_SERVER['PHP_AUTH_USER'] != "mailjet" || $_SERVER['PHP_AUTH_PW'] != "MJPSMOD9463PWD")
+ 	die("ERROR, no access granted...");
 
 include_once(realpath(dirname(__FILE__).'/../../').'/config/config.inc.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetLog.php');
@@ -11,7 +11,7 @@ include_once(_PS_ROOT_DIR_.'/init.php');
 
 # Catch Event
 $post = trim(Tools::file_get_contents('php://input'));
-mail("astoyanov@mailjet.com", "", print_r($post, true));
+//mail("astoyanov@mailjet.com", "", print_r($post, true));
 
 # No Event sent
 if(empty($post)) {
