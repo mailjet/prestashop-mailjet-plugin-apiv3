@@ -1132,7 +1132,8 @@ public function checkTokenValidity()
 			'AllowedAccess' => 'campaigns,contacts,stats,pricing,account,reports',
 			'method'	 	=> 'JSON',
 			'APIKeyALT' 	=> $api->getAPIKey(),
-			'TokenType'		=> 'iframe'
+			'TokenType'		=> 'iframe',
+                        'IsActive'		=> true
 		);
 
 		$api->apitoken($params);
