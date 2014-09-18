@@ -23,7 +23,7 @@
         	&nbsp; {l s='To activate Events, yous must go to your Mailjet account : ' mod='mailjet'} <a href="https://eu.mailjet.com/account/triggers" target="_blank"><u>https://eu.mailjet.com/account/triggers</u></a><br />
             <br />
             <b style="color:#000;">
-            {l s='Specify the' mod='mailjet'} <span style="color:#900;">Endpoint Url</span> : <input type="text" value="http://mailjet:MJPSMOD9463PWD@{$host}/modules/mailjet/events.php" style="width:700px;padding:3px;"/><br />
+            {l s='Specify the' mod='mailjet'} <span style="color:#900;">Endpoint Url</span> : <input type="text" value="{$url}" style="width:700px;padding:3px;"/><br />
             {l s='and click the Events you want to activate' mod='mailjet'}...<br />
             </b>
             <br />

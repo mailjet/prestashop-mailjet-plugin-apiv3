@@ -1,13 +1,22 @@
 <?php
 
- if ($_SERVER['PHP_AUTH_USER'] != "mailjet" || $_SERVER['PHP_AUTH_PW'] != "MJPSMOD9463PWD")
- 	die("ERROR, no access granted...");
+// if ($_SERVER['PHP_AUTH_USER'] != "mailjet" || $_SERVER['PHP_AUTH_PW'] != "MJPSMOD9463PWD")
+// 	die("ERROR, no access granted...");
 
 include_once(realpath(dirname(__FILE__).'/../../').'/config/config.inc.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetLog.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetTranslate.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetEvents.php');
+include_once(realpath(dirname(__FILE__)).'/hooks/Events.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
+require_once(dirname(__FILE__).'/mailjet.php');
+
+$mj = new Mailjet();
+
+if ($mj->getEventsHash() !== $_GET['h']) {
+	header('HTTP/1.1 401 Unauthorized');
+	return;
+}
 
 # Catch Event
 $post = trim(Tools::file_get_contents('php://input'));
@@ -66,6 +75,8 @@ switch($t['event']) {
 
 	case 'unsub':
 		// => do action
+		$hooksEvents = new \Hooks\Events();
+		$hooksEvents->unsubscribe($t);
 		break;
 
 	case 'typofix':

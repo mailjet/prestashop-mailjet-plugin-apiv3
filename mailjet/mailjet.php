@@ -744,6 +744,8 @@ class Mailjet extends Module
 				unset($titles['original_address']);
 				unset($titles['new_address']);
 
+				$url = 'http://'.$this->context->shop->domain.'/modules/mailjet/events.php?h=' . $this->getEventsHash();
+
 				$this->context->smarty->assign(array(
 						'MJ_events_list' =>  $this->setUserLinkToEvents($mj_event->fetch()),
 						'MJ_title_list' => $titles,
@@ -756,6 +758,7 @@ class Mailjet extends Module
 						),
 						'MJ_all_scheme_fields' => $mj_event->getScheme(MailJetEvents::ALL_EVENTS_KEYS),
 						'host' => $this->context->shop->domain,
+						'url'	=> $url,
 				));
 				break;
 
@@ -1428,6 +1431,14 @@ public static function sendMail($subject,$message,$to)
 		return false;
 	}
 }
+
+	/**
+	 * @return string
+	 */
+	public function getEventsHash()
+	{
+		return md5($this->account['TOKEN']);
+	}
 
 }
 

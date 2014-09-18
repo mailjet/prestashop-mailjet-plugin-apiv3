@@ -85,7 +85,7 @@ class MailjetTemplate
 	{
 		$context = Context::getContext();
 		$lang = $context->language->iso_code; // language_code
-		$lang = 'preprod'; // <== pout les Tests : TODO
+		//$lang = 'preprod'; // <== pout les Tests : TODO
 		
 		$file = dirname(__FILE__).'/../xml/iframes.xml';
 		if (file_exists($file) && ($xml = simplexml_load_file($file)))
@@ -149,7 +149,7 @@ class MailjetTemplate
 	{
 		$context = Context::getContext();
 		$lang = $context->language->iso_code; // language_code
-		$lang = 'app.preprod'; // <== pout les Tests : TODO
+		$lang = 'app'; // <== pout les Tests : TODO
 
 		$token = Tools::getAdminTokenLite('AdminModules');
 		$signUpCallBack = urlencode("http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_signup.php?internaltoken=" . $token);
@@ -162,9 +162,9 @@ class MailjetTemplate
 	{
 		$context = Context::getContext();
 		$lang = $context->language->iso_code; // language_code
-		$lang = 'app.preprod'; // <== pout les Tests : TODO
+		$lang = 'app'; // <== pout les Tests : TODO
 
-		$url = "https://".$lang.".mailjet.com/campaigns?t=".$token."&u=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amsc";
+		$url = "https://".$lang.".mailjet.com/campaigns?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amsc";
 		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
@@ -173,7 +173,7 @@ class MailjetTemplate
 	{
 		$context = Context::getContext();
 		$lang = $context->language->iso_code; // language_code
-		$lang = 'app.preprod'; // <== pout les Tests : TODO
+		$lang = 'app'; // <== pout les Tests : TODO
 	
 		if ($token) {
 			$url = "https://".$lang.".mailjet.com/reseller/pricing?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none";
@@ -190,9 +190,9 @@ class MailjetTemplate
 	{
 		$context = Context::getContext();
 		$lang = $context->language->iso_code; // language_code
-		$lang = 'app.preprod'; // <== pout les Tests : TODO
+		$lang = 'app'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/stats?t=".$token."&u=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
+		$url = "https://".$lang.".mailjet.com/stats?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
 		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
@@ -201,9 +201,9 @@ class MailjetTemplate
 	{
 		$context = Context::getContext();
 		$lang = $context->language->iso_code; // language_code
-		$lang = 'app.preprod'; // <== pout les Tests : TODO
+		$lang = 'app'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/contacts?t=".$token."&u=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
+		$url = "https://".$lang.".mailjet.com/contacts?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
 		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
