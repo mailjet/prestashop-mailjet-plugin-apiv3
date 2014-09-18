@@ -10,17 +10,18 @@ for ($i=1;$i<=9;$i++)
 	
 $mail[1]['en'] = '
 	Dear {firstname} {lastname},<br />
-	There are some times you have filled a cart on {shop_name} but did not go through with your order...<br />
-	<a href="{shop_url}">Click here</a> to complete your order !
+	You seem to have filled your shopping cart <br />
+        but did not go through with your order... <br />
+	<a href="{shop_url}">Click here</a> to complete your order!
 	';
 $mail[2]['en'] = '
 	Dear {firstname} {lastname},<br />
-	You had a concern payment on your last order on our website ...<br />
-	The problem is probably resolved, <a href="{shop_url}">click here</a> to order again !
+	It seems there was an issue with your payment on your last order on our website and your purchase did not complete ...<br />
+	Please <a href="{shop_url}">click here</a> to order again!
 	';
 $mail[3]['en'] = '
 	Dear {firstname} {lastname},<br />
-	You ordered in our store but we still waiting for sum payment...
+	You have placed an order in our store but we are still awaiting payment...
 	';
 $mail[4]['en'] = '
 	Dear {firstname} {lastname},<br />
@@ -28,28 +29,28 @@ $mail[4]['en'] = '
 	';
 $mail[5]['en'] = '
 	Dear {firstname} {lastname},<br />
-	HAPPY BIRTHDAY! To thank you for your interest in our store we offer you a voucher valid for 1 month!<br />
-	To enjoy, go straight into your account : <a href="{shop_url}">click here</a> !
+	HAPPY BIRTHDAY! To thank you for your interest in our store we are offering you a voucher valid for 1 month!<br />
+	To enjoy this birthday gift, go to your account : <a href="{shop_url}">click here</a> !
 	';
 $mail[6]['en'] = '
 	Dear {firstname} {lastname},<br />
-	SPECIAL OFFER! We offer you a discount voucher valid for 1 month.<br />
-	Take advantage of !!! <a href="{shop_url}">click here</a> ! :)
+	SPECIAL OFFER! We are offering you a discount voucher valid for 1 month.<br />
+	Take advantage of it, <a href="{shop_url}">click here</a> ! :)
 	';
 $mail[7]['en'] = '
 	Dear {firstname} {lastname},<br />
-	For a long time you are not come to {shop_name} !<br />
-	Come see our news, <a href="{shop_url}">click here</a> !
+	It’s been a while since you came to {shop_name} !<br />
+	Come check out what is new - <a href="{shop_url}">click here</a> !
 	';
 $mail[8]['en'] = '
 	Dear {firstname} {lastname},<br />
-	There is little time you made a purchase on {shop_name} !<br />
-	You\'re satisfied? leave us a comment by <a href="{shop_url}">clicking here</a> !
+	You recently made a purchase on {shop_name} !<br />
+	Were you satisfied? Please leave us a comment by <a href="{shop_url}">clicking here</a> !
 	';
 $mail[9]['en'] = '
 	Dear {firstname} {lastname},<br />
 	You still have loyalty points, transform them in purchase and enjoy!<br />
-	Soon on {shop_name} : <a href="{shop_url}">click here</a> !
+	<a href="{shop_url}">click here</a> !
 	';
 
 // *** français ************************

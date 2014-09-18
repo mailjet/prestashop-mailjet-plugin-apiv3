@@ -52,7 +52,8 @@
 							<input type="text" name="MJ_triggers_trigger_{$sel}_discount" size=5 style="text-align:right;" value="{$triggers.trigger.$sel.discount}" />
 							<select name="MJ_triggers_trigger_{$sel}_discountType">
 								<option value=1 {if $triggers.trigger.{$sel}.discountType==1}selected{/if}>(%) {l s='Percentage' mod='mailjet'}</option>
-								<option value=2 {if $triggers.trigger.{$sel}.discountType==2}selected{/if}>({$sign}) {l s='Amount' mod='mailjet'}</option>
+{*								<option value=2 {if $triggers.trigger.{$sel}.discountType==2}selected{/if}>({$sign}) {l s='Amount' mod='mailjet'}</option>*}
+								<option value=2 {if $triggers.trigger.{$sel}.discountType==2}selected{/if}>($,€,£) {l s='Amount' mod='mailjet'}</option>
 							</select>
                             <br />
 						{/if}
