@@ -1,4 +1,4 @@
-<div class="center_page">
+{*<div class="center_page">
 	<table id="vsTable">
     	<thead>
         	<tr>
@@ -19,4 +19,10 @@
             {/foreach}
         </tbody>
     </table>
+</div>*}
+        
+<div style="clear:both;width:960px;margin:0 auto;">
+    <div align="center"><br>
+    	Coming soon!
+    </div>
 </div>
