@@ -541,7 +541,10 @@ class Mailjet extends Module
 				Configuration::updateValue('PS_MAIL_METHOD',1);
 
 			Configuration::updateValue('MJ_ALLEMAILS',Tools::getValue('MJ_allemails_active'));
-			$this->context->smarty->assign(array('MJ_allemails_active' => Configuration::get('MJ_ALLEMAILS')));
+			$this->context->smarty->assign(array(
+				'MJ_allemails_active' 	=> Configuration::get('MJ_ALLEMAILS'),
+				'AllMailsActiveMessage'	=> Tools::getValue('MJ_allemails_active') ? 1 : 2
+			));
 		}
 		// Campaign
 		if (Tools::isSubmit('MJ_submitCampaign'))
