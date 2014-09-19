@@ -14,7 +14,7 @@
     	{if $AllMailsActiveMessage == 1}
     		{l s='Great!  Now all of your email traffic will send through Mailjet and benefit from awesome deliverability.  Welcome Aboard.' mod='mailjet'}
     	{else}
-    		{l s="Were sad. This means your transactional and triggered emails will not benefit from Mailjet's advanced deliverability but don't worry, you can still use the Campaign Tool to send Newsletters." mod='mailjet'}
+    		{l s="We are sad. This means your transactional and triggered emails will not benefit from Mailjet's advanced deliverability but don't worry, you can still use the Campaign Tool to send Newsletters." mod='mailjet'}
     	{/if}
     {/if}
         
