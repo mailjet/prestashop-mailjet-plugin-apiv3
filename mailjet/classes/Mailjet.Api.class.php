@@ -692,6 +692,10 @@ class Api
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->_curl_handle, CURLOPT_TIMEOUT, 10); //timeout in seconds
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey.':'.$this->_secretKey);
+        
+        curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array());
+        curl_setopt($this->_curl_handle, CURLOPT_POST, 0);
+        curl_setopt($this->_curl_handle, CURLOPT_HTTPGET, FALSE);
 
         switch ($request) {
             case 'GET' :
