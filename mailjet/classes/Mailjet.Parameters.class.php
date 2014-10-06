@@ -12,7 +12,6 @@
 
 // ---------------------------------------------------------------------
 
-namespace Mailjet;
 
 /**
  * Mailjet Public API Parameters class
@@ -54,7 +53,7 @@ namespace Mailjet;
  * @author		David Coullet at Mailjet Dev team
  * @version		0.1
  */
-class Parameters
+class Mailjet_Parameters
 {
     /**
      * Parameters array

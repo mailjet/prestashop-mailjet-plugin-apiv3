@@ -1,13 +1,12 @@
 <?php 
 
-namespace Hooks\Synchronization;
 
 
 /**
  * 
  * @author atanas
  */
-class Initial extends SynchronizationAbstract
+class Hooks_Synchronization_Initial extends Hooks_Synchronization_SynchronizationAbstract
 {
 	
 
@@ -33,20 +32,20 @@ class Initial extends SynchronizationAbstract
 		$newMailjetList = $apiOverlay->createContactsListP($params);
 		
 		if (!$newMailjetList || !isset($newMailjetList->ID)) {
-			throw new Exception("There is a problem with the list's creation.");
+			throw new Hooks_Synchronization_Exception("There is a problem with the list's creation.");
 		}
 		
 		$newlyCreatedListId = $newMailjetList->ID;
 		
 		if (!is_numeric($newlyCreatedListId)) {
-			throw new Exception("The API response is not correct.");
+			throw new Hooks_Synchronization_Exception("The API response is not correct.");
 		}
 		
 		
 		$allUsers = $this->_getAllActiveCustomers();
 		
 		if (count($allUsers) === 0) {
-			throw new Exception("You don't have any users in the database.");
+			throw new Hooks_Synchronization_Exception("You don't have any users in the database.");
 		}
 		
 		$contacts = array();
@@ -65,7 +64,7 @@ class Initial extends SynchronizationAbstract
 			$segmentSynch = new Segment($this->_getApiOverlay());
 			$segmentSynch->deleteList($newlyCreatedListId);
 			
-			throw new Exception("There is a problem with the creation of the contacts.");
+			throw new Hooks_Synchronization_Exception("There is a problem with the creation of the contacts.");
 		}
 			
 		$batchJobResponse = $apiOverlay->batchJobContacts(
@@ -73,7 +72,7 @@ class Initial extends SynchronizationAbstract
 		);
 		
 		if ($batchJobResponse == false) {
-			throw new Exception("Batchjob problem");
+			throw new Hooks_Synchronization_Exception("Batchjob problem");
 		}
 		
 		return $newlyCreatedListId;

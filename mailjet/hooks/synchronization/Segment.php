@@ -1,14 +1,13 @@
 <?php 
 
 
-namespace Hooks\Synchronization;
 
 
 /**
  * 
  * @author atanas
  */
-class Segment extends SynchronizationAbstract
+class Hooks_Synchronization_Segment extends Hooks_Synchronization_SynchronizationAbstract
 {
 
 	
@@ -56,7 +55,7 @@ class Segment extends SynchronizationAbstract
 			$params = array(
 				'ID'		=> $mailjetListId,
 				'method' 	=> 'JSON',
-				'Name' 		=> $prestashopFilterId."idf".preg_replace("`[^a-zA-Z0-9]`iUs", "", \Tools::strtolower($newName))
+				'Name' 		=> $prestashopFilterId."idf".preg_replace("`[^a-zA-Z0-9]`iUs", "", Tools::strtolower($newName))
 			);
 			
 			# Api call
@@ -137,18 +136,18 @@ class Segment extends SynchronizationAbstract
 				$res = $this->_getApiOverlay()->createContacts($string_contacts, $newListId); // **
 			
 				if (!isset($res->ID)) {
-					throw new Exception("Create contacts problem");
+					throw new Hooks_Synchronization_Exception("Create contacts problem");
 				}
 				
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($newListId, $res->ID);
 			
 				if ($batchJobResponse == false) {
-					throw new Exception("Batchjob problem");
+					throw new Hooks_Synchronization_Exception("Batchjob problem");
 				}
 					
 				$contacts_done += $val;
 					
-				\Configuration::updateValue("MJ_PERCENTAGE_SYNC", floor(($contacts_done*100)/$total_contacts));
+				Configuration::updateValue("MJ_PERCENTAGE_SYNC", floor(($contacts_done*100)/$total_contacts));
 				
 				$response = 'OK';
 			} catch (Exception $e) {
@@ -198,13 +197,13 @@ class Segment extends SynchronizationAbstract
 				$res = $this->_getApiOverlay()->createContacts($contstToAddCsv, $existingListId); // **
 					
 				if (!isset($res->ID)) {
-					throw new Exception("Create contacts problem");
+					throw new Hooks_Synchronization_Exception("Create contacts problem");
 				}
 				
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
 					
 				if ($batchJobResponse == false) {
-					throw new Exception("Batchjob problem");
+					throw new Hooks_Synchronization_Exception("Batchjob problem");
 				}
 			}
 			 
@@ -214,13 +213,13 @@ class Segment extends SynchronizationAbstract
 				$res = $this->_getApiOverlay()->createContacts($contstToRemoveCsv, $existingListId); // **
 					
 				if (!isset($res->ID)) {
-					throw new Exception("Create contacts problem");
+					throw new Hooks_Synchronization_Exception("Create contacts problem");
 				}
 				
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'remove');
 					
 				if ($batchJobResponse == false) {
-					throw new Exception("Batchjob problem");
+					throw new Hooks_Synchronization_Exception("Batchjob problem");
 				}
 			}
 			
@@ -310,7 +309,7 @@ class Segment extends SynchronizationAbstract
 			$this->_mailjetContacts[] = $contact->Contact->Email->Email;
 		}
 		
-		\Configuration::updateValue("MJ_PERCENTAGE_SYNC", floor((($offset+$current)*90)/$totalCount));
+		Configuration::updateValue("MJ_PERCENTAGE_SYNC", floor((($offset+$current)*90)/$totalCount));
 		
 		if ($offset + $current < $totalCount) {
 			$this->_gatherCurrentContacts($mailjetListId, $offset + $this->_limitPerRequest);

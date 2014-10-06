@@ -25,7 +25,7 @@ class Events
 			return false;
 		}
 		
-		$customerClass = new \Customer();
+		$customerClass = new Customer();
 		$customer = $customerClass->getByEmail($event['email']);
 		
 		if ($customer) {

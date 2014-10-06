@@ -12,7 +12,6 @@
 
 // ---------------------------------------------------------------------
 
-namespace Mailjet;
 
 /**
  * Mailjet Public API Exception Class
@@ -36,7 +35,7 @@ namespace Mailjet;
  * @author		David Coullet at Mailjet Dev team
  * @version		0.1
  */
-class ApiException extends \Exception
+class Mailjet_ApiException extends Exception
 {
     /**
      * Mailjet HTTP Code

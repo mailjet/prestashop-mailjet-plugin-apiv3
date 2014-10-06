@@ -12,8 +12,6 @@
 
 // ---------------------------------------------------------------------
 
-namespace Mailjet;
-
 /**
  * Mailjet Public API Orderby Class
  *
@@ -33,7 +31,7 @@ namespace Mailjet;
  * @author		David Coullet at Mailjet Dev team
  * @version		0.1
  */
-class OrderBy
+class Mailjet_OrderBy
 {
 
     /**
@@ -70,7 +68,7 @@ class OrderBy
             if (count($args) == 1)
                 self::$_args[1] = 'ASC';
             self::$_args = array_map('trim', $args);
-            usort($array, array('Mailjet\OrderBy', 'compare'));
+            usort($array, array('Mailjet_OrderBy', 'compare'));
         }
     }
 

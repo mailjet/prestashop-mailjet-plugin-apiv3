@@ -1393,7 +1393,7 @@ class Segmentation extends Module
 			}
 
 			try {
-				$segmentSynchronization = new \Hooks\Synchronization\Segment(
+				$segmentSynchronization = new Hooks_Synchronization_Segment(
 						MailjetTemplate::getApi()
 				);
 				$mailjetFiterid = $this->_getMailjetContactListId($id_filter);
@@ -1453,7 +1453,7 @@ class Segmentation extends Module
 		
 		if ($deleteFromDb) {
 			try {
-				$segmentSynchronization = new \Hooks\Synchronization\Segment(
+				$segmentSynchronization = new Hooks_Synchronization_Segment(
 					MailjetTemplate::getApi()
 				);
 				$mailjetListId = $this->_getMailjetContactListId($id);
@@ -1903,7 +1903,7 @@ class Segmentation extends Module
 			}
 			
 			$customer = new Customer($id_customer);
-			$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+			$initialSynchronization = new Hooks_Synchronization_SingleUser(
 					MailjetTemplate::getApi()
 			);
 			$mailjetListID = $this->_getMailjetContactListId($filterId);

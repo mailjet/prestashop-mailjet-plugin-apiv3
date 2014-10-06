@@ -327,7 +327,7 @@ class Mailjet extends Module
 	{
  		$customer = $params['return'];
  		
- 		$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+ 		$initialSynchronization = new Hooks_Synchronization_SingleUser(
  			MailjetTemplate::getApi()
  		);
 		
@@ -368,7 +368,7 @@ class Mailjet extends Module
 	{
 		$customer = $params['return'];
 
-		$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+		$initialSynchronization = new Hooks_Synchronization_SingleUser(
 			MailjetTemplate::getApi()
 		);
 	
@@ -401,7 +401,7 @@ class Mailjet extends Module
 			return;
 		}
 
-		$singleUserSynchronization = new \Hooks\Synchronization\SingleUser(
+		$singleUserSynchronization = new Hooks_Synchronization_SingleUser(
 			MailjetTemplate::getApi()
 		);
 	
@@ -451,7 +451,7 @@ class Mailjet extends Module
 	 */
 	public function hookCreateAccount($params)
 	{
-		$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+		$initialSynchronization = new Hooks_Synchronization_SingleUser(
 			MailjetTemplate::getApi()
 		);
 		
@@ -477,7 +477,7 @@ class Mailjet extends Module
 	public function hookCustomerAccount($params)
 	{
 	
-		$initialSynchronization = new \Hooks\Synchronization\SingleUser(
+		$initialSynchronization = new Hooks_Synchronization_SingleUser(
 				MailjetTemplate::getApi()
 		);
 	
@@ -1176,7 +1176,7 @@ protected function _getPlan()
 public function checkPlanValidity()
 {
 
-	$test = new Mailjet\ApiOverlay($this->account['API_KEY'],$this->account['SECRET_KEY']);
+	$test = new Mailjet_ApiOverlay($this->account['API_KEY'],$this->account['SECRET_KEY']);
 	return;
 	$plan = $test->getUserPlan();
 
@@ -1191,7 +1191,7 @@ public function checkPlanValidity()
 
 public function auth($apiKey, $secretKey)
 {
-	$test = new Mailjet\ApiOverlay($apiKey,$secretKey);
+	$test = new Mailjet_ApiOverlay($apiKey,$secretKey);
 	$result = $test->getUser();
 	
 	if ($result !== false)
@@ -1236,7 +1236,7 @@ public function initilSynchronize()
 		return false;
 	}
 	
-	$initialSynchronization = new \Hooks\Synchronization\Initial(
+	$initialSynchronization = new Hooks_Synchronization_Initial(
 			MailjetTemplate::getApi()
 	);
 	

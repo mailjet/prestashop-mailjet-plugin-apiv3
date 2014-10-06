@@ -1,11 +1,9 @@
 <?php 
 
 
-namespace Hooks\Synchronization;
 
 include_once(dirname(__FILE__).'/Exception.php');
 
-use Mailjet\ApiOverlay as ApiOverlay;
 
 
 /**
@@ -13,7 +11,7 @@ use Mailjet\ApiOverlay as ApiOverlay;
  * @author atanas
  *
  */
-abstract class SynchronizationAbstract
+abstract class Hooks_Synchronization_SynchronizationAbstract
 {
 	
 	/**
@@ -37,16 +35,16 @@ abstract class SynchronizationAbstract
 	
 	/**
 	 * 
-	 * @param ApiOverlay $apiOverlay
+	 * @param Mailjet_ApiOverlay $apiOverlay
 	 */
-	public function __construct(ApiOverlay $apiOverlay)
+	public function __construct(Mailjet_ApiOverlay $apiOverlay)
 	{
 		$this->_apiOverlay = $apiOverlay;
 	}
 	
 	/**
 	 * 
-	 * @return ApiOverlay
+	 * @return Mailjet_ApiOverlay
 	 */
 	protected function _getApiOverlay()
 	{
@@ -69,11 +67,11 @@ abstract class SynchronizationAbstract
 	 */
 	public function getDbInstance()
 	{
-		if (!\Db::getInstance()) {
+		if (!Db::getInstance()) {
 			throw new Exception('Db instance is not provided.');
 		}
 		
-		return \Db::getInstance();
+		return Db::getInstance();
 	}
 	
 	/**

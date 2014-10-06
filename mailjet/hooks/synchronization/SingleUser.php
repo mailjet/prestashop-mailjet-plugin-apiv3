@@ -1,13 +1,12 @@
 <?php 
 
-namespace Hooks\Synchronization;
 
 
 /**
  * 
  * @author atanas
  */
-class SingleUser extends SynchronizationAbstract
+class Hooks_Synchronization_SingleUser extends Hooks_Synchronization_SynchronizationAbstract
 {
 	
 	

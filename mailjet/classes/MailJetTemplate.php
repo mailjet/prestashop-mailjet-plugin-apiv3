@@ -55,12 +55,12 @@ class MailjetTemplate
 		$obj = new Mailjet();
 		if ($with_overlay)
 		{
-			MailjetTemplate::$api = Mailjet\ApiOverlay::getInstance();
+			MailjetTemplate::$api = Mailjet_ApiOverlay::getInstance();
 			MailjetTemplate::$api->setKeys($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
 			MailjetTemplate::$api->secure(FALSE);
 
 		} else {
-			MailjetTemplate::$api = new Mailjet\Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+			MailjetTemplate::$api = new Mailjet_Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
 		}
 		unset($obj);
 	
@@ -153,7 +153,7 @@ class MailjetTemplate
 
 		$token = Tools::getAdminTokenLite('AdminModules');
 		$signUpCallBack = urlencode("http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_signup.php?internaltoken=" . $token);
-		$url = "https://".$lang.".mailjet.com/reseller/signup?r=prestashop&cb={$signUpCallBack}&show_menu=none";
+		$url = "https://".$lang.".preprod.mailjet.com/reseller/signup?r=prestashop&cb={$signUpCallBack}&show_menu=none";
 
 		$this->iframes_url[$name] = $url;
 	}
@@ -164,8 +164,8 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		$lang = 'app'; // <== pout les Tests : TODO
 
-		$url = "https://".$lang.".mailjet.com/campaigns?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amsc";
-		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
+		$url = "https://".$lang.".preprod.mailjet.com/campaigns?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amsc";
+		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 	
@@ -176,12 +176,12 @@ class MailjetTemplate
 		$lang = 'app'; // <== pout les Tests : TODO
 	
 		if ($token) {
-			$url = "https://".$lang.".mailjet.com/reseller/pricing?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none";
+			$url = "https://".$lang.".preprod.mailjet.com/reseller/pricing?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none";
 		} else {
-			$url = "https://".$lang.".mailjet.com/reseller/pricing?r=prestashop&show_menu=none";
+			$url = "https://".$lang.".preprod.mailjet.com/reseller/pricing?r=prestashop&show_menu=none";
 		}
 		
-		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
+		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 	
@@ -192,8 +192,8 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		$lang = 'app'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/stats?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
-		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
+		$url = "https://".$lang.".preprod.mailjet.com/stats?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
+		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 	
@@ -203,8 +203,8 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		$lang = 'app'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/contacts?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
-		//$url = "https://jdf.www.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
+		$url = "https://".$lang.".preprod.mailjet.com/contacts?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
+		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 

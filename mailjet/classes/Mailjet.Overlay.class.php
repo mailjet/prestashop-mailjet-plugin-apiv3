@@ -30,10 +30,10 @@
  * 	- Mailjet::ApiOverlay
  *
  * - Mailjet Public API Exception Class
- * 	- Mailjet::ApiException
+ * 	- Mailjet::Mailjet_ApiException
  *
- * - Mailjet Public API Parameters class
- * 	- Mailjet::Parameters
+ * - Mailjet Public API Mailjet_Parameters class
+ * 	- Mailjet::Mailjet_Parameters
  *
  * - Mailjet Public Event Trigger API Main Class
  * 	- Mailjet::Event
@@ -53,16 +53,11 @@
 
 // ---------------------------------------------------------------------
 
-namespace Mailjet;
-
 require_once 'Mailjet.Api.class.php';
 require_once 'MailJet.Data.Api.class.php';
 require_once 'Mailjet.Exception.class.php';
-require_once 'Mailjet.Parameters.class.php';
+require_once 'Mailjet.Mailjet_Parameters.class.php';
 
-use Mailjet\Api as Api;
-use Mailjet\Parameters as Parameters;
-use Mailjet\mailjetdata as mailjetdata;
 
 /**
  * Mailjet Public API Overlay Class
@@ -80,14 +75,14 @@ use Mailjet\mailjetdata as mailjetdata;
  * // Get global statistics concerning your sendings in the last 24 hours
  * // Active a cache of 5 minutes
  *
- * $parameters = new Mailjet\Parameters();
+ * $parameters = new Mailjet\Mailjet_Parameters();
  * $parameters->ts_from = time() - (24 * 60 * 60);
  * $parameters->ts_to = time();
  * $parameters->cache = 300;
  *
  * try {
  * 	$response = $mj->getEmailStatisticsP($parameters);
- * } catch (Mailjet\ApiException $e) {
+ * } catch (Mailjet\Mailjet_ApiException $e) {
  * 	echo $e->getMessage();
  * 	if (!is_null($mj->getResponse()))
  * 		var_dump($mj->getResponse());
@@ -101,7 +96,7 @@ use Mailjet\mailjetdata as mailjetdata;
  * @author		David Coullet at Mailjet Dev team
  * @version		0.2
  */
-class ApiOverlay
+class Mailjet_ApiOverlay
 {
 
     /**
@@ -223,9 +218,9 @@ class ApiOverlay
      */
     public function __construct($apiKey = FALSE, $secretKey = FALSE)
     {
-        $this->_api = new Api($apiKey, $secretKey);
+        $this->_api = new Mailjet_Api($apiKey, $secretKey);
         
-        set_error_handler('Mailjet\ApiOverlay::phpErrorHandler');
+        set_error_handler('Mailjet_ApiOverlay::phpErrorHandler');
         if ($apiKey && $secretKey)
             $this->createErrorsArray();
     }
@@ -465,7 +460,7 @@ class ApiOverlay
      * PHP Error Handler / Scalar Type-Hinting
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $ErrLevel   Error Level (Required)
      * @param string $ErrMessage Error Message (Required)
      *
@@ -481,7 +476,7 @@ class ApiOverlay
                 || strpos($ErrMessage, 'must be an instance of Mailjet\resource, resource')) {
                     return (TRUE);
                 }
-            throw new ApiException(0, '[DataType] '.str_replace('Mailjet\\', '', $ErrMessage));
+            throw new Mailjet_ApiException(0, '[DataType] '.str_replace('Mailjet\\', '', $ErrMessage));
 
             return (FALSE);
         }
@@ -494,7 +489,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeyadd
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $name          Custom name (Required)
      * @param string $custom_status Custom status : 'up', 'suspend', 'down' (Optional)
      *
@@ -513,7 +508,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -521,16 +516,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeyadd
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createSubAccountP(Parameters $parameters)
+    public function createSubAccountP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createSubAccount($parameters->name, $parameters->custom_status);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -542,7 +537,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeyauthenticate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param array  $allowed_access 'campaigns', 'contacts', 'reports', 'stats', 'preferences' (Required)
      * @param string $type           default_url format : 'url', 'iframe', 'page' (Optional)
      * @param string $default_page   with a value within $allowed_access (Optional)
@@ -571,7 +566,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -579,16 +574,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeyauthenticate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createTokenP(Parameters $parameters)
+    public function createTokenP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createToken($parameters->allowed_access, $parameters->type, $parameters->default_page, $parameters->lang, $parameters->timezone);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -600,7 +595,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeylist
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param boolean $active        Mailjet's approval status : 0=inactive, 1=active (Optional)
      * @param string  $custom_status custom status : 'up', 'suspend', 'down' (Optional)
      * @param string  $name          Custom name. Use * as a joker for a research (Optional)
@@ -632,7 +627,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -640,16 +635,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeylist
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getSubAccountsP(Parameters $parameters)
+    public function getSubAccountsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getSubAccounts($parameters->active, $parameters->custom_status, $parameters->name,$parameters->type, $parameters->api_key, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -661,7 +656,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeysecret
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $api_key Api public key (Required)
      * @param integer $cache   Cache period for the object (Optional)
      *
@@ -680,7 +675,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -688,16 +683,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeysecret
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getSubAccountSecretP(Parameters $parameters)
+    public function getSubAccountSecretP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getSubAccountSecret($parameters->api_key, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -709,7 +704,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeysecretchange
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $api_key Api public key (Required)
      *
      * @return mixed Response from the API
@@ -726,7 +721,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -734,16 +729,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeysecretchange
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function updateSubAccountSecretP(Parameters $parameters)
+    public function updateSubAccountSecretP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->updateSubAccountSecret($parameters->api_key);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -755,7 +750,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeyupdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $api_key       Api public key (Required)
      * @param string $custom_status custom status : 'up', 'suspend', 'down' (Optional)
      * @param string $name          Custom name (Optional)
@@ -777,7 +772,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -785,16 +780,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/apiKeyupdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function updateSubAccountP(Parameters $parameters)
+    public function updateSubAccountP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->updateSubAccount($parameters->api_key, $parameters->custom_status, $parameters->name);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -808,7 +803,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userDomainadd
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $domain Your domain name (Required)
      *
      * @return mixed Response from the API
@@ -824,7 +819,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -832,16 +827,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userDomainadd
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createDomainP(Parameters $parameters)
+    public function createDomainP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createDomain($parameters->domain);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -853,7 +848,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userDomainList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
 
      * @param integer $cache Cache period for the object (Optional)
      *
@@ -871,7 +866,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -879,16 +874,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userDomainList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getTrustDomainsP(Parameters $parameters)
+    public function getTrustDomainsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getTrustDomains($parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -900,7 +895,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userDomainStatus
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $domain      Your domain name (Required)
      * @param boolean $force_check Set to 1 to force a verification (Optional)
      * @param integer $cache       Cache period for the object (Optional)
@@ -922,7 +917,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -930,16 +925,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userDomainStatus
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getDomainStatusP(Parameters $parameters)
+    public function getDomainStatusP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getDomainStatus($parameters->domain, $parameters->force_check, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -951,7 +946,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userInfos
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
@@ -968,7 +963,7 @@ class ApiOverlay
 //         if ($response !== FALSE)
 //             return ($response);
 //         else
-//             throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+//             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         
         
 
@@ -1004,16 +999,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userInfos
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getUserP(Parameters $parameters)
+    public function getUserP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getUser($parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1025,7 +1020,7 @@ class ApiOverlay
      * - url :
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
@@ -1042,7 +1037,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1050,16 +1045,16 @@ class ApiOverlay
      * - url :
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getUserPlanP(Parameters $parameters)
+    public function getUserPlanP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getUserPlan($parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1071,7 +1066,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userSenderAdd
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $email Sender email address (Required)
      *
      * @return mixed Response from the API
@@ -1103,7 +1098,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1111,16 +1106,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userSenderAdd
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createSenderP(Parameters $parameters)
+    public function createSenderP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createSender($params->email);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1132,7 +1127,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userSenderList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
@@ -1167,7 +1162,7 @@ class ApiOverlay
 //         if ($response !== FALSE)
 //             return ($response);
 //         else
-//             throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+//             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1175,16 +1170,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userSenderList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getSendersP(Parameters $parameters)
+    public function getSendersP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getSenders($parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1196,7 +1191,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userSenderStatus
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $email Sender email address (Required)
      * @param integer $cache Cache period for the object (Optional)
      *
@@ -1215,7 +1210,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1223,16 +1218,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userSenderStatus
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getSenderStatusP(Parameters $parameters)
+    public function getSenderStatusP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getSenderStatus($parameters->email, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1244,7 +1239,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userTrackingCheck
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
@@ -1261,7 +1256,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1269,16 +1264,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userTrackingCheck
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getTrackingP(Parameters $parameters)
+    public function getTrackingP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getTracking($parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1290,7 +1285,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userTrackingUpdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param boolean $click Click tracking : 0=do not track, 1=track (Required)
      * @param boolean $open  Open tracking : 0=do not track, 1=track (Required)
      *
@@ -1308,7 +1303,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1316,16 +1311,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userTrackingUpdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function updateTrackingP(Parameters $parameters)
+    public function updateTrackingP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->updateTracking($parameters->click, $parameters->open);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1337,7 +1332,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userUpdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $address_city        Your address city (Optional)
      * @param string $address_country     Your address country (Optional)
      * @param string $address_postal_code Your address postal code (Optional)
@@ -1386,7 +1381,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1394,18 +1389,18 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/userUpdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function updateUserP(Parameters $parameters)
+    public function updateUserP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->updateUser($parameters->address_city, $parameters->address_country, $parameters->address_postal_code,
                                 $parameters->address_street, $parameters->company_name, $parameters->contact_email,
                                 $parameters->firstname, $parameters->lastname, $parameters->locale);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1419,7 +1414,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageCampaigns
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id      Mailjet's Campaign ID (Optional)
      * @param integer $start   Start offset (Optional)
      * @param integer $limit   Limit amount of results you want (Optional)
@@ -1488,7 +1483,7 @@ class ApiOverlay
 //         if ($response !== FALSE)
 //             return ($response);
 //         else
-//             throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+//             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1496,17 +1491,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageCampaigns
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getCampaignsP(Parameters $parameters)
+    public function getCampaignsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getCampaigns($parameters->id, $parameters->start, $parameters->limit,
                                    $parameters->status, $parameters->orderby, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1518,7 +1513,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id     Mailjet's Campaign ID (Required)
      * @param integer $start  Start offset (Optional)
      * @param integer $limit  Limit amount of results you want (Optional)
@@ -1547,7 +1542,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1555,17 +1550,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getSubscribersP(Parameters $parameters)
+    public function getSubscribersP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getSubscribers($parameters->id, $parameters->start, $parameters->limit,
                                    $parameters->status, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1577,7 +1572,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageCreateCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $lang         Language : en, fr, de, it, es, nl, sv, pt, ru, ja, lv, is, ro, el, ar, sk (Required)
      * @param string  $from         Sender email address (Required)
      * @param string  $from_name    Sender name (Optional)
@@ -1634,7 +1629,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1642,12 +1637,12 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageCreateCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createCampaignP(Parameters $parameters)
+    public function createCampaignP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createCampaign($parameters->lang, $parameters->from, $parameters->from_name, $parameters->subject,
@@ -1655,7 +1650,7 @@ class ApiOverlay
                                     $parameters->list_id, $parameters->callback, $parameters->footer,
                                     $parameters->permalink, $parameters->template_id, $parameters->token,
                                     $parameters->reply_to, $parameters->title);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1667,7 +1662,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageDuplicateCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id          Mailjet's Campaign ID (Required)
      * @param string  $lang        Language : en, fr, de, it, es, nl, sv, pt, ru, ja, lv, is, ro, el, ar, sk (Optional)
      * @param string  $from        Sender email address (Optional)
@@ -1718,7 +1713,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1726,18 +1721,18 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageDuplicateCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createCampaignFromP(Parameters $parameters)
+    public function createCampaignFromP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createCampaignFrom($parameters->id, $parameters->lang, $parameters->from, $parameters->from_name, $parameters->subject,
                                     $parameters->list_id, $parameters->callback, $parameters->footer, $parameters->permalink,
                                     $parameters->template_id, $parameters->reply_to, $parameters->title);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1749,7 +1744,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageHtmlCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id    Mailjet's Campaign ID (Required)
      * @param integer $cache Cache period for the object (Optional)
      *
@@ -1795,7 +1790,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1803,16 +1798,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageHtmlCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getCampaignHTMLP(Parameters $parameters)
+    public function getCampaignHTMLP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getCampaignHTML($parameters->id, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1824,7 +1819,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string    $custom_campaign Your custom campaign name (Optional)
      * @param string    $from            Sender email address (Optional)
      * @param string    $from_name       Sender name (Optional)
@@ -1871,7 +1866,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1879,19 +1874,19 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getMessagesP(Parameters $parameters)
+    public function getMessagesP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getMessages($parameters->custom_campaign, $parameters->from, $parameters->from_name,
                                 $parameters->to_email, $parameters->mj_campaign_id,
                                 $parameters->sent_after, $parameters->sent_before,
                                 $parameters->start, $parameters->limit, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1903,7 +1898,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageSendCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id Mailjet's Campaign ID (Required)
      *
      * @return mixed Response from the API
@@ -1919,7 +1914,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1927,16 +1922,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageSendCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function sendCampaignP(Parameters $parameters)
+    public function sendCampaignP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->sendCampaign($parameters->id);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -1948,7 +1943,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageSetHtmlCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id   Mailjet's Campaign ID (Required)
      * @param string  $html Raw HTML code of your Email. It must contain the unsubscribe tag (in en: [[UNSUB_LINK_EN]]) (Required)
      * @param string  $text Text version of your Email. It must contain the unsubscribe tag (in en: [[UNSUB_LINK_EN]]) (Optional)
@@ -1973,7 +1968,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1981,16 +1976,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageSetHtmlCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function updateCampaignHTMLP(Parameters $parameters)
+    public function updateCampaignHTMLP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->updateCampaignHTML($parameters->id, $parameters->html, $parameters->text);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2002,7 +1997,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id    Mailjet's Campaign ID (Required)
      * @param integer $cache Cache period for the object (Optional)
      *
@@ -2040,7 +2035,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2048,16 +2043,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getCampaignStatisticsP(Parameters $parameters)
+    public function getCampaignStatisticsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getCampaignStatistics($parameters->id, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2069,7 +2064,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageTestcampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id    Mailjet's Campaign ID (Required)
      * @param string  $email Email which will receive the test (Required)
      *
@@ -2087,7 +2082,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2095,16 +2090,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageTestcampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function testCampaignP(Parameters $parameters)
+    public function testCampaignP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->testCampaign($parameters->id, $parameters->email);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2116,7 +2111,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageTplCategories
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
@@ -2133,7 +2128,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2141,16 +2136,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageTplCategories
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getTemplateCategoriesP(Parameters $parameters)
+    public function getTemplateCategoriesP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getTemplateCategories($parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2162,7 +2157,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageTplModels
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $category Mailjet's template category ID (Optional)
      * @param boolean $custom   If true, returns the user's templates (Optional)
      * @param string  $locale   Language : fr_FR, en_US, de_DE, ... (Optional)
@@ -2188,7 +2183,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2196,16 +2191,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageTplModels
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getTemplatesP(Parameters $parameters)
+    public function getTemplatesP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getTemplates($parameters->category, $parameters->custom, $parameters->locale, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2217,7 +2212,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageUpdateCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $id           Mailjet's Campaign ID (Required)
      * @param string    $status       Status of the campaign : [draft] or [archived] (Optional)
      * @param string    $lang         Language : en, fr, de, it, es, nl, sv, pt, ru, ja, lv, is, ro, el, ar, sk (Optional)
@@ -2275,7 +2270,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2283,19 +2278,19 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/messageUpdateCampaign
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function updateCampaignP(Parameters $parameters)
+    public function updateCampaignP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->updateCampaign($parameters->id, $parameters->status, $parameters->lang, $parameters->from, $parameters->from_name, $parameters->subject,
                                     $parameters->list_id, $parameters->callback, $parameters->footer, $parameters->permalink,
                                     $parameters->template_id, $parameters->reply_to, $title,
                                     $parameters->sending_date);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2309,7 +2304,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/contactInfos
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contact Mailjet's contact ID or email (Required)
      * @param integer $cache   Cache period for the object (Optional)
      *
@@ -2328,7 +2323,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2336,16 +2331,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/contactInfos
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getContactInformationsP(Parameters $parameters)
+    public function getContactInformationsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getContactInformations($parameters->contact, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2357,7 +2352,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/contactList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $mj_contact_id Mailjet's Contact ID (Optional)
      * @param integer   $start         Start offset (Optional)
      * @param integer   $limit         Limit amount of results you want : default=100 (Optional)
@@ -2399,13 +2394,13 @@ class ApiOverlay
             if ($response !== FALSE)
                 return ($response);
             else
-                throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+                throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         } else {
             $response = $this->_api->contactList($params);
             if ($response !== FALSE)
                 return ($response);
             else
-                throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+                throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
 
@@ -2414,18 +2409,18 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/contactList
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getContactsP(Parameters $parameters)
+    public function getContactsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getContacts($parameters->mj_contact_id, $parameters->start, $parameters->limit,
                                 $parameters->status, $parameters->blocked, $parameters->unsub, $parameters->last_activity,
                                 $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2439,7 +2434,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsAddContact
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contact Mailjet's contact ID or email (Required)
      * @param integer $list_id Mailjet's List ID (Required)
      * @param boolean $force   If the contact exists, reset unsub status (Optional)
@@ -2460,7 +2455,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2468,16 +2463,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsAddContact
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createContactP(Parameters $parameters)
+    public function createContactP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createContact($parameters->contact, $parameters->list_id, $parameters->force);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2489,7 +2484,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsAddManyContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contacts Serialized list of emails (Required)
      * @param integer $list_id  Mailjet's List ID (Required)
      * @param boolean $force    If the contact exists, reset unsub status (Optional)
@@ -2515,7 +2510,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
     
     public function batchJobContacts($listID, $dataID, $status = 'addforce')
@@ -2550,16 +2545,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsAddManyContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function createContactsP(Parameters $parameters)
+    public function createContactsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->createContacts($parameters->contacts, $parameters->list_id, $parameters->force);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2571,7 +2566,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsAll
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $start   Start offset (Optional)
      * @param integer $limit   Limit amount of results you want (Optional)
      * @param string  $orderby Order results by any returned parameter's name : default=id ASC (Optional)
@@ -2619,7 +2614,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2627,16 +2622,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsAll
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getContactsListsP(Parameters $parameters)
+    public function getContactsListsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getContactsLists($parameters->start, $parameters->limit, $parameters->orderby, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2648,7 +2643,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $id            Mailjet's List ID (Required)
      * @param integer   $start         Start offset (Optional)
      * @param integer   $limit         Limit amount of results you want (Optional)
@@ -2730,7 +2725,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2738,18 +2733,18 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getContactsFromListP(Parameters $parameters)
+    public function getContactsFromListP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getContactsFromList($parameters->id, $parameters->start, $parameters->limit, $parameters->orderby,
                                         $parameters->status, $parameters->blocked, $parameters->unsub, $parameters->last_activity,
                                         $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2761,7 +2756,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsCreate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string $label Title of your list (Required)
      * @param string $name  List name used as name@lists.mailjet.com (Required)
      *
@@ -2779,7 +2774,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
     
 
@@ -2788,8 +2783,8 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsCreate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
@@ -2811,7 +2806,7 @@ class ApiOverlay
     	
         try {
             $response = $this->createContactsList($parameters->label, $parameters->name);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2823,7 +2818,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsDelete
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id Mailjet's List ID (Required)
      *
      * @return mixed Response from the API
@@ -2839,7 +2834,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2847,16 +2842,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsDelete
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function deleteContactsListP(Parameters $parameters)
+    public function deleteContactsListP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->deleteContactsList($parameters->id);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2868,7 +2863,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsEmail
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id    Mailjet's List ID (Required)
      * @param integer $cache Cache period for the object (Optional)
      *
@@ -2887,7 +2882,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2895,16 +2890,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsEmail
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getContactsListEmailP(Parameters $parameters)
+    public function getContactsListEmailP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getContactsListEmail($parameters->id, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2916,7 +2911,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsRemoveContact
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contact Mailjet's contact ID or email (Required)
      * @param integer $id      Mailjet's List ID (Required)
      *
@@ -2934,7 +2929,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2942,16 +2937,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsRemoveContact
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function deleteContactP(Parameters $parameters)
+    public function deleteContactP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->deleteContact($parameters->contact, $parameters->id);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -2963,7 +2958,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsRemoveManyContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contacts Serialized list of emails (Required)
      * @param integer $id       Mailjet's List ID (Required)
      *
@@ -2981,7 +2976,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -2989,16 +2984,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsRemoveManyContacts
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function deleteContactsP(Parameters $parameters)
+    public function deleteContactsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->deleteContacts($parameters->contacts, $parameters->id);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3010,7 +3005,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id    Mailjet's List ID (Required)
      * @param integer $cache Cache period for the object (Optional)
      *
@@ -3029,7 +3024,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3037,16 +3032,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getContactsListStatisticsP(Parameters $parameters)
+    public function getContactsListStatisticsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getContactsListStatistics($parameters->id, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3058,7 +3053,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsUnsubContact
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contact Mailjet's contact ID or email (Required)
      * @param integer $id      Mailjet's List ID (Required)
      *
@@ -3076,7 +3071,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3084,16 +3079,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsUnsubContact
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function unsubscribeContactP(Parameters $parameters)
+    public function unsubscribeContactP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->unsubscribeContact($parameters->contact, $parameters->id);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3105,7 +3100,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsUpdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $id    Mailjet's List ID (Required)
      * @param string  $label Title of your list (Optional)
      * @param string  $name  List name used as name@lists.mailjet.com (Optional)
@@ -3127,7 +3122,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3135,16 +3130,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/listsUpdate
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function updateContactsListP(Parameters $parameters)
+    public function updateContactsListP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->updateContactsList($parameters->id, $parameters->label, $parameters->name);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3158,7 +3153,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportClick
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
@@ -3204,7 +3199,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3212,18 +3207,18 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportClick
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getClickedEmailsP(Parameters $parameters)
+    public function getClickedEmailsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getClickedEmails($parameters->campaign_id, $parameters->from, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->order, $parameters->order_by,
                                     $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3235,7 +3230,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportDomain
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3277,7 +3272,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3285,17 +3280,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportDomain
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getDomainsP(Parameters $parameters)
+    public function getDomainsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getDomains($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3307,7 +3302,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailBounce
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3349,7 +3344,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3357,17 +3352,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailBounce
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getBouncedEmailsP(Parameters $parameters)
+    public function getBouncedEmailsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getBouncedEmails($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                       $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3379,7 +3374,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailClients
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3421,7 +3416,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3429,17 +3424,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailClients
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getEmailClientsP(Parameters $parameters)
+    public function getEmailClientsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getEmailClients($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3451,7 +3446,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailInfos
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $campaign_id Mailjet's Campaign ID (Required)
      * @param integer $cache       Cache period for the object (Optional)
      *
@@ -3470,7 +3465,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3478,16 +3473,16 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailInfos
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getEmailInformationsP(Parameters $parameters)
+    public function getEmailInformationsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getEmailInformations($parameters->campaign_id, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3499,7 +3494,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailSent
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3544,7 +3539,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3552,17 +3547,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailSent
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getSentEmailsP(Parameters $parameters)
+    public function getSentEmailsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getSentEmails($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->status, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3574,7 +3569,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3623,7 +3618,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3631,18 +3626,18 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportEmailStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getEmailStatisticsP(Parameters $parameters)
+    public function getEmailStatisticsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getEmailStatistics($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                                     $parameters->to_email, $parameters->to_id, $parameters->start, $parameters->limit,
                                     $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3654,7 +3649,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportGeoIp
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3696,7 +3691,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3704,17 +3699,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportGeoIp
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getGeographicDatasP(Parameters $parameters)
+    public function getGeographicDatasP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getGeographicDatas($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3726,7 +3721,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportOpen
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3768,7 +3763,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3776,17 +3771,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportOpen
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getOpenedEmailsP(Parameters $parameters)
+    public function getOpenedEmailsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getOpenedEmails($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3798,7 +3793,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportOpenedStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
@@ -3840,7 +3835,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3848,17 +3843,17 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportOpenedStatistics
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getOpenedEmailsStatisticsP(Parameters $parameters)
+    public function getOpenedEmailsStatisticsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getOpenedEmailsStatistics($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3870,7 +3865,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportUserAgents
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param integer   $from_id     Mailjet's Sender ID (Optional)
@@ -3919,7 +3914,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3927,19 +3922,19 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/reportUserAgents
      *
      * @access	public
-     * @throw	Mailjet::ApiException
-     * @param Parameters $parameters (Required)
+     * @throw	Mailjet::Mailjet_ApiException
+     * @param Mailjet_Parameters $parameters (Required)
      *
      * @return mixed Response from the API
      */
-    public function getUserAgentsP(Parameters $parameters)
+    public function getUserAgentsP(Mailjet_Parameters $parameters)
     {
         try {
             $response = $this->getUserAgents($parameters->campaign_id,
                                     $parameters->from, $parameters->from_id, $parameters->from_domain, $parameters->from_type,
                                     $parameters->start, $parameters->limit, $parameters->status, $parameters->ts_from, $parameters->ts_to,
                                     $parameters->cache);
-        } catch (ApiException $e) {
+        } catch (Mailjet_ApiException $e) {
             throw $e;
         }
 
@@ -3953,7 +3948,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/helpCategories
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
      *
      * @return mixed Response from the API
@@ -3970,7 +3965,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -3978,7 +3973,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/helpCategory
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $name  Category name (Required)
      * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
      *
@@ -3997,7 +3992,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -4005,7 +4000,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/helpMethod
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $name  [categoryMethod] name (Required)
      * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
      *
@@ -4024,7 +4019,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -4032,7 +4027,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/helpMethods
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param string  $category Category name (Required)
      * @param integer $cache    Cache period for the object - default to 600s = 10m (Optional)
      *
@@ -4051,7 +4046,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -4059,7 +4054,7 @@ class ApiOverlay
      * - url : api.mailjet.com/0.1/helpStatus
      *
      * @access	public
-     * @throw	Mailjet::ApiException
+     * @throw	Mailjet::Mailjet_ApiException
      * @param integer $code  Code response (Optional)
      * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
      *
@@ -4079,7 +4074,7 @@ class ApiOverlay
         if ($response !== FALSE)
             return ($response);
         else
-            throw new ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
 }

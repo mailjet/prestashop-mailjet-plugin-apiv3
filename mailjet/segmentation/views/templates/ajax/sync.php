@@ -38,7 +38,7 @@ if ($_POST['action'] == "getQuery")
 	//$api = new MailjetAPI($account['API_KEY'], $account['SECRET_KEY']);
 	$api = MailjetTemplate::getApi(); // **
 	
-	$synchronization = new Hooks\Synchronization\Segment(
+	$synchronization = new Hooks_Synchronization_Segment(
 		MailjetTemplate::getApi()
 	);
 	

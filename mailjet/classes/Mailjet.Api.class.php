@@ -13,7 +13,6 @@
 
 // ---------------------------------------------------------------------
 
-namespace Mailjet;
 
 /**
  * Mailjet Public API Main Class
@@ -28,7 +27,7 @@ namespace Mailjet;
  * @author		Mailjet Dev team
  * @version		0.2
  */
-class Api
+class Mailjet_Api
 {
 
     /**
@@ -209,7 +208,7 @@ class Api
     {
         if ( $apiKey )		$this->_apiKey = $apiKey;
         if ( $secretKey )	$this->_secretKey = $secretKey;
-        $this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api.mailjet.com/v3/'.$this->_version;
+        $this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api.preprod.mailjet.com/v3/'.$this->_version;
     }
 
     /**
@@ -242,7 +241,7 @@ class Api
     		$this->_debugRequest = $request;
     	}
     	
-    	$this->_debugCallUrl = $this->_apiUrl = $url = (($this->_secure) ? 'https' : 'http').'://api.mailjet.com/v3/DATA/' . $method .'/'.$id.'/' .$type 
+    	$this->_debugCallUrl = $this->_apiUrl = $url = (($this->_secure) ? 'https' : 'http').'://api.preprod.mailjet.com/v3/DATA/' . $method .'/'.$id.'/' .$type 
     	. '/' . $contType;
     	
 
@@ -521,7 +520,7 @@ class Api
     
     public function resetRequest()
     {
-    	$this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api.mailjet.com/v3/'.$this->_version;
+    	$this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api.preprod.mailjet.com/v3/'.$this->_version;
     	$this->_request_post = false;
     }
 

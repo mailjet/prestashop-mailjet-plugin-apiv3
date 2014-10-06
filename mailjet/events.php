@@ -75,7 +75,7 @@ switch($t['event']) {
 
 	case 'unsub':
 		// => do action
-		$hooksEvents = new \Hooks\Events();
+		$hooksEvents = new Hooks_Events();
 		$hooksEvents->unsubscribe($t);
 		break;
 

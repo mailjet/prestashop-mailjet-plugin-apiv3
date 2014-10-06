@@ -1,6 +1,5 @@
 <?php 
 
-namespace Hooks\Synchronization;
 
 
 /**
@@ -8,7 +7,7 @@ namespace Hooks\Synchronization;
  * @author atanas
  *
  */
-class Exception extends \Exception
+class Hooks_Synchronization_Exception extends Exception
 {
 
 }
