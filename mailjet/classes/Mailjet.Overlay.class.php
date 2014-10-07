@@ -56,7 +56,7 @@
 require_once 'Mailjet.Api.class.php';
 require_once 'MailJet.Data.Api.class.php';
 require_once 'Mailjet.Exception.class.php';
-require_once 'Mailjet.Mailjet_Parameters.class.php';
+require_once 'Mailjet.Parameters.class.php';
 
 
 /**
