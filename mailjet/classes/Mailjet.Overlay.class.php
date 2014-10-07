@@ -951,7 +951,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getUser(integer $cache = null)
+    public function getUser($cache = null)
     {
 //         $params = array(
 //             'method'	=> 'GET'
@@ -1025,7 +1025,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getUserPlan(integer $cache = null)
+    public function getUserPlan($cache = null)
     {
         $params = array(
             'method'	=> 'GET'
@@ -1071,7 +1071,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function createSender(string $email)
+    public function createSender($email)
     {
   
     	if (strpos($email,'@') === false) {
@@ -1132,7 +1132,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getSenders(integer $cache = null, $user = null)
+    public function getSenders($cache = null, $user = null)
     {
 
     	$params = array(
@@ -1197,7 +1197,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getSenderStatus(string $email, integer $cache = null)
+    public function getSenderStatus($email, $cache = null)
     {
         $params = array(
             'method'	=> 'POST',
@@ -1244,7 +1244,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getTracking(integer $cache = null)
+    public function getTracking($cache = null)
     {
         $params = array(
             'method'	=> 'GET'
@@ -1291,7 +1291,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function updateTracking(boolean $click, boolean $open)
+    public function updateTracking($click, $open)
     {
         $params = array(
             'method'	=> 'POST',
@@ -1345,9 +1345,9 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function updateUser(string $address_city = null, string $address_country = null, string $address_postal_code = null,
-                                string $address_street = null, string $company_name = null, string $contact_email = null,
-                                string $firstname = null, string $lastname = null, string $locale = null)
+    public function updateUser($address_city = null, $address_country = null, $address_postal_code = null,
+                                $address_street = null, $company_name = null, $contact_email = null,
+                                $firstname = null, $lastname = null, $locale = null)
     {
     	$user = $this->getUser();
         $params = array(
@@ -1424,8 +1424,8 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getCampaigns(integer $id = null, integer $start = null, integer $limit = null,
-                                    string $status = null, string $orderby = null, integer $cache = null)
+    public function getCampaigns($id = null, $start = null, $limit = null,
+                                    $status = null, $orderby = null, $cache = null)
     {
 
 	    	$paramsProfile = array(
@@ -1522,8 +1522,8 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getSubscribers(integer $id, integer $start = null, integer $limit = null,
-                                    string $status = null, integer $cache = null)
+    public function getSubscribers($id, $start = null, $limit = null,
+                                    $status = null, $cache = null)
     {
         $params = array(
             'method'	=> 'GET',
@@ -1750,7 +1750,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getCampaignHTML($id, integer $cache = null)
+    public function getCampaignHTML($id, $cache = null)
     {
     	$campaign = $this->getCampaigns($id);
 
@@ -1950,7 +1950,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function updateCampaignHTML(integer $id, string $html, string $text = null)
+    public function updateCampaignHTML($id, $html, $text = null)
     {
 
     	$this->_api->resetRequest();
@@ -2003,7 +2003,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getCampaignStatistics($id = null, integer $cache = null)
+    public function getCampaignStatistics($id = null, $cache = null)
     {
     	
     	$paramsProfile = array(
@@ -2070,7 +2070,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function testCampaign(integer $id, string $email)
+    public function testCampaign($id, $email)
     {
         $params = array(
             'method'	=> 'POST',
@@ -2116,7 +2116,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getTemplateCategories(integer $cache = null)
+    public function getTemplateCategories($cache = null)
     {
         $params = array(
             'method'	=> 'GET'
@@ -2165,7 +2165,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getTemplates(integer $category = null, boolean $custom = null, string $locale = null, integer $cache = null)
+    public function getTemplates($category = null, $custom = null, $locale = null, $cache = null)
     {
         $params = array(
             'method'	=> 'GET'
@@ -2310,7 +2310,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getContactInformations(string $contact, integer $cache = null)
+    public function getContactInformations($contact, $cache = null)
     {
         $params = array(
             'method'	=> 'GET',
@@ -2574,7 +2574,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getContactsLists(integer $start = null, integer $limit = null, string $orderby = null, integer $cache = null)
+    public function getContactsLists($start = null, $limit = null, $orderby = null, $cache = null)
     {
     	if (!empty($this->_contactLists)) {
     		return $this->_contactLists;
@@ -2656,9 +2656,9 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getContactsFromList($id, integer $start = null, integer $limit = null, string $orderby = null,
-                                        string $status = null, boolean $blocked = null, boolean $unsub = null,
-                                        $last_activity = null, integer $cache = null)
+    public function getContactsFromList($id, $start = null, $limit = null, $orderby = null,
+                                        $status = null, $blocked = null, $unsub = null,
+                                        $last_activity = null, $cache = null)
     {
 
     	$params = array(
@@ -2823,7 +2823,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function deleteContactsList(integer $id)
+    public function deleteContactsList($id)
     {
         $params = array(
             'method'	=> 'POST',
@@ -2917,7 +2917,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function deleteContact(string $contact, integer $id)
+    public function deleteContact($contact, $id)
     {
         $params = array(
             'method'	=> 'POST',
@@ -2964,7 +2964,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function deleteContacts(string $contacts, integer $id)
+    public function deleteContacts($contacts, $id)
     {
         $params = array(
             'method'	=> 'POST',
@@ -3011,7 +3011,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getContactsListStatistics(integer $id, integer $cache = null)
+    public function getContactsListStatistics($id, $cache = null)
     {
         $params = array(
             'method'	=> 'GET',
@@ -3059,7 +3059,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function unsubscribeContact(string $contact, integer $id)
+    public function unsubscribeContact($contact, $id)
     {
         $params = array(
             'method'	=> 'POST',
@@ -3107,7 +3107,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function updateContactsList(integer $id, string $label = null, string $name = null)
+    public function updateContactsList($id, $label = null, $name = null)
     {
         $params = array(
             'method'	=> 'POST',
