@@ -2491,7 +2491,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function createContacts(string $contacts, integer $list_id, boolean $force = null)
+    public function createContacts($contacts, $list_id, $force = null)
     {
         $this->_api->resetRequest();        
         $this->_api->data('contactslist', $list_id, 'CSVData', 'text/plain', $contacts, 'POST', null);

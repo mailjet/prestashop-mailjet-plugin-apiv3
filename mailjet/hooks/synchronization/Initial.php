@@ -18,7 +18,7 @@ class Hooks_Synchronization_Initial extends Hooks_Synchronization_Synchronizatio
 	public function synchronize()
 	{
 		if ($masterListId = $this->_getAlreadyCteatedMasterListId()) {
-			$segmentSynch = new Segment($this->_getApiOverlay());
+			$segmentSynch = new Hooks_Synchronization_Segment($this->_getApiOverlay());
 			$segmentSynch->deleteList($masterListId);
 		}
 		
@@ -61,7 +61,7 @@ class Hooks_Synchronization_Initial extends Hooks_Synchronization_Synchronizatio
 		);
 		
 		if (!isset($apiResponse->ID)) {
-			$segmentSynch = new Segment($this->_getApiOverlay());
+			$segmentSynch = new Hooks_Synchronization_Segment($this->_getApiOverlay());
 			$segmentSynch->deleteList($newlyCreatedListId);
 			
 			throw new Hooks_Synchronization_Exception("There is a problem with the creation of the contacts.");
