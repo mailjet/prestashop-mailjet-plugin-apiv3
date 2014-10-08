@@ -13,7 +13,6 @@
 
 // ---------------------------------------------------------------------
 
-namespace Mailjet;
 /**
  * Mailjet Data Type Enum Class
  *

@@ -1,13 +1,11 @@
 <?php 
 
-namespace Hooks;
-
 
 /**
  * 
  * @author atanas
  */
-class Events 
+class Hooks_Events 
 {
 	
 
