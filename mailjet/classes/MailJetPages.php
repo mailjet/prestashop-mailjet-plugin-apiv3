@@ -36,7 +36,7 @@ class MailJetPages
 	public function initPagesTranslation()
 	{
 		$translations = MailJetTranslate::getTranslationsByName('pages');
-		foreach($translations as $key => $value)
+		foreach ($translations as $key => $value)
 			if (isset($this->available_page[$key]))
 				$this->available_page[$key] = $value;
 		return (bool)count($translations);
@@ -57,11 +57,11 @@ class MailJetPages
 				$xml->pages->default_page['name']);
 
 			// Get simple pages, by default set the name key as a translation to any avoid empty string
-			foreach($xml->pages->page as $page)
+			foreach ($xml->pages->page as $page)
 				$this->available_page[(string)$page['name']] = (string)$page['name'];
 
 			// Get require authentication pages (merged to the available ones)
-			foreach($xml->tabs->tab->page as $page)
+			foreach ($xml->tabs->tab->page as $page)
 			{
 				$this->require_authentication_pages[] = (string)$page['name'];
 				$this->available_page[(string)$page['name']] = '';
@@ -83,7 +83,7 @@ class MailJetPages
 	{
 		$pages = array();
 
-		foreach($this->require_authentication_pages as $name)
+		foreach ($this->require_authentication_pages as $name)
 			if (isset($this->available_page[$name]))
 				$pages[$name] = $this->available_page[$name];
 		return $pages;
@@ -101,7 +101,7 @@ class MailJetPages
 		$page_type = (($page_type = Tools::getValue(MailJetPages::REQUEST_PAGE_TYPE)) && $this->isAvailablePage($page_type))
 			? $page_type : $this->default_page;
 
-		return strtoupper($page_type);
+		return Tools::strtoupper($page_type);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class MailJetPages
 
 	public function getTemplateTabName($name)
 	{
-		return (strtolower(($this->isAvailablePage($name)) ? $name : $this->default_page));
+		return (Tools::strtolower(($this->isAvailablePage($name)) ? $name : $this->default_page));
 	}
 
 	/**
@@ -127,7 +127,7 @@ class MailJetPages
 	 */
 	public function getTemplateName($name)
 	{
-		$template_name = strtolower(($this->isAvailablePage($name)) ? $name : $this->default_page);
+		$template_name = Tools::strtolower(($this->isAvailablePage($name)) ? $name : $this->default_page);
 		return $this->isRequireAuthenticationPage($name) ? 'tab' : $template_name;
 	}
 

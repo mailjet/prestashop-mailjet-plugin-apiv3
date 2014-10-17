@@ -21,39 +21,6 @@ if (empty($sql))
 $header = array_keys($sql[0]);
 $csv = '';
 
-/*$period_start = $_POST['date_start'];
-$period_end = $_POST['date_end'];
-
-if (strlen($period_start) == 10 || strlen($period_end) == 10)
-{
-	$id_lang = $obj->getCurrentIdLang();
-	
-	if (strlen($period_start) != 10)
-		$period_start = $obj->getDateByIdLang(substr($obj->getShopBirthdate(), 0, 10), $id_lang);
-		
-	if (strlen($period_end) != 10)
-		$period_end = $obj->getDateByIdLang(date('Y-m-d'), $id_lang);
-		
-	if ($period_start == $period_end)
-		$title = sprintf($obj->ll(51), $period_start);
-	else
-		$title = sprintf($obj->ll(50), $period_start, $period_end);
-		
-	switch ($id_lang)
-	{
-		case 2:
-			$title = str_replace('-', '/', $title);
-			break;
-		default:
-	}
-}
-else
-	$title = $obj->ll(52);
-
-$csv .= strtoupper(utf8_decode($title)) . "\n\n";*/
-
-
-
 foreach ($header as $h)
 	$csv .= '"'.utf8_decode($h).'";';
 

@@ -17,5 +17,5 @@ if (params.length>2)
 	for (i=2;i<params.length;i++)
 		uri+= '_'+params[i];
 
-window.top.location.href = 'http://<?=$_SERVER['HTTP_HOST']?>'+uri+'/index.php?tab=AdminModules&configure=mailjet&module_name=mailjet&MJ_request_page=CAMPAIGN2&token='+token;
+window.top.location.href = 'http://<?php echo $_SERVER['HTTP_HOST'] ?>'+uri+'/index.php?tab=AdminModules&configure=mailjet&module_name=mailjet&MJ_request_page=CAMPAIGN2&token='+token;
 </script>

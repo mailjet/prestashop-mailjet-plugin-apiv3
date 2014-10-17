@@ -54,10 +54,10 @@ if ($mailjet->triggers['active'])
 	// IDs research for SQL requests
 	$ids_canceled_blocked_payment_sql = DB::getInstance()->executeS('
 		SELECT * FROM `'._DB_PREFIX_.'order_state_lang` WHERE id_lang = 1 AND (template LIKE \'order_canceled\' OR template LIKE \'payment_error\')');
-		$ids_canceled_blocked_payment = array(); foreach($ids_canceled_blocked_payment_sql as $id) $ids_canceled_blocked_payment[] = $id['id_order_state'];
+		$ids_canceled_blocked_payment = array(); foreach ($ids_canceled_blocked_payment_sql as $id) $ids_canceled_blocked_payment[] = $id['id_order_state'];
 	$ids_waiting_payment_sql = DB::getInstance()->executeS('
 		SELECT * FROM `'._DB_PREFIX_.'order_state_lang` WHERE id_lang = 1 AND (template LIKE \'bankwire\' OR template LIKE \'cheque\')');
-		$ids_waiting_payment = array(); foreach($ids_waiting_payment_sql as $id) $ids_waiting_payment[] = $id['id_order_state'];
+		$ids_waiting_payment = array(); foreach ($ids_waiting_payment_sql as $id) $ids_waiting_payment[] = $id['id_order_state'];
 	$ids_loyalty_state_available_points = array(2,5); // "Disponible" & "Non disponbile sur produits remisés"
 	
 	// SQL requests for search
@@ -213,7 +213,7 @@ if ($mailjet->triggers['active'])
 			//echo $sel.'"'.$sql[$sel].'"<br />'.PHP_EOL;
 			$customers = DB::getInstance()->executeS($sql[$sel]);
 
-			foreach($customers as $customer)
+			foreach ($customers as $customer)
 			{
 				if (version_compare(_PS_VERSION_, '1.5', '>=')) $id_lang = $customer['id_lang'];
 				else 											$id_lang = $context->language->id;

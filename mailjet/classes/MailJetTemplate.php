@@ -49,7 +49,7 @@ class MailjetTemplate
 	 * @static
 	 * @return null
 	 */
-	static public function getApi($with_overlay = true)
+	public static function getApi($with_overlay = true)
 	{
 
 		$obj = new Mailjet();
@@ -67,7 +67,7 @@ class MailjetTemplate
 		return MailjetTemplate::$api;
 	}
 	
-	static public function getDataApi()
+	public static function getDataApi()
 	{
 		if (self::$dataApi === null) {
 			self::$dataApi = mailjetdata::getInstance();
@@ -90,7 +90,7 @@ class MailjetTemplate
 		$file = dirname(__FILE__).'/../xml/iframes.xml';
 		if (file_exists($file) && ($xml = simplexml_load_file($file)))
 		{
-			foreach($xml->iframe as $iframe)
+			foreach ($xml->iframe as $iframe)
 				$this->iframes_url[(string)$iframe['name']] = (string)(str_replace("{lang}",$lang,$iframe));
 			return true;
 		}
@@ -114,7 +114,7 @@ class MailjetTemplate
 			$file = dirname(__FILE__).'/../translations/templates/'.$lang.'/'.$name. '.txt';
 			
 			if (file_exists($file)) {
-				$template = file_get_contents($file);
+				$template = Tools::file_get_contents($file);
 				$this->templates[$name]['html'] = $template;
 				return true;
 			}
@@ -220,7 +220,7 @@ class MailjetTemplate
 	public function getTemplates()
 	{
 		$tpl = array();
-		foreach($this->templates as $name => $template)
+		foreach ($this->templates as $name => $template)
 			$tpl[$name] = $template['html'];
 		return $tpl;
 	}

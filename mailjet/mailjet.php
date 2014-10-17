@@ -276,7 +276,7 @@ class Mailjet extends Module
 		$this->mj_pages = new MailJetPages($this->account['AUTHENTICATION']);
 
 		$smarty_page = array();
-		foreach($this->mj_pages->getPages() as $name => $value)
+		foreach ($this->mj_pages->getPages() as $name => $value)
 			$smarty_page['MJ_'.$name] = $name;
 
 		$this->context->smarty->assign(
@@ -433,7 +433,7 @@ class Mailjet extends Module
 		$translation = MailJetTranslate::getTranslationsByName('stats');
 		$data = array();
 
-		foreach($stats as $key => $value)
+		foreach ($stats as $key => $value)
 			if (isset($translation[$key]))
 			$data[$key] = array('title' => $translation[$key], 'value' => $value);
 
@@ -522,7 +522,7 @@ class Mailjet extends Module
 		else if (($events_list = Tools::getValue('events')))
 		{
 			$mj_event = new MailJetEvents();
-			foreach($events_list as $key => $id_mf_events)
+			foreach ($events_list as $key => $id_mf_events)
 			{
 				$mj_event->id = $id_mf_events;
 				if ($mj_event->delete())
@@ -1098,7 +1098,7 @@ public function createTriggers()
  */
 private function setUserLinkToEvents($events)
 {
-	foreach($events as &$event)
+	foreach ($events as &$event)
 		if (!empty($event['email']))
 		{
 			$customer = Customer::getByEmail($event['email']);

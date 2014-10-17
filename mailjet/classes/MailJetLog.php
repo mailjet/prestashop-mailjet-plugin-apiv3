@@ -2,15 +2,15 @@
 
 class MailJetLog
 {
-	static public $file;
+	public static $file;
 	
-	static public $handle;
+	public static $handle;
 
 	/**
 	 * Init default value
 	 * @static
 	 */
-	static public function init()
+	public static function init()
 	{
 		MailJetLog::$file = dirname(__FILE__).'/../logs/ajax.log';
 	}
@@ -26,7 +26,7 @@ class MailJetLog
 		return false;
 	}
 
-	static public function write($file, $message, $mode = 'a+', $close = false)
+	public static function write($file, $message, $mode = 'a+', $close = false)
 	{
 		$date = date("d/m/Y G:i:s");
 		$exist = false;

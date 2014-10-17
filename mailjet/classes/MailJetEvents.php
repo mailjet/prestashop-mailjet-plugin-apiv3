@@ -69,11 +69,11 @@ class MailJetEvents extends ObjectModel
 
 		if (file_exists($file) && ($xml = simplexml_load_file($file)))
 		{
-			foreach($xml->event as $event)
+			foreach ($xml->event as $event)
 				if ((string)$event['name'] == $name)
 				{
 					// Will set GET / POST Data if exist
-					foreach($event->key as $key)
+					foreach ($event->key as $key)
 						if (isset($this->post_vars[(string)$key])) // **
 							$scheme[(string)$key] = array('value' => $this->post_vars[(string)$key], 'type' => (string)$key['type']);
 					$log = 'Scheme found';
@@ -95,7 +95,7 @@ class MailJetEvents extends ObjectModel
 		$this->default_scheme = ($this->params['event']['value'] == MailJetEvents::ALL_EVENTS_KEYS) ? $this->params : $this->getScheme(MailJetEvents::ALL_EVENTS_KEYS);
 
 		$translations = MailJetTranslate::getTranslationsByName('events');
-		foreach($translations as $key => $value)
+		foreach ($translations as $key => $value)
 		{
 			if (isset($this->params[$key]))
 				$this->params[$key]['title'] = $value;
@@ -112,7 +112,7 @@ class MailJetEvents extends ObjectModel
 	public function fetch($default = false, $filters = array())
 	{
 		$select = array();
-		foreach($this->getFieldsName($default) as $key => $title)
+		foreach ($this->getFieldsName($default) as $key => $title)
 			$select[] = $key;
 
 		if(($key = array_search("agent", $select)) !== false) unset($select[$key]);
@@ -196,7 +196,7 @@ class MailJetEvents extends ObjectModel
 	{
 		$fields = array();
 
-		foreach($this->params as $key => $content)
+		foreach ($this->params as $key => $content)
 		{
 			switch($content['type'])
 			{
@@ -222,7 +222,7 @@ class MailJetEvents extends ObjectModel
 	{
 		$fields = array();
 
-		foreach(($default ? $this->default_scheme : $this->params) as $key => $case)
+		foreach (($default ? $this->default_scheme : $this->params) as $key => $case)
 			$fields[$key] = $case['title'];
 		return $fields;
 	}

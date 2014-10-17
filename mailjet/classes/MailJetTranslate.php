@@ -2,7 +2,7 @@
 
 class MailJetTranslate
 {
-	static public function getTranslationsByName($name, $iso = false)
+	public static function getTranslationsByName($name, $iso = false)
 	{
 		$file = dirname(__FILE__).'/../xml/translate.xml';
 		$translations = array();
@@ -14,7 +14,7 @@ class MailJetTranslate
 
 			if (isset($xml->{$name}))
 			{
-				foreach($xml->{$name}->iso as $data)
+				foreach ($xml->{$name}->iso as $data)
 				{
 					if ($data['code'] == $iso)
 						$translations = (array)$data;
