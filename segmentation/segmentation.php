@@ -4,8 +4,8 @@ include_once(dirname(__FILE__).'/../hooks/synchronization/SynchronizationAbstrac
 include_once(dirname(__FILE__).'/../hooks/synchronization/Initial.php');
 include_once(dirname(__FILE__).'/../hooks/synchronization/SingleUser.php');
 include_once(dirname(__FILE__).'/../hooks/synchronization/Segment.php');
-include_once(dirname(__FILE__).'/../sdk/Mailjet.Overlay.class.php');
-include_once(dirname(__FILE__).'/../sdk/Mailjet.Api.class.php');
+include_once(dirname(__FILE__).'/../libraries/Mailjet.Overlay.class.php');
+include_once(dirname(__FILE__).'/../libraries/Mailjet.Api.class.php');
 include_once(dirname(__FILE__).'/../classes/MailJetTemplate.php');
 
 class Segmentation extends Module

@@ -2,8 +2,8 @@
 
 include_once(dirname(__FILE__).'/../mailjet.php'); // **
 
-include_once(dirname(__FILE__).'/../sdk/Mailjet.Api.class.php');
-include_once(dirname(__FILE__).'/../sdk/Mailjet.Overlay.class.php');
+include_once(dirname(__FILE__).'/../libraries/Mailjet.Api.class.php');
+include_once(dirname(__FILE__).'/../libraries/Mailjet.Overlay.class.php');
 
 class MailjetTemplate
 {
