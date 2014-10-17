@@ -1,5 +1,5 @@
 <!-- Mailjet : Account -->
-<form action="{$smarty.server.REQUEST_URI}" method="POST">
+<form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
 <div id="mj_account_page" class="center_page">
 	<div style="width:455px;float:left;">
     
@@ -32,29 +32,29 @@
             <div id="mj_account_details_mod" style="display:none;">
             	<div style="width:40%;display:inline-block;">
 	            	{l s='Firstname'}<br />
-					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname}" style="width:90%;" /><br />
+					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname|default:''}" style="width:90%;" /><br />
 				</div>
                 <div style="width:50%;display:inline-block;">
 					{l s='Lastname'}<br />
-					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname}" style="width:90%;" /><br />
+					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname|default:''}" style="width:90%;" /><br />
 				</div>
                 <div style="display:block;">
                     <div style="height:10px;"></div>
 	            	{l s='e-mail'}<br />
-					<input type="text" name="MJ_account_contact_email" readonly value="{$infos->Email}" style="width:90%;background:#f0f0f0;" /><br />
+					<input type="text" name="MJ_account_contact_email" readonly value="{$infos->Email|default:''}" style="width:90%;background:#f0f0f0;" /><br />
                     <div style="height:10px;"></div>
 	            	{l s='Company'}<br />
-					<input type="text" name="MJ_account_company_name" value="{$infos->CompanyName}" style="width:90%;" /><br />
+					<input type="text" name="MJ_account_company_name" value="{$infos->CompanyName|default:''}" style="width:90%;" /><br />
 	            	{l s='Address'}<br />
-    	            <textarea name="MJ_account_address_street" style="width:90%;height:60px;">{$infos->AddressStreet}</textarea><br />
+    	            <textarea name="MJ_account_address_street" style="width:90%;height:60px;">{$infos->AddressStreet|default:''}</textarea><br />
                     <div style="height:5px;"></div>
-	                <input type="text" name="MJ_account_address_postal_code" value="{$infos->AddressPostalCode}" style="width:20%;" />&nbsp;
-                  		<input type="text"name="MJ_account_address_city" value="{$infos->AddressCity}" style="width:40%;" /><br />
+	                <input type="text" name="MJ_account_address_postal_code" value="{$infos->AddressPostalCode|default:''}" style="width:20%;" />&nbsp;
+                  		<input type="text"name="MJ_account_address_city" value="{$infos->AddressCity|default:''}" style="width:40%;" /><br />
                     <div style="height:5px;"></div>
                     <select name="MJ_account_address_country">
                     	<option>---- {l s='Country'} ----</option>
                     	{foreach $countries as $pays}
-                        	<option value="{$pays.iso_code}"{if $pays.iso_code==$infos->AddressCountry} selected{/if}>{$pays.name}</option>
+                        	<option value="{$pays.iso_code|default:''}"{if $pays.iso_code==$infos->AddressCountry} selected{/if}>{$pays.name|default:''}</option>
                         {/foreach}
                     	</select><br />
 				</div>
@@ -75,7 +75,7 @@
             	<div>
 	            	<b>Domain @{$domain->DNS->Domain}</b> <i>( {if $domain->Status=='Active'}{l s='enabled' mod='mailjet'}{else}{l s='pending' mod='mailjet'}{/if} )</i><br />
                     <p style="margin-left:10px;">
-	        	        {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/emptyfile.php?name={$domain->Filename}"><u>{$domain->Filename}</u></a><br />
+	        	        {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/emptyfile.php?name={$domain->Filename|default:''}"><u>{$domain->Filename|default:''}</u></a><br />
     	                <i style="font-size:11px;">{l s='File to put at your root folder to activate your domain' mod='mailjet'}</i>
 					</p>
 				</div>

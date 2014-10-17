@@ -1,10 +1,10 @@
 <!-- Mailjet : Campaigns -->
 <div id="mj_campaigns_page" class="center_page" style="width:initial;max-width:960px;">
-	<form id="create" method="post" action="{$smarty.server.REQUEST_URI}">
+	<form id="create" method="post" action="{$smarty.server.REQUEST_URI|default:''}">
     <input type="hidden" name="MJ_submitCampaign2" value=1 />
 	<fieldset>
     	<legend>{l s='New Campaign' mod='mailjet'}</legend>
-        <div class="button" style="padding:10px;"><b style="font-size:15px;">{l s='Campaign' mod='mailjet'} : &#171; {$campaign.title} &#187;</b></div>
+        <div class="button" style="padding:10px;"><b style="font-size:15px;">{l s='Campaign' mod='mailjet'} : &#171; {$campaign.title|default:''} &#187;</b></div>
         <br />
         <b>When do you want to send this campaign :</b>
         <div class="margin-form" style="padding-left:300px;">
@@ -68,7 +68,7 @@
     function check_program(sendlater)
 	{
     	if (sendlater) {
-        	var today = create_date_object("{$today}")
+        	var today = create_date_object("{$today|default:''}")
 			// *****
 			{literal}
 				year = parseInt($('#year').val());

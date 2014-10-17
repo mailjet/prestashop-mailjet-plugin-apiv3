@@ -1,8 +1,8 @@
 <!-- Mailjet : Triggers -->
-{$tinymce}
-<form action="{$smarty.server.REQUEST_URI}" method="POST">
+{$tinymce|default:''}
+<form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page" style="width:initial;max-width:960px;">
-	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />&nbsp; <a href="{$cron}" target="_blank"><b>{$cron}</b></a></div>
+	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />&nbsp; <a href="{$cron}" target="_blank"><b>{$cron|default:''}</b></a></div>
 	<fieldset class="hint" style="position:relative;display:block !important;">
 		<legend style="text-transform:none;">{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
         <div style="padding-left:40px;">
@@ -35,12 +35,12 @@
                         <br />
 					</div>
 					<span class="clearspan"></span>
-					<div id="MJ_triggers_trigger_{$sel}_parameters" class="warn mj_triggers_parameters">
+					<div id="MJ_triggers_trigger_{$sel|default:''}_parameters" class="warn mj_triggers_parameters">
 						<b>{l s='Parameters' mod='mailjet'}</b><br />
                         {if $sel!=5 && $sel!=6}
 	                        <label>{l s='Trigger sending after how long ?' mod='mailjet'}</label>
-							<input type="text" name="MJ_triggers_trigger_{$sel}_period" size=5 style="text-align:right;" value="{$triggers.trigger.$sel.period}" />
-							<select name="MJ_triggers_trigger_{$sel}_periodType">
+							<input type="text" name="MJ_triggers_trigger_{$sel|default:''}_period" size=5 style="text-align:right;" value="{$triggers.trigger.$sel.period|default:''}" />
+							<select name="MJ_triggers_trigger_{$sel|default:''}_periodType">
 								<option value=1 {if $triggers.trigger.{$sel}.periodType==1}selected{/if}>{l s='Month' mod='mailjet'}</option>
 								<option value=2 {if $triggers.trigger.{$sel}.periodType==2}selected{/if}>{l s='Days' mod='mailjet'}</option>
 								<option value=3 {if $triggers.trigger.{$sel}.periodType==3}selected{/if}>{l s='Hours' mod='mailjet'}</option>
@@ -49,8 +49,8 @@
                             <br />
 						{else}
 	                        <label>{l s='Reduction amount' mod='mailjet'} :</label>
-							<input type="text" name="MJ_triggers_trigger_{$sel}_discount" size=5 style="text-align:right;" value="{$triggers.trigger.$sel.discount}" />
-							<select name="MJ_triggers_trigger_{$sel}_discountType">
+							<input type="text" name="MJ_triggers_trigger_{$sel|default:''}_discount" size=5 style="text-align:right;" value="{$triggers.trigger.$sel.discount|default:''}" />
+							<select name="MJ_triggers_trigger_{$sel|default:''}_discountType">
 								<option value=1 {if $triggers.trigger.{$sel}.discountType==1}selected{/if}>(%) {l s='Percentage' mod='mailjet'}</option>
 {*								<option value=2 {if $triggers.trigger.{$sel}.discountType==2}selected{/if}>({$sign}) {l s='Amount' mod='mailjet'}</option>*}
 								<option value=2 {if $triggers.trigger.{$sel}.discountType==2}selected{/if}>($,€,£) {l s='Amount' mod='mailjet'}</option>
@@ -70,9 +70,9 @@
 	                        {foreach $languages as $language}
 	                        	{assign var="id_lang" value=$language.id_lang}
 								<div id="id_lang_{$sel}_{$id_lang}" class="id_lang_close_{$sel}" style="{if $id_lang!=$sel_lang}display:none;{/if}">
-   	 	                    		{l s='Subject'} : <input type="text" name="MJ_triggers_trigger_{$sel}_subject_{$id_lang}" value="{$triggers.trigger.$sel.subject.$id_lang}" style="width:500px;" /><br />
+   	 	                    		{l s='Subject'} : <input type="text" name="MJ_triggers_trigger_{$sel|default:''}_subject_{$id_lang|default:''}" value="{$triggers.trigger.$sel.subject.$id_lang|default:''}" style="width:500px;" /><br />
                                     <div style="width:5px;height:5px;display:block;"></div>
-									<textarea name="MJ_triggers_trigger_{$sel}_mail_{$id_lang}" class="rte" style="width:100%;height:400px;">{$triggers.trigger.$sel.mail.$id_lang}</textarea>
+									<textarea name="MJ_triggers_trigger_{$sel|default:''}_mail_{$id_lang|default:''}" class="rte" style="width:100%;height:400px;">{$triggers.trigger.$sel.mail.$id_lang|default:''}</textarea>
 								</div>
 							{/foreach}
                             </div>

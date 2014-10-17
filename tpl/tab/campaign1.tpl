@@ -1,6 +1,6 @@
 <!-- Mailjet : Campaigns -->
 <div id="mj_campaigns_page" class="center_page" style="width:initial;max-width:960px;">
-	<form id="create" method="post" action="{$smarty.server.REQUEST_URI}">
+	<form id="create" method="post" action="{$smarty.server.REQUEST_URI|default:''}">
     <input type="hidden" name="MJ_submitCampaign" value=1 />
 	<fieldset>
     	<legend>{l s='New Campaign' mod='mailjet'}</legend>
@@ -32,7 +32,7 @@
                 	<select name="from" id="from" rel="noresize" style="width:250px;" required>
                     	<option value="0" selected="selected">-- {l s='Choose your sender address' mod='mailjet'} --</option>
                         {foreach from=$campaign.senders item=value}
-							<option value="{$value}">{$value}</option>
+							<option value="{$value|default:''}">{$value|default:''}</option>
 						{/foreach}
 					</select>
 				</td>
@@ -57,7 +57,7 @@
 			<select id="template" name="template" rel="noresize" style="width:500px;font-size:12px;padding:5px;font-weight:bold;margin:5px;">
 				<option value="0" selected="selected">{l s='You can choose an available template : (Optional)' mod='mailjet'}</option>
 				{foreach from=$campaign.templates key=key item=value}
-					<option value="{$value}">- {$key}</option>
+					<option value="{$value|default:''}">- {$key|default:''}</option>
 				{/foreach}
 			</select><br />
             <br />
@@ -65,7 +65,7 @@
 			<select id="contacts_list" name="list_id" rel="noresize" style="width:500px;font-size:12px;padding:5px;font-weight:bold;margin:5px;">
 				<option value="0" selected="selected">{l s='Choose a contacts list :' mod='mailjet'}</option>
 				{foreach from=$campaign.lists key=key item=label}
-					<option value="{$key}">- {$label}</option>
+					<option value="{$key|default:''}">- {$label|default:''}</option>
 				{/foreach}
 			</select><br />
             <br />

@@ -1,6 +1,6 @@
 <?php
 /*
- * 2007-2012 PrestaShop
+* 2007-2014 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,11 +18,10 @@
 * versions in the future. If you wish to customize PrestaShop for your
 * needs please refer to http://www.prestashop.com for more information.
 *
-*  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2012 PrestaShop SA
-*  @version  Release: $Revision: 1.4 $
-*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
+* @author PrestaShop SA <contact@prestashop.com>
+* @copyright  2007-2014 PrestaShop SA
+* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+* International Registered Trademark & Property of PrestaShop SA
 */
 
 // Security
@@ -313,7 +312,7 @@ class Mailjet extends Module
 	 */
 	public function hookActionAdminCustomersControllerSaveBefore($params)
 	{
-		$customer = new Customer($_POST['id_customer']);
+		$customer = new Customer(Tools::getValue('id_customer'));
 		
 		Configuration::updateValue('PREVIOUS_MJ_USER_MAIL', $customer->email);
 	}
@@ -395,7 +394,7 @@ class Mailjet extends Module
 	 */
 	public function hookActionAdminCustomersControllerDeleteBefore($params)
 	{
-		$customer = new Customer($_GET['id_customer']);
+		$customer = new Customer(Tools::getValue('id_customer'));
 		
 		if (!$customer->id) {
 			return;

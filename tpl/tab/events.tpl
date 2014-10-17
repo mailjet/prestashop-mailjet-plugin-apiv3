@@ -10,7 +10,7 @@
 				{l s='Some elements canot be set has fixed' mod='mailjet'}
 				<ul>
 					{foreach from=$MJ_events_form_success item=id_mj_events}
-						<li>{$id_mj_events}</li>
+						<li>{$id_mj_events|default:''}</li>
 					{/foreach}
 				</ul>
 			</div>
@@ -32,7 +32,7 @@
 
 	{else}
 
-	<form action="{$smarty.server.REQUEST_URI}" method="POST">
+	<form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
 		<div id="tableWrapper" style="width: 100%;">
 			<table cellpadding="1" cellspacing="1" id="vsTable">
 				<thead>
@@ -40,7 +40,7 @@
 						<th class="title">&nbsp;</th>
 						<th class="title" style="text-align:center;">ID</th>
 						{foreach from=$MJ_title_list item=title}
-							<th class="title" style="text-align:center;">{$title}</th>
+							<th class="title" style="text-align:center;">{$title|default:''}</th>
 						{/foreach}
 					</tr>
 				</thead>
@@ -48,10 +48,10 @@
 					{foreach from=$MJ_events_list item=fields}
 						<tr class="cat">
 							<td>
-								<input type="checkbox" value="{$fields.id_mj_events}" name="events[]" />
+								<input type="checkbox" value="{$fields.id_mj_events|default:''}" name="events[]" />
 							</td>
 							{foreach from=$fields item=field}
-								<td style="text-align:center;">{$field}</td>
+								<td style="text-align:center;">{$field|default:''}</td>
 							{/foreach}
 						</tr>
 					{/foreach}
@@ -61,13 +61,15 @@
 		<div class="MJ_event_link">
 			<input type="submit" value="{l s='Fix the selected errors' mod='mailjet'}" />
 			{if $MJ_paging.prev}
-				<a href="{$MJ_adminmodules_link}&{$MJ_REQUEST_PAGE_TYPE}={$MJ_page_name}&page=1"><<</a>
-				<a href="{$MJ_adminmodules_link}&{$MJ_REQUEST_PAGE_TYPE}={$MJ_page_name}&page={$MJ_paging.current_page - 1}"><</a>
+            	{assign var=calc value=$MJ_paging.current_page - 1}
+				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page=1"><<</a>
+				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page={$calc|default:''}"><</a>
 			{/if}
-			<a href="javascript:void(0)">{$MJ_paging.current_page}</a>
+			<a href="javascript:void(0)">{$MJ_paging.current_page|default:''}</a>
 			{if $MJ_paging.next}
-				<a href="{$MJ_adminmodules_link}&{$MJ_REQUEST_PAGE_TYPE}={$MJ_page_name}&page={$MJ_paging.current_page + 1}">></a>
-				<a href="{$MJ_adminmodules_link}&{$MJ_REQUEST_PAGE_TYPE}={$MJ_page_name}&page={$MJ_paging.last}">>></a>
+            	{assign var=calc value=$MJ_paging.current_page + 1}
+				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page={$calc|default:''}">></a>
+				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page={$MJ_paging.last}">>></a>
 			{/if}
 		</div>
 	</form>

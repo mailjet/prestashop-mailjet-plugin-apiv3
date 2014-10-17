@@ -7,8 +7,8 @@
 
 	<dl class="MJ_data">
 		{foreach from=$fields item=field}
-			<dt>{$field.title}&nbsp;</dt>
-			<dd>{$field.value}&nbsp;</dd>
+			<dt>{$field.title|default:''}&nbsp;</dt>
+			<dd>{$field.value|default:''}&nbsp;</dd>
 		{/foreach}
 	</dl>
 	{/foreach}

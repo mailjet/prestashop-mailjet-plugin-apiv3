@@ -24,24 +24,24 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
-<link href="{$MJ_base_dir}css/bo.css" rel="stylesheet" type="text/css" media="all" />
+<link href="{$MJ_base_dir|default:''}css/bo.css" rel="stylesheet" type="text/css" media="all" />
 
 <script type="text/javascript">
-	var _PS_MJ_MODULE_DIR_ = "{$MJ_base_dir}";
-	var MJ_TOKEN = "{$MJ_TOKEN}";
-	var MJ_ADMINMODULES_TOKEN = "{$MJ_ADMINMODULES_TOKEN}";
+	var _PS_MJ_MODULE_DIR_ = "{$MJ_base_dir|default:''}";
+	var MJ_TOKEN = "{$MJ_TOKEN|default:''}";
+	var MJ_ADMINMODULES_TOKEN = "{$MJ_ADMINMODULES_TOKEN|default:''}";
 
 	// Const from module to a better understanding if it used under the javascript file
-	var MJ_REQUEST_PAGE_TYPE = "{$MJ_REQUEST_PAGE_TYPE}";
+	var MJ_REQUEST_PAGE_TYPE = "{$MJ_REQUEST_PAGE_TYPE|default:''}";
 
 	// Generate from the xml
 	{foreach from=$MJ_available_pages key=MJ_page_key item=MJ_page_value}
-		var {$MJ_page_key} = "{$MJ_page_value}";
+		var {$MJ_page_key} = "{$MJ_page_value|default:''}";
 	{/foreach}
 </script>
 
-<script type="text/javascript" src="{$MJ_base_dir}js/jquery.timer.js"></script>
-<script type="text/javascript" src="{$MJ_base_dir}js/bo.js"></script>
-<script type="text/javascript" src="{$MJ_base_dir}js/events.js"></script>
+<script type="text/javascript" src="{$MJ_base_dir|default:''}js/jquery.timer.js"></script>
+<script type="text/javascript" src="{$MJ_base_dir|default:''}js/bo.js"></script>
+<script type="text/javascript" src="{$MJ_base_dir|default:''}js/events.js"></script>
 
 
