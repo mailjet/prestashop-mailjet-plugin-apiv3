@@ -452,3 +452,7 @@ $_MODULE['<{segmentmodule}prestashop>segmentmodule_9accdf91c767986675e0ae7979991
 $_MODULE['<{segmentmodule}prestashop>segmentmodule_bf4dd69a740ee7cde125148bf70a48e1'] = 'Créer / Mettre à jour la liste Mailjet';
 $_MODULE['<{segmentmodule}prestashop>segmentmodule_26b17225b626fb9238849fd60eabdf60'] = '+';
 $_MODULE['<{segmentmodule}prestashop>segmentmodule_cdb0dca3e894fdb5986780a9411df080'] = 'Association de groupe';
+$_MODULE['<{segmentmodule}prestashop>segmentmodule_fedc257ff74eb931d3495f5514dd2271'] = 'You have no segment for now';
+$_MODULE['<{segmentmodule}prestashop>segmentmodule_ba6e2cdc1a06118b82129abc057a6e3c'] = 'Create a New Segment';
+$_MODULE['<{segmentmodule}prestashop>segmentmodule_8b4907fb9efcfebc45f57f5328c0cbf7'] = 'Add a Segment';
+$_MODULE['<{segmentmodule}prestashop>segmentmodule_b4fbe883afba1fa4b3efa4bb842bb54f'] = 'Segment name';

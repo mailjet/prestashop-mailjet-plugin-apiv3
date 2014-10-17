@@ -2,8 +2,8 @@
 
 include_once(dirname(__FILE__).'/../mailjet.php'); // **
 
-include_once(dirname(__FILE__).'/Mailjet.Api.class.php');
-include_once(dirname(__FILE__).'/Mailjet.Overlay.class.php');
+include_once(dirname(__FILE__).'/../sdk/Mailjet.Api.class.php');
+include_once(dirname(__FILE__).'/../sdk/Mailjet.Overlay.class.php');
 
 class MailjetTemplate
 {
@@ -120,23 +120,6 @@ class MailjetTemplate
 			}
 		}
 		
-		return false;
-		
-		echo $file; die;
-		if (isset($this->templates[$name]))
-		{
-			return false;
-			$this->templates[$name]['html'] = $this->l($name);
-			return true;
-			$api = MailjetTemplate::getApi(false);
-			$res = $api->resellerTemplate($this->templates[$name]['params']);
-			
-			if (isset($res->tpl->{$name}))
-			{
-				$this->templates[$name]['html'] = $res->tpl->{$name};
-				return true;
-			}
-		}
 		return false;
 	}
 

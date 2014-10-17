@@ -1,15 +1,11 @@
 <?php 
 
-
-
 /**
  * 
  * @author atanas
  */
 class Hooks_Synchronization_SingleUser extends Hooks_Synchronization_SynchronizationAbstract
 {
-	
-	
 	/**
 	 * 
 	 * @param string $email
@@ -132,8 +128,5 @@ class Hooks_Synchronization_SingleUser extends Hooks_Synchronization_Synchroniza
 	
 		return false;
 	}
-
 }
-
-
 ?>

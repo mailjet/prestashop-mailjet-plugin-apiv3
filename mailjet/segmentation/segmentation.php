@@ -4,8 +4,8 @@ include_once(dirname(__FILE__).'/../hooks/synchronization/SynchronizationAbstrac
 include_once(dirname(__FILE__).'/../hooks/synchronization/Initial.php');
 include_once(dirname(__FILE__).'/../hooks/synchronization/SingleUser.php');
 include_once(dirname(__FILE__).'/../hooks/synchronization/Segment.php');
-include_once(dirname(__FILE__).'/../classes/Mailjet.Overlay.class.php');
-include_once(dirname(__FILE__).'/../classes/Mailjet.Api.class.php');
+include_once(dirname(__FILE__).'/../sdk/Mailjet.Overlay.class.php');
+include_once(dirname(__FILE__).'/../sdk/Mailjet.Api.class.php');
 include_once(dirname(__FILE__).'/../classes/MailJetTemplate.php');
 
 class Segmentation extends Module
@@ -41,7 +41,7 @@ class Segmentation extends Module
 			return $this;
 		
 		if (!class_exists('Context'))
-			require_once(realpath(dirname(__FILE__))  . '/libraries/compatibility/Context.php');
+			require_once(realpath(dirname(__FILE__)) .'/libraries/compatibility/Context.php');
 			
 		$this->initLang();
 			
@@ -564,10 +564,10 @@ class Segmentation extends Module
 		{
 			case 2:
 				/*if (strlen($post['date_start']) >= 10)
-					$post['date_start'] = substr($post['date_start'], 6, 4) . '-' . substr($post['date_start'], 3, 2) . '-' . substr($post['date_start'], 0, 2);
+					$post['date_start'] = substr($post['date_start'], 6, 4).'-'.substr($post['date_start'], 3, 2).'-'.substr($post['date_start'], 0, 2);
 				
 				if (strlen($post['date_end']) >= 10)
-					$post['date_end'] = substr($post['date_end'], 6, 4) . '-' . substr($post['date_end'], 3, 2) . '-' . substr($post['date_end'], 0, 2);*/
+					$post['date_end'] = substr($post['date_end'], 6, 4).'-'.substr($post['date_end'], 3, 2).'-'.substr($post['date_end'], 0, 2);*/
 				
 				$dataToFormat = array(33);
 				$valuesToFormat = array(12, 17, 18, 19, 20, 28, 35, 36);
@@ -578,16 +578,16 @@ class Segmentation extends Module
 						if (in_array($value, $valuesToFormat))
 						{
 							if (Tools::strlen($post['value1'][$key]) >= 10)
-								$post['value1'][$key] = Tools::substr($post['value1'][$key], 6, 4) . '-' . Tools::substr($post['value1'][$key], 3, 2) . '-' . Tools::substr($post['value1'][$key], 0, 2);
+								$post['value1'][$key] = Tools::substr($post['value1'][$key], 6, 4).'-'.Tools::substr($post['value1'][$key], 3, 2).'-'.Tools::substr($post['value1'][$key], 0, 2);
 							
 							if (Tools::strlen($post['value2'][$key]) >= 10)
-								$post['value2'][$key] = Tools::substr($post['value2'][$key], 6, 4) . '-' . Tools::substr($post['value2'][$key], 3, 2) . '-' . Tools::substr($post['value2'][$key], 0, 2);
+								$post['value2'][$key] = Tools::substr($post['value2'][$key], 6, 4).'-'.Tools::substr($post['value2'][$key], 3, 2).'-'.Tools::substr($post['value2'][$key], 0, 2);
 						}
 						
 						if (in_array($value, $dataToFormat))
 						{
 							if (Tools::strlen($post['data'][$key]) >= 10)
-								$post['data'][$key] = Tools::substr($post['data'][$key], 6, 4) . '-' . Tools::substr($post['data'][$key], 3, 2) . '-' . Tools::substr($post['data'][$key], 0, 2);
+								$post['data'][$key] = Tools::substr($post['data'][$key], 6, 4).'-'.Tools::substr($post['data'][$key], 3, 2).'-'.Tools::substr($post['data'][$key], 0, 2);
 						}
 					}				
 				break;
@@ -607,8 +607,8 @@ class Segmentation extends Module
 			$join = '';
 			$field = '';
 			$labels = array(
-				'(SELECT COUNT(DISTINCT(wo0.id_order)) FROM '._DB_PREFIX_.'orders wo0 WHERE wo0.id_customer = c.id_customer) AS "' . $this->ll(4) . '"',
-				'(SELECT COUNT(DISTINCT(wo5.id_cart)) FROM '._DB_PREFIX_.'cart wo5 WHERE wo5.id_customer = c.id_customer AND wo5.id_cart NOT IN (SELECT DISTINCT(wo6.id_cart) FROM '._DB_PREFIX_.'orders wo6 WHERE wo6.id_customer = c.id_customer)) AS "' . $this->ll(9) . '"'
+				'(SELECT COUNT(DISTINCT(wo0.id_order)) FROM '._DB_PREFIX_.'orders wo0 WHERE wo0.id_customer = c.id_customer) AS "'.$this->ll(4).'"',
+				'(SELECT COUNT(DISTINCT(wo5.id_cart)) FROM '._DB_PREFIX_.'cart wo5 WHERE wo5.id_customer = c.id_customer AND wo5.id_cart NOT IN (SELECT DISTINCT(wo6.id_cart) FROM '._DB_PREFIX_.'orders wo6 WHERE wo6.id_customer = c.id_customer)) AS "'.$this->ll(9).'"'
 			);
 			$joins = array(
 				'LEFT JOIN '._DB_PREFIX_.'orders o ON o.id_customer = c.id_customer',
@@ -663,11 +663,11 @@ class Segmentation extends Module
 						/*$sub_join = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_where = 'o'.$i.'.valid = 1';
 						if (strlen($val1) > 0 && strlen($val2) > 0)	
-							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (strlen($val1) > 0)
-							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) >= ' . (float)$val1;
+							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) >= '.(float)$val1;
 						elseif (strlen($val2) > 0)
-							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) <= ' . (float)$val2;
+							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) <= '.(float)$val2;
 						else
 							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) > 0';
 						$post['data'][$i] = '';
@@ -677,11 +677,11 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$data = '';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) >= ' . (float)$val1;
+							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) <= ' . (float)$val2;
+							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) <= '.(float)$val2;
 						else
 							$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) > 0';
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -689,52 +689,52 @@ class Segmentation extends Module
 					case '3':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if ($data > 0)
-							$sub_where = '(SELECT oh'.$i.'.id_order_state FROM '._DB_PREFIX_.'order_history oh'.$i.' WHERE oh'.$i.'.id_order = o'.$i.'.id_order ORDER BY oh'.$i.'.date_add DESC LIMIT 0,1) = ' . (int)$data;
+							$sub_where = '(SELECT oh'.$i.'.id_order_state FROM '._DB_PREFIX_.'order_history oh'.$i.' WHERE oh'.$i.'.id_order = o'.$i.'.id_order ORDER BY oh'.$i.'.date_add DESC LIMIT 0,1) = '.(int)$data;
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;					
 					case '4':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if (Tools::strlen($data) > 0)
-							$sub_where = 'o'.$i.'.payment = "' . pSQL($data) . '"';
+							$sub_where = 'o'.$i.'.payment = "'.pSQL($data).'"';
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;
 					case '5':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'order_detail od'.$i.' ON od'.$i.'.id_order = o'.$i.'.id_order';
-						$sub_where = 'od'.$i.'.product_id = ' . (int)$data;
+						$sub_where = 'od'.$i.'.product_id = '.(int)$data;
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'SUM(od'.$i.'.product_quantity) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'SUM(od'.$i.'.product_quantity) >= ' . (float)$val1;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'SUM(od'.$i.'.product_quantity) <= ' . (float)$val2;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) <= '.(float)$val2;
 						break;
 					case '6':
-						$sub_where = 'cp'.$i.'.id_category = ' . (int)$data;
+						$sub_where = 'cp'.$i.'.id_category = '.(int)$data;
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'order_detail od'.$i.' ON od'.$i.'.id_order = o'.$i.'.id_order';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'category_product cp'.$i.' ON cp'.$i.'.id_product = od'.$i.'.product_id';
 						$sub_groupby = 'c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'SUM(od'.$i.'.product_quantity) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'SUM(od'.$i.'.product_quantity) >= ' . (float)$val1;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'SUM(od'.$i.'.product_quantity) <= ' . (float)$val2;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) <= '.(float)$val2;
 						break;
 					case '7':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'order_detail od'.$i.' ON od'.$i.'.id_order = o'.$i.'.id_order';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'product p'.$i.' ON p'.$i.'.id_product = od'.$i.'.product_id';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'manufacturer m'.$i.' ON m'.$i.'.id_manufacturer = p'.$i.'.id_manufacturer';
-						$sub_where = 'm'.$i.'.id_manufacturer = ' . (int)$data;
+						$sub_where = 'm'.$i.'.id_manufacturer = '.(int)$data;
 						$sub_groupby = 'c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'SUM(od'.$i.'.product_quantity) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'SUM(od'.$i.'.product_quantity) >= ' . (float)$val1;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'SUM(od'.$i.'.product_quantity) <= ' . (float)$val2;
+							$sub_having = 'SUM(od'.$i.'.product_quantity) <= '.(float)$val2;
 						break;
 					case '8':
 						$sub_where = '';
@@ -743,21 +743,21 @@ class Segmentation extends Module
 						switch ($data)
 						{
 							case '1': // Taxes included
-								$labels[] = '(SELECT FORMAT((SUM(wo1.total_paid_real)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo1 WHERE wo1.valid = 1 AND wo1.id_customer = o.id_customer) AS "' . $this->ll(55) . '"';
+								$labels[] = '(SELECT FORMAT((SUM(wo1.total_paid_real)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo1 WHERE wo1.valid = 1 AND wo1.id_customer = o.id_customer) AS "'.$this->ll(55).'"';
 								$sub_having_amount = 'o'.$i.'.total_paid_real';
 								break;
 							case '2': // Taxes excluded
 							default:
-								$labels[] = '(SELECT FORMAT((SUM(wo2.total_products)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo2 WHERE wo2.valid = 1 AND wo2.id_customer = o.id_customer) AS "' . $this->ll(56) . '"';
+								$labels[] = '(SELECT FORMAT((SUM(wo2.total_products)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo2 WHERE wo2.valid = 1 AND wo2.id_customer = o.id_customer) AS "'.$this->ll(56).'"';
 								$sub_having_amount = 'o'.$i.'.total_products';
 						}
 						$sub_groupby = 'c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'SUM('.$sub_having_amount.'/cu'.$i.'.conversion_rate) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM('.$sub_having_amount.'/cu'.$i.'.conversion_rate) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'SUM('.$sub_having_amount.'/cu'.$i.'.conversion_rate) >= ' . (float)$val1;
+							$sub_having = 'SUM('.$sub_having_amount.'/cu'.$i.'.conversion_rate) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'SUM('.$sub_having_amount.'/cu'.$i.'.conversion_rate) <= ' . (float)$val2;
+							$sub_having = 'SUM('.$sub_having_amount.'/cu'.$i.'.conversion_rate) <= '.(float)$val2;
 						break;
 					case '9':
 						$sub_where = '';
@@ -766,21 +766,21 @@ class Segmentation extends Module
 						switch ($data)
 						{
 							case '1': // Taxes included
-								$labels[] = '(SELECT FORMAT((AVG(wo3.total_paid_real)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo3 WHERE wo3.valid = 1 AND wo3.id_customer = o.id_customer) AS "' . $this->ll(57) . '"';
+								$labels[] = '(SELECT FORMAT((AVG(wo3.total_paid_real)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo3 WHERE wo3.valid = 1 AND wo3.id_customer = o.id_customer) AS "'.$this->ll(57).'"';
 								$sub_having_amount = 'o'.$i.'.total_paid_real';
 								break;
 							case '2': // Taxes excluded
 							default:
-								$labels[] = '(SELECT FORMAT((AVG(wo4.total_products)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo4 WHERE wo4.valid = 1 AND wo4.id_customer = o.id_customer) AS "' . $this->ll(58) . '"';
+								$labels[] = '(SELECT FORMAT((AVG(wo4.total_products)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo4 WHERE wo4.valid = 1 AND wo4.id_customer = o.id_customer) AS "'.$this->ll(58).'"';
 								$sub_having_amount = 'o'.$i.'.total_products';
 						}
 						$sub_groupby = 'c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'AVG('.$sub_having_amount.'/cu'.$i.'.conversion_rate) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'AVG('.$sub_having_amount.'/cu'.$i.'.conversion_rate) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'AVG('.$sub_having_amount.'/cu'.$i.'.conversion_rate) >= ' . (float)$val1;
+							$sub_having = 'AVG('.$sub_having_amount.'/cu'.$i.'.conversion_rate) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'AVG('.$sub_having_amount.'/cu'.$i.'.conversion_rate) <= ' . (float)$val2;
+							$sub_having = 'AVG('.$sub_having_amount.'/cu'.$i.'.conversion_rate) <= '.(float)$val2;
 						break;
 					case '10':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
@@ -788,11 +788,11 @@ class Segmentation extends Module
 										SELECT DISTINCT(so'.$i.'.id_cart) FROM '._DB_PREFIX_.'orders so'.$i.' WHERE so'.$i.'.id_customer = c'.$i.'.id_customer
 									)';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_having = 'COUNT(DISTINCT(ca'.$i.'.id_cart)) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'COUNT(DISTINCT(ca'.$i.'.id_cart)) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'COUNT(DISTINCT(ca'.$i.'.id_cart)) >= ' . (float)$val1;
+							$sub_having = 'COUNT(DISTINCT(ca'.$i.'.id_cart)) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'COUNT(DISTINCT(ca'.$i.'.id_cart)) <= ' . (float)$val2;
+							$sub_having = 'COUNT(DISTINCT(ca'.$i.'.id_cart)) <= '.(float)$val2;
 						else
 							$sub_having = 'COUNT(DISTINCT(ca'.$i.'.id_cart)) > 0';
 						break;
@@ -804,11 +804,11 @@ class Segmentation extends Module
 					case '12':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($val2) . ' 23:59:59")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) >= UNIX_TIMESTAMP("' . pSQL($val1) . ' 00:00:00")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) <= UNIX_TIMESTAMP("' . pSQL($val2) . ' 23:59:59")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						else
 							$this->displayRuleError($i+1, $this->trad[82]);				
 						$groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -820,7 +820,7 @@ class Segmentation extends Module
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;
 					/*case '14':
-						//$labels[] = 'SUM(cap.quantity) AS "' . $this->ll(45) . '"';
+						//$labels[] = 'SUM(cap.quantity) AS "'.$this->ll(45).'"';
 						//$joins[] = 'LEFT JOIN '._DB_PREFIX_.'cart ca ON ca.id_customer = c.id_customer';
 						//$joins[] = 'LEFT JOIN '._DB_PREFIX_.'cart_product cap ON cap.id_cart = ca.id_cart';
 						$sub_where = 'cap'.$i.'.id_product = '.(int)$data;
@@ -831,11 +831,11 @@ class Segmentation extends Module
 									LEFT JOIN '._DB_PREFIX_.'cart_product cap'.$i.' ON cap'.$i.'.id_cart = ca'.$i.'.id_cart';
 						$sub_groupby = 'c'.$i.'.id_customer AND ca'.$i.'.id_cart, c'.$i.'.id_customer';					
 						if (strlen($val1) > 0 && strlen($val2) > 0)	
-							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (strlen($val1) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) >= ' . (float)$val1;
+							$sub_having = 'SUM(cap'.$i.'.quantity) >= '.(float)$val1;
 						elseif (strlen($val2) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) <= ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) <= '.(float)$val2;
 						else
 							$sub_having = 'SUM(cap'.$i.'.quantity) > 0';
 						break;*/
@@ -855,11 +855,11 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'connections conn'.$i.' ON conn'.$i.'.id_guest = g'.$i.'.id_guest';
 						$sub_where = 'conn'.$i.'.date_add = (SELECT sconn'.$i.'.date_add FROM '._DB_PREFIX_.'connections sconn'.$i.' WHERE sconn'.$i.'.id_guest = g'.$i.'.id_guest ORDER BY sconn'.$i.'.date_add LIMIT 0,1)';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where .= ' AND UNIX_TIMESTAMP(conn'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($val2) . ' 23:59:59")';
+							$sub_where .= ' AND UNIX_TIMESTAMP(conn'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where .= ' AND UNIX_TIMESTAMP(conn'.$i.'.date_add) >= UNIX_TIMESTAMP("' . pSQL($val1) . ' 00:00:00")';
+							$sub_where .= ' AND UNIX_TIMESTAMP(conn'.$i.'.date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where .= ' AND UNIX_TIMESTAMP(conn'.$i.'.date_add) <= UNIX_TIMESTAMP("' . pSQL($val2) . ' 23:59:59")';
+							$sub_where .= ' AND UNIX_TIMESTAMP(conn'.$i.'.date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						else
 							$this->displayRuleError($i+1, $this->trad[83]);				
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -867,11 +867,11 @@ class Segmentation extends Module
 					case '18':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.birthday) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . '") AND UNIX_TIMESTAMP("' . pSQL($val2) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.birthday) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).'") AND UNIX_TIMESTAMP("'.pSQL($val2).'")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.birthday) >= UNIX_TIMESTAMP("' . pSQL($val1) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.birthday) >= UNIX_TIMESTAMP("'.pSQL($val1).'")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.birthday) <= UNIX_TIMESTAMP("' . pSQL($val2) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.birthday) <= UNIX_TIMESTAMP("'.pSQL($val2).'")';
 						else
 							$this->displayRuleError($i+1, $this->trad[84]);				
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -880,11 +880,11 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_where = 'c'.$i.'.newsletter = '.(int)$data;
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where .= ' AND UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . '") AND UNIX_TIMESTAMP("' . pSQL($val2) . '")';
+							$sub_where .= ' AND UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).'") AND UNIX_TIMESTAMP("'.pSQL($val2).'")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where .= ' AND UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) >= UNIX_TIMESTAMP("' . pSQL($val1) . '")';
+							$sub_where .= ' AND UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).'")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where .= ' AND UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) <= UNIX_TIMESTAMP("' . pSQL($val2) . '")';						
+							$sub_where .= ' AND UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).'")';						
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;
 					case '20':
@@ -942,11 +942,11 @@ class Segmentation extends Module
 					case '28':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . '") AND UNIX_TIMESTAMP("' . pSQL($val2) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).'") AND UNIX_TIMESTAMP("'.pSQL($val2).'")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) >= UNIX_TIMESTAMP("' . pSQL($val1) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).'")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) <= UNIX_TIMESTAMP("' . pSQL($val2) . '")';	
+							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).'")';	
 						else
 							$this->displayRuleError($i+1, $this->trad[89]);
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -959,11 +959,11 @@ class Segmentation extends Module
 									)';
 						$sub_groupby = 'ca'.$i.'.id_cart';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . '") AND UNIX_TIMESTAMP("' . pSQL($val2) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).'") AND UNIX_TIMESTAMP("'.pSQL($val2).'")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) >= UNIX_TIMESTAMP("' . pSQL($val1) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) >= UNIX_TIMESTAMP("'.pSQL($val1).'")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) <= UNIX_TIMESTAMP("' . pSQL($val2) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) <= UNIX_TIMESTAMP("'.pSQL($val2).'")';
 						else
 							$this->displayRuleError($i+1, $this->trad[103]);
 						break;
@@ -976,11 +976,11 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'cart_product cap'.$i.' ON cap'.$i.'.id_cart = ca'.$i.'.id_cart';
 						$sub_groupby = 'cap'.$i.'.id_product';					
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) >= ' . (float)$val1;
+							$sub_having = 'SUM(cap'.$i.'.quantity) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) <= ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) <= '.(float)$val2;
 						else
 							$sub_having = 'SUM(cap'.$i.'.quantity) > 0';
 						break;
@@ -994,11 +994,11 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'category_product cp'.$i.' ON cp'.$i.'.id_product = cap'.$i.'.id_product';
 						$sub_groupby = 'cap'.$i.'.id_product';				
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) >= ' . (float)$val1;
+							$sub_having = 'SUM(cap'.$i.'.quantity) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) <= ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) <= '.(float)$val2;
 						else
 							$sub_having = 'SUM(cap'.$i.'.quantity) > 0';
 						break;
@@ -1013,11 +1013,11 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'manufacturer m'.$i.' ON m'.$i.'.id_manufacturer = p'.$i.'.manufacturer_id';
 						$sub_groupby = 'cap'.$i.'.id_product';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)	
-							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (Tools::strlen($val1) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) >= ' . (float)$val1;
+							$sub_having = 'SUM(cap'.$i.'.quantity) >= '.(float)$val1;
 						elseif (Tools::strlen($val2) > 0)
-							$sub_having = 'SUM(cap'.$i.'.quantity) <= ' . (float)$val2;
+							$sub_having = 'SUM(cap'.$i.'.quantity) <= '.(float)$val2;
 						else
 							$sub_having = 'SUM(cap'.$i.'.quantity) > 0';
 						break;
@@ -1025,7 +1025,7 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_where = 'o'.$i.'.id_order = (SELECT so'.$i.'.id_order FROM '._DB_PREFIX_.'orders so'.$i.' WHERE so'.$i.'.id_customer = c'.$i.'.id_customer ORDER BY UNIX_TIMESTAMP(so'.$i.'.date_add) DESC LIMIT 0,1)';
 						if (sTools::trlen($data) > 0)
-							$sub_where .= ' AND UNIX_TIMESTAMP(o'.$i.'.date_add) < UNIX_TIMESTAMP("' . pSQL($data) . '")';
+							$sub_where .= ' AND UNIX_TIMESTAMP(o'.$i.'.date_add) < UNIX_TIMESTAMP("'.pSQL($data).'")';
 						else
 							$this->displayRuleError($i+1, $this->trad[93]);
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -1038,11 +1038,11 @@ class Segmentation extends Module
 						else
 							$sub_where = 'o'.$i.'.id_order NOT IN (SELECT od'.$i.'.id_order FROM '._DB_PREFIX_.'order_discount od'.$i.' WHERE od'.$i.'.id_order = o'.$i.'.id_order)';
 						/*if (strlen($val1) > 0 && strlen($val2) > 0)
-							$sub_having .= ' AND od'.$i.'.value BETWEEN ' . (float)$val1 . ' AND ' . (float)$val2;
+							$sub_having .= ' AND od'.$i.'.value BETWEEN '.(float)$val1.' AND '.(float)$val2;
 						elseif (strlen($val1) > 0)
-							$sub_having .= ' AND od'.$i.'.value >= ' . (float)$val1;
+							$sub_having .= ' AND od'.$i.'.value >= '.(float)$val1;
 						elseif (strlen($val2) > 0)
-							$sub_having .= ' AND od'.$i.'.value <= ' . (float)$val2;*/
+							$sub_having .= ' AND od'.$i.'.value <= '.(float)$val2;*/
 						break;
 					case '35':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
@@ -1050,11 +1050,11 @@ class Segmentation extends Module
 							$this->displayRuleError($i+1, $this->trad[95]);
 						$sub_having = 'COUNT(DISTINCT(o'.$i.'.id_order)) = '.(int)$data;
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . '") AND UNIX_TIMESTAMP("' . pSQL($val2) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).'") AND UNIX_TIMESTAMP("'.pSQL($val2).'")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) >= UNIX_TIMESTAMP("' . pSQL($val1) . '")';
+							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).'")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) <= UNIX_TIMESTAMP("' . pSQL($val2) . '")';	
+							$sub_where = 'UNIX_TIMESTAMP(o'.$i.'.date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).'")';	
 						else
 							$this->displayRuleError($i+1, $this->trad[89]);
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -1064,11 +1064,11 @@ class Segmentation extends Module
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'guest g'.$i.' ON g'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'connections conn'.$i.' ON conn'.$i.'.id_guest = g'.$i.'.id_guest';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(conn'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("' . pSQL($val1) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($val2) . ' 23:59:59")';
+							$sub_where = 'UNIX_TIMESTAMP(conn'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(conn'.$i.'.date_add) >= UNIX_TIMESTAMP("' . pSQL($val1) . ' 00:00:00")';
+							$sub_where = 'UNIX_TIMESTAMP(conn'.$i.'.date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(conn'.$i.'.date_add) <= UNIX_TIMESTAMP("' . pSQL($val2) . ' 23:59:59")';
+							$sub_where = 'UNIX_TIMESTAMP(conn'.$i.'.date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						else
 							$this->displayRuleError($i+1, $this->trad[100]);				
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -1092,7 +1092,7 @@ class Segmentation extends Module
 				$sub_from = _DB_PREFIX_.'customer c'.$i;
 				
 				if ($sub_where)
-					$sub_where = ' AND ' . $sub_where;
+					$sub_where = ' AND '.$sub_where;
 					
 				switch($post['rule_a'][$i])
 				{
@@ -1127,25 +1127,25 @@ class Segmentation extends Module
 					if ($post['fieldSelect'][$j] == 3 && $post['fieldSelect'][$i] != $post['fieldSelect'][$j] && in_array($post['fieldSelect'][$i], $customer_orders)) // order state (implicit case)
 					{
 						if ((int)$post['data'][$j] > 0)
-							$sub_where .= ' AND (SELECT soh'.$i.'.id_order_state FROM '._DB_PREFIX_.'order_history soh'.$i.' WHERE soh'.$i.'.id_order = o'.$i.'.id_order ORDER BY soh'.$i.'.date_add DESC LIMIT 0,1) = ' . (int)$post['data'][$j];
+							$sub_where .= ' AND (SELECT soh'.$i.'.id_order_state FROM '._DB_PREFIX_.'order_history soh'.$i.' WHERE soh'.$i.'.id_order = o'.$i.'.id_order ORDER BY soh'.$i.'.date_add DESC LIMIT 0,1) = '.(int)$post['data'][$j];
 					}
 					
 					if ($post['fieldSelect'][$j] == 4 && $post['fieldSelect'][$i] != $post['fieldSelect'][$j] && in_array($post['fieldSelect'][$i], $customer_orders)) // order payment method (implicit case)
 					{						
 						if (Tools::strlen($post['data'][$j]) > 0)
-							$sub_where .= ' AND o'.$i.'.payment = "' . pSQL($post['data'][$j]) . '"';
+							$sub_where .= ' AND o'.$i.'.payment = "'.pSQL($post['data'][$j]).'"';
 					}
 					
 					if ($post['fieldSelect'][$j] == 15 && $post['fieldSelect'][$i] != $post['fieldSelect'][$j] && in_array($post['fieldSelect'][$i], $customer_orders)) // order gift (implicit case)
 					{
 						if ((int)$post['data'][$j] > 0)
-							$sub_where .= ' AND o'.$i.'.gift = "' . pSQL($post['data'][$j]) . '"';
+							$sub_where .= ' AND o'.$i.'.gift = "'.pSQL($post['data'][$j]).'"';
 					}
 					
 					if ($post['fieldSelect'][$j] == 16 && $post['fieldSelect'][$i] != $post['fieldSelect'][$j] && in_array($post['fieldSelect'][$i], $customer_orders)) // order recycled package (implicit case)
 					{
 						if ((int)$post['data'][$j] > 0)
-							$sub_where .= ' AND o'.$i.'.recyclable = "' . pSQL($post['data'][$j]) . '"';
+							$sub_where .= ' AND o'.$i.'.recyclable = "'.pSQL($post['data'][$j]).'"';
 					}
 					
 					if ($post['fieldSelect'][$j] == 34 && $post['fieldSelect'][$i] != $post['fieldSelect'][$j] && in_array($post['fieldSelect'][$i], $customer_orders)) // order voucher (implicit case)
@@ -1159,43 +1159,43 @@ class Segmentation extends Module
 					if ($post['fieldSelect'][$j] == 28 && $post['fieldSelect'][$i] != $post['fieldSelect'][$j] && in_array($post['fieldSelect'][$i], $customer_orders)) // order date (implicit case)
 					{
 						if (Tools::strlen($post['value1'][$j]) > 0 && Tools::strlen($post['value2'][$j]) > 0)
-							$sub_where_and = 'UNIX_TIMESTAMP(o'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("' . pSQL($post['value1'][$j]) . '") AND UNIX_TIMESTAMP("' . pSQL($post['value2'][$j]) . '")';
+							$sub_where_and = 'UNIX_TIMESTAMP(o'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($post['value1'][$j]).'") AND UNIX_TIMESTAMP("'.pSQL($post['value2'][$j]).'")';
 						elseif (Tools::strlen($post['value1'][$j]) > 0)
-							$sub_where_and = 'UNIX_TIMESTAMP(o'.$i.'.date_add) >= UNIX_TIMESTAMP("' . pSQL($post['value1'][$j]) . '")';
+							$sub_where_and = 'UNIX_TIMESTAMP(o'.$i.'.date_add) >= UNIX_TIMESTAMP("'.pSQL($post['value1'][$j]).'")';
 						elseif (Tools::strlen($post['value2'][$j]) > 0)
-							$sub_where_and = 'UNIX_TIMESTAMP(o'.$i.'.date_add) <= UNIX_TIMESTAMP("' . pSQL($post['value2'][$j]) . '")';	
+							$sub_where_and = 'UNIX_TIMESTAMP(o'.$i.'.date_add) <= UNIX_TIMESTAMP("'.pSQL($post['value2'][$j]).'")';	
 						else
 							$this->displayRuleError($j+1, $this->trad[89]);
 						
-						$sub_where .= ' AND ' . $sub_where_and;
+						$sub_where .= ' AND '.$sub_where_and;
 					}
 					
 					if ($post['fieldSelect'][$j] == 29 && $post['fieldSelect'][$i] != $post['fieldSelect'][$j] && in_array($post['fieldSelect'][$i], $customer_lostcarts)) // lost cart date (implicit case)
 					{											
 						if (Tools::strlen($post['value1'][$j]) > 0 && Tools::strlen($post['value2'][$j]) > 0)
-							$sub_where_and = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) BETWEEN UNIX_TIMESTAMP("' . pSQL($post['value1'][$j]) . '") AND UNIX_TIMESTAMP("' . pSQL($post['value2'][$j]) . '")';
+							$sub_where_and = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) BETWEEN UNIX_TIMESTAMP("'.pSQL($post['value1'][$j]).'") AND UNIX_TIMESTAMP("'.pSQL($post['value2'][$j]).'")';
 						elseif (Tools::strlen($post['value1'][$j]) > 0)
-							$sub_where_and = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) >= UNIX_TIMESTAMP("' . pSQL($post['value1'][$j]) . '")';
+							$sub_where_and = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) >= UNIX_TIMESTAMP("'.pSQL($post['value1'][$j]).'")';
 						elseif (Tools::strlen($post['value2'][$j]) > 0)
-							$sub_where_and = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) <= UNIX_TIMESTAMP("' . pSQL($post['value2'][$j]) . '")';
+							$sub_where_and = 'UNIX_TIMESTAMP(ca'.$i.'.date_upd) <= UNIX_TIMESTAMP("'.pSQL($post['value2'][$j]).'")';
 						else
 							$this->displayRuleError($j+1, $this->trad[103]);
 							
-						$sub_where .= ' AND ' . $sub_where_and;
+						$sub_where .= ' AND '.$sub_where_and;
 					}
 				}
 				
 				if ($sub_groupby)
-					$sub_groupby = ' GROUP BY ' . $sub_groupby;
+					$sub_groupby = ' GROUP BY '.$sub_groupby;
 
 				if ($sub_orderby)
-					$sub_orderby = ' ORDER BY ' . $sub_orderby;
+					$sub_orderby = ' ORDER BY '.$sub_orderby;
 					
 				if ($sub_having)
-					$sub_having = ' HAVING ' . $sub_having;
+					$sub_having = ' HAVING '.$sub_having;
 					
 				if ($sub_limit)
-					$sub_limit = ' LIMIT ' . $sub_limit;
+					$sub_limit = ' LIMIT '.$sub_limit;
 				
 				switch ($rule_a)
 				{
@@ -1222,11 +1222,11 @@ class Segmentation extends Module
 					$sub_joins = array_unique($sub_joins);
 					foreach ($sub_joins as $value)
 					{
-						$sub_join .= ' ' . $value;
+						$sub_join .= ' '.$value;
 					}
 				}
 				
-				$field .=  ' ' . $rule_a . ' ' . $sub_prefix . 'c.id_customer '.$rule_action.' (SELECT '.$sub_field.' FROM '.$sub_from.' '.$sub_join.' WHERE c'.$i.'.id_customer = c.id_customer AND c'.$i.'.deleted = 0' . $sub_where . $sub_groupby . $sub_orderby . $sub_having . $sub_limit . ')' . $sub_sufix;
+				$field .=  ' '.$rule_a.' '.$sub_prefix.'c.id_customer '.$rule_action.' (SELECT '.$sub_field.' FROM '.$sub_from.' '.$sub_join.' WHERE c'.$i.'.id_customer = c.id_customer AND c'.$i.'.deleted = 0'.$sub_where.$sub_groupby.$sub_orderby.$sub_having.$sub_limit.')'.$sub_sufix;
 			}
 		}
 		
@@ -1239,7 +1239,7 @@ class Segmentation extends Module
 				if (Tools::strlen($label) == 0)
 					$label = $value;
 				else
-					$label .= ', ' . $value;
+					$label .= ', '.$value;
 			}
 		}
 		else
@@ -1279,7 +1279,7 @@ class Segmentation extends Module
 			$joins = array_unique($joins);
 			foreach ($joins as $value)
 			{
-				$join .= ' ' . $value;
+				$join .= ' '.$value;
 			}
 		}
 
@@ -1290,7 +1290,7 @@ class Segmentation extends Module
 			foreach ($havings as $value)
 			{
 				if (Tools::strlen($having) > 0)
-					$having .= ' AND ' . $value;
+					$having .= ' AND '.$value;
 				else
 					$having = $value;
 			}
@@ -1299,16 +1299,16 @@ class Segmentation extends Module
 		$select = 'SELECT DISTINCT(c.id_customer) AS "'.$this->ll(47).'", CONCAT(UPPER(LEFT(c.firstname, 1)), LOWER(SUBSTRING(c.firstname FROM 2))) AS "'.$this->ll(48).'", UPPER(c.lastname) AS "'.$this->ll(49).'", LOWER(c.email) AS "'.$this->ll(75).'", ad.phone AS "'.$this->ll(73).'", ad.phone_mobile AS "'.$this->ll(74).'"'.$speField.' '.($label != '' ? ', '.$label : ' ').' FROM '.$from.' '.$join.' WHERE c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL) AND (ad.deleted = 0 OR ad.deleted IS NULL)'.$field;
 		
 		/*if ($post['date_start'] > 0 && $post['date_end'] > 0)
-			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) BETWEEN UNIX_TIMESTAMP("' . $post['date_start'] . ' 00:00:00") AND UNIX_TIMESTAMP("' . $post['date_end'] . ' 23:59:59")';
+			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) BETWEEN UNIX_TIMESTAMP("'.$post['date_start'].' 00:00:00") AND UNIX_TIMESTAMP("'.$post['date_end'].' 23:59:59")';
 		elseif ($post['date_start'] > 0)
-			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) >= UNIX_TIMESTAMP("' . $post['date_start'] . ' 00:00:00")';
+			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) >= UNIX_TIMESTAMP("'.$post['date_start'].' 00:00:00")';
 		elseif ($post['date_end'] > 0)
-			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) <= UNIX_TIMESTAMP("' . $post['date_end'] . ' 23:59:59")';*/
+			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) <= UNIX_TIMESTAMP("'.$post['date_end'].' 23:59:59")';*/
 
 		$select .= ' GROUP BY c.id_customer AND o.id_order, c.id_customer';
 			
 		if ($having)
-			$select .= ' HAVING ' . $having;
+			$select .= ' HAVING '.$having;
 			
 		if ($limit)
 			$select .= ' LIMIT '.(int)$limit['start'].', '.(int)$limit['length'];
@@ -1320,7 +1320,7 @@ class Segmentation extends Module
 	{
 		$sql = 'SELECT id_category
 				FROM '._DB_PREFIX_.'category 
-				WHERE id_parent = ' . (int)$id_category;
+				WHERE id_parent = '.(int)$id_category;
 		
 		$rows = (array)Db::getInstance()->executeS($sql);
 		
@@ -1663,7 +1663,7 @@ class Segmentation extends Module
 		switch ((int)Context::getContext()->cookie->id_lang)
 		{
 			case 2: // fr
-				$date = Tools::substr($date, 8, 2) . '-' . Tools::substr($date, 5, 2) . '-' . Tools::substr($date, 0, 4);
+				$date = Tools::substr($date, 8, 2).'-'.Tools::substr($date, 5, 2).'-'.Tools::substr($date, 0, 4);
 				break;
 			default:
 		}
@@ -1862,7 +1862,7 @@ class Segmentation extends Module
 
 		foreach ($formatRows as $filterId => $formatRow)
 		{
-			$sql = $this->getQuery($formatRow, true) . ' HAVING c.id_customer = '.(int)$id_customer;
+			$sql = $this->getQuery($formatRow, true).' HAVING c.id_customer = '.(int)$id_customer;
 		
 			$result = DB::getInstance()->executeS($sql);
 
@@ -1910,10 +1910,10 @@ class Segmentation extends Module
 			
 			if ($result) {
 				$initialSynchronization->subscribe($customer->email, $mailjetListID);
-				//echo ' ADD filterID ' .$filterId . ' - mailjetListID: ' .  $mailjetListID;
+				//echo ' ADD filterID ' .$filterId.' - mailjetListID: '. $mailjetListID;
 			} else {
 				$initialSynchronization->remove($customer->email, $mailjetListID);
-				//echo ' REMOVE filterID ' .$filterId . ' - mailjetListID: ' .  $mailjetListID;
+				//echo ' REMOVE filterID ' .$filterId.' - mailjetListID: '. $mailjetListID;
 			}
 		}
 		
