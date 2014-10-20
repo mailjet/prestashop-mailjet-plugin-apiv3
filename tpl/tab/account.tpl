@@ -1,4 +1,27 @@
-<!-- Mailjet : Account -->
+{**
+ * 2007-2014 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2014 PrestaShop SA
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
+*}<!-- Mailjet : Account -->
 <form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
 <div id="mj_account_page" class="center_page">
 	<div style="width:455px;float:left;">
@@ -31,28 +54,28 @@
 			</div>
             <div id="mj_account_details_mod" style="display:none;">
             	<div style="width:40%;display:inline-block;">
-	            	{l s='Firstname'}<br />
+	            	{l s='Firstname' mod='mailjet'}<br />
 					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname|default:''}" style="width:90%;" /><br />
 				</div>
                 <div style="width:50%;display:inline-block;">
-					{l s='Lastname'}<br />
+					{l s='Lastname' mod='mailjet'}<br />
 					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname|default:''}" style="width:90%;" /><br />
 				</div>
                 <div style="display:block;">
                     <div style="height:10px;"></div>
-	            	{l s='e-mail'}<br />
+	            	{l s='e-mail' mod='mailjet'}<br />
 					<input type="text" name="MJ_account_contact_email" readonly value="{$infos->Email|default:''}" style="width:90%;background:#f0f0f0;" /><br />
                     <div style="height:10px;"></div>
-	            	{l s='Company'}<br />
+	            	{l s='Company' mod='mailjet'}<br />
 					<input type="text" name="MJ_account_company_name" value="{$infos->CompanyName|default:''}" style="width:90%;" /><br />
-	            	{l s='Address'}<br />
+	            	{l s='Address' mod='mailjet'}<br />
     	            <textarea name="MJ_account_address_street" style="width:90%;height:60px;">{$infos->AddressStreet|default:''}</textarea><br />
                     <div style="height:5px;"></div>
 	                <input type="text" name="MJ_account_address_postal_code" value="{$infos->AddressPostalCode|default:''}" style="width:20%;" />&nbsp;
                   		<input type="text"name="MJ_account_address_city" value="{$infos->AddressCity|default:''}" style="width:40%;" /><br />
                     <div style="height:5px;"></div>
                     <select name="MJ_account_address_country">
-                    	<option>---- {l s='Country'} ----</option>
+                    	<option>---- {l s='Country' mod='mailjet'} ----</option>
                     	{foreach $countries as $pays}
                         	<option value="{$pays.iso_code|default:''}"{if $pays.iso_code==$infos->AddressCountry} selected{/if}>{$pays.name|default:''}</option>
                         {/foreach}
@@ -100,20 +123,20 @@
 		<fieldset>
 			<legend>{l s='Tracking' mod='mailjet'}</legend>
             <div id="mj_account_tracking">
-		    	<p>{l s='Tracking of openers' mod='mailjet'} : {if $tracking->tracking_openers}{l s='yes'}{else}{l s='no'}{/if}</p>
-		        <p>{l s='Tracking of links' mod='mailjet'} : {if $tracking->tracking_clicks}{l s='yes'}{else}{l s='no'}{/if}</p>
+		    	<p>{l s='Tracking of openers' mod='mailjet'} : {if $tracking->tracking_openers}{l s='yes' mod='mailjet'}{else}{l s='no' mod='mailjet'}{/if}</p>
+		        <p>{l s='Tracking of links' mod='mailjet'} : {if $tracking->tracking_clicks}{l s='yes' mod='mailjet'}{else}{l s='no' mod='mailjet'}{/if}</p>
 			    <a href="javascript:;" onClick="$('#mj_account_tracking_mod').show();$('#mj_account_tracking').hide();" class="savebutton button">{l s='Modify' mod='mailjet'}</a>
 		    </div>
             <div id="mj_account_tracking_mod" style="display:none;">
             	<p>
                 	<label>{l s='Tracking of openers' mod='mailjet'}</label>
-					<input type="radio" name="MJ_account_tracking_openers" id="MJ_account_tracking_openers_1" value=1 {if $tracking->tracking_openers}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_openers_1').click()">{l s='yes'}</a>
-                     &nbsp; <input type="radio" name="MJ_account_tracking_openers" id="MJ_account_tracking_openers_0" value=0 {if !$tracking->tracking_openers}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_openers_0').click()">{l s='no'}</a><br />
+					<input type="radio" name="MJ_account_tracking_openers" id="MJ_account_tracking_openers_1" value=1 {if $tracking->tracking_openers}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_openers_1').click()">{l s='yes' mod='mailjet'}</a>
+                     &nbsp; <input type="radio" name="MJ_account_tracking_openers" id="MJ_account_tracking_openers_0" value=0 {if !$tracking->tracking_openers}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_openers_0').click()">{l s='no' mod='mailjet'}</a><br />
 				</p>
             	<p>
                 	<label>{l s='Tracking of links' mod='mailjet'}</label>
-					<input type="radio" name="MJ_account_tracking_clicks" id="MJ_account_tracking_clicks_1" value=1 {if $tracking->tracking_clicks}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_clicks_1').click()">{l s='yes'}</a>
-                     &nbsp; <input type="radio" name="MJ_account_tracking_clicks" id="MJ_account_tracking_clicks_0" value=0 {if !$tracking->tracking_clicks}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_clicks_0').click()">{l s='no'}</a><br />
+					<input type="radio" name="MJ_account_tracking_clicks" id="MJ_account_tracking_clicks_1" value=1 {if $tracking->tracking_clicks}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_clicks_1').click()">{l s='yes' mod='mailjet'}</a>
+                     &nbsp; <input type="radio" name="MJ_account_tracking_clicks" id="MJ_account_tracking_clicks_0" value=0 {if !$tracking->tracking_clicks}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_clicks_0').click()">{l s='no' mod='mailjet'}</a><br />
 				</p>
 				<div style="height:40px;"></div>
 			    <input type="submit" name="MJ_set_account_tracking" value="{l s='Save' mod='mailjet'}" class="savebutton button" />

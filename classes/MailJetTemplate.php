@@ -1,30 +1,30 @@
 <?php
-/*
-* 2007-2014 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-* @author PrestaShop SA <contact@prestashop.com>
-* @copyright  2007-2014 PrestaShop SA
-* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-* International Registered Trademark & Property of PrestaShop SA
+/**
+ * 2007-2014 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2014 PrestaShop SA
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
 */
 
-include_once(dirname(__FILE__).'/../mailjet.php'); // **
+include_once(dirname(__FILE__).'/../mailjet.php');
 
 include_once(dirname(__FILE__).'/../libraries/Mailjet.Api.class.php');
 include_once(dirname(__FILE__).'/../libraries/Mailjet.Overlay.class.php');
@@ -34,9 +34,9 @@ class MailjetTemplate
 	static private $api = null;
 	static private $dataApi = null;
 
-	// List of available template for webservice call
+	/* List of available template for webservice call */
 	private $templates = array(
-		// SETUP_LANDING
+		/* SETUP_LANDING */
 		'setup_landing_message' => array(
 			'params' => array('name' => 'setup_landing_message'),
 			'html' => ''
@@ -50,7 +50,7 @@ class MailjetTemplate
 			'html' => ''
 		),
 
-		// SETUP_STEP_0
+		/* SETUP_STEP_0 */
 		'setup_hosting_error_bt_support' => array(
 			'params' => array('name' => 'setup_hosting_error_bt_support'),
 			'html' => ''
@@ -75,17 +75,16 @@ class MailjetTemplate
 	 */
 	public static function getApi($with_overlay = true)
 	{
-
 		$obj = new Mailjet();
 		if ($with_overlay)
 		{
 			MailjetTemplate::$api = Mailjet_ApiOverlay::getInstance();
 			MailjetTemplate::$api->setKeys($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
-			MailjetTemplate::$api->secure(FALSE);
-
-		} else {
-			MailjetTemplate::$api = new Mailjet_Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+			MailjetTemplate::$api->secure(false);
 		}
+		else
+			MailjetTemplate::$api = new Mailjet_Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+
 		unset($obj);
 	
 		return MailjetTemplate::$api;
@@ -93,7 +92,10 @@ class MailjetTemplate
 	
 	public static function getDataApi()
 	{
-		if (self::$dataApi === null) {
+		$obj = new Mailjet(); // ** **
+		
+		if (self::$dataApi === null)
+		{
 			self::$dataApi = mailjetdata::getInstance();
 			self::$dataApi->setKeys($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
 		}
@@ -115,7 +117,7 @@ class MailjetTemplate
 		if (file_exists($file) && ($xml = simplexml_load_file($file)))
 		{
 			foreach ($xml->iframe as $iframe)
-				$this->iframes_url[(string)$iframe['name']] = (string)(str_replace("{lang}",$lang,$iframe));
+				$this->iframes_url[(string)$iframe['name']] = (string)(str_replace('{lang}', $lang, $iframe));
 			return true;
 		}
 
@@ -135,9 +137,10 @@ class MailjetTemplate
 			$context = Context::getContext();
 			$lang = $context->language->iso_code; 
 			
-			$file = dirname(__FILE__).'/../translations/templates/'.$lang.'/'.$name. '.txt';
+			$file = dirname(__FILE__).'/../translations/templates/'.$lang.'/'.$name.'.txt';
 			
-			if (file_exists($file)) {
+			if (file_exists($file))
+			{
 				$template = Tools::file_get_contents($file);
 				$this->templates[$name]['html'] = $template;
 				return true;
@@ -159,8 +162,8 @@ class MailjetTemplate
 		//$lang = 'app'; // <== pout les Tests : TODO
 
 		$token = Tools::getAdminTokenLite('AdminModules');
-		$signUpCallBack = urlencode("http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_signup.php?internaltoken=" . $token);
-		$url = "https://".$lang.".mailjet.com/reseller/signup?r=prestashop&cb={$signUpCallBack}&show_menu=none";
+		$signUpCallBack = urlencode('http://'.Configuration::get('PS_SHOP_DOMAIN').'/modules/mailjet/callback_signup.php?internaltoken='.$token);
+		$url = 'https://'.$lang.'.mailjet.com/reseller/signup?r=prestashop&cb={'.$signUpCallBack.'}&show_menu=none';
 
 		$this->iframes_url[$name] = $url;
 	}
@@ -171,7 +174,7 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		//$lang = 'app'; // <== pout les Tests : TODO
 
-		$url = "https://".$lang.".mailjet.com/campaigns?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amsc";
+		$url = 'https://'.$lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb=http://'.Configuration::get('PS_SHOP_DOMAIN').'/modules/mailjet/callback_campaign.php&show_menu=none&f=amsc';
 		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
@@ -182,11 +185,10 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		//$lang = 'app'; // <== pout les Tests : TODO
 	
-		if ($token) {
-			$url = "https://".$lang.".mailjet.com/reseller/pricing?t=".$token."&r=prestashop&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none";
-		} else {
-			$url = "https://".$lang.".mailjet.com/reseller/pricing?r=prestashop&show_menu=none";
-		}
+		if ($token)
+			$url = 'https://'.$lang.'.mailjet.com/reseller/pricing?t='.$token.'&r=prestashop&cb=http://'.Configuration::get('PS_SHOP_DOMAIN').'/modules/mailjet/callback_campaign.php&show_menu=none';
+		else
+			$url = 'https://'.$lang.'.mailjet.com/reseller/pricing?r=prestashop&show_menu=none';
 		
 		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
@@ -199,7 +201,7 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		//$lang = 'app'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/stats?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
+		$url = 'https://'.$lang.'.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb=http://'.Configuration::get('PS_SHOP_DOMAIN').'/modules/mailjet/callback_campaign.php&show_menu=none&f=amc';
 		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
@@ -210,7 +212,7 @@ class MailjetTemplate
 		$lang = $context->language->iso_code; // language_code
 		//$lang = 'app'; // <== pout les Tests : TODO
 	
-		$url = "https://".$lang.".mailjet.com/contacts?t=".$token."&r=Prestashop-3.0&cb=http://".Configuration::get('PS_SHOP_DOMAIN')."/modules/mailjet/callback_campaign.php&show_menu=none&f=amc";
+		$url = 'https://'.$lang.'.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb=http://'.Configuration::get('PS_SHOP_DOMAIN').'/modules/mailjet/callback_campaign.php&show_menu=none&f=amc';
 		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}

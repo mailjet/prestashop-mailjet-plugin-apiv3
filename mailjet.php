@@ -1,27 +1,27 @@
 <?php
-/*
-* 2007-2014 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-* @author PrestaShop SA <contact@prestashop.com>
-* @copyright  2007-2014 PrestaShop SA
-* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-* International Registered Trademark & Property of PrestaShop SA
+/**
+ * 2007-2014 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2014 PrestaShop SA
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
 */
 
 // Security
@@ -33,7 +33,8 @@ include_once(dirname(__FILE__).'/classes/MailJetTranslate.php');
 include_once(dirname(__FILE__).'/classes/MailJetTemplate.php');
 include_once(dirname(__FILE__).'/classes/MailJetPages.php');
 include_once(dirname(__FILE__).'/classes/MailJetEvents.php');
-include_once(dirname(__FILE__).'/segmentation/segmentation.php');
+//include_once(dirname(__FILE__).'/segmentation/segmentation.php');
+include_once(dirname(__FILE__).'/segmentation.php');
 include_once(dirname(__FILE__).'/classes/MailJetLog.php');
 
 include_once(_PS_SWIFT_DIR_.'Swift.php');
@@ -147,13 +148,12 @@ class Mailjet extends Module
 			$this->context = Context::getContext();
 		else
 		{
-			global $smarty, $cookie, $cart;
 			$this->context = new StdClass();
-			$this->context->smarty = $smarty;
-			$this->context->cookie = $cookie;
+			$this->context->smarty = $GLOBALS['smarty'];
+			$this->context->cookie = $GLOBALS['cookie'];
 			// ###########################**°
-			$this->context->language = new Language($cookie->id_lang);
-			$this->context->currency = new Currency($cookie->id_lang);
+			$this->context->language = new Language($this->context->cookie->id_lang);
+			$this->context->currency = new Currency($this->context->cookie->id_lang);
 			$this->context->link = new Link();
 			$this->context->shop = new Shop();
 		}
@@ -175,6 +175,7 @@ class Mailjet extends Module
 		$segmentation = new Segmentation();
 
 		// Install SQL
+		$sql = array();
 		include(dirname(__FILE__).'/sql/install.php');
 		foreach ($sql as $s)
 			if (!Db::getInstance()->execute($s))
@@ -214,6 +215,7 @@ class Mailjet extends Module
 		$segmentation = new Segmentation();
 
 		// Uninstall SQL
+		$sql = array();
 		include(dirname(__FILE__).'/sql/uninstall.php');
 		foreach ($sql as $s)
 			if (!Db::getInstance()->execute($s))
@@ -326,7 +328,7 @@ class Mailjet extends Module
 	{
  		$customer = $params['return'];
  		
- 		$initialSynchronization = new Hooks_Synchronization_SingleUser(
+ 		$initialSynchronization = new HooksSynchronizationSingleUser(
  			MailjetTemplate::getApi()
  		);
 		
@@ -367,7 +369,7 @@ class Mailjet extends Module
 	{
 		$customer = $params['return'];
 
-		$initialSynchronization = new Hooks_Synchronization_SingleUser(
+		$initialSynchronization = new HooksSynchronizationSingleUser(
 			MailjetTemplate::getApi()
 		);
 	
@@ -400,7 +402,7 @@ class Mailjet extends Module
 			return;
 		}
 
-		$singleUserSynchronization = new Hooks_Synchronization_SingleUser(
+		$singleUserSynchronization = new HooksSynchronizationSingleUser(
 			MailjetTemplate::getApi()
 		);
 	
@@ -419,7 +421,7 @@ class Mailjet extends Module
 	{
 		return;
 		
-		
+		/*
 		$api = MailjetTemplate::getApi();
 		$customer = new Customer((int)Tools::getValue('id_customer'));
 
@@ -440,6 +442,7 @@ class Mailjet extends Module
 		$total = count($data);
 		$this->context->smarty->assign('MJ_stats', array(array_slice($data, 0, $total / 2), array_slice($data, $total / 2)));
 		return $this->fetchTemplate('/tpl/', 'customer');
+		*/
 	}
 	
 	/**
@@ -450,7 +453,7 @@ class Mailjet extends Module
 	 */
 	public function hookCreateAccount($params)
 	{
-		$initialSynchronization = new Hooks_Synchronization_SingleUser(
+		$initialSynchronization = new HooksSynchronizationSingleUser(
 			MailjetTemplate::getApi()
 		);
 		
@@ -476,7 +479,7 @@ class Mailjet extends Module
 	public function hookCustomerAccount($params)
 	{
 	
-		$initialSynchronization = new Hooks_Synchronization_SingleUser(
+		$initialSynchronization = new HooksSynchronizationSingleUser(
 				MailjetTemplate::getApi()
 		);
 	
@@ -582,7 +585,7 @@ class Mailjet extends Module
 					NULL,//Tools::getValue('MJ_account_contact_email'),
 					Tools::getValue('MJ_account_firstname'),
 					Tools::getValue('MJ_account_lastname'),
-					$locale = NULL);
+					NULL);//$locale = NULL
 		}
 		// Account settings : tracking
 		if (Tools::isSubmit('MJ_set_account_tracking'))
@@ -649,7 +652,7 @@ class Mailjet extends Module
 		}
 		
 		$this->mj_template = new MailjetTemplate();
-		$this->page_name = $this->mj_pages->getCurrentPageName($this->isAccountSet());
+		$this->page_name = $this->mj_pages->getCurrentPageName();//$this->isAccountSet());
 		$this->postProcess();
 
 		$this->context->smarty->assign(array("is_landing" => false));
@@ -804,6 +807,7 @@ class Mailjet extends Module
 		$is_domains = 0;
 		$domains = array();
 
+		$domains = array();
 		$senders = array();
 		if ($sendersFromApi) {
 			foreach ($sendersFromApi as $sender) {
@@ -818,7 +822,7 @@ class Mailjet extends Module
 				$is_senders = 1;
 
 				if (isset($sender->DNS)) {
-					if (($sender->DNS->Domain ==Configuration::get('PS_SHOP_DOMAIN')) || ($domain->domain==Configuration::get('PS_SHOP_DOMAIN_SSL')) ) {
+					if (($sender->DNS->Domain ==Configuration::get('PS_SHOP_DOMAIN')) || ($sender->DNS->Domain==Configuration::get('PS_SHOP_DOMAIN_SSL')) ) {//($domain->domain==Configuration::get('PS_SHOP_DOMAIN_SSL')) ) {
 						$available_domain = 1;
 						if (file_exists(dirname(__FILE__).'/../../'.$sender->Filename)) {
 							$root_file = 1;
@@ -870,7 +874,7 @@ class Mailjet extends Module
 							"country" => $country,
 							"language" => $language,
 							"domains" => $domains,
-							"tracking" => $tracking,
+							//"tracking" => $tracking,
 							"sender" => $senders,
 							"is_senders" => $is_senders,
 							"is_domains" => $is_domains,
@@ -1052,6 +1056,8 @@ public function getTriggers()
 
 public function createTriggers()
 {
+	$subject = array();
+	$mail = array();
 	include(dirname(__FILE__).'/tpl/mails/templates.php');
 	$languages = Language::getLanguages();
 
@@ -1175,8 +1181,9 @@ protected function _getPlan()
 public function checkPlanValidity()
 {
 
-	$test = new Mailjet_ApiOverlay($this->account['API_KEY'],$this->account['SECRET_KEY']);
+	/*$test = */new Mailjet_ApiOverlay($this->account['API_KEY'],$this->account['SECRET_KEY']);
 	return;
+	/*
 	$plan = $test->getUserPlan();
 
 	if (Tools::getValue('MJ_request_page') != "PRICING" && ($plan->uname == "free" || $plan->uname == "bronze"))
@@ -1186,6 +1193,7 @@ public function checkPlanValidity()
 		//header("Location: index.php?tab=AdminModules&configure=mailjet&token=".Tools::getValue('token')."&module_name=mailjet&MJ_request_page=PRICING");
 		//die();
 	}
+	*/
 }
 
 public function auth($apiKey, $secretKey)
@@ -1235,7 +1243,7 @@ public function initilSynchronize()
 		return false;
 	}
 	
-	$initialSynchronization = new Hooks_Synchronization_Initial(
+	$initialSynchronization = new HooksSynchronizationInitial(
 			MailjetTemplate::getApi()
 	);
 	

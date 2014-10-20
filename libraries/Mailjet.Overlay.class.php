@@ -1770,7 +1770,8 @@ class Mailjet_ApiOverlay
 		
 		
     	$this->_api->setVersion('DATA')->newsletter($params);
-    	$call_newsletter_html = $this->mailjetdata->DATA('GET', 'NewsLetter', $newsletterID, 'HTML', 'text/html', 'LAST', NULL, get_app_id());
+		$appId = NULL;//get_app_id();
+    	$call_newsletter_html = $this->mailjetdata->DATA('GET', 'NewsLetter', $newsletterID, 'HTML', 'text/html', 'LAST', NULL, $appId);
     	 
     	 
     	$respones = $this->_api->getResponse();

@@ -1,27 +1,27 @@
 <?php
-/*
-* 2007-2014 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-* @author PrestaShop SA <contact@prestashop.com>
-* @copyright  2007-2014 PrestaShop SA
-* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-* International Registered Trademark & Property of PrestaShop SA
+/**
+ * 2007-2014 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2014 PrestaShop SA
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
 */
 
 class MailJetEvents extends ObjectModel
@@ -61,9 +61,11 @@ class MailJetEvents extends ObjectModel
 	 */
 	public function __construct($event = MailJetEvents::DEFAULT_EVENT, $post_vars = array(), $time = false, $id_events = false)
 	{
+		if (!$time) $time = time();
+		
 		$this->post_vars = $post_vars;
 		$this->params['event'] = array('value' => $event, 'type' => 'string');
-		$this->params['time'] = array('value' => time(), 'type' => 'int');
+		$this->params['time'] = array('value' => $time, 'type' => 'int');
 
 		$this->initScheme();
 
@@ -89,7 +91,7 @@ class MailJetEvents extends ObjectModel
 
 		$file = dirname(__FILE__).'/../xml/events.xml';
 		$scheme = array();
-		$log = 'Scheme not found';
+		//...$log = 'Scheme not found';
 
 		if (file_exists($file) && ($xml = simplexml_load_file($file)))
 		{
@@ -100,7 +102,7 @@ class MailJetEvents extends ObjectModel
 					foreach ($event->key as $key)
 						if (isset($this->post_vars[(string)$key])) // **
 							$scheme[(string)$key] = array('value' => $this->post_vars[(string)$key], 'type' => (string)$key['type']);
-					$log = 'Scheme found';
+					//...$log = 'Scheme found';
 				}
 		}
 
@@ -139,11 +141,11 @@ class MailJetEvents extends ObjectModel
 		foreach ($this->getFieldsName($default) as $key => $title)
 			$select[] = $key;
 
-		if(($key = array_search("agent", $select)) !== false) unset($select[$key]);
-		if(($key = array_search("ip", $select)) !== false) unset($select[$key]);
-		if(($key = array_search("geo", $select)) !== false) unset($select[$key]);
-		if(($key = array_search("original_address", $select)) !== false) unset($select[$key]);
-		if(($key = array_search("new_address", $select)) !== false) unset($select[$key]);
+		if (($key = array_search('agent', $select)) !== false) unset($select[$key]);
+		if (($key = array_search('ip', $select)) !== false) unset($select[$key]);
+		if (($key = array_search('geo', $select)) !== false) unset($select[$key]);
+		if (($key = array_search('original_address', $select)) !== false) unset($select[$key]);
+		if (($key = array_search('new_address', $select)) !== false) unset($select[$key]);
 
 		$query = 'SELECT `'.$this->identifier.'`, '.implode(',', $select).' FROM `'._DB_PREFIX_.$this->table.'` e ';
 		if ($this->params['event']['value'] && $this->params['event']['value'] != MailJetEvents::ALL_EVENTS_KEYS)
@@ -222,7 +224,7 @@ class MailJetEvents extends ObjectModel
 
 		foreach ($this->params as $key => $content)
 		{
-			switch($content['type'])
+			switch ($content['type'])
 			{
 				case 'string':
 					$content['value'] = pSQL($content['value']);

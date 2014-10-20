@@ -212,7 +212,8 @@ class mailjetdata
         if (isset($secretKey))
             $this->_secretKey = $secretKey;
         $this->_api_url = 'http://'.$this->_api_url.$this->_version;
-        $this->_api = new Api($this->_apiKey, $this->_secretKey, $secure);
+		//$this->_api = new Api($this->_apiKey, $this->_secretKey, $secure);
+		$this->_api = new Mailjet_Api($this->_apiKey, $this->_secretKey);
         $this->secure($secure);
     }
 

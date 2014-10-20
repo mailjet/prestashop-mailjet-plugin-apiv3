@@ -1,35 +1,34 @@
 <?php
-/*
-* 2007-2014 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-* @author PrestaShop SA <contact@prestashop.com>
-* @copyright  2007-2014 PrestaShop SA
-* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-* International Registered Trademark & Property of PrestaShop SA
+/**
+ * 2007-2014 PrestaShop
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@prestashop.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+ * versions in the future. If you wish to customize PrestaShop for your
+ * needs please refer to http://www.prestashop.com for more information.
+ *
+ * @author    PrestaShop SA <contact@prestashop.com>
+ * @copyright 2007-2014 PrestaShop SA
+ * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ * International Registered Trademark & Property of PrestaShop SA
 */
-
 
 /**
  * 
  * @author atanas
  */
-class Hooks_Synchronization_Initial extends Hooks_Synchronization_SynchronizationAbstract
+class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbstract
 {
 	
 
@@ -40,8 +39,9 @@ class Hooks_Synchronization_Initial extends Hooks_Synchronization_Synchronizatio
 	 */
 	public function synchronize()
 	{
-		if ($masterListId = $this->_getAlreadyCteatedMasterListId()) {
-			$segmentSynch = new Hooks_Synchronization_Segment($this->_getApiOverlay());
+		if ($masterListId = $this->_getAlreadyCteatedMasterListId())
+		{
+			$segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
 			$segmentSynch->deleteList($masterListId);
 		}
 		
@@ -54,49 +54,44 @@ class Hooks_Synchronization_Initial extends Hooks_Synchronization_Synchronizatio
 		
 		$newMailjetList = $apiOverlay->createContactsListP($params);
 		
-		if (!$newMailjetList || !isset($newMailjetList->ID)) {
-			throw new Hooks_Synchronization_Exception("There is a problem with the list's creation.");
-		}
+		if (!$newMailjetList || !isset($newMailjetList->ID))
+			throw new HooksSynchronizationException('There is a problem with the list\'s creation.');
 		
 		$newlyCreatedListId = $newMailjetList->ID;
 		
-		if (!is_numeric($newlyCreatedListId)) {
-			throw new Hooks_Synchronization_Exception("The API response is not correct.");
-		}
-		
+		if (!is_numeric($newlyCreatedListId))
+			throw new HooksSynchronizationException('The API response is not correct.');
 		
 		$allUsers = $this->_getAllActiveCustomers();
 		
-		if (count($allUsers) === 0) {
-			throw new Hooks_Synchronization_Exception("You don't have any users in the database.");
-		}
+		if (count($allUsers) === 0)
+			throw new HooksSynchronizationException('You don\'t have any users in the database.');
 		
 		$contacts = array();
 		
-		foreach ($allUsers as $user) {
+		foreach ($allUsers as $user)
 			$contacts[] = $user['email'];
-		}
 		
-		$stringContacts = implode(" ", $contacts);
+		$stringContacts = implode(' ', $contacts);
 		
 		$apiResponse = $apiOverlay->createContacts(
 			$stringContacts, $newlyCreatedListId
 		);
 		
-		if (!isset($apiResponse->ID)) {
-			$segmentSynch = new Hooks_Synchronization_Segment($this->_getApiOverlay());
+		if (!isset($apiResponse->ID))
+		{
+			$segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
 			$segmentSynch->deleteList($newlyCreatedListId);
 			
-			throw new Hooks_Synchronization_Exception("There is a problem with the creation of the contacts.");
+			throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
 		}
 			
 		$batchJobResponse = $apiOverlay->batchJobContacts(
 			$newlyCreatedListId, $apiResponse->ID
 		);
 		
-		if ($batchJobResponse == false) {
-			throw new Hooks_Synchronization_Exception("Batchjob problem");
-		}
+		if ($batchJobResponse == false)
+			throw new HooksSynchronizationException('Batchjob problem');
 		
 		return $newlyCreatedListId;
 	}
@@ -108,12 +103,12 @@ class Hooks_Synchronization_Initial extends Hooks_Synchronization_Synchronizatio
 	 */
 	private function _getAllActiveCustomers()
 	{
-		return $this->getDbInstance()->executeS("
+		return $this->getDbInstance()->executeS('
 			SELECT email 
-			FROM "._DB_PREFIX_."customer 
+			FROM '._DB_PREFIX_.'customer 
 			WHERE active = 1 
 			AND deleted = 0
-		");
+		');
 	}
 
 }
