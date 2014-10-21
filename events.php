@@ -24,9 +24,6 @@
  * International Registered Trademark & Property of PrestaShop SA
 */
 
-// if ($_SERVER['PHP_AUTH_USER'] != "mailjet" || $_SERVER['PHP_AUTH_PW'] != "MJPSMOD9463PWD")
-// 	die("ERROR, no access granted...");
-
 include_once(realpath(dirname(__FILE__).'/../../').'/config/config.inc.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetLog.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetTranslate.php');
@@ -37,19 +34,21 @@ require_once(dirname(__FILE__).'/mailjet.php');
 
 $mj = new Mailjet();
 
-if ($mj->getEventsHash() !== Tools::getValue('h')) {
+if ($mj->getEventsHash() !== Tools::getValue('h'))
+{
 	header('HTTP/1.1 401 Unauthorized');
 	return;
 }
 
 # Catch Event
 $post = trim(Tools::file_get_contents('php://input'));
-//mail("astoyanov@mailjet.com", "", print_r($post, true));
+/* mail("astoyanov@mailjet.com", "", print_r($post, true)); */
 
 # No Event sent
-if(empty($post)) {
+if (empty($post))
+{
 	header('HTTP/1.1 421 No event');
-	// => do action
+	/* => do action */
 	return;
 }
 
@@ -57,12 +56,12 @@ if(empty($post)) {
 $t = Tools::jsonDecode($post, true);
 
 # No Informations sent with the Event
-if(!is_array($t) || !isset($t['event'])) {
+if (!is_array($t) || !isset($t['event']))
+{
 	header('HTTP/1.1 422 Not ok');
-	// => do action
+	/* => do action */
 	return;
 }
-
 
 $events = new MailJetEvents($t['event'], $t);
 
@@ -70,48 +69,49 @@ $events = new MailJetEvents($t['event'], $t);
  *	Event handler 
  *	- please check https://www.mailjet.com/docs/event_tracking for further informations.
  */
-
-switch($t['event']) {
+switch ($t['event'])
+{
 	case 'open':
-		// => do action
-		// If an error occurs, tell Mailjet to retry later: header('HTTP/1.1 400 Error');
-		// If it works, tell Mailjet it's OK
+		/* => do action */
+		/* If an error occurs, tell Mailjet to retry later: header('HTTP/1.1 400 Error'); */
+		/* If it works, tell Mailjet it's OK */
 		header('HTTP/1.1 200 Ok');
 		break;
+		
 	case 'click':
-		// => do action
+		/* => do action */
 		break;
 	
 	case 'bounce':
-		// => do action
+		/* => do action */
 		$events->add();
 		break;
 
 	case 'spam':
-		// => do action
+		/* => do action */
 		$events->add();
 		break;
 
 	case 'blocked':
-		// => do action
+		/* => do action */
 		$events->add();
 		break;
 
 	case 'unsub':
-		// => do action
+		/* => do action */
 		$hooksEvents = new HooksEvents();
 		$hooksEvents->unsubscribe($t);
 		break;
 
 	case 'typofix':
-		// => do action
+		/* => do action */
 		$events->add();
 		break;
 		
 	# No handler
 	default:
 		header('HTTP/1.1 423 No handler');
-		// => do action
+		/* => do action */
 		break;
 }
 

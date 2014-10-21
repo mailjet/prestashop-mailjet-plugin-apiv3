@@ -26,8 +26,6 @@
 
 include_once(dirname(__FILE__).'/Exception.php');
 
-
-
 /**
  * 
  * @author atanas
@@ -35,13 +33,13 @@ include_once(dirname(__FILE__).'/Exception.php');
  */
 abstract class HooksSynchronizationSynchronizationAbstract
 {
-	
+
 	/**
 	 *
 	 * @var string
 	 */
 	const LIST_NAME = 'PrestaShop Customers Master List';
-	
+
 	/**
 	 * 
 	 * @var int
@@ -53,8 +51,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 	 * @var ApiOverlay
 	 */
 	protected $_apiOverlay;
-	
-	
+
 	/**
 	 * 
 	 * @param Mailjet_ApiOverlay $apiOverlay
@@ -63,7 +60,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 	{
 		$this->_apiOverlay = $apiOverlay;
 	}
-	
+
 	/**
 	 * 
 	 * @return Mailjet_ApiOverlay
@@ -72,7 +69,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 	{
 		return $this->_apiOverlay;
 	}
-	
+
 	/**
 	 * 
 	 * @return Api
@@ -81,7 +78,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 	{
 		return $this->_getApiOverlay()->getApi();
 	}
-	
+
 	/**
 	 * 
 	 * @throws Exception
@@ -94,7 +91,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 		
 		return Db::getInstance();
 	}
-	
+
 	/**
 	 *
 	 * @return number|boolean
@@ -114,10 +111,9 @@ abstract class HooksSynchronizationSynchronizationAbstract
 				}
 			}
 		}
-	
 		return $this->_masterListId;
 	}
-	
+
 }
 
 ?>

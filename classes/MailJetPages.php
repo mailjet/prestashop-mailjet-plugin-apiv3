@@ -76,9 +76,9 @@ class MailJetPages
 		$file = dirname(__FILE__).'/../xml/template.xml';
 		if (file_exists($file) && ($xml = simplexml_load_file($file)))
 		{
-			$this->default_page = (string)(($this->current_authentication) ?
-				$xml->tabs->tab->default_page['name'] :
-				$xml->pages->default_page['name']);
+			$this->default_page = ($this->current_authentication ?
+				(string)$xml->tabs->tab->default_page['name'] :
+				(string)$xml->pages->default_page['name']);
 
 			// Get simple pages, by default set the name key as a translation to any avoid empty string
 			foreach ($xml->pages->page as $page)
@@ -90,10 +90,10 @@ class MailJetPages
 				$this->require_authentication_pages[] = (string)$page['name'];
 				$this->available_page[(string)$page['name']] = '';
 			}
-			
 
 			// Get translation from xml
-			return (bool)(count($this->available_page) && $this->initPagesTranslation());
+			$ret = count($this->available_page) && $this->initPagesTranslation();
+			return (bool)$ret;
 		}
 		return false;
 	}
@@ -163,7 +163,7 @@ class MailJetPages
 	 */
 	public function isAvailablePage($name)
 	{
-		return (bool)(array_key_exists($name, $this->available_page));
+		return (bool)array_key_exists($name, $this->available_page);
 	}
 
 	/**

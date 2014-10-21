@@ -25,8 +25,8 @@
 */
 
 $post = trim(Tools::file_get_contents('php://input'));
-//mail("guillaume@dream-me-up.fr", "callback ajax mailjet", $post.print_r($_POST, true).print_r($_GET, true));
-//die();
+/* mail("guillaume@dream-me-up.fr", "callback ajax mailjet", $post.print_r($_POST, true).print_r($_GET, true)); */
+/* die(); */
 
 require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
 

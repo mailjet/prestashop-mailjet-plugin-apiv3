@@ -35,118 +35,117 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 	 * @param string $email
 	 * @return boolean
 	 */
-	public function subscribe($email, $listId = null)
+	public function subscribe($email, $list_id = null)
 	{
 		$api = $this->_getApi();
-		$updateListId = $listId ? $listId : $this->_getAlreadyCteatedMasterListId();
+		$update_list_id = $list_id ? $list_id : $this->_getAlreadyCteatedMasterListId();
 
-		$addParams = array(
+		$add_params = array(
 			'method'  	=> 'JSON',
 			'Action'  	=> 'Add',
 			'Force'  	=> true,
 			'Addresses' => array($email),
-			'ListID'  	=> $updateListId
+			'ListID'  	=> $update_list_id
 		);
-		
+
 		$api->resetRequest();
-		$response = $api->manycontacts($addParams);
-		
+		$response = $api->manycontacts($add_params);
+
 		if ($response && $response->Count > 0)
 			return true;
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * 
 	 * @param string $email
 	 * @return boolean
 	 */
-	public function unsubscribe($email, $listId = null)
+	public function unsubscribe($email, $list_id = null)
 	{
 		$api = $this->_getApi();
-		
-		if ($listId)
+
+		if ($list_id)
 		{
-			$addParams = array(
+			$add_params = array(
 				'method'  	=> 'JSON',
 				'Action'  	=> 'Unsubscribe',
 				'Force'  	=> true,
 				'Addresses' => array($email),
-				'ListID'  	=> $listId
+				'ListID'  	=> $list_id
 			);
-			
+
 			$api->resetRequest();
-			$response = $api->manycontacts($addParams);
+			$response = $api->manycontacts($add_params);
 		}
 		else
 		{
 			$apiOverlay = $this->_getApiOverlay();
-			
+
 			$lists = $apiOverlay->getContactsLists();
-			
+
 			foreach ($lists as $list)
 			{
-				$addParams = array(
+				$add_params = array(
 					'method'  	=> 'JSON',
 					'Action'  	=> 'Unsubscribe',
 					'Force'  	=> true,
 					'Addresses' => array($email),
 					'ListID'  	=> $list->ID
 				);
-				
+
 				$api->resetRequest();
-				$response = $api->manycontacts($addParams);
+				$response = $api->manycontacts($add_params);
 			}
 		}
 
 		if ($response && $response->Count > 0)
 			return true;
-	
+
 		return false;
 	}
 
-	
 	/**
 	 *
 	 * @param string $email
 	 * @return boolean
 	 */
-	public function remove($email, $listId = null)
+	public function remove($email, $list_id = null)
 	{
 		$api = $this->_getApi();
-		
-		if ($listId)
+
+		if ($list_id)
 		{
-			$addParams = array(
+			$add_params = array(
 				'method'  	=> 'JSON',
 				'Action'  	=> 'Remove',
 				'Force'  	=> true,
 				'Addresses' => array($email),
-				'ListID'  	=> $listId
+				'ListID'  	=> $list_id
 			);
-			
+
 			$api->resetRequest();
-			$response = $api->manycontacts($addParams);
+			$response = $api->manycontacts($add_params);
 		}
 		else
 		{
 			$apiOverlay = $this->_getApiOverlay();
-			
+
 			$lists = $apiOverlay->getContactsLists();
-			
+
 			foreach ($lists as $list)
 			{
-				$addParams = array(
+				$add_params = array(
 					'method'  	=> 'JSON',
 					'Action'  	=> 'Remove',
 					'Force'  	=> true,
 					'Addresses' => array($email),
 					'ListID'  	=> $list->ID
 				);
-				
+
 				$api->resetRequest();
-				$response = $api->manycontacts($addParams);
+				$response = $api->manycontacts($add_params);
 			}
 		}
 

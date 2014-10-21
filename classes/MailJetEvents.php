@@ -46,7 +46,7 @@ class MailJetEvents extends ObjectModel
 	private $limit_event;
 
 	public $current_page;
-	
+
 	public static $definition = array(
 		'table' => 'mj_events',
 		'primary' => 'id_mj_events',
@@ -62,7 +62,7 @@ class MailJetEvents extends ObjectModel
 	public function __construct($event = MailJetEvents::DEFAULT_EVENT, $post_vars = array(), $time = false, $id_events = false)
 	{
 		if (!$time) $time = time();
-		
+
 		$this->post_vars = $post_vars;
 		$this->params['event'] = array('value' => $event, 'type' => 'string');
 		$this->params['time'] = array('value' => $time, 'type' => 'int');
@@ -118,7 +118,8 @@ class MailJetEvents extends ObjectModel
 	public function initScheme()
 	{
 		$this->params += $this->getScheme($this->params['event']['value']);
-		$this->default_scheme = ($this->params['event']['value'] == MailJetEvents::ALL_EVENTS_KEYS) ? $this->params : $this->getScheme(MailJetEvents::ALL_EVENTS_KEYS);
+		if ($this->params['event']['value'] == MailJetEvents::ALL_EVENTS_KEYS) $this->default_scheme = $this->params;
+		else $this->default_scheme = $this->getScheme(MailJetEvents::ALL_EVENTS_KEYS);
 
 		$translations = MailJetTranslate::getTranslationsByName('events');
 		foreach ($translations as $key => $value)
@@ -137,9 +138,7 @@ class MailJetEvents extends ObjectModel
 	 */
 	public function fetch($default = false, $filters = array())
 	{
-		$select = array();
-		foreach ($this->getFieldsName($default) as $key => $title)
-			$select[] = $key;
+		$select = array_keys($this->getFieldsName($default));
 
 		if (($key = array_search('agent', $select)) !== false) unset($select[$key]);
 		if (($key = array_search('ip', $select)) !== false) unset($select[$key]);
@@ -162,7 +161,7 @@ class MailJetEvents extends ObjectModel
 		$limit_start = ($this->current_page == 1) ? 0 : $this->limit_event * ($this->current_page - 1);
 		if ($limit_start < 0) $limit_start = 0;
 		$query .= ' limit '.(int)$limit_start.', '.(int)$this->limit_event;
-		
+
 		return DB::getInstance()->executeS($query);
 	}
 
@@ -230,7 +229,7 @@ class MailJetEvents extends ObjectModel
 					$content['value'] = pSQL($content['value']);
 				break;
 				case 'int':
-					$content['value'] = (int)($content['value']);
+					$content['value'] = (int)$content['value'];
 				break;
 				default:
 					$content['value'] = pSQL($content['value']);

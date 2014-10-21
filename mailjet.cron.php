@@ -31,15 +31,15 @@ require_once(dirname(__FILE__).'/mailjet.php');
 $mailjet = new Mailjet();
 
 if (Tools::getValue('token') != $mailjet->getToken())
-        die('No hackers allowed here ! ;-)');
+	die('No hackers allowed here ! ;-)');
 
-function utf8_outtags($text)
+function utf8Outtags($text)
 {
 	$notags = strip_tags($text);
 	$utf8 = htmlentities($notags);
-	preg_match_all('/&([0-9A-Za-z]+);/',$utf8,$res);
+	preg_match_all('/&([0-9A-Za-z]+);/', $utf8, $res);
 	foreach ($res[0] as $preg)
-		$text = str_replace(html_entity_decode($preg),$preg,$text);
+		$text = str_replace(html_entity_decode($preg), $preg, $text);
 	return $text;
 }
 
@@ -50,46 +50,49 @@ function findCode($code)
 	else
 		return Discount::getIdByName($code);
 }
-					
+
 if ($mailjet->triggers['active'])
 {
 	$template = array();
-	
+
 	$context = Context::getContext();
 		if (!isset($context->shop->name)) $context->shop->name = Configuration::get('PS_SHOP_NAME');
 		if (!isset($context->shop->domain)) $context->shop->domain = Configuration::get('PS_SHOP_DOMAIN');
-	$id_shop = (int)($context->shop->id?$context->shop->id:Shop::getContextShopID());
-	
+	$id_shop = (int)$context->shop->id?$context->shop->id:Shop::getContextShopID();
+
 	$trigger = $mailjet->triggers['trigger'];
-	$periodType = array(0,'MONTH','DAY','HOUR','MINUTE');
-	
-	// mail template file
+	$period_type = array(0,'MONTH','DAY','HOUR','MINUTE');
+
+	/* mail template file */
 	$languages = Language::getLanguages();
 	foreach ($languages as $l)
-		if (file_exists(dirname(__FILE__).'/tpl/mails/'.$l['id_lang'].'.tpl'))
-			$template[$l['id_lang']] = Tools::file_get_contents(dirname(__FILE__).'/tpl/mails/'.$l['id_lang'].'.tpl');
-	// default template (if no EN in languages)
-	$template['en'] = Tools::file_get_contents(dirname(__FILE__).'/tpl/mails/en.tpl');
+		if (file_exists(dirname(__FILE__).'/views/templates/admin/'.$l['id_lang'].'.tpl'))
+			$template[$l['id_lang']] = Tools::file_get_contents(dirname(__FILE__).'/views/templates/admin/'.$l['id_lang'].'.tpl');
+	/* default template (if no EN in languages) */
+	$template['en'] = Tools::file_get_contents(dirname(__FILE__).'/views/templates/admin/en.tpl');
 
-	
-	// infos from the shop		
+	/* infos from the shop */
 	$shop_name = $context->shop->name;
 	$shop_url = 'http://'.$context->shop->domain;
 	$shop_logo = $shop_url._PS_IMG_.Configuration::get('PS_LOGO').'?'.Configuration::get('PS_IMG_UPDATE_TIME');
 
-	// IDs research for SQL requests
+	/* IDs research for SQL requests */
 	$ids_canceled_blocked_payment_sql = DB::getInstance()->executeS('
 		SELECT * FROM `'._DB_PREFIX_.'order_state_lang` WHERE id_lang = 1 AND (template LIKE \'order_canceled\' OR template LIKE \'payment_error\')');
-		$ids_canceled_blocked_payment = array(); foreach ($ids_canceled_blocked_payment_sql as $id) $ids_canceled_blocked_payment[] = $id['id_order_state'];
+		$ids_canceled_blocked_payment = array();
+		foreach ($ids_canceled_blocked_payment_sql as $id) $ids_canceled_blocked_payment[] = $id['id_order_state'];
 	$ids_waiting_payment_sql = DB::getInstance()->executeS('
 		SELECT * FROM `'._DB_PREFIX_.'order_state_lang` WHERE id_lang = 1 AND (template LIKE \'bankwire\' OR template LIKE \'cheque\')');
-		$ids_waiting_payment = array(); foreach ($ids_waiting_payment_sql as $id) $ids_waiting_payment[] = $id['id_order_state'];
-	$ids_loyalty_state_available_points = array(2,5); // "Disponible" & "Non disponbile sur produits remisés"
-	
-	// SQL requests for search
-	$sql = array(); $sql_target = array();
+		$ids_waiting_payment = array();
+		foreach ($ids_waiting_payment_sql as $id) $ids_waiting_payment[] = $id['id_order_state'];
+	$ids_loyalty_state_available_points = array(2,5); /* "Disponible" & "Non disponbile sur produits remisés" */
+
+	/* SQL requests for search */
+	$sql = array();
+	$sql_target = array();
 	$sql[1] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger, `ca`.id_cart, `ca`.id_shop, `ca_ldu`.last_date_upd
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, 
+				`tr`.type, `tr`.id_trigger, `ca`.id_cart, `ca`.id_shop, `ca_ldu`.last_date_upd
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN (
 				SELECT id_customer, MAX(date_upd) AS last_date_upd
@@ -106,10 +109,12 @@ if ($mailjet->triggers['active'])
 			WHERE	`tr`.id_trigger IS NULL
 				AND `ca`.id_shop = '.$id_shop.'
 				AND `or`.id_order IS NULL
-				AND `ca_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[1]['period'].' '.$periodType[$trigger[1]['periodType']].')
-			'; $sql_target[1] = 'id_cart';
+				AND `ca_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[1]['period'].' '.$period_type[$trigger[1]['periodType']].')
+			';
+			$sql_target[1] = 'id_cart';
 	$sql[2] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
+				 `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN (
 				SELECT id_customer, MAX(date_upd) AS last_date_upd
@@ -123,11 +128,13 @@ if ($mailjet->triggers['active'])
 				ON `tr`.id_customer = `cu`.id_customer AND `tr`.type = 2 AND `tr`.id_target = `or`.id_order
 			WHERE	`tr`.id_trigger IS NULL
 				AND `or`.id_shop = '.$id_shop.'
-				AND `or`.current_state IN ('.implode(',',$ids_canceled_blocked_payment).')
-				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[2]['period'].' '.$periodType[$trigger[2]['periodType']].')
-			'; $sql_target[2] = 'id_order';
+				AND `or`.current_state IN ('.implode(',', $ids_canceled_blocked_payment).')
+				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[2]['period'].' '.$period_type[$trigger[2]['periodType']].')
+			';
+			$sql_target[2] = 'id_order';
 	$sql[3] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
+				 `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN (
 				SELECT id_customer, MAX(date_upd) AS last_date_upd
@@ -141,21 +148,26 @@ if ($mailjet->triggers['active'])
 				ON `tr`.id_customer = `cu`.id_customer AND `tr`.type = 3 AND `tr`.id_target = `or`.id_order
 			WHERE	`tr`.id_trigger IS NULL
 				AND `or`.id_shop = '.$id_shop.'
-				AND `or`.current_state IN ('.implode(',',$ids_waiting_payment).')
-				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[3]['period'].' '.$periodType[$trigger[3]['periodType']].')
-			'; $sql_target[3] = 'id_order';
+				AND `or`.current_state IN ('.implode(',', $ids_waiting_payment).')
+				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[3]['period'].' '.$period_type[$trigger[3]['periodType']].')
+			';
+			$sql_target[3] = 'id_order';
 	$sql[4] = '
-			'; $sql_target[4] = ''; // <= TODO : en attente de réponse mailjet ********************************************
+			';
+			$sql_target[4] = ''; /* <= TODO : en attente de réponse mailjet ******************************************** */
 	$sql[5] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
+				 `tr`.type, `tr`.id_trigger
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN `'._DB_PREFIX_.'mj_trigger` `tr`
 				ON `tr`.id_customer = `cu`.id_customer AND `tr`.type = 5 AND `tr`.date > DATE_SUB(NOW(), INTERVAL 363 DAY)
 			WHERE	`tr`.id_trigger IS NULL
 				AND DATE_FORMAT(`cu`.birthday, \'%m-%d\') = DATE_FORMAT(NOW(), \'%m-%d\')
-			'; $sql_target[5] = 'id_customer';
+			';
+			$sql_target[5] = 'id_customer';
 	$sql[6] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
+				 `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN (
 				SELECT id_customer, MAX(date_upd) AS last_date_upd
@@ -172,9 +184,11 @@ if ($mailjet->triggers['active'])
 				AND `or`.id_shop = '.$id_shop.'
 				AND `or`.valid = 1
 				AND `or_ldu`.last_date_upd <= DATE_SUB(NOW(), INTERVAL 1 YEAR)
-			'; $sql_target[6] = 'id_order';
+			';
+			$sql_target[6] = 'id_order';
 	$sql[7] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
+				 `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN (
 				SELECT id_customer, MAX(date_upd) AS last_date_upd
@@ -190,10 +204,12 @@ if ($mailjet->triggers['active'])
 			WHERE	`tr`.id_trigger IS NULL
 				AND `or`.id_shop = '.$id_shop.'
 				AND `or`.valid = 1
-				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[7]['period'].' '.$periodType[$trigger[7]['periodType']].')
-			'; $sql_target[7] = 'id_order';
+				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[7]['period'].' '.$period_type[$trigger[7]['periodType']].')
+			';
+			$sql_target[7] = 'id_order';
 	$sql[8] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
+				 `tr`.type, `tr`.id_trigger, `or`.id_order, `or_ldu`.last_date_upd
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN (
 				SELECT id_customer, MAX(date_upd) AS last_date_upd
@@ -209,34 +225,38 @@ if ($mailjet->triggers['active'])
 			WHERE	`tr`.id_trigger IS NULL
 				AND `or`.id_shop = '.$id_shop.'
 				AND `or`.valid = 1
-				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[8]['period'].' '.$periodType[$trigger[8]['periodType']].')
-			'; $sql_target[8] = 'id_order';
+				AND `or_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL '.$trigger[8]['period'].' '.$period_type[$trigger[8]['periodType']].')
+			';
+			$sql_target[8] = 'id_order';
 	$sql[9] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, `tr`.type, `tr`.id_trigger
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
+				 `tr`.type, `tr`.id_trigger
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			INNER JOIN (
 				SELECT id_customer, COUNT(points) AS total, MAX(date_upd) AS lastdate
 				FROM `'._DB_PREFIX_.'loyalty`
-				WHERE id_loyalty_state IN ('.implode(',',$ids_loyalty_state_available_points).')
+				WHERE id_loyalty_state IN ('.implode(',', $ids_loyalty_state_available_points).')
 				GROUP BY id_customer
 				) `lo`
 				ON `lo`.id_customer = `cu`.id_customer
 			LEFT JOIN `'._DB_PREFIX_.'mj_trigger` `tr`
-				ON `tr`.id_customer = `cu`.id_customer AND `tr`.type = 9 AND `tr`.date > DATE_SUB(NOW(), INTERVAL '.$trigger[9]['period'].' '.$periodType[$trigger[9]['periodType']].')
+				ON `tr`.id_customer = `cu`.id_customer AND `tr`.type = 9
+					AND `tr`.date > DATE_SUB(NOW(), INTERVAL '.$trigger[9]['period'].' '.$period_type[$trigger[9]['periodType']].')
 			WHERE	`tr`.id_trigger IS NULL
-				AND `lo`.lastdate < DATE_SUB(NOW(), INTERVAL '.$trigger[9]['period'].' '.$periodType[$trigger[9]['periodType']].')
-			'; $sql_target[9] = 'id_customer';
+				AND `lo`.lastdate < DATE_SUB(NOW(), INTERVAL '.$trigger[9]['period'].' '.$period_type[$trigger[9]['periodType']].')
+			';
+			$sql_target[9] = 'id_customer';
 
-	// don't use trigger 9 if loyalty table don't exists
+	/* don't use trigger 9 if loyalty table don't exists */
 	$trigger_max = 9;
 	if (!Configuration::get('PS_LOYALTY_POINT_VALUE')) $trigger_max = 8;
 
-	// Research & mail sending
-	for ($sel=1;$sel<=$trigger_max;$sel++)
+	/* Research & mail sending */
+	for ($sel = 1; $sel <= $trigger_max; $sel++)
 	{
 		if ($trigger[$sel]['active'])
 		{
-			//echo $sel.'"'.$sql[$sel].'"<br />'.PHP_EOL;
+			/* echo $sel.'"'.$sql[$sel].'"<br />'.PHP_EOL; */
 			$customers = DB::getInstance()->executeS($sql[$sel]);
 
 			foreach ($customers as $customer)
@@ -245,49 +265,50 @@ if ($mailjet->triggers['active'])
 				else 											$id_lang = $context->language->id;
 				$id_lang_default = $context->language->id;
 
-				// Mail template : header & footer
+				/* Mail template : header & footer */
 				if (isset($template[$id_lang]))
 					$seltemplate = $template[$id_lang];
 				else
 					$seltemplate = $template['en'];
-				// shop keywords research
-				$seltemplate = str_replace('{shop_name}',$shop_name,$seltemplate);
-				$seltemplate = str_replace('{shop_url}',$shop_url,$seltemplate);
-				$seltemplate = str_replace('{shop_logo}',$shop_logo,$seltemplate);
+				/* shop keywords research */
+				$seltemplate = str_replace('{shop_name}', $shop_name, $seltemplate);
+				$seltemplate = str_replace('{shop_url}', $shop_url, $seltemplate);
+				$seltemplate = str_replace('{shop_logo}', $shop_logo, $seltemplate);
 
-				// mail subject
+				/* mail subject */
 				if (isset($trigger[$sel]['subject'][$id_lang]))
 					$subject = $trigger[$sel]['subject'][$id_lang];
 				else
 					$subject = $trigger[$sel]['subject'][$id_lang_default];
-				
-				// mail content
+
+				/* mail content */
 				if (isset($trigger[$sel]['mail'][$id_lang]))
 					$content = $trigger[$sel]['mail'][$id_lang];
 				else
 					$content = $trigger[$sel]['mail'][$id_lang_default];
-				
-				// customer keywords research
+
+				/* customer keywords research */
 				foreach ($customer as $key => $value)
 				{
-					$subject = str_replace('{'.$key.'}',$value,$subject);
-					$content = str_replace('{'.$key.'}',$value,$content);
+					$subject = str_replace('{'.$key.'}', $value, $subject);
+					$content = str_replace('{'.$key.'}', $value, $content);
 				}
 
-				$content = utf8_outtags($content);
-				
-				$temp = str_replace('{content}',$content,$seltemplate);
-				
-				// vouchers
-				if ($sel==5 || $sel==6)
+				$content = utf8Outtags($content);
+
+				$temp = str_replace('{content}', $content, $seltemplate);
+
+				/* vouchers */
+				if ($sel == 5 || $sel == 6)
 				{
 					$code = '';
 					$alphanum = '0123456789AZERTYUIOPMLKJHGFDSQWXCVBN';
-					while (Tools::strlen($code)<8 || (int)findCode($code))
+					$code_length = Tools::strlen($code);
+					while ($code_length < 8 || (int)findCode($code))
 					{
 						$code = '';
-						for ($i=0;$i<8;$i++)
-							$code.= Tools::substr($alphanum,mt_rand(1,Tools::strlen($alphanum))-1,1);
+						for ($i = 0; $i < 8; $i++)
+							$code .= Tools::substr($alphanum, mt_rand(1, Tools::strlen($alphanum)) - 1, 1);
 					}
 
 					$name = array();
@@ -300,7 +321,7 @@ if ($mailjet->triggers['active'])
 						foreach (Language::getLanguages() as $lang)
 							$voucher->name[$lang['id_lang']] = $name[$sel];
 						$voucher->code = $code;
-						if ($trigger[$sel]['discountType']=='amount')
+						if ($trigger[$sel]['discountType'] == 'amount')
 							$voucher->reduction_amount = $trigger[$sel]['discount'];
 						else
 							$voucher->reduction_percent = $trigger[$sel]['discount'];
@@ -311,26 +332,26 @@ if ($mailjet->triggers['active'])
 						foreach (Language::getLanguages() as $lang)
 							$voucher->description[$lang['id_lang']] = $name[$sel];
 						$voucher->name = $code;
-						if ($trigger[$sel]['discountType']=='amount')
+						if ($trigger[$sel]['discountType'] == 'amount')
 							$voucher->id_discount_type = 2;
-						else 
+						else
 							$voucher->id_discount_type = 1;
 						$voucher->value = $trigger[$sel]['discount'];
 						$voucher->quantity = 1;
 						$voucher->quantity_per_user = 1;
 					}
 					$voucher->id_customer = $customer['id_customer'];
-					$voucher->date_from = date("Y-m-d");
-					$voucher->date_to = date("Y-m-d", time()+(31*24*3600) );
+					$voucher->date_from = date('Y-m-d');
+					$voucher->date_to = date('Y-m-d', time() + (31 * 24 * 3600) );
 					$voucher->active = 1;
 					$voucher->add();
 				}
-				
-				// mail sending
-				if ($res = $mailjet->sendMail($subject,$temp,$customer['email']))
+
+				/* mail sending */
+				if ($res = $mailjet->sendMail($subject, $temp, $customer['email']))
 					DB::getInstance()->execute('
 						INSERT INTO `'._DB_PREFIX_.'mj_trigger`(id_customer,id_target,type,date)
-						VALUES('.$customer['id_customer'].','.$customer[$sql_target[$sel]].','.$sel.',\''.date("Y-m-d").'\')');
+						VALUES('.$customer['id_customer'].','.$customer[$sql_target[$sel]].','.$sel.',\''.date('Y-m-d').'\')');
 			}
 		}
 	}

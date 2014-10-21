@@ -27,7 +27,7 @@
 class MailJetLog
 {
 	public static $file;
-	
+
 	public static $handle;
 
 	/**
@@ -56,11 +56,11 @@ class MailJetLog
 		$exist = false;
 		if (file_exists($file))
 			$exist = true;
-		
+
 		self::setHandle($file, $mode);
-		
+
 		if (!$exist)
-			@chmod($file, 0666);
+			chmod($file, 0666);
 
 		if (self::$handle && self::lockWrite(self::$handle, '['.$date.'] '.$message))
 		{
@@ -70,7 +70,7 @@ class MailJetLog
 		}
 		return false;
 	}
-	
+
 	private static function setHandle($file, $mode)
 	{
 		if ($file == self::$file && !self::$handle)

@@ -26,12 +26,12 @@
 
 include_once('../../config/config.inc.php');
 
-header("Content-Type: application/force-download; name=\"".Tools::getValue('name')."\""); 
-header("Content-Transfer-Encoding: binary"); 
-header("Content-Length: 0"); 
-header("Content-Disposition: attachment; filename=\"".Tools::getValue('name')."\""); 
-header("Expires: 0"); 
-header("Cache-Control: no-cache, must-revalidate"); 
-header("Pragma: no-cache"); 
+header('Content-Type: application/force-download; name="'.Tools::getValue('name').'"'); 
+header('Content-Transfer-Encoding: binary'); 
+header('Content-Length: 0'); 
+header('Content-Disposition: attachment; filename="'.Tools::getValue('name').'"'); 
+header('Expires: 0'); 
+header('Cache-Control: no-cache, must-revalidate'); 
+header('Pragma: no-cache'); 
 exit();
 ?>
