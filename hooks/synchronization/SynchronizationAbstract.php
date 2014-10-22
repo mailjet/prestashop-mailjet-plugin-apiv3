@@ -88,7 +88,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 	{
 		if (!Db::getInstance())
 			throw new Exception('Db instance is not provided.');
-		
+
 		return Db::getInstance();
 	}
 
@@ -101,7 +101,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 		if (!$this->_masterListId)
 		{
 			$lists = $this->_getApiOverlay()->getContactsLists();
-		
+
 			if ($lists !== false)
 			{
 				foreach ($lists as $list)

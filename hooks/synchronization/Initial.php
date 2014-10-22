@@ -30,8 +30,6 @@
  */
 class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbstract
 {
-	
-
 	/**
 	 * 
 	 * @throws Exception
@@ -44,40 +42,40 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 			$segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
 			$segmentSynch->deleteList($masterListId);
 		}
-		
+
 		$apiOverlay = $this->_getApiOverlay();
-		
+
 		$params = array(
 			'method' 	=> 'JSON',
 			'Name' 		=> self::LIST_NAME
 		);
-		
+
 		$newMailjetList = $apiOverlay->createContactsListP($params);
-		
+
 		if (!$newMailjetList || !isset($newMailjetList->ID))
 			throw new HooksSynchronizationException('There is a problem with the list\'s creation.');
-		
+
 		$newlyCreatedListId = $newMailjetList->ID;
-		
+
 		if (!is_numeric($newlyCreatedListId))
 			throw new HooksSynchronizationException('The API response is not correct.');
-		
+
 		$allUsers = $this->_getAllActiveCustomers();
-		
+
 		if (count($allUsers) === 0)
 			throw new HooksSynchronizationException('You don\'t have any users in the database.');
-		
+
 		$contacts = array();
-		
+
 		foreach ($allUsers as $user)
 			$contacts[] = $user['email'];
-		
+
 		$stringContacts = implode(' ', $contacts);
-		
+
 		$apiResponse = $apiOverlay->createContacts(
 			$stringContacts, $newlyCreatedListId
 		);
-		
+
 		if (!isset($apiResponse->ID))
 		{
 			$segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
@@ -85,18 +83,17 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 			
 			throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
 		}
-			
+
 		$batchJobResponse = $apiOverlay->batchJobContacts(
 			$newlyCreatedListId, $apiResponse->ID
 		);
-		
+
 		if ($batchJobResponse == false)
 			throw new HooksSynchronizationException('Batchjob problem');
-		
+
 		return $newlyCreatedListId;
 	}
-	
-	
+
 	/**
 	 * 
 	 * @return array
@@ -112,6 +109,5 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 	}
 
 }
-
 
 ?>

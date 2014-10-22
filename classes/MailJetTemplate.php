@@ -178,7 +178,6 @@ class MailjetTemplate
 		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 
 		$url = 'https://'.$lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amsc';
-		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -195,7 +194,6 @@ class MailjetTemplate
 		else
 			$url = 'https://'.$lang.'.mailjet.com/reseller/pricing?r=prestashop&show_menu=none';
 
-		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -208,7 +206,6 @@ class MailjetTemplate
 		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 
 		$url = 'https://'.$lang.'.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amc';
-		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -221,7 +218,6 @@ class MailjetTemplate
 		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 
 		$url = 'https://'.$lang.'.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amc';
-		//$url = "https://jdf.www.preprod.mailjet.com/campaigns?t=".$token."&r=prestashop&cb=http://mailjet.dream-me-up.fr/modules/mailjet/callback_signup.php";
 		$this->iframes_url[$name] = $url;
 	}
 

@@ -54,7 +54,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
 		if ($existingListId)
 			return $this->_update($contacts, $existingListId);
-		
+
 		return $this->_create($contacts, $filterId, $fiterName);
 	}
 
@@ -68,23 +68,23 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	{
 		if ($mailjetListId)
 		{
-			
+
 			$params = array(
 				'ID'		=> $mailjetListId,
 				'method' 	=> 'JSON',
 				'Name' 		=> $prestashopFilterId.'idf'.preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($newName))
 			);
-			
-			# Api call
+
+			/* # Api call */
 			$oldList = $this->_getApiOverlay()->createContactsListP($params);
-			
+
 			if ($oldList)
 			{
-				//$listId = $oldList->ID;
+				/* $listId = $oldList->ID; */
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -96,19 +96,18 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	{
 		if ($mailjetListId)
 		{
-				
 			$params = array(
 				'ID'		=> $mailjetListId,
 				'method' 	=> 'DELETE'
 			);
-				
-			# Api call
-			//$oldList = 
+
+			/* # Api call */
+			/* $oldList = */
 				$this->_getApiOverlay()->createContactsListP($params);
-				
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -122,49 +121,49 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	private function _create($res_contacts, $filterId, $fiterName)
 	{
 		$newListId = $this->_createNewMailjetList($filterId, $fiterName);
-		
+
 		if (!$newListId)
 			return false;
-		
+
 		$total_contacts = count($res_contacts);
 		if ($total_contacts === 0)
 			$response = 'No Result';
 
 		$contacts_done = 0;
-		
+
 		// On va maintenant ajouter les contacts par 50 à la liste
 		while (!empty($res_contacts))
 		{
 			$reste_contacts = count($res_contacts);
-		
+
 			$val = 50;
 			if ($reste_contacts < $val) $val = $reste_contacts;
-		
+
 			$selected_contacts = array();
 			for ($ic = 1; $ic <= 50; $ic++)
 			{
 				$rc = array_pop($res_contacts);
 				$selected_contacts[] = $rc['Email'];
 			}
-		
+
 			$string_contacts = implode(' ', $selected_contacts);
-		
+
 			# Call
 			try {
 				$res = $this->_getApiOverlay()->createContacts($string_contacts, $newListId);
-			
+
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
-				
+
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($newListId, $res->ID);
-			
+
 				if ($batchJobResponse == false)
 					throw new HooksSynchronizationException('Batchjob problem');
-					
+
 				$contacts_done += $val;
-					
+
 				Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor(($contacts_done * 100) / $total_contacts));
-				
+
 				$response = 'OK';
 			} catch (Exception $e) {
 				$response = 'Try again later';
@@ -185,7 +184,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		$prestashopContacts = array();
 		foreach ($contacts as $contact)
 			$prestashopContacts[] = $contact['Email'];
-		
+
 		$this->_gatherCurrentContacts($existingListId);
 
 		$contacstToAdd = array();
@@ -196,27 +195,27 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 			if (!in_array($email, $this->_mailjetContacts))
 				$contacstToAdd[] = $email;
 		}
-		
+
 		foreach ($this->_mailjetContacts as $email)
 		{
 			if (!in_array($email, $prestashopContacts))
 				$contacstToRemove[] = $email;
 		}
-		
+
 		$response = 'Pending';
-		
+
 		try {
 			if (!empty($contacstToAdd))
 			{
 				$contstToAddCsv = implode(' ', $contacstToAdd);
-				
+
 				$res = $this->_getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
-					
+
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
-				
+
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
-					
+
 				if ($batchJobResponse == false)
 					throw new HooksSynchronizationException('Batchjob problem');
 			}
@@ -224,24 +223,23 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 			if (!empty($contacstToRemove))
 			{
 				$contstToRemoveCsv = implode(' ', $contacstToRemove);
-				
+
 				$res = $this->_getApiOverlay()->createContacts($contstToRemoveCsv, $existingListId);
-					
+
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
-				
+
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'remove');
-					
+
 				if ($batchJobResponse == false)
 					throw new HooksSynchronizationException('Batchjob problem');
 			}
-			
+
 			$response = 'OK';
 		} catch (Exception $e) {
 			$response = $e;
 		}
 
-		
 		return $response;
 	}
 
@@ -262,7 +260,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 			foreach ($lists as $l)
 			{
 				$n = explode('idf', $l->Name);
-		
+
 				if ((string)$n[0] == (string)$filterId)
 				{
 					$listId = (int)$l->ID;
@@ -270,7 +268,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 				}
 			}
 		}
-		
+
 		return $listId;
 	}
 
@@ -283,13 +281,13 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	private function _createNewMailjetList($filterId, $fiterName)
 	{
 		$listId = 0;
-		
+
 		$params = array(
 			'method' 	=> 'JSON',
 			'Name' 		=> $filterId.'idf'.preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($fiterName))
 		);
 
-		# Api call
+		/* # Api call */
 		$newList = $this->_getApiOverlay()->createContactsListP($params);
 
 		if ($newList)
@@ -315,15 +313,15 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
 		$this->_getApi()->resetRequest();
 		$response = $this->_getApi()->listrecipient($params);
-		
+
 		$totalCount = $response->Total;
 		$current 	= $response->Count;
-		
+
 		foreach ($response->Data as $contact)
 			$this->_mailjetContacts[] = $contact->Contact->Email->Email;
-		
+
 		Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor((($offset + $current) * 90) / $totalCount));
-		
+
 		if ($offset + $current < $totalCount)
 			$this->_gatherCurrentContacts($mailjetListId, $offset + $this->_limitPerRequest);
 	}

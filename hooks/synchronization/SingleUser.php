@@ -151,7 +151,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
 		if ($response && $response->Count > 0)
 			return true;
-	
+
 		return false;
 	}
 }

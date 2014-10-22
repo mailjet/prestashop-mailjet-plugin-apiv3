@@ -65,8 +65,8 @@ if (!is_array($t) || !isset($t['event']))
 
 $events = new MailJetEvents($t['event'], $t);
 
-/* 
- *	Event handler 
+/*
+ *	Event handler
  *	- please check https://www.mailjet.com/docs/event_tracking for further informations.
  */
 switch ($t['event'])
@@ -77,11 +77,11 @@ switch ($t['event'])
 		/* If it works, tell Mailjet it's OK */
 		header('HTTP/1.1 200 Ok');
 		break;
-		
+
 	case 'click':
 		/* => do action */
 		break;
-	
+
 	case 'bounce':
 		/* => do action */
 		$events->add();
@@ -99,16 +99,16 @@ switch ($t['event'])
 
 	case 'unsub':
 		/* => do action */
-		$hooksEvents = new HooksEvents();
-		$hooksEvents->unsubscribe($t);
+		$hooks_events = new HooksEvents();
+		$hooks_events->unsubscribe($t);
 		break;
 
 	case 'typofix':
 		/* => do action */
 		$events->add();
 		break;
-		
-	# No handler
+
+	/* # No handler */
 	default:
 		header('HTTP/1.1 423 No handler');
 		/* => do action */

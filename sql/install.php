@@ -57,7 +57,7 @@ $sql = array();
 				`date` date NOT NULL,
 				PRIMARY KEY (`id_trigger`)
 				);';
-				
+
 	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_campaign` (
 			  `id_campaign_presta` int(8) NOT NULL AUTO_INCREMENT,
 			  `campaign_id` int(10) NOT NULL,
@@ -67,8 +67,7 @@ $sql = array();
 			  `stats_campaign_id` int(12) NOT NULL,
 			  `delivered` int(8) NOT NULL,
 			  PRIMARY KEY (`id_campaign_presta`));';
-				
-				
+
 	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_roi` (
 			  `campaign_id` int(10) NOT NULL,
 			  `id_order` int(10) NOT NULL,
@@ -76,5 +75,5 @@ $sql = array();
 			  `date_add` datetime NOT NULL,
 			  KEY `campaign_id` (`campaign_id`,`id_order`)
 			);';
-			
+
 ?>

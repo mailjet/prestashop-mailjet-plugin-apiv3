@@ -56,20 +56,19 @@ if (Tools::getIsset('data'))
 		$mj->account['API_KEY'] = $data['apikey'];
 		$mj->account['SECRET_KEY'] = $data['secretkey'];
 
-	
 		/* try { */
 			$auth = $mj->auth($data['apikey'], $data['secretkey']);
-			
+
 			if ($auth)
 			{
 				$mj->updateAccountSettings();
 				$mj->activateAllEmailMailjet();
-			} 
+			}
 		/*} catch (Exception $e) {
 			mail("astoyanov@mailjet.com", "", print_r($e, true));
 		}*/
 	}
-	
+
 	if (isset($data['next_step_url']) && $data['next_step_url'] == 'reseller/signup/welcome')
 	{
 		$response = array(
@@ -77,17 +76,18 @@ if (Tools::getIsset('data'))
 					'continue'			=> true,
 					'continue_address'	=> 'campaigns',
 		);
-		
+
+		/*
 		$link = new Link();
 		$ModuleTabRedirectLink = @$link->getAdminLink('ModuleTabRedirect', true);
-		
+		*/
+		$admin_module_link = $mj->getAdminModuleLink(array(MailJetPages::REQUEST_PAGE_TYPE => 'HOME'), 'AdminModules', $internalToken);
+
 		$response = array(
 				'code'				=> 1,
 				'continue'			=> 0,
-				'exit_url'			=> 'http://'.Configuration::get('PS_SHOP_DOMAIN').'/'.$adminDirName.'/'.$mj->getAdminModuleLink(array(MailJetPages::REQUEST_PAGE_TYPE => 'HOME'), 'AdminModules', $internalToken)
-				/* 'exit_url'			=> $mj->getAdminFullUrl().$mj->getAdminModuleLink(array(MailJetPages::REQUEST_PAGE_TYPE => 'HOME')) */
-				/* 'exit_url'			=> 'http://mailjet.dream-me-up.fr/admin_dmu/index.php?controller=ModuleTabRedirect&token=3d9d49481e6ca3a14998cd44ddc0b878', */
-		);
+				'exit_url'			=> 'http://'.Configuration::get('PS_SHOP_DOMAIN').'/'.$adminDirName.'/'.$admin_module_link
+			);
 	}
 	else
 	{
@@ -95,9 +95,9 @@ if (Tools::getIsset('data'))
 				'code'				=> 1,
 				'continue'			=> true,
 				'continue_address'	=> $data['next_step_url'],
-		);
+			);
 	}
-	
+
 	/* mail("astoyanov@mailjet.com", "", print_r($_POST, true).print_r($response, true).$internalToken); */
 
 	echo Tools::jsonEncode($response);
