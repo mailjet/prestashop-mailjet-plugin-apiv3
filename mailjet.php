@@ -33,7 +33,6 @@ include_once(dirname(__FILE__).'/classes/MailJetTranslate.php');
 include_once(dirname(__FILE__).'/classes/MailJetTemplate.php');
 include_once(dirname(__FILE__).'/classes/MailJetPages.php');
 include_once(dirname(__FILE__).'/classes/MailJetEvents.php');
-/* include_once(dirname(__FILE__).'/segmentation/segmentation.php'); */
 include_once(dirname(__FILE__).'/segmentation.php');
 include_once(dirname(__FILE__).'/classes/MailJetLog.php');
 
@@ -802,7 +801,8 @@ class Mailjet extends Module
 			}
 		}
 
-		$country = Country::getNameById($this->context->language->id, Country::getByIso($infos->AddressCountry));
+		$iso = !empty($infos->AddressCountry) ? $infos->AddressCountry : 'fr';
+		$country = Country::getNameById($this->context->language->id, Country::getByIso($iso));
 
 		$language = explode('_', $infos->Locale);
 		$language = Tools::strtoupper($language[0]);
@@ -1091,7 +1091,7 @@ class Mailjet extends Module
 			$api->apitoken($params);
 			$response = $api->getResponse();
 
-			if ($response->Count > 0)
+			if ($response && ($response->Count > 0))
 			{
 				$this->account['TOKEN_'.$this->context->employee->id] = $response->Data[0]->Token;
 				$this->updateAccountSettings();
