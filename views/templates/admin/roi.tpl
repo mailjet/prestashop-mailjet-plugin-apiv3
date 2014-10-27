@@ -21,7 +21,7 @@
  * @copyright 2007-2014 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*}{*<div class="center_page">
+*}<div class="center_page">
 	<table id="vsTable">
     	<thead>
         	<tr>
@@ -42,10 +42,10 @@
             {/foreach}
         </tbody>
     </table>
-</div>*}
+</div>
         
-<div style="clear:both;width:960px;margin:0 auto;">
+<!-- div style="clear:both;width:960px;margin:0 auto;">
     <div align="center"><br>
     	Coming soon!
     </div>
-</div>
+</div -->

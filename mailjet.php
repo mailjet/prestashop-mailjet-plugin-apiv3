@@ -47,6 +47,7 @@ include_once(dirname(__FILE__).'/hooks/synchronization/Initial.php');
 include_once(dirname(__FILE__).'/hooks/synchronization/SingleUser.php');
 include_once(dirname(__FILE__).'/hooks/synchronization/Segment.php');
 
+include_once(dirname(__FILE__).'/moduleTabRedirect.php');
 
 class Mailjet extends Module
 {
@@ -829,7 +830,7 @@ class Mailjet extends Module
 	public function displayROI()
 	{
 		$api = MailjetTemplate::getApi();
-
+		
 		// Traitements
 		$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign ORDER BY date_add DESC';
 		$campaigns = Db::getInstance()->ExecuteS($sql);
