@@ -30,5 +30,6 @@ $sql = array();
 	$sql[] = 'DROP TABLE `'._DB_PREFIX_.'mj_events`';
 	$sql[] = 'DROP TABLE `'._DB_PREFIX_.'mj_campaign`';
 	$sql[] = 'DROP TABLE `'._DB_PREFIX_.'mj_roi`';
+	$sql[] = 'DROP TABLE `'._DB_PREFIX_.'mj_roi_cart`';
 
 ?>

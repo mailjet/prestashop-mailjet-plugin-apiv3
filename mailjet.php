@@ -126,6 +126,7 @@ class Mailjet extends Module
 
 		// Parent constructor
 		parent::__construct();
+		//ppp($this->context->cookie);
 
 		if ($this->active)
 		{
@@ -232,20 +233,23 @@ class Mailjet extends Module
 
 	public function hookHeader()
 	{
-		$cookie = $this->context->cookie;
-
-		if (Tools::getIsset('tokp') && !isset($cookie->tokp))
-			$cookie->tokp = Tools::getValue('tokp');
+		if (Tools::getIsset('tokp'))
+		{
+			if (!$this->context->cart->id)
+				$this->context->cart->add();
+				
+			Db::getInstance()->execute('REPLACE INTO `'._DB_PREFIX_.'mj_roi_cart`(id_cart, token_presta) VALUES('.$this->context->cart->id.', \''.Tools::getValue('tokp').'\')');
+		}
 	}
 
 	public function hookNewOrder($params)
 	{
-		$cookie = $this->context->cookie;
-
-		if (isset($cookie->tokp))
+		$sql = 'SELECT * FROM `'._DB_PREFIX_.'mj_roi_cart`
+				WHERE id_cart = '.(int)$this->context->cart->id;
+		if ($tokp = Db::getInstance()->getRow($sql))
 		{
 			// On enregistre le ROI
-			$sql = 'SELECT campaign_id FROM '._DB_PREFIX_.'mj_campaign WHERE token_presta = \''.$cookie->tokp."'";
+			$sql = 'SELECT campaign_id FROM '._DB_PREFIX_.'mj_campaign WHERE token_presta = \''.$tokp['token_presta']."'";
 			$campaign = Db::GetInstance()->GetRow($sql);
 
 			if (!empty($campaign))
@@ -254,8 +258,6 @@ class Mailjet extends Module
 				VALUES ('.(int)$campaign['campaign_id'].', '.(int)$params['order']->id.', '.(float)$params['order']->total_paid.', NOW())';
 				Db::GetInstance()->Execute($sql);
 			}
-
-			unset($cookie->tokp);
 		}
 
 	}

@@ -76,4 +76,9 @@ $sql = array();
 			  KEY `campaign_id` (`campaign_id`,`id_order`)
 			);';
 
+	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_roi_cart` (
+			  `id_cart` int(11) NOT NULL,
+			  `token_presta` varchar(64) NOT NULL,
+			  PRIMARY KEY (`id_cart`)
+			);';
 ?>

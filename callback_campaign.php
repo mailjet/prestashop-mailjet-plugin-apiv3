@@ -24,6 +24,10 @@
  * International Registered Trademark & Property of PrestaShop SA
 */
 
+require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
+if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
+	require_once(realpath(dirname(__FILE__).'/../../init.php'));
+
 if (Tools::getIsset('data'))
 	$data = (object)Tools::getValue('data');
 else if (Tools::getIsset('mailjet'))
@@ -31,11 +35,6 @@ else if (Tools::getIsset('mailjet'))
 	$mailjet = Tools::jsonDecode(Tools::getValue('mailjet'));
 	$data = $mailjet->data;
 }
-
-require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
-
-if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
-	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
 require_once(dirname(__FILE__).'/mailjet.php');
 require_once(dirname(__FILE__).'/classes/MailJetLog.php');
@@ -48,6 +47,11 @@ $api = MailjetTemplate::getApi();
 
 if ($data)
 {
+	/* ** ** */
+	if (!isset($data->block_type)) $data->block_type = true;
+	if (!isset($data->block_content)) $data->block_content = $api->getCampaignHTML((int)$data->campaign_id);
+	/* ** ** */
+	
 	$response = array(
 		'code'				=> 1,
 		'continue'			=> true,
@@ -88,7 +92,7 @@ if ($data)
 			$html = str_replace('Text to replace', 'Replaced text', $html);
 
 			$regexp = '<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>';
-			preg_match_all('/$regexp/siU', $html, $liens);
+			preg_match_all("/$regexp/siU", $html, $liens);
 
 			$debug = '';
 			$changed_html = false;
