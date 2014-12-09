@@ -1953,9 +1953,8 @@ class Mailjet_ApiOverlay
      */
     public function updateCampaignHTML($id, $html, $text = null)
     {
-
     	$this->_api->resetRequest();
-    	$this->_api->data('newsletter', $id, 'HTML', 'text/html', $html, 'PUT', null);
+    	$this->_api->data('newsletter', $id, 'HTML', 'text/html', $html, 'POST', null);
 	
     	$respones = $this->_api->getResponse();
         

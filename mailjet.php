@@ -236,7 +236,10 @@ class Mailjet extends Module
 		if (Tools::getIsset('tokp'))
 		{
 			if (!$this->context->cart->id)
+			{
 				$this->context->cart->add();
+				$this->context->cookie->id_cart = $this->context->cart->id;
+			}
 				
 			Db::getInstance()->execute('REPLACE INTO `'._DB_PREFIX_.'mj_roi_cart`(id_cart, token_presta) VALUES('.$this->context->cart->id.', \''.Tools::getValue('tokp').'\')');
 		}
@@ -245,7 +248,8 @@ class Mailjet extends Module
 	public function hookNewOrder($params)
 	{
 		$sql = 'SELECT * FROM `'._DB_PREFIX_.'mj_roi_cart`
-				WHERE id_cart = '.(int)$this->context->cart->id;
+				WHERE id_cart = '.(int)$params['order']->id_cart;
+
 		if ($tokp = Db::getInstance()->getRow($sql))
 		{
 			// On enregistre le ROI
@@ -831,43 +835,34 @@ class Mailjet extends Module
 
 	public function displayROI()
 	{
-		$api = MailjetTemplate::getApi();
-		
+		$api = MailjetTemplate::getApi(false);
+
 		// Traitements
 		$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign ORDER BY date_add DESC';
 		$campaigns = Db::getInstance()->ExecuteS($sql);
 
 		foreach ($campaigns as $key => $c)
 		{
-			if (empty($c['stats_campaign_id']))
+			if (empty($c['stats_campaign_id']) || empty($c['delivered']))
 			{
+				$params = array(
+						'NewsLetter'	=> $c['campaign_id'],
+				);
+			
+				$api->resetRequest();
+				$api->campaignstatistics($params);
+				$mjc = $api->getResponse();
 
-				$mjc = $api->getCampaigns((int)$c['campaign_id']);
-
-				if (isset($mjc->Campaign))
-				{
-					$stats = $api->getCampaignStatistics($mjc->Campaign->ID);
-
-					$campaigns[$key]['stats_campaign_id'] = (int)$mjc->ID;
-					$campaigns[$key]['title'] = $mjc->Title;
-
-					if (!empty($mjc->result[0]->stats_campaign_id))
-						$campaigns[$key]['delivered'] = (int)$stats->DeliveredCount;
-
+				if (isset($mjc->Data) && isset($mjc->Data[0]))
+				{	
+					$campaigns[$key]['delivered'] = (int)$mjc->Data[0]->ProcessedCount;
+					$campaigns[$key]['title'] = $mjc->Data[0]->CampaignSubject;
+		
 					$sql = 'UPDATE '._DB_PREFIX_.'mj_campaign
-					SET stats_campaign_id = '.(int)$mjc->ID.',
-					delivered = '.(int)$stats->DeliveredCount.',
-					title = \''.$mjc->Title.'\'
+					SET stats_campaign_id = 1,
+					delivered = '.(int)$mjc->Data[0]->ProcessedCount.',
+					title = \''.$mjc->Data[0]->CampaignSubject.'\'
 					WHERE id_campaign_presta = '.(int)$c['id_campaign_presta'];
-					Db::getInstance()->Execute($sql);
-				}
-				else
-				{
-					$sql = 'UPDATE '._DB_PREFIX_.'mj_campaign
-					SET stats_campaign_id = '.(int)$mjc->ID.',
-					title = \''.$mjc->Title.'\'
-					WHERE id_campaign_presta = '.(int)$c['id_campaign_presta'];
-
 					Db::getInstance()->Execute($sql);
 				}
 			}

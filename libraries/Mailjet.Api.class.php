@@ -29,7 +29,8 @@
  */
 class Mailjet_Api
 {
-
+	private $env = '.';
+	
     /**
      * Mailjet API Key
      * You can edit directly and add here your Mailjet infos
@@ -208,7 +209,7 @@ class Mailjet_Api
     {
         if ( $apiKey )		$this->_apiKey = $apiKey;
         if ( $secretKey )	$this->_secretKey = $secretKey;
-        $this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api.mailjet.com/v3/'.$this->_version;
+        $this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api'.$this->env.'mailjet.com/v3/'.$this->_version;
     }
 
     /**
@@ -241,9 +242,8 @@ class Mailjet_Api
     		$this->_debugRequest = $request;
     	}
     	
-    	$this->_debugCallUrl = $this->_apiUrl = $url = (($this->_secure) ? 'https' : 'http').'://api.mailjet.com/v3/DATA/' . $method .'/'.$id.'/' .$type 
+    	$this->_debugCallUrl = $this->_apiUrl = $url = (($this->_secure) ? 'https' : 'http').'://api'.$this->env.'mailjet.com/v3/DATA/' . $method .'/'.$id.'/' .$type 
     	. '/' . $contType;
-    	
 
 
     	if(is_null($this->_curl_handle))
@@ -262,44 +262,52 @@ class Mailjet_Api
     	}
     	
     	switch ($request) {
-    		case 'GET' :
-    			curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'GET');
-    			curl_setopt($this->_curl_handle, CURLOPT_HTTPGET, TRUE);
-    			curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, NULL);
-    			$this->_request_post = FALSE;
-    			break;
-    		case 'POST':
-
-    			curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'POST');
-    			curl_setopt($this->_curl_handle, CURLOPT_POST, count($params));
-    			curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $params);
-    			$this->_request_post = $params;
-    			break;
-    		case 'PUT':
-    			curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
-    			curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
-    			$this->_request_post = http_build_query($params, '', '&');
-    			break;
-
-    		case 'JSON':
-    				if($is_json_put)
-    					curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "PUT");
-    				else
-    					curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
-    				
-    				$this->_request_post = json_encode($params);
-    				curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $this->_request_post);
-    				curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
-    				curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
-    						'Content-Type: application/json',
-    						'Content-Length: ' . strlen($this->_request_post))
-    				);
-    				break;
-    	}
+            case 'GET' :
+                curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'GET');
+                curl_setopt($this->_curl_handle, CURLOPT_HTTPGET, TRUE);
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, NULL);
+                $this->_request_post = FALSE;
+                break;
+            case 'POST':
+                curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'POST');
+                curl_setopt($this->_curl_handle, CURLOPT_POST, count($params));
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $params);
+                $this->_request_post = $params;
+                break;
+            case 'PUT':
+                curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $params);
+            break;
+            case 'DELETE':
+                curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                /*curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));*/
+                $this->_request_post = $params;
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
+                curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Content-Length: ' . strlen(json_encode($this->_request_post)))
+                );
+            break;
+            case 'JSON':
+                if($is_json_put)
+                    curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "PUT");
+                else
+                    curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
+                 
+                $this->_request_post = $params;
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
+                curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Content-Length: ' . strlen(json_encode($this->_request_post)))
+                );
+                break;
+        }
     	curl_setopt($this->_curl_handle, CURLOPT_URL, $this->_apiUrl);
     	
     	$buffer = curl_exec($this->_curl_handle);
-
+		
     	if ($this->_debug > 2)
     		var_dump($buffer);
     	
@@ -310,7 +318,11 @@ class Mailjet_Api
     		$this->debug();
     	}
     
-    	return ($this->_response_code == 200) ? TRUE : FALSE;
+		// echo '<pre>';
+		// var_dump($this->_response);
+		// echo '</pre>';
+  
+    	return ($this->_response_code == 200) ? $this : FALSE;
 
     }
 
@@ -520,7 +532,7 @@ class Mailjet_Api
     
     public function resetRequest()
     {
-    	$this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api.mailjet.com/v3/'.$this->_version;
+    	$this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api'.$this->env.'mailjet.com/v3/'.$this->_version;
     	$this->_request_post = false;
     }
 
@@ -608,13 +620,13 @@ class Mailjet_Api
                 $this->writeCache($method,$params,$request, $this->_response);
         } else
 
-            return ($result);
+            return ($this);
 
         $return = ($result === TRUE) ? $this->_response : FALSE;
         if ( $this->_debug == 2 || ( $this->_debug == 1 && $return == FALSE ) )
             $this->debug();
 
-        return $return;
+        return $this;
     }
 
     /**
@@ -691,10 +703,6 @@ class Mailjet_Api
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->_curl_handle, CURLOPT_TIMEOUT, 10); //timeout in seconds
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey.':'.$this->_secretKey);
-        
-        curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array());
-        curl_setopt($this->_curl_handle, CURLOPT_POST, 0);
-        curl_setopt($this->_curl_handle, CURLOPT_HTTPGET, FALSE);
 
         switch ($request) {
             case 'GET' :
@@ -704,9 +712,22 @@ class Mailjet_Api
                 $this->_request_post = FALSE;
                 break;
             case 'POST':
-                curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'JSON');
+                if( isset($params['Action']) && isset($params['ListID']) ){
+                    curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'POST');
+                }
+                else{
+                    curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'JSON');
+                }
+                
                 curl_setopt($this->_curl_handle, CURLOPT_POST, count($params));
-                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
+                if( isset($params['Action']) && isset($params['ListID']) ){
+                    curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($params));
+                    curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+                }
+                else{
+                    curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
+                }
+                
                 $this->_request_post = $params;
                 break;
             case 'PUT':
@@ -714,21 +735,28 @@ class Mailjet_Api
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
             break;
             case 'DELETE':
-            	curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
-            	curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
-            	break;
+                curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
+                /*curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));*/
+                $this->_request_post = $params;
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
+                curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Content-Length: ' . strlen(json_encode($this->_request_post)))
+                );
+            break;
             case 'JSON':
             	if($is_json_put)
             		curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "PUT");
             	else
             		curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
             	 
-            	$this->_request_post = json_encode($params);
-            	curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $this->_request_post);
+            	$this->_request_post = $params;
+            	curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
             	curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
             	curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
             			'Content-Type: application/json',
-            			'Content-Length: ' . strlen($this->_request_post))
+            			'Content-Length: ' . strlen(json_encode($this->_request_post)))
             	);
             	break;
         }
@@ -819,16 +847,21 @@ class Mailjet_Api
         $this->_debugErrorHtml .= '<tr><th>Method</th><td>'.$this->_debugMethod.'</td></tr>';
         $this->_debugErrorHtml .= '<tr><th>Request type</th><td>'.$this->_debugRequest.'</td></tr>';
         $this->_debugErrorHtml .= '<tr><th>Get Arguments</th><td>';
+        
+        $args = array();
+        if(isset($call_url['query']))
+            $args = explode("&",$call_url['query']);
 
-        $args = explode("&",$call_url['query']);
-        foreach ($args as $arg) {
-            $arg = explode("=",$arg);
-            $this->_debugErrorHtml .= ''.$arg[0].' = <span style="color:#ff6e56;">'.$arg[1].'</span><br/>';
+        if(sizeof($args)>0){
+            foreach ($args as $arg) {
+                $arg = explode("=",$arg);
+                $this->_debugErrorHtml .= ''.$arg[0].' = <span style="color:#ff6e56;">'.$arg[1].'</span><br/>';
+            }
         }
 
         $this->_debugErrorHtml .= '</td></tr>';
 
-        if ($this->_request_post) {
+        if ($this->_request_post && sizeof($this->_request_post)>0) {
             $this->_debugErrorHtml .= '<tr><th>Post Arguments</th><td>';
 
             foreach ($this->_request_post as $k=>$v) {
