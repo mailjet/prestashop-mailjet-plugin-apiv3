@@ -79,7 +79,7 @@ if (Tools::getIsset('data'))
 
 		/*
 		$link = new Link();
-		$ModuleTabRedirectLink = @$link->getAdminLink('ModuleTabRedirect', true);
+		$moduletabredirectLink = @$link->getAdminLink('moduletabredirect', true);
 		*/
 		$admin_module_link = $mj->getAdminModuleLink(array(MailJetPages::REQUEST_PAGE_TYPE => 'HOME'), 'AdminModules', $internalToken);
 
