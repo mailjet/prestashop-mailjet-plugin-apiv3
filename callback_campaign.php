@@ -29,14 +29,15 @@ if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
 	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
 
-if (isset($_POST['data'])) {
-	$data = (object) $_POST['data'];
-} else if (isset($_POST['mailjet'])) {
-	$mailjet = json_decode($_POST['mailjet']);
+if (Tools::getIsset($_POST['data']))
+	$data = Tools::getValue('data');
+else if (Tools::getIsset($_POST['mailjet']))
+{
+	$mailjet = Tools::jsonDecode(Tools::getValue('mailjet'));
 	$data = $mailjet->data;
-} else {
-	$data = new stdClass();
 }
+else
+	$data = new stdClass();
 
 require_once(dirname(__FILE__).'/mailjet.php');
 require_once(dirname(__FILE__).'/classes/MailJetLog.php');
@@ -45,16 +46,13 @@ $mj = new Mailjet();
 
 MailJetLog::init();
 
-// Get request response
-if(isset($_POST['response'])) {
-	$response = (object) $_POST['response'];
-}
+if (Tools::getIsset($_POST['response']))
+	$response = (object)Tools::getValue('response');
 
-// Execute actions on the callback side and return response
-if (isset($data->next_step_url) && $data->next_step_url) {
-	// Check for last changes (this is the moment when we will change the content of the template)
-	if($response->message == 'last change of campaigns parameters' || $response->message == 'send details saved successfully') {
-		// Get instance for the connection with Mailjet's API - use your API/Secret keys
+if (Tools::getIsset($data->next_step_url) && $data->next_step_url)
+{
+	if ($response->message == 'last change of campaigns parameters' || $response->message == 'send details saved successfully')
+	{
 		$mj_data = new Mailjet_Api($mj->getAccountSettingsKey('API_KEY'), $mj->getAccountSettingsKey('SECRET_KEY'));
 
 		$html = $mj_data->data('newsletter', $data->campaign_id, 'HTML', 'text/html', null, 'GET', 'LAST')->getResponse();
@@ -111,25 +109,25 @@ if (isset($data->next_step_url) && $data->next_step_url) {
 			}
 		}
 				
-    	$res = $mj_data->data('newsletter', $data->campaign_id, 'HTML', 'text/html', $html, 'PUT', 'LAST')->getResponse();
+		$res = $mj_data->data('newsletter', $data->campaign_id, 'HTML', 'text/html', $html, 'PUT', 'LAST')->getResponse();
 	}
 	
-	// Construct the response
 	$response = array(
-		"code"				=> 1,
-		"continue"			=> true,
-		"continue_address"	=> $data->next_step_url,
-	);
-} else {
-	// Construct the response
-	$response = array(
-		"code"		=> 0,
-		"continue"	=> false,
-		"exit_url"	=> 'SOME URL ADDRESS',
+		'code'				=> 1,
+		'continue'			=> true,
+		'continue_address'	=> $data->next_step_url,
 	);
 }
-// Prepare the response in string format
-$json = json_encode($response);
+else
+{
+	$response = array(
+		'code'		=> 0,
+		'continue'	=> false,
+		'exit_url'	=> 'SOME URL ADDRESS',
+	);
+}
+
+$json = Tools::jsonEncode($response);
 
 echo $json;
 
