@@ -47,7 +47,7 @@ include_once(dirname(__FILE__).'/hooks/synchronization/Initial.php');
 include_once(dirname(__FILE__).'/hooks/synchronization/SingleUser.php');
 include_once(dirname(__FILE__).'/hooks/synchronization/Segment.php');
 
-include_once(dirname(__FILE__).'/moduleTabRedirect.php');
+include_once(dirname(__FILE__).'/moduletabredirect.php');
 
 class Mailjet extends Module
 {
