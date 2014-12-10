@@ -29,9 +29,9 @@ if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
 	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
 
-if (Tools::getIsset($_POST['data']))
-	$data = Tools::getValue('data');
-else if (Tools::getIsset($_POST['mailjet']))
+if (Tools::getIsset('data'))
+	$data = (object)Tools::getValue('data');
+else if (Tools::getIsset('mailjet'))
 {
 	$mailjet = Tools::jsonDecode(Tools::getValue('mailjet'));
 	$data = $mailjet->data;
@@ -46,10 +46,10 @@ $mj = new Mailjet();
 
 MailJetLog::init();
 
-if (Tools::getIsset($_POST['response']))
+if (Tools::getIsset('response'))
 	$response = (object)Tools::getValue('response');
 
-if (Tools::getIsset($data->next_step_url) && $data->next_step_url)
+if ($data->next_step_url)
 {
 	if ($response->message == 'last change of campaigns parameters' || $response->message == 'send details saved successfully')
 	{
