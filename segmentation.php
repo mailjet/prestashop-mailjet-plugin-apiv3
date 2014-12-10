@@ -57,6 +57,8 @@ class Segmentation extends Module
 		$this->displayName = $this->l('Segment Module');
 		$this->description = $this->l('Module for Customer Segmentation');
 		$this->page = 10;
+                
+                $this->initLang();
 	}
 
 	public function initCompatibility()
@@ -66,8 +68,6 @@ class Segmentation extends Module
 
 		if (!class_exists('Context'))
 			require_once(realpath(dirname(__FILE__)).'/libraries/compatibility/Context.php');
-
-		$this->initLang();
 
 		return $this;
 	}
