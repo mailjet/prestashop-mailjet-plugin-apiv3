@@ -522,6 +522,8 @@ class Segmentation extends Module
 
 	public function ll($i)
 	{
+		if (!isset($this->trad) || empty($this->trad[0]))
+			$this->initLang();
 		return $this->trad[$i];
 	}
 
@@ -1701,6 +1703,23 @@ class Segmentation extends Module
 		else
 		{
 			$this->cacheLang();
+			$tmp_create = $this->local_path.'/translations/translation_create_'.(int)$id_lang.'.txt';
+			if (file_exists($tmp_create))
+			{
+				fopen($tmp_create, 'r');
+				$trad = array();
+				while (($buffer = fgets($fp, 4096)) !== false)
+					$trad[] = $buffer;
+				fclose($fp);
+				$this->trad = $trad;
+			}
+			else
+			{
+				$fp = fopen($tmp_create, 'w+');
+				foreach ($this->trad as $trad)
+					fwrite($fp, $trad."\r\n");
+				fclose($fp);
+			}
 			file_put_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt', serialize($this->trad));
 		}
 	}
