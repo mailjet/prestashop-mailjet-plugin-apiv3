@@ -1706,7 +1706,7 @@ class Segmentation extends Module
 			$tmp_create = $this->local_path.'/translations/translation_create_'.(int)$id_lang.'.txt';
 			if (file_exists($tmp_create))
 			{
-				fopen($tmp_create, 'r');
+				$fp = fopen($tmp_create, 'r');
 				$trad = array();
 				while (($buffer = fgets($fp, 4096)) !== false)
 					$trad[] = $buffer;
