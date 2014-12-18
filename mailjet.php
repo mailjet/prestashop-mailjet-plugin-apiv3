@@ -1083,7 +1083,8 @@ class Mailjet extends Module
 				'method'	 	=> 'JSON',
 				'APIKeyALT' 	=> $api->getAPIKey(),
 				'TokenType'		=> 'iframe',
-				'IsActive'		=> true
+				'IsActive'		=> true,
+				'SentData'		=> serialize(array('plugin' => 'prestashop-3.0')),
 			);
 
 			$api->apitoken($params);
