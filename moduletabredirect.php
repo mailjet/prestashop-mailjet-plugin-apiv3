@@ -27,7 +27,7 @@
 if (version_compare(_PS_VERSION_, '1.5', '<'))
 	include_once(realpath(PS_ADMIN_DIR.'/../').'/classes/AdminTab.php');
 
-class moduletabredirect extends AdminTab
+class ModuleTabRedirect extends AdminTab
 {
 	public function __construct()
 	{

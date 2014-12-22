@@ -189,7 +189,7 @@ class Mailjet extends Module
 			$tab->name[$lang['id_lang']] = $this->l('Mailjet');
 		if ($fr = Language::getIdByIso('fr'))
 			$tab->name[$fr] = $this->l('Mailjet');
-		$tab->class_name = 'moduletabredirect';
+		$tab->class_name = 'ModuleTabRedirect';
 		$tab->id_parent = (int)Tab::getIdFromClassName('AdminTools');
 		$tab->module = $this->name;
 		$tab->add();
@@ -222,7 +222,7 @@ class Mailjet extends Module
 			return false;
 
 		// Uninstall Tab
-		$tab = new Tab((int)Tab::getIdFromClassName('moduletabredirect'));
+		$tab = new Tab((int)Tab::getIdFromClassName('ModuleTabRedirect'));
 		$tab->delete();
 
 		Configuration::deleteByName('MAILJET');
