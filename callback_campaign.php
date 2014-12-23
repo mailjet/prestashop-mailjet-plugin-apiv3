@@ -51,7 +51,7 @@ if (Tools::getIsset('response'))
 
 if ($data->next_step_url)
 {
-	if ($response->message == 'last change of campaigns parameters' || $response->message == 'send details saved successfully')
+	if (!empty($response) && ($response->message == 'last change of campaigns parameters' || $response->message == 'send details saved successfully'))
 	{
 		$mj_data = new Mailjet_Api($mj->getAccountSettingsKey('API_KEY'), $mj->getAccountSettingsKey('SECRET_KEY'));
 
@@ -127,8 +127,6 @@ else
 	);
 }
 
-$json = Tools::jsonEncode($response);
-
-echo $json;
+echo Tools::jsonEncode($response);
 
 ?>

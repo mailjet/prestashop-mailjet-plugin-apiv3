@@ -40,8 +40,8 @@ if (Tools::getValue('idfilter') == 0 && Tools::getValue('action') == 'getQuery')
 include_once(realpath(dirname(__FILE__).'/../../..').'/segmentation.php');
 /* include_once(realpath(dirname(__FILE__).'/../../..').'/classes/MailjetAPI.php'); */
 include_once(realpath(dirname(__FILE__).'/../../..').'/classes/MailJetTemplate.php');
-include_once(realpath(dirname(__FILE__).'/../../..').'/hooks/synchronization/SynchronizationAbstract.php');
-include_once(realpath(dirname(__FILE__).'/../../..').'/hooks/synchronization/Segment.php');
+include_once(realpath(dirname(__FILE__).'/../../..').'/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(realpath(dirname(__FILE__).'/../../..').'/classes/hooks/synchronization/Segment.php');
 
 if (Tools::getValue('action') == 'getQuery')
 {

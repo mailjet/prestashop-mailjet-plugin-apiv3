@@ -42,10 +42,10 @@ include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
 /* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
 
 
-include_once(dirname(__FILE__).'/hooks/synchronization/SynchronizationAbstract.php');
-include_once(dirname(__FILE__).'/hooks/synchronization/Initial.php');
-include_once(dirname(__FILE__).'/hooks/synchronization/SingleUser.php');
-include_once(dirname(__FILE__).'/hooks/synchronization/Segment.php');
+include_once(dirname(__FILE__).'/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(dirname(__FILE__).'/classes/hooks/synchronization/Initial.php');
+include_once(dirname(__FILE__).'/classes/hooks/synchronization/SingleUser.php');
+include_once(dirname(__FILE__).'/classes/hooks/synchronization/Segment.php');
 
 include_once(dirname(__FILE__).'/moduletabredirect.php');
 
@@ -999,7 +999,7 @@ class Mailjet extends Module
 	{
 		$subject = array();
 		$mail = array();
-		include(dirname(__FILE__).'/views/templates/admin/templates.php');
+		include(dirname(__FILE__) . '/translations/triggers_messages.php');
 		$languages = Language::getLanguages();
 
 		$shop_name = $this->context->shop->name;

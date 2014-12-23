@@ -23,6 +23,9 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
+require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
+if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
+	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
 $post = trim(Tools::file_get_contents('php://input'));
 /* mail("guillaume@dream-me-up.fr", "callback ajax mailjet", $post.print_r($_POST, true).print_r($_GET, true)); */

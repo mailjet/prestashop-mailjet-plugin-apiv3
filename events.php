@@ -28,7 +28,7 @@ include_once(realpath(dirname(__FILE__).'/../../').'/config/config.inc.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetLog.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetTranslate.php');
 include_once(realpath(dirname(__FILE__)).'/classes/MailJetEvents.php');
-include_once(realpath(dirname(__FILE__)).'/hooks/Events.php');
+include_once(realpath(dirname(__FILE__)).'/classes/hooks/Events.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
 require_once(dirname(__FILE__).'/mailjet.php');
 
@@ -42,7 +42,6 @@ if ($mj->getEventsHash() !== Tools::getValue('h'))
 
 # Catch Event
 $post = trim(Tools::file_get_contents('php://input'));
-/* mail("astoyanov@mailjet.com", "", print_r($post, true)); */
 
 # No Event sent
 if (empty($post))

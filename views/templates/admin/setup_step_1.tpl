@@ -21,5 +21,5 @@
  * @copyright 2007-2014 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*}<iframe border="0" style="border:0px" width="100%" height="600px" src="{$MJ_iframes.$MJ_page_name}{if !empty($MJ_TOKEN_USER)}?{/if}">
+*}<iframe border="0" style="border:0px" width="100%" height="800px" src="{$MJ_iframes.$MJ_page_name}{if !empty($MJ_TOKEN_USER)}?{/if}">
 </iframe>
