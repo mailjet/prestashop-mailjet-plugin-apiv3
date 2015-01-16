@@ -1,5 +1,5 @@
 {**
- * 2007-2014 PrestaShop
+ * 2007-2015 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2014 PrestaShop SA
+ * @copyright 2007-2015 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}<!-- Mailjet : Triggers -->
@@ -26,18 +26,18 @@
 {* $tinymce|default:'' *}
 {if $tinymce_new}
 	<script type="text/javascript">
-	var iso = '{$tinymce_iso}';
-	var pathCSS = '{$tinymce_pathCSS}';
-	var ad = '{$tinymce_ad}';
+	var iso = '{$tinymce_iso|default:'en'}';
+	var pathCSS = '{$tinymce_pathCSS|default:''}';
+	var ad = '{$tinymce_ad|default:''}';
 	</script>
-	<script type="text/javascript" src="{$tinymce_pathBase}js/tiny_mce/tiny_mce.js"></script>
-	<script type="text/javascript" src="{$tinymce_pathBase}js/tinymce.inc.js"></script>
+	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tinymce.inc.js"></script>
 	<script language="javascript" type="text/javascript">
-	var id_language = Number({$tinymce_id_language});
+	var id_language = Number({$tinymce_id_language|default:'en'});
 	tinySetup();
 	</script>
 {else}
-	<script type="text/javascript" src="{$tinymce_pathBase}js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 	<script type="text/javascript">
 	tinyMCE.init({
 		mode : "textareas",
@@ -51,8 +51,8 @@
 		theme_advanced_toolbar_align : "left",
 		theme_advanced_statusbar_location : "bottom",
 		theme_advanced_resizing : false,
-		content_css : "{$tinymce_pathBase}themes/{$tinymce_theme}/css/global.css",
-		document_base_url : "{$tinymce_pathBase}",
+		content_css : "{$tinymce_pathBase}themes/{$tinymce_theme|default:'default-bootstrap'}/css/global.css",
+		document_base_url : "{$tinymce_pathBase|default:'/'}",
 		width: "600",
 		height: "auto",
 		font_size_style_values : "8pt, 10pt, 12pt, 14pt, 18pt, 24pt, 36pt",
@@ -63,9 +63,9 @@
 		elements : "nourlconvert",
 		entity_encoding: "raw",
 		convert_urls : false,
-		language : "{$tinymce_iso}"
+		language : "{$tinymce_iso|default:'en'}"
 	});
-	id_language = Number({$tinymce_id_language});
+	id_language = Number({$tinymce_id_language|default:'en'});
 	</script>
 {/if}
 

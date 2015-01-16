@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2014 PrestaShop
+ * 2007-2015 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2014 PrestaShop SA
+ * @copyright 2007-2015 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -1298,7 +1298,7 @@ class Segmentation /*extends Module*/
 		$post['replace_customer'] = $replace_customer_text;
 		$post['auto_assign'] = $auto_assign_text;
 		$post['group_name'] = $group_name;
-		return json_encode($post);
+		return Tools::jsonEncode($post);
 		/* ** ** */
 		
 		// return '{"id" : '.$id_filter.',"name" : "'.pSQL($post['name']).'", "description" : "'.pSQL($post['description']).'", "replace_customer" : "'.$replace_customer_text.'", "auto_assign" : "'.$auto_assign_text.'", "group_name" : "'.$group_name.'"}';
