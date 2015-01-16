@@ -59,19 +59,19 @@ if (Tools::getValue('action') == 'product')
 if (Tools::getValue('action') == 'productname')
 {
 	$obj = new Segmentation();
-	$prod = new product((int)Tools::getValue('id'), false, $obj->getCurrentIdLang());
+	$prod = new Product((int)Tools::getValue('id'), false, $obj->getCurrentIdLang());
 	die ($prod->name);
 }
 if (Tools::getValue('action') == 'categoryname')
 {
 	$obj = new Segmentation();
-	$cat = new category((int)Tools::getValue('id'), $obj->getCurrentIdLang());
+	$cat = new Category((int)Tools::getValue('id'), $obj->getCurrentIdLang());
 	die ($cat->name);
 }
 if (Tools::getValue('action') == 'brandname')
 {
 	$obj = new Segmentation();
-	$man = new manufacturer((int)Tools::getValue('id'), $obj->getCurrentIdLang());
+	$man = new Manufacturer((int)Tools::getValue('id'), $obj->getCurrentIdLang());
 	die ($man->name);
 }
 if (Tools::getValue('action') == 'category')

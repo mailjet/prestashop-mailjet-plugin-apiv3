@@ -46,7 +46,7 @@ $header = array_keys($sql[0]);
 $csv = '';
 
 foreach ($header as $h)
-	$csv .= '"'.utf8_decode($h).'";';
+	$csv .= '"'.preg_replace('/(\r|\n)/', '', utf8_decode($h)).'";';
 
 $csv .= "\n";
 

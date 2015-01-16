@@ -77,6 +77,7 @@ $(document).ready( function() {
 	$('.trSelect').live('click', function() {
 		loadFilterInfo($(this).attr('id').replace('list',''));
 		loadFilter($(this).attr('id').replace('list',''));
+		$('#newfilter').show();
 	});
 	 
 	 $("#export").live("click", function(){
@@ -89,9 +90,10 @@ $(document).ready( function() {
 	 	return false;
 	 });
 	 
-	 $("#newfilter").click( function() {
-		 $(this).toggle(); // **
-	 	$(".div_new_filter").toggle();
+	$("#newfilter").click( function() {
+		$('#mainForm')[0].reset();
+		$('#newfilter').hide();
+		$(".div_new_filter").show();
 	});
 
 	

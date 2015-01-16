@@ -36,5 +36,4 @@ class ModuleTabRedirect extends AdminTab
 
 		Tools::redirectAdmin($url.'&configure=mailjet');
 	}
-
 }
