@@ -25,12 +25,13 @@
 */
 
 include_once(realpath(dirname(__FILE__).'/../../').'/config/config.inc.php');
-include_once(realpath(dirname(__FILE__)).'/classes/MailJetLog.php');
-include_once(realpath(dirname(__FILE__)).'/classes/MailJetTranslate.php');
-include_once(realpath(dirname(__FILE__)).'/classes/MailJetEvents.php');
-include_once(realpath(dirname(__FILE__)).'/classes/hooks/Events.php');
+
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/Events.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
-require_once(dirname(__FILE__).'/mailjet.php');
+require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
 $mj = new Mailjet();
 

@@ -33,7 +33,8 @@ $token_ok = Tools::getAdminToken('AdminModules');
 if (!Tools::getValue('token') && Tools::getValue('token') != $token_ok)
 	die('hack attempt');
 
-include_once(realpath(dirname(__FILE__).'/../../..').'/segmentation.php');
+include_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
+
 $obj = new Segmentation();
 
 $sql = Db::getInstance()->executeS($obj->getQuery($_POST, true, false));

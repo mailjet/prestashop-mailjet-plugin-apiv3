@@ -24,7 +24,7 @@
  * International Registered Trademark & Property of PrestaShop SA
 */
 
-include_once(dirname(__FILE__).'/../mailjet.php');
+/* include_once(dirname(__FILE__).'/../mailjet.php'); */
 
 include_once(dirname(__FILE__).'/../libraries/Mailjet.Api.class.php');
 include_once(dirname(__FILE__).'/../libraries/Mailjet.Overlay.class.php');

@@ -24,15 +24,15 @@
  * International Registered Trademark & Property of PrestaShop SA
 */
 
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/Initial.php');
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/SingleUser.php');
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/Segment.php');
-include_once(dirname(__FILE__).'/libraries/Mailjet.Overlay.class.php');
-include_once(dirname(__FILE__).'/libraries/Mailjet.Api.class.php');
-include_once(dirname(__FILE__).'/classes/MailJetTemplate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
+include_once(_PS_MODULE_DIR_.'mailjet/libraries/Mailjet.Overlay.class.php');
+include_once(_PS_MODULE_DIR_.'mailjet/libraries/Mailjet.Api.class.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
 
-class Segmentation extends Module
+class Segmentation /*extends Module*/
 {
 	public $page;
 	public $trad;
@@ -48,9 +48,7 @@ class Segmentation extends Module
 		$this->tab = 'administration';
 		$this->version = '2.8';
 		$this->module_key = '986fb62d4efe6fb00788ecaefce96a1f';
-		$this->local_path = dirname(__FILE__);
-
-		parent::__construct();
+		$this->local_path = _PS_MODULE_DIR_.'mailjet';
 
 		$this->initCompatibility();
 
@@ -61,165 +59,15 @@ class Segmentation extends Module
 
 	public function initCompatibility()
 	{
-		if (strpos(dirname(__FILE__), $this->name) === false)
+		if (strpos(_PS_MODULE_DIR_.'mailjet', $this->name) === false)
 			return $this;
 
 		if (!class_exists('Context'))
-			require_once(realpath(dirname(__FILE__)).'/libraries/compatibility/Context.php');
+			require_once(_PS_MODULE_DIR_.'mailjet/libraries/compatibility/Context.php');
 
 		$this->initLang();
 
 		return $this;
-	}
-
-	public function install()
-	{
-		$this->dropTables();
-
-		return (Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_filter` (
-					id_filter INTEGER NOT NULL AUTO_INCREMENT,
-					name VARCHAR(250) NOT NULL,
-					description VARCHAR(250),
-					id_group INT(10) NOT NULL,
-					assignment_auto TINYINT(1) NOT NULL,
-					replace_customer TINYINT(1) NOT NULL,
-					date_start TIMESTAMP,
-					date_end TIMESTAMP,
-					PRIMARY KEY (id_filter)
-					);')
-			&& Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_condition` (
-					id_condition INTEGER NOT NULL AUTO_INCREMENT,
-					id_filter INTEGER NOT NULL,
-					id_basecondition INTEGER NOT NULL,
-					id_sourcecondition INTEGER NOT NULL,
-					id_fieldcondition INTEGER NOT NULL,
-					rule_a ENUM(\'AND\', \'OR\') NOT NULL,
-					rule_action ENUM(\'IN\', \'NOT IN\') NOT NULL,
-					period ENUM(\'ALL\', \'MONTH\') NOT NULL,
-					data VARCHAR(250),
-					value1 VARCHAR(250),
-					value2 VARCHAR(250),
-					PRIMARY KEY (id_condition)
-					);')
-			&& Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_basecondition` (
-					id_basecondition INTEGER NOT NULL AUTO_INCREMENT,
-					label INTEGER,
-					tablename VARCHAR(250),
-					PRIMARY KEY (id_basecondition)
-					);')
-			&& Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_sourcecondition` (
-					id_sourcecondition INTEGER NOT NULL AUTO_INCREMENT,
-					id_basecondition INTEGER NOT NULL,
-					label INTEGER,
-					jointable VARCHAR(250),
-					PRIMARY KEY (id_sourcecondition)
-					);')
-			&& Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_fieldcondition` (
-					id_fieldcondition INTEGER NOT NULL AUTO_INCREMENT,
-					id_sourcecondition INTEGER NOT NULL,
-					label INTEGER,
-					field TEXT,
-					labelSQL VARCHAR(250),
-					printable TINYINT(1),
-					binder VARCHAR(250),
-					PRIMARY KEY (id_fieldcondition)
-					);')
-			&& $this->loadConfiguration() && parent::install()
-				&& $this->registerHook('newOrder')
-				&& $this->registerHook('updateQuantity')
-				&& $this->registerHook('updateQuantity')
-				&& $this->registerHook('cart')
-				&& $this->registerHook('authentication')
-				&& $this->registerHook('invoice')
-				&& $this->registerHook('updateOrderStatus')
-				&& $this->registerHook('orderConfirmation')
-				/* && $this->registerHook('createAccount') */
-				&& $this->registerHook('orderSlip')
-				&& $this->registerHook('orderReturn')
-				&& $this->registerHook('cancelProduct'));
-	}
-
-	public function loadConfiguration()
-	{
-		/*return Db::getInstance()->Execute("INSERT INTO `"._DB_PREFIX_."mj_basecondition` VALUES (1, 0, '`%1customer` c')")
-		&&
-		Db::getInstance()->Execute("INSERT INTO `"._DB_PREFIX_."mj_fieldcondition` VALUES
-				(1, 1, 2, '(o.`valid` = 1 AND (SELECT COUNT(*) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer`)%1)', '(SELECT COUNT(*) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer`)%1', 1, NULL),
-				(2, 1, 3, '(o.`valid` = 0 AND (SELECT COUNT(*) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer`)%1)', '(SELECT COUNT(*) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer`)%1', 1, NULL),
-				(3, 1, 4, '((SELECT COUNT(*) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer`)%1)', '(SELECT COUNT(*) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer`)%1', 1, NULL),
-				(4, 1, 5, '(o.`valid` = 1 AND (SELECT (SUM( total_products )/cu.`conversion_rate`) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer` )%1)', 'FORMAT((SELECT (SUM( total_products )/cu.`conversion_rate`) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer` ), 2)%1', 1, NULL),
-				(5, 1, 6, '(od.`product_id` %2 AND (od.`product_quantity`%1))', 'od.`product_quantity` %1', 1, 'product;null;null'),
-				(6, 1, 7, '(od.`product_id` IN (SELECT `product_id` FROM `%0category_product`WHERE `id_category` %2) AND (od.`product_quantity` %1))', 'od.`product_quantity` %1', 1, 'category;null;null'),
-				(7, 1, 8, '(od.`product_id` IN (SELECT `id_product` FROM `%0product`WHERE `id_manufacturer` %2) AND (od.`product_quantity` %1))', 'od.`product_quantity` %1', 1, 'brand;null;null'),
-				(8, 1, 9, '((SELECT COUNT(*) FROM `%0cart` ca  WHERE c.`id_customer` = ca.`id_customer` AND  `id_cart` NOT IN (SELECT `id_cart` FROM %0orders))%1)', 'FORMAT((SELECT COUNT(*) FROM `%0cart` ca  WHERE c.`id_customer` = ca.`id_customer` AND  `id_cart` NOT IN (SELECT `id_cart` FROM %0orders)),2)%1', 1, NULL),
-				(9, 1, 10, 'o.`valid` = 1 AND (o.`total_paid` / cu.`conversion_rate`) %1', ' FORMAT((o.`total_paid` / cu.`conversion_rate`), 2) %1', 1, NULL),
-				(10, 1, 11, '((SELECT AVG(`total_paid`) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer` AND `valid` = 1) %1)', 'FORMAT((SELECT AVG(`total_paid`) FROM `%0orders` o2 WHERE o.`id_customer` = o2.`id_customer` AND `valid` = 1),2) %1', 1, NULL),
-				(11, 2, 12, 'c.`id_gender` %2', '', 0, 'gender;null;null;null'),
-				(12, 2, 13, 'c.`date_add` %1 ', 'c.`date_add` %1 ', 1, 'null;date;date'),
-				(13, 2, 14, 'ad.`id_country` %2', 'ad.`id_country` %2', 0, 'country;null;null')")
-	&&
-	Db::getInstance()->Execute("INSERT INTO `"._DB_PREFIX_."mj_sourcecondition` VALUES
-		(1, 1, 1, 'LEFT JOIN `%1orders` o ON c.`id_customer` = o.`id_customer`\r\nLEFT JOIN `%1order_detail` od ON o.`id_order` = od.`id_order`\r\nLEFT JOIN `%1currency` cu ON cu.`id_currency` = o.`id_currency`'),
-		(2, 1, 0, 'LEFT JOIN `%1address` ad ON c.`id_customer` = ad.`id_customer` ')");*/
-
-		return Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_basecondition` VALUES 
-				(1, 0, '`%1customer` c')")
-			&& Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_fieldcondition` VALUES
-				(2, 1, 105, '', '', 1, NULL),
-				(3, 1, 104, '', '', 1, NULL),
-				(4, 1, 59, '', '', 1, NULL),
-				(5, 1, 6, '', '', 1, 'product;null;null'),
-				(6, 1, 7, '', '', 1, 'category;null;null'),
-				(7, 1, 8, '', '', 1, 'brand;null;null'),
-				(8, 1, 10, '', '', 1, NULL),
-				(9, 1, 11, '', '', 1, NULL),
-				(10, 3, 9, '', '', 1, NULL),
-				(11, 2, 12, '', '', 0, 'gender;null;null;null'),
-				(12, 2, 13, '', '', 1, 'null;date;date'),
-				(13, 2, 14, '', '', 0, 'country;null;null'),
-				(15, 1, 61, '', '', 0, NULL),
-				(16, 1, 62, '', '', 0, NULL),
-				(17, 2, 63, '', '', 0, 'null;date;date'),
-				(18, 2, 64, '', '', 0, 'null;date;date'),
-				(19, 2, 65, '', '', 0, 'null;date;date'),
-				(20, 2, 66, '', '', 0, NULL),
-				(21, 2, 69, '', '', 0, NULL),
-				(22, 2, 70, '', '', 0, NULL),
-				(23, 2, 71, '', '', 0, NULL),
-				(24, 2, 72, '', '', 0, NULL),
-				(25, 2, 76, '', '', 0, NULL),
-				(26, 2, 77, '', '', 0, NULL),
-				(33, 1, 92, '', '', 0, 'date;null;null'),
-				(28, 1, 88, '', '', 0, 'null;date;date'),
-				(29, 3, 91, '', '', 0, 'null;date;date'),
-				(30, 3, 6, '', '', 0, 'product;null;null'),
-				(31, 3, 7, '', '', 0, 'category;null;null'),
-				(32, 3, 8, '', '', 0, 'brand;null;null'),
-				(34, 1, 70, '', '', 0, NULL),
-				(35, 1, 94, '', '', 0, 'null;date;date'),
-				(36, 2, 99, '', '', 0, 'null;date;date')")
-			&& Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_sourcecondition` VALUES
-				(1, 1, 1, 'LEFT JOIN `%1orders` o ON c.`id_customer` = o.`id_customer`\r\nLEFT JOIN `%1order_detail` od ON o.`id_order` = od.`id_order`\r\nLEFT JOIN `%1currency` cu ON cu.`id_currency` = o.`id_currency`'),
-				(2, 1, 0, 'LEFT JOIN `%1address` ad ON c.`id_customer` = ad.`id_customer` '),
-				(3, 1, 90, NULL)");
-	}
-
-	public function uninstall()
-	{
-		$fileTranslationCache = $this->local_path.'/translations/translation_cache.txt';
-		if (file_exists($fileTranslationCache))
-			unlink($fileTranslationCache);
-
-		return ($this->dropTables() && parent::uninstall());
-	}
-
-	protected function dropTables()
-	{
-		return (Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_filter`')
-		&& Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_condition`')
-		&& Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_basecondition`')
-		&& Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_sourcecondition`')
-		&& Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_fieldcondition`'));
 	}
 
 	private function addScript()
@@ -233,39 +81,34 @@ class Segmentation extends Module
 				$datePickerJsFormat = 'yy-mm-dd';
 		}
 
-		if (version_compare(_PS_VERSION_, '1.5') < 0)
-		{
-			Tools::addCSS(_PS_JS_DIR.'jquery/datepicker/datepicker.css');
-			Tools::addJs(_PS_JS_DIR.'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js');
-		}
-		else
-			$this->context->controller->addJqueryUI('ui.datepicker');
+		if (version_compare(_PS_VERSION_, '1.5', '>='))
+			Context::getContext()->controller->addJqueryUI('ui.datepicker');
 
 		$content = '
-			<link rel="stylesheet" type="text/css" href="../modules/mailjet/views/js/datepicker/datepicker.css" />
-			<link rel="stylesheet" type="text/css" href="../modules/mailjet/css/style.css" />
-			<link rel="stylesheet" type="text/css" href="../modules/mailjet/css/bundlejs_prestashop.css" />
-			<!-- script type="text/javascript" src="'._MODULE_DIR_.'mailjet/views/js/datepicker.js"></script -->
-			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/fonction.js"></script>
-			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/main.js"></script>
-			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/bundlejs_prestashop.js"></script>
+			<link rel="stylesheet" type="text/css" href="'._PS_JS_DIR_.'jquery/datepicker/datepicker.css" />
+			<link rel="stylesheet" type="text/css" href="'._MODULE_DIR_.'mailjet/css/style.css" />
+			<link rel="stylesheet" type="text/css" href="'._MODULE_DIR_.'mailjet/css/bundlejs_prestashop.css" />
 			<script type="text/javascript">
 				var tokenV = "'.Tools::getValue('token').'";
 				var ajaxFile =  "'._MODULE_DIR_.'mailjet/views/templates/ajax/ajax.php";
 				var ajaxSyncFile =  "'._MODULE_DIR_.'mailjet/views/templates/ajax/sync.php";
 				var ajaxBundle =  "'._MODULE_DIR_.'mailjet/views/templates/ajax/bundlejs_prestashop.php";
-				var modname = "'.$this->name.'";
 				var id_employee = "'.(int)Context::getContext()->cookie->id_employee.'";
 				var trad = new Array();
 				var datePickerJsFormat = "'.$datePickerJsFormat.'";
-				var lblMan = "'.$this->ll(20).'";
-				var lblWoman = "'.$this->ll(21).'";
-				var lblUnknown = "'.$this->ll(43).'";
-				var loadingFilter = false;';
+				var lblMan = "'.preg_replace('/(\r|\n)/', '', $this->ll(20)).'";
+				var lblWoman = "'.preg_replace('/(\r|\n)/', '', $this->ll(21)).'";
+				var lblUnknown = "'.preg_replace('/(\r|\n)/', '', $this->ll(43)).'";
+				var loadingFilter = false;'."\r\n";
 		foreach ($this->trad as $key => $value)
-			$content .= 'trad['.$key.'] = "'.$value.'";';
+			$content .= 'trad['.$key.'] = "'.preg_replace('/(\r|\n)/', '', $value).'";'."\r\n";
 		$content .= '
-			</script>';
+			</script>
+			'.(version_compare(_PS_VERSION_, '1.5', '<') ? '<script type="text/javascript" src="'._PS_JS_DIR_.'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>' : '').'
+			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/fonction.js"></script>
+			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/main.js"></script>
+			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/bundlejs_prestashop.js"></script>
+			';
 		return $content;
 	}
 	public function getContent()
@@ -275,9 +118,8 @@ class Segmentation extends Module
 		$this->clearCacheLang();
 		$this->initLang();
 
-		$html = $this->addScript().
-			'
-			<fieldset class="width6 hint" style="display:block;position:relative;text-align:justify;">
+		$html = $this->addScript().'
+			<fieldset class="width6 hint seg_fieldset">&nbsp; 
 			'.$this->l('This module enable you to create segments of customer according to any criteria you think of. You can then either display and export the selected customers or associate them to an existing customer group.', 'mailjet').'<br /><br />
 			'.$this->l('These segments are particularly useful to create special offer associated with customer groups (e.g., send a coupon to the customers interested in some products)', 'mailjet').'<br /><br />
 			'.$this->l('Create an infinity of filters corresponding to your needs!', 'mailjet').'
@@ -494,11 +336,12 @@ class Segmentation extends Module
 		return $html;
 	}
 
-	public function l($string, $specific = false)
+	public static function l($string, $specific = false)
 	{
-		if ($string == parent::l($string, $specific))
+		$module = new Mailjet();
+		if ($string == $module->l($string, $specific))
 		{
-			$trad_file = dirname(__FILE__).'/translations/'.Context::getContext()->language->iso_code.'.php';
+			$trad_file = _PS_MODULE_DIR_.'mailjet/translations/'.Context::getContext()->language->iso_code.'.php';
 			if (file_exists($trad_file))
 			{
 				$_MODULE = array();
@@ -517,7 +360,7 @@ class Segmentation extends Module
 
 			return (isset($_MODULE[$key])?$_MODULE[$key]:(parent::l($string, $specific)));
 		}
-		else return parent::l($string, $specific);
+		else return $module->l($string, $specific);
 	}
 
 	public function ll($i)
@@ -529,7 +372,7 @@ class Segmentation extends Module
 
 	public function getSourceSelect($ID, $inputID, $selected = null)
 	{
-		$res = Db::getInstance()->ExecuteS('SELECT id_sourcecondition, label FROM `'._DB_PREFIX_.'mj_sourcecondition` WHERE `id_basecondition` = '.(int)$ID);
+		$res = Db::getInstance()->executeS('SELECT id_sourcecondition, label FROM `'._DB_PREFIX_.'mj_sourcecondition` WHERE `id_basecondition` = '.(int)$ID);
 		$html = '<select id="sourceSelect'.$inputID.'" name="sourceSelect[]" class="sourceSelect fixed">';
 		$html .= '<option value="-1">--SELECT--</option>';
 		foreach ($res as $r)
@@ -1448,7 +1291,17 @@ class Segmentation extends Module
 		if (!($group_name = $this->getGroupName((int)$post['idgroup'])))
 				$group_name = '--';
 
-		return '{"id" : '.$id_filter.',"name" : "'.pSQL($post['name']).'", "description" : "'.pSQL($post['description']).'", "replace_customer" : "'.$replace_customer_text.'", "auto_assign" : "'.$auto_assign_text.'", "group_name" : "'.$group_name.'"}';
+		/* ** ** */
+		foreach ($post as &$p)
+			$p = str_replace("\\'", "'", $p);
+		$post['id'] = $id_filter;
+		$post['replace_customer'] = $replace_customer_text;
+		$post['auto_assign'] = $auto_assign_text;
+		$post['group_name'] = $group_name;
+		return json_encode($post);
+		/* ** ** */
+		
+		// return '{"id" : '.$id_filter.',"name" : "'.pSQL($post['name']).'", "description" : "'.pSQL($post['description']).'", "replace_customer" : "'.$replace_customer_text.'", "auto_assign" : "'.$auto_assign_text.'", "group_name" : "'.$group_name.'"}';
 	}
 
 	public function deleteFilter($id)
@@ -1599,13 +1452,13 @@ class Segmentation extends Module
 				</select>
 				<span class="help">'.$this->l('Assign customers to this group automatically. It will create a new filter which associate customers in real time in your shop').'.</span>
 			</div>
-				<hr style="margin-top:25px;">
+				<hr class="seg_hr">
 			<div class="rowAction" id="attrib">
 				<label>'.$this->l('Assign group selection').'</label>
 				<div class="size3">
 					<button class="my_button" id="groupAttrib" >
 					<img src="../modules/mailjet/img/table.png" /> '.$this->l('Assign now').'
-					</button><img src="'.__PS_BASE_URI__.'modules/mailjet/img/load.gif" id="wait" style="margin:3px;display:none;" />
+					</button><img src="'.__PS_BASE_URI__.'modules/mailjet/img/load.gif" id="wait" style="display:none;" />
 					<span class="help">'.$this->l('Customers will be assigned to the group after the click on the button').'.</span>
 					<br><span id="resultText"></span>
 				</div>
@@ -1695,8 +1548,6 @@ class Segmentation extends Module
 	{
 		if (!$id_lang)
 			$id_lang = $this->getCurrentIdLang();
-
-		$this->local_path = dirname(__FILE__);
 
 		if (file_exists($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'))
 			$this->trad = unserialize(Tools::file_get_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'));
@@ -1856,95 +1707,6 @@ class Segmentation extends Module
 		);
 	}
 
-	public function checkAutoAssignment($id_customer = 0)
-	{
-		$sql = 'SELECT * 
-				FROM '._DB_PREFIX_.'mj_filter f
-				LEFT JOIN '._DB_PREFIX_.'mj_condition c ON c.id_filter = f.id_filter
-				WHERE f.assignment_auto = 1';
-
-		$rows = DB::getInstance()->executeS($sql);
-
-		if (!is_array($rows))
-			return $this;
-
-		$formatRows = array();
-		foreach ($rows as $row)
-		{
-			$id_filter = (int)$row['id_filter'];
-			$formatRows[$id_filter]['mode'] = 0;
-			$formatRows[$id_filter]['replace_customer'] = (bool)$row['replace_customer'];
-			$formatRows[$id_filter]['name'] = $row['name'];
-			$formatRows[$id_filter]['description'] = $row['description'];
-			$formatRows[$id_filter]['idfilter'] = $id_filter;
-			$formatRows[$id_filter]['idgroup'] = $row['id_group'];
-			$formatRows[$id_filter]['rule_a'][] = $row['rule_a'];
-			$formatRows[$id_filter]['rule_action'][] = $row['rule_action'];
-			$formatRows[$id_filter]['baseSelect'][] = $row['id_basecondition'];
-			$formatRows[$id_filter]['sourceSelect'][] = $row['id_sourcecondition'];
-			$formatRows[$id_filter]['fieldSelect'][] = $row['id_fieldcondition'];
-			$formatRows[$id_filter]['data'][] = $row['data'];
-			$formatRows[$id_filter]['value1'][] = $row['value1'];
-			$formatRows[$id_filter]['value2'][] = $row['value2'];
-		}
-
-		foreach ($formatRows as $filterId => $formatRow)
-		{
-			$sql = $this->getQuery($formatRow, true).' HAVING c.id_customer = '.(int)$id_customer;
-
-			$result = DB::getInstance()->executeS($sql);
-
-			if ($result && !$this->belongsToGroup($formatRow['idgroup'], $id_customer))
-			{
-
-				if ($formatRow['replace_customer'])
-				{
-					$sql = 'DELETE 
-						FROM '._DB_PREFIX_.'customer_group 
-						WHERE id_customer = '.(int)$id_customer;
-
-					Db::getInstance()->execute($sql);
-				}
-
-				$values = array(
-					'id_group'		=>	(int)$formatRow['idgroup'],
-					'id_customer'	=>	(int)$id_customer
-				);
-
-				DB::getInstance()->autoExecute(_DB_PREFIX_.'customer_group', $values, 'INSERT');
-
-				// Mailjet update
-				$customer = new Customer($id_customer);
-
-			}
-			else if (!$result && $this->belongsToGroup($formatRow['idgroup'], $id_customer))
-			{
-
-				$sql = 'DELETE FROM '._DB_PREFIX_.'customer_group 
-						WHERE id_group = '.(int)$formatRow['idgroup'].' AND id_customer = '.(int)$id_customer;
-
-				DB::getInstance()->execute($sql);
-
-				// Mailjet update
-				$customer = new Customer($id_customer);
-
-			}
-
-			$customer = new Customer($id_customer);
-			$initialSynchronization = new HooksSynchronizationSingleUser(
-					MailjetTemplate::getApi()
-			);
-			$mailjetListID = $this->_getMailjetContactListId($filterId);
-
-			if ($result)
-				$initialSynchronization->subscribe($customer->email, $mailjetListID);
-			else
-				$initialSynchronization->remove($customer->email, $mailjetListID);
-		}
-
-		return $this;
-	}
-
 	public function belongsToGroup($id_group, $id_customer)
 	{
 		$sql = 'SELECT COUNT(*) 
@@ -1952,66 +1714,6 @@ class Segmentation extends Module
 				WHERE id_group = '.(int)$id_group.' AND id_customer = '.(int)$id_customer;
 
 		return (bool)DB::getInstance()->getValue($sql);
-	}
-
-	public function hookNewOrder($params)
-	{
-		$this->checkAutoAssignment((int)$params['customer']->id);
-		return '';
-	}
-
-	public function hookUpdateQuantity($params)
-	{
-		return $this->hookUpdateOrderStatus($params);
-	}
-
-	public function hookCart($params)
-	{
-		$this->checkAutoAssignment((int)$params['cart']->id_customer);
-		return '';
-	}
-
-	public function hookAuthentication($params)
-	{
-		return $this->hookNewOrder($params);
-	}
-
-	public function hookInvoice($params)
-	{
-		return $this->hookUpdateOrderStatus($params);
-	}
-
-	public function hookUpdateOrderStatus($params)
-	{
-		$sql = 'SELECT id_customer 
-				FROM '._DB_PREFIX_.'order 
-				WHERE id_order = '.(int)$params['id_order'];
-
-		if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0)
-			$this->checkAutoAssignment($id_customer);
-
-		return '';
-	}
-
-/* 	public function hookCreateAccount($params)
- 	{
- 		return true;
- 		return $this->hookNewOrder($params);
- 	}*/
-
-	public function hookOrderSlip($params)
-	{
-		return $this->hookUpdateOrderStatus($params);
-	}
-
-	public function hookOrderReturn($params)
-	{
-		return $this->hookUpdateOrderStatus($params);
-	}
-
-	public function hookCancelProduct($params)
-	{
-		return $this->hookUpdateOrderStatus($params);
 	}
 
 	public function getGroupName($id_group, $id_lang = 0)

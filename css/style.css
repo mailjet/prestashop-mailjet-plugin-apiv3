@@ -391,3 +391,26 @@ dl#filter-help dd {
 .div_new_filter {
 	display:none;	
 }
+
+/* ** ** ******************* ** ** */
+
+.seg_fieldset {
+	display:block;
+	position:relative;
+	/* text-align:justify; */
+}
+.seg_hr { margin-top:25px; }
+#wait { margin:3px; }
+
+#seg_pagination {
+	margin-top:4px;
+	font-size:12px;
+}
+#seg_pagination a {
+	font-weight:bold;
+	margin:0 3px;
+}
+
+input.alertbox { border: 1px solid red !important; }
+
+/* ** ** ******************* ** ** */

@@ -28,13 +28,14 @@
 if (!defined('_PS_VERSION_'))
 	exit;
 
-/* include_once(dirname(__FILE__).'/classes/MailjetAPI.php'); */
-include_once(dirname(__FILE__).'/classes/MailJetTranslate.php');
-include_once(dirname(__FILE__).'/classes/MailJetTemplate.php');
-include_once(dirname(__FILE__).'/classes/MailJetPages.php');
-include_once(dirname(__FILE__).'/classes/MailJetEvents.php');
-include_once(dirname(__FILE__).'/segmentation.php');
-include_once(dirname(__FILE__).'/classes/MailJetLog.php');
+/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
+
+include_once(_PS_MODULE_DIR_.'mailjet/classes/segmentation.php');
 
 include_once(_PS_SWIFT_DIR_.'Swift.php');
 include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
@@ -42,12 +43,12 @@ include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
 /* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
 
 
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/Initial.php');
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/SingleUser.php');
-include_once(dirname(__FILE__).'/classes/hooks/synchronization/Segment.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
 
-include_once(dirname(__FILE__).'/moduletabredirect.php');
+include_once(_PS_MODULE_DIR_.'mailjet/moduletabredirect.php');
 
 class Mailjet extends Module
 {
@@ -126,13 +127,13 @@ class Mailjet extends Module
 
 		// Parent constructor
 		parent::__construct();
-		//ppp($this->context->cookie);
+
+		// Backward compatibility
+		if (version_compare(_PS_VERSION_, '1.5', '<'))
+			require(_PS_MODULE_DIR_.$this->name.'/backward_compatibility/backward.php');
 
 		if ($this->active)
 		{
-			// Backward compatibility
-			require(_PS_MODULE_DIR_.$this->name.'/backward_compatibility/backward.php');
-
 			$this->module_access['uri'] = __PS_BASE_URI__.'modules/'.$this->name.'/';
 			$this->module_access['dir'] = _PS_MODULE_DIR_.$this->name.'/';
 
@@ -178,7 +179,7 @@ class Mailjet extends Module
 
 		// Install SQL
 		$sql = array();
-		include(dirname(__FILE__).'/sql/install.php');
+		include(_PS_MODULE_DIR_.'mailjet/sql/install.php');
 		foreach ($sql as $s)
 			if (!Db::getInstance()->execute($s))
 			return false;
@@ -197,26 +198,39 @@ class Mailjet extends Module
 		$this->createTriggers();
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
 
+			$this->registerHook('actionAdminCustomersControllerSaveBefore');
+			$this->registerHook('actionAdminCustomersControllerSaveAfter');
+			$this->registerHook('actionAdminCustomersControllerStatusAfter');
+			$this->registerHook('actionAdminCustomersControllerDeleteBefore');
+
 		return (parent::install()
+			&& $this->loadConfiguration()
 			&& $this->registerHook('BackOfficeHeader')
 			&& $this->registerHook('adminCustomers')
 			&& $this->registerHook('header')
 			&& $this->registerHook('newOrder')
 			&& $this->registerHook('createAccount')
-			&& $this->registerHook('actionAdminCustomersControllerSaveBefore')
-			&& $this->registerHook('actionAdminCustomersControllerSaveAfter')
-			&& $this->registerHook('actionAdminCustomersControllerStatusAfter')
-			&& $this->registerHook('actionAdminCustomersControllerDeleteBefore')
-			&& $segmentation->install());
+			/* && $this->registerHook('newOrder') // SEGMENTATION ** ** */
+			&& $this->registerHook('updateQuantity')
+			&& $this->registerHook('cart')
+			&& $this->registerHook('authentication')
+			&& $this->registerHook('invoice')
+			&& $this->registerHook('updateOrderStatus')
+			&& $this->registerHook('orderConfirmation')
+			&& $this->registerHook('orderSlip')
+			&& $this->registerHook('orderReturn')
+			&& $this->registerHook('cancelProduct'));
 	}
 
 	public function uninstall()
 	{
-		$segmentation = new Segmentation();
+		$fileTranslationCache = $this->local_path.'/translations/translation_cache.txt';
+		if (file_exists($fileTranslationCache))
+			unlink($fileTranslationCache);
 
 		// Uninstall SQL
 		$sql = array();
-		include(dirname(__FILE__).'/sql/uninstall.php');
+		include(_PS_MODULE_DIR_.'mailjet/sql/uninstall.php');
 		foreach ($sql as $s)
 			if (!Db::getInstance()->execute($s))
 			return false;
@@ -228,7 +242,7 @@ class Mailjet extends Module
 		Configuration::deleteByName('MAILJET');
 		Configuration::deleteByName('MJ_TRIGGERS');
 
-		return parent::uninstall() && $segmentation->uninstall();
+		return parent::uninstall();
 	}
 
 	public function hookHeader()
@@ -247,6 +261,8 @@ class Mailjet extends Module
 
 	public function hookNewOrder($params)
 	{
+		$this->checkAutoAssignment((int)$params['customer']->id);
+
 		$sql = 'SELECT * FROM `'._DB_PREFIX_.'mj_roi_cart`
 				WHERE id_cart = '.(int)$params['order']->id_cart;
 
@@ -485,12 +501,193 @@ class Mailjet extends Module
 		}
 	}
 
+	public function hookUpdateQuantity($params)
+	{
+		return $this->hookUpdateOrderStatus($params);
+	}
+
+	public function hookCart($params)
+	{
+		$this->checkAutoAssignment((int)$params['cart']->id_customer);
+		return '';
+	}
+
+	public function hookAuthentication($params)
+	{
+		return $this->hookNewOrder($params);
+	}
+
+	public function hookInvoice($params)
+	{
+		return $this->hookUpdateOrderStatus($params);
+	}
+
+	public function hookUpdateOrderStatus($params)
+	{
+		$sql = 'SELECT id_customer 
+				FROM '._DB_PREFIX_.'order 
+				WHERE id_order = '.(int)$params['id_order'];
+
+		if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0)
+			$this->checkAutoAssignment($id_customer);
+
+		return '';
+	}
+
+	public function hookOrderSlip($params)
+	{
+		return $this->hookUpdateOrderStatus($params);
+	}
+
+	public function hookOrderReturn($params)
+	{
+		return $this->hookUpdateOrderStatus($params);
+	}
+
+	public function hookCancelProduct($params)
+	{
+		return $this->hookUpdateOrderStatus($params);
+	}
+
+	public function checkAutoAssignment($id_customer = 0)
+	{
+		$sql = 'SELECT * 
+				FROM '._DB_PREFIX_.'mj_filter f
+				LEFT JOIN '._DB_PREFIX_.'mj_condition c ON c.id_filter = f.id_filter
+				WHERE f.assignment_auto = 1';
+
+		$rows = DB::getInstance()->executeS($sql);
+
+		if (!is_array($rows))
+			return $this;
+
+		$formatRows = array();
+		foreach ($rows as $row)
+		{
+			$id_filter = (int)$row['id_filter'];
+			$formatRows[$id_filter]['mode'] = 0;
+			$formatRows[$id_filter]['replace_customer'] = (bool)$row['replace_customer'];
+			$formatRows[$id_filter]['name'] = $row['name'];
+			$formatRows[$id_filter]['description'] = $row['description'];
+			$formatRows[$id_filter]['idfilter'] = $id_filter;
+			$formatRows[$id_filter]['idgroup'] = $row['id_group'];
+			$formatRows[$id_filter]['rule_a'][] = $row['rule_a'];
+			$formatRows[$id_filter]['rule_action'][] = $row['rule_action'];
+			$formatRows[$id_filter]['baseSelect'][] = $row['id_basecondition'];
+			$formatRows[$id_filter]['sourceSelect'][] = $row['id_sourcecondition'];
+			$formatRows[$id_filter]['fieldSelect'][] = $row['id_fieldcondition'];
+			$formatRows[$id_filter]['data'][] = $row['data'];
+			$formatRows[$id_filter]['value1'][] = $row['value1'];
+			$formatRows[$id_filter]['value2'][] = $row['value2'];
+		}
+
+		foreach ($formatRows as $filterId => $formatRow)
+		{
+			$sql = $this->getQuery($formatRow, true).' HAVING c.id_customer = '.(int)$id_customer;
+
+			$result = DB::getInstance()->executeS($sql);
+
+			if ($result && !$this->belongsToGroup($formatRow['idgroup'], $id_customer))
+			{
+
+				if ($formatRow['replace_customer'])
+				{
+					$sql = 'DELETE 
+						FROM '._DB_PREFIX_.'customer_group 
+						WHERE id_customer = '.(int)$id_customer;
+
+					Db::getInstance()->execute($sql);
+				}
+
+				$values = array(
+					'id_group'		=>	(int)$formatRow['idgroup'],
+					'id_customer'	=>	(int)$id_customer
+				);
+
+				DB::getInstance()->autoExecute(_DB_PREFIX_.'customer_group', $values, 'INSERT');
+
+				// Mailjet update
+				$customer = new Customer($id_customer);
+
+			}
+			else if (!$result && $this->belongsToGroup($formatRow['idgroup'], $id_customer))
+			{
+
+				$sql = 'DELETE FROM '._DB_PREFIX_.'customer_group 
+						WHERE id_group = '.(int)$formatRow['idgroup'].' AND id_customer = '.(int)$id_customer;
+
+				DB::getInstance()->execute($sql);
+
+				// Mailjet update
+				$customer = new Customer($id_customer);
+
+			}
+
+			$customer = new Customer($id_customer);
+			$initialSynchronization = new HooksSynchronizationSingleUser(
+					MailjetTemplate::getApi()
+			);
+			$mailjetListID = $this->_getMailjetContactListId($filterId);
+
+			if ($result)
+				$initialSynchronization->subscribe($customer->email, $mailjetListID);
+			else
+				$initialSynchronization->remove($customer->email, $mailjetListID);
+		}
+
+		return $this;
+	}
+
+	public function loadConfiguration()
+	{
+		return Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_basecondition` VALUES 
+				(1, 0, '`%1customer` c')")
+			&& Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_fieldcondition` VALUES
+				(2, 1, 105, '', '', 1, NULL),
+				(3, 1, 104, '', '', 1, NULL),
+				(4, 1, 59, '', '', 1, NULL),
+				(5, 1, 6, '', '', 1, 'product;null;null'),
+				(6, 1, 7, '', '', 1, 'category;null;null'),
+				(7, 1, 8, '', '', 1, 'brand;null;null'),
+				(8, 1, 10, '', '', 1, NULL),
+				(9, 1, 11, '', '', 1, NULL),
+				(10, 3, 9, '', '', 1, NULL),
+				(11, 2, 12, '', '', 0, 'gender;null;null;null'),
+				(12, 2, 13, '', '', 1, 'null;date;date'),
+				(13, 2, 14, '', '', 0, 'country;null;null'),
+				(15, 1, 61, '', '', 0, NULL),
+				(16, 1, 62, '', '', 0, NULL),
+				(17, 2, 63, '', '', 0, 'null;date;date'),
+				(18, 2, 64, '', '', 0, 'null;date;date'),
+				(19, 2, 65, '', '', 0, 'null;date;date'),
+				(20, 2, 66, '', '', 0, NULL),
+				(21, 2, 69, '', '', 0, NULL),
+				(22, 2, 70, '', '', 0, NULL),
+				(23, 2, 71, '', '', 0, NULL),
+				(24, 2, 72, '', '', 0, NULL),
+				(25, 2, 76, '', '', 0, NULL),
+				(26, 2, 77, '', '', 0, NULL),
+				(33, 1, 92, '', '', 0, 'date;null;null'),
+				(28, 1, 88, '', '', 0, 'null;date;date'),
+				(29, 3, 91, '', '', 0, 'null;date;date'),
+				(30, 3, 6, '', '', 0, 'product;null;null'),
+				(31, 3, 7, '', '', 0, 'category;null;null'),
+				(32, 3, 8, '', '', 0, 'brand;null;null'),
+				(34, 1, 70, '', '', 0, NULL),
+				(35, 1, 94, '', '', 0, 'null;date;date'),
+				(36, 2, 99, '', '', 0, 'null;date;date')")
+			&& Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_sourcecondition` VALUES
+				(1, 1, 1, 'LEFT JOIN `%1orders` o ON c.`id_customer` = o.`id_customer`\r\nLEFT JOIN `%1order_detail` od ON o.`id_order` = od.`id_order`\r\nLEFT JOIN `%1currency` cu ON cu.`id_currency` = o.`id_currency`'),
+				(2, 1, 0, 'LEFT JOIN `%1address` ad ON c.`id_customer` = ad.`id_customer` '),
+				(3, 1, 90, NULL)");
+	}
+
 	public function fetchTemplate($path, $name)
 	{
 		if (_PS_VERSION_ < '1.4')
 			$this->context->smarty->currentTemplate = $name;
 
-		return $this->context->smarty->fetch(dirname(__FILE__).$path.$name.'.tpl');
+		return $this->context->smarty->fetch(_PS_MODULE_DIR_.'mailjet'.$path.$name.'.tpl');
 	}
 
 	public function postProcess()
@@ -537,7 +734,7 @@ class Mailjet extends Module
 			{
 				if (($domain->domain == Configuration::get('PS_SHOP_DOMAIN')) || ($domain->domain == Configuration::get('PS_SHOP_DOMAIN_SSL')))
 				{
-					$fp = fopen(dirname(__FILE__).'/../../'.$domain->file_name, 'w');
+					$fp = fopen(_PS_ROOT_DIR_.$domain->file_name, 'w');
 					fclose($fp);
 				}
 			}
@@ -799,7 +996,7 @@ class Mailjet extends Module
 					if (($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN')) || ($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN_SSL')))
 					{
 						$available_domain = 1;
-						if (file_exists(dirname(__FILE__).'/../../'.$sender->Filename))
+						if (file_exists(_PS_ROOT_DIR_.$sender->Filename))
 							$root_file = 1;
 					}
 					if (isset($sender->DNS->Domain))
@@ -905,58 +1102,15 @@ class Mailjet extends Module
 
 		$iso = $this->context->language->iso_code;
 
-		// TinyMCE
-		if (version_compare(_PS_VERSION_, '1.4.0.0') >= 0)
-			$tinymce = '
-			<script type="text/javascript">
-			var iso = \''.(file_exists(_PS_ROOT_DIR_.'/js/tiny_mce/langs/'.$iso.'.js') ? $iso : 'en').'\' ;
-			var pathCSS = \''._THEME_CSS_DIR_.'\' ;
-			var ad = \''.dirname($_SERVER['PHP_SELF']).'\' ;
-			</script>
-			<script type="text/javascript" src="'.__PS_BASE_URI__.'js/tiny_mce/tiny_mce.js"></script>
-			<script type="text/javascript" src="'.__PS_BASE_URI__.'js/tinymce.inc.js"></script>
-			<script language="javascript" type="text/javascript">
-			id_language = Number('.(int)$this->context->language->id.');
-			tinySetup();
-			</script>';
-		else
-		{
-			$tinymce = '
-			<script type="text/javascript" src="'.__PS_BASE_URI__.'js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
-			<script type="text/javascript">
-			tinyMCE.init({
-			mode : "textareas",
-			theme : "advanced",
-			plugins : "safari,pagebreak,style,layer,table,advimage,advlink,inlinepopups,media,searchreplace,contextmenu,paste,directionality,fullscreen",
-			theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect",
-			theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,,|,forecolor,backcolor",
-			theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,media,|,ltr,rtl,|,fullscreen",
-			theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,pagebreak",
-			theme_advanced_toolbar_location : "top",
-			theme_advanced_toolbar_align : "left",
-			theme_advanced_statusbar_location : "bottom",
-			theme_advanced_resizing : false,
-			content_css : "'.__PS_BASE_URI__.'themes/'._THEME_NAME_.'/css/global.css",
-			document_base_url : "'.__PS_BASE_URI__.'",
-			width: "600",
-			height: "auto",
-			font_size_style_values : "8pt, 10pt, 12pt, 14pt, 18pt, 24pt, 36pt",
-			template_external_list_url : "lists/template_list.js",
-			external_link_list_url : "lists/link_list.js",
-			external_image_list_url : "lists/image_list.js",
-			media_external_list_url : "lists/media_list.js",
-			elements : "nourlconvert",
-			entity_encoding: "raw",
-			convert_urls : false,
-			language : "'.(file_exists(_PS_ROOT_DIR_.'/js/tinymce/jscripts/tiny_mce/langs/'.$iso.'.js') ? $iso : 'en').'"
-		});
-		id_language = Number('.(int)$this->context->language->id.');
-		</script>';
-		}
-
 		// Assign
 		$this->context->smarty->assign(array(
-			'tinymce' => $tinymce,
+			'tinymce_new' => version_compare(_PS_VERSION_, '1.4.0.0'),
+			'tinymce_iso' => file_exists(_PS_ROOT_DIR_.'/js/tiny_mce/langs/'.$iso.'.js') ? $iso : 'en',
+			'tinymce_pathCSS' => _THEME_CSS_DIR_,
+			'tinymce_pathBase' => __PS_BASE_URI__,
+			'tinymce_ad' => dirname($_SERVER['PHP_SELF']),
+			'tinymce_id_language' => (int)$this->context->language->id,
+			'tinymce_theme' => _THEME_NAME_,
 			'sign' => $sign,
 			'triggers' => $triggers,
 			'languages' => $languages,
@@ -999,7 +1153,7 @@ class Mailjet extends Module
 	{
 		$subject = array();
 		$mail = array();
-		include(dirname(__FILE__) . '/translations/triggers_messages.php');
+		include(_PS_MODULE_DIR_.'mailjet/translations/triggers_messages.php');
 		$languages = Language::getLanguages();
 
 		$shop_name = $this->context->shop->name;
@@ -1323,7 +1477,7 @@ class Mailjet extends Module
 	public function getAdminFullUrl()
 	{
 		$adminDirName = null;
-		$maindirs = scandir(realpath(dirname(__FILE__).'/../../'));
+		$maindirs = scandir(_PS_ROOT_DIR_);
 		foreach ($maindirs as $dirName)
 		{
 			if (strpos($dirName, 'admin') !== false)

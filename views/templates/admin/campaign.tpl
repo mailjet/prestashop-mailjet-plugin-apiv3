@@ -22,12 +22,12 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}<!-- Mailjet : Campaigns -->
-<div id="mj_campaigns_page" class="center_page" style="width:initial;max-width:960px;">
+<div id="mj_campaigns_page" class="center_page">
 	<form id="create" method="post" action="{$smarty.server.REQUEST_URI|default:''}">
     <input type="hidden" name="MJ_submitCampaign" value=1 />
 	<fieldset>
     	<legend>{l s='Campaigns' mod='mailjet'}</legend>
-		<div align="right" style="position:relative;top:-10px;"><a class="button" href="index.php?tab=AdminModules&configure=mailjet&module_name=mailjet&MJ_request_page=CAMPAIGN1&token={$token|default:''}"><img src="../img/admin/add.gif" alt="{l s='Create a new Campign' mod='mailjet'}" title="{l s='Create a new Campign' mod='mailjet'}"> {l s='Create a new Campaign' mod='mailjet'}</a></div>
+		<div align="right" class="fieldset_buttons"><a class="button" href="index.php?tab=AdminModules&configure=mailjet&module_name=mailjet&MJ_request_page=CAMPAIGN1&token={$token|default:''}"><img src="../img/admin/add.gif" alt="{l s='Create a new Campign' mod='mailjet'}" title="{l s='Create a new Campign' mod='mailjet'}"> {l s='Create a new Campaign' mod='mailjet'}</a></div>
         <table class="table" width="100%">
         <tr>
         	<th>{l s='ID' mod='mailjet'}</th>

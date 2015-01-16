@@ -512,3 +512,84 @@ div.mj_triggers_parameters
 {
 	border:1px solid #000 !important;
 }
+
+/* ** ** ******************* ** ** */
+
+
+.hint {
+	margin-top: 4px !important;
+	margin-bottom: 2px !important;
+	border: 1px solid #00529B !important;
+	padding: 15px 5px 15px 40px !important;
+	color: #00529B !important;
+	background:#BDE5F8 url(/img/admin/icon-info.png) no-repeat 6px 5px !important;
+	border-radius: 3px !important;
+	min-height: 15px !important;
+	z-index: 10 !important;
+}
+
+#content .warn {
+	background: #FEEFB3 url(/img/admin/icon-attention.png) no-repeat scroll 6px 6px !important;
+	border: 1px solid #9e6014 !important;
+	color: #9e6014 !important;
+}
+.warn {
+	font-size: 12px !important;
+	font-weight: normal !important;
+	margin: 0 0 10px 0 !important;
+	line-height: 20px !important;
+	padding: 13px 5px 5px 40px !important;
+	min-height: 28px !important;
+	border-radius: 3px !important;
+}
+
+.mj_errors { margin-top:10px; }
+.mj_landing { clear:both;width:960px;margin:0 auto; }
+
+#mj_iframe { border:0px; }
+
+#events .warn b, .b_black { color:#000; }
+#events .warn b span { color:#900; }
+#events .warn b input { width:700px;padding:3px; }
+#events #tableWrapper { width:100%; }
+#events #vsTable th, #events #vsTable td { text-align:center; }
+
+#mj_campaigns_page { width:initial;max-width:960px; }
+#mj_campaigns_page div.fieldset_buttons { position:relative;top:-10px; }
+
+#mj_triggers_page { width:initial;max-width:960px; }
+#mj_triggers_page fieldset.hint { position:relative;display:block !important; }
+#mj_triggers_page fieldset.hint legend { text-transform:none; }
+#mj_triggers_page fieldset.hint div { padding-left:40px; }
+#triggers_options .mj_radios { padding-left:20px; }
+.MJ_triggers_trigger_buttons { display:inline-block;min-width:90px; }
+.mj_triggers_parameters input { text-align:right; }
+
+.mj_decalage { padding-left:60px; }
+.mj_trigger_subjects { width:500px; }
+.mj_seps { width:5px;height:5px;display:block; }
+.mj_trigger_rtemails { width:100%;height:400px; }
+
+#mj_account_page_left { width:455px;float:left; }
+#mj_account_page_right { width:455px;float:right; }
+#mj_account_details div { float:right;width:47%; }
+#mj_account_details_mod div:nth-child(1) { width:40%;display:inline-block; }
+#mj_account_details_mod div:nth-child(2) { width:50%;display:inline-block; }
+.mj_account_sep { height:10px; }
+.mj_account_sep2 { height:5px; }
+#mj_account_details_mod input[name=MJ_account_firstname] { width:90%; }
+#mj_account_details_mod input[name=MJ_account_lastname] { width:90%; }
+#mj_account_details_mod input[name=MJ_account_contact_email] { width:90%;background:#f0f0f0; }
+#mj_account_details_mod input[name=MJ_account_company_name] { width:90%; }
+#mj_account_details_mod input[name=MJ_account_address_street] { width:90%;height:60px; }
+#mj_account_details_mod input[name=MJ_account_address_postal_code] { width:20%; }
+#mj_account_details_mod input[name=MJ_account_address_city] { width:40%; }
+#mj_account_deliverability p { margin-left:10px; }
+#mj_account_deliverability p i { font-size:11px; }
+#mj_account_deliverability center b.vert { color:#008000; }
+#mj_account_deliverability center b.rouge { color:#990000; }
+
+.center_page.mj_home p.hint { display:block;position:relative; }
+.center_page.mj_home p.warn { display:block;position:relative;margin-top:5px; }
+
+/* ** ** ******************* ** ** */

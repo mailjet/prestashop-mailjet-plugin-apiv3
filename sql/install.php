@@ -81,4 +81,63 @@ $sql = array();
 			  `token_presta` varchar(64) NOT NULL,
 			  PRIMARY KEY (`id_cart`)
 			);';
+
+
+	/* ** ** SEGMENTATION ** ** */
+	
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_filter`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_condition`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_basecondition`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_sourcecondition`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_fieldcondition`';
+	
+	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_filter` (
+					id_filter INTEGER NOT NULL AUTO_INCREMENT,
+					name VARCHAR(250) NOT NULL,
+					description VARCHAR(250),
+					id_group INT(10) NOT NULL,
+					assignment_auto TINYINT(1) NOT NULL,
+					replace_customer TINYINT(1) NOT NULL,
+					date_start TIMESTAMP,
+					date_end TIMESTAMP,
+					PRIMARY KEY (id_filter)
+					);';
+	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_condition` (
+					id_condition INTEGER NOT NULL AUTO_INCREMENT,
+					id_filter INTEGER NOT NULL,
+					id_basecondition INTEGER NOT NULL,
+					id_sourcecondition INTEGER NOT NULL,
+					id_fieldcondition INTEGER NOT NULL,
+					rule_a ENUM(\'AND\', \'OR\') NOT NULL,
+					rule_action ENUM(\'IN\', \'NOT IN\') NOT NULL,
+					period ENUM(\'ALL\', \'MONTH\') NOT NULL,
+					data VARCHAR(250),
+					value1 VARCHAR(250),
+					value2 VARCHAR(250),
+					PRIMARY KEY (id_condition)
+					);';
+	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_basecondition` (
+					id_basecondition INTEGER NOT NULL AUTO_INCREMENT,
+					label INTEGER,
+					tablename VARCHAR(250),
+					PRIMARY KEY (id_basecondition)
+					);';
+	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_sourcecondition` (
+					id_sourcecondition INTEGER NOT NULL AUTO_INCREMENT,
+					id_basecondition INTEGER NOT NULL,
+					label INTEGER,
+					jointable VARCHAR(250),
+					PRIMARY KEY (id_sourcecondition)
+					);';
+	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_fieldcondition` (
+					id_fieldcondition INTEGER NOT NULL AUTO_INCREMENT,
+					id_sourcecondition INTEGER NOT NULL,
+					label INTEGER,
+					field TEXT,
+					labelSQL VARCHAR(250),
+					printable TINYINT(1),
+					binder VARCHAR(250),
+					PRIMARY KEY (id_fieldcondition)
+					);';
+
 ?>

@@ -21,12 +21,12 @@
  * @copyright 2007-2014 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*}<div class="center_page">
-	<p class="hint" style="display:block;position:relative;">
+*}<div class="center_page mj_home">
+	<p class="hint">
     	&nbsp; {l s='Mailjet sending all emails of your website, optimizes and automatically manages the statistical returns of errors.' mod='mailjet'}
 	</p>
     <form action="{$MJ_adminmodules_link|default:''}" id="home_form" method="POST">
-	<p class="warn" style="display:block;position:relative;margin-top:5px;">
+	<p class="warn">
 		&nbsp; {l s='Activate the sending of all email by Mailjet ?' mod='mailjet'} &nbsp; &nbsp;
 			&nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_1" value=1 {if $MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_1">{l s='YES' mod='mailjet'}</label>
 			&nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_0" value=0 {if !$MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_0">{l s='NO' mod='mailjet'}</label>

@@ -26,7 +26,7 @@
 
 include_once(realpath(dirname(__FILE__).'/../../../../../').'/config/config.inc.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
-include_once(_PS_MODULE_DIR_.'mailjet/segmentation.php');
+include_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 $return = '';
 
 if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN'))

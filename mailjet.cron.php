@@ -26,7 +26,8 @@
 
 require_once(dirname(__FILE__).'/../../config/config.inc.php');
 require_once(dirname(__FILE__).'/../../init.php');
-require_once(dirname(__FILE__).'/mailjet.php');
+
+require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
 $mailjet = new Mailjet();
 
@@ -66,10 +67,10 @@ if ($mailjet->triggers['active'])
 	/* mail template file */
 	$languages = Language::getLanguages();
 	foreach ($languages as $l)
-		if (file_exists(dirname(__FILE__).'/views/templates/admin/'.$l['id_lang'].'.tpl'))
-			$template[$l['id_lang']] = Tools::file_get_contents(dirname(__FILE__).'/views/templates/admin/'.$l['id_lang'].'.tpl');
+		if (file_exists(_PS_MODULE_DIR_.'mailjet/views/templates/admin/'.$l['id_lang'].'.tpl'))
+			$template[$l['id_lang']] = Tools::file_get_contents(_PS_MODULE_DIR_.'mailjet/views/templates/admin/'.$l['id_lang'].'.tpl');
 	/* default template (if no EN in languages) */
-	$template['en'] = Tools::file_get_contents(dirname(__FILE__).'/views/templates/admin/en.tpl');
+	$template['en'] = Tools::file_get_contents(_PS_MODULE_DIR_.'mailjet/views/templates/admin/en.tpl');
 
 	/* infos from the shop */
 	$shop_name = $context->shop->name;

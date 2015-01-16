@@ -45,8 +45,8 @@
     	<div class="warn">
         	&nbsp; {l s='To activate Events, yous must go to your Mailjet account : ' mod='mailjet'} <a href="https://eu.mailjet.com/account/triggers" target="_blank"><u>https://eu.mailjet.com/account/triggers</u></a><br />
             <br />
-            <b style="color:#000;">
-            {l s='Specify the' mod='mailjet'} <span style="color:#900;">Endpoint Url</span> : <input type="text" value="{$url}" style="width:700px;padding:3px;"/><br />
+            <b >
+            {l s='Specify the' mod='mailjet'} <span>Endpoint Url</span> : <input type="text" value="{$url}"/><br />
             {l s='and click the Events you want to activate' mod='mailjet'}...<br />
             </b>
             <br />
@@ -56,14 +56,14 @@
 	{else}
 
 	<form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
-		<div id="tableWrapper" style="width: 100%;">
+		<div id="tableWrapper">
 			<table cellpadding="1" cellspacing="1" id="vsTable">
 				<thead>
 					<tr>
 						<th class="title">&nbsp;</th>
-						<th class="title" style="text-align:center;">ID</th>
+						<th class="title">ID</th>
 						{foreach from=$MJ_title_list item=title}
-							<th class="title" style="text-align:center;">{$title|default:''}</th>
+							<th class="title">{$title|default:''}</th>
 						{/foreach}
 					</tr>
 				</thead>
@@ -74,7 +74,7 @@
 								<input type="checkbox" value="{$fields.id_mj_events|default:''}" name="events[]" />
 							</td>
 							{foreach from=$fields item=field}
-								<td style="text-align:center;">{$field|default:''}</td>
+								<td>{$field|default:''}</td>
 							{/foreach}
 						</tr>
 					{/foreach}

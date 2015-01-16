@@ -39,8 +39,8 @@ else if (Tools::getIsset('mailjet'))
 else
 	$data = new stdClass();
 
-require_once(dirname(__FILE__).'/mailjet.php');
-require_once(dirname(__FILE__).'/classes/MailJetLog.php');
+require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
 
 $mj = new Mailjet();
 

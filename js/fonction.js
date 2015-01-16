@@ -304,8 +304,6 @@ function saveFilter()
 		return false;
 	}
 	
-	
-	
 	$.post(ajaxFile, $("#mainForm").serialize() + "&token=" + tokenV + 
 			"&assign-auto="+$('#assign-auto').val()
 			+ "&idgroup=" + $('#groupUser').val()

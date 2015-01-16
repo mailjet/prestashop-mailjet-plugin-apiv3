@@ -37,11 +37,11 @@ if (!Tools::getValue('token') && Tools::getValue('token') != $token_ok)
 if (Tools::getValue('idfilter') == 0 && Tools::getValue('action') == 'getQuery')
 	die('You have to save the list first.');
 
-include_once(realpath(dirname(__FILE__).'/../../..').'/segmentation.php');
-/* include_once(realpath(dirname(__FILE__).'/../../..').'/classes/MailjetAPI.php'); */
-include_once(realpath(dirname(__FILE__).'/../../..').'/classes/MailJetTemplate.php');
-include_once(realpath(dirname(__FILE__).'/../../..').'/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(realpath(dirname(__FILE__).'/../../..').'/classes/hooks/synchronization/Segment.php');
+include_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
+/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
 
 if (Tools::getValue('action') == 'getQuery')
 {

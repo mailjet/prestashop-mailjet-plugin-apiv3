@@ -32,4 +32,12 @@ $sql = array();
 	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_roi`';
 	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_roi_cart`';
 
+	/* ** ** SEGMENTATION ** ** */
+	
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_filter`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_condition`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_basecondition`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_sourcecondition`';
+	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_fieldcondition`';
+
 ?>

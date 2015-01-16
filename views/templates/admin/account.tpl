@@ -24,12 +24,12 @@
 *}<!-- Mailjet : Account -->
 <form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
 <div id="mj_account_page" class="center_page">
-	<div style="width:455px;float:left;">
+	<div id="mj_account_page_left">
     
 		<fieldset>
 			<legend>{l s='My details' mod='mailjet'}</legend>
             <div id="mj_account_details">
-			    <div style="float:right;width:47%;">
+			    <div>
 				    {if $infos->Firstname || $infos->Lastname}
 	                	<p>
 				    	{if $infos->Firstname}{$infos->Firstname}&nbsp;{/if}
@@ -53,27 +53,27 @@
 			    <a href="javascript:;" onClick="$('#mj_account_details_mod').show();$('#mj_account_details').hide();" class="savebutton button">{l s='Modify' mod='mailjet'}</a>
 			</div>
             <div id="mj_account_details_mod" style="display:none;">
-            	<div style="width:40%;display:inline-block;">
+            	<div>
 	            	{l s='Firstname' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname|default:''}" style="width:90%;" /><br />
+					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname|default:''}" /><br />
 				</div>
-                <div style="width:50%;display:inline-block;">
+                <div>
 					{l s='Lastname' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname|default:''}" style="width:90%;" /><br />
+					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname|default:''}" /><br />
 				</div>
                 <div style="display:block;">
-                    <div style="height:10px;"></div>
+                    <div class="mj_account_sep"></div>
 	            	{l s='e-mail' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_contact_email" readonly value="{$infos->Email|default:''}" style="width:90%;background:#f0f0f0;" /><br />
-                    <div style="height:10px;"></div>
+					<input type="text" name="MJ_account_contact_email" readonly value="{$infos->Email|default:''}" /><br />
+                    <div class="mj_account_sep"></div>
 	            	{l s='Company' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_company_name" value="{$infos->CompanyName|default:''}" style="width:90%;" /><br />
+					<input type="text" name="MJ_account_company_name" value="{$infos->CompanyName|default:''}" /><br />
 	            	{l s='Address' mod='mailjet'}<br />
-    	            <textarea name="MJ_account_address_street" style="width:90%;height:60px;">{$infos->AddressStreet|default:''}</textarea><br />
-                    <div style="height:5px;"></div>
-	                <input type="text" name="MJ_account_address_postal_code" value="{$infos->AddressPostalCode|default:''}" style="width:20%;" />&nbsp;
-                  		<input type="text"name="MJ_account_address_city" value="{$infos->AddressCity|default:''}" style="width:40%;" /><br />
-                    <div style="height:5px;"></div>
+    	            <textarea name="MJ_account_address_street">{$infos->AddressStreet|default:''}</textarea><br />
+                    <div class="mj_account_sep2"></div>
+	                <input type="text" name="MJ_account_address_postal_code" value="{$infos->AddressPostalCode|default:''}" />&nbsp;
+                  		<input type="text"name="MJ_account_address_city" value="{$infos->AddressCity|default:''}" /><br />
+                    <div class="mj_account_sep2"></div>
                     <select name="MJ_account_address_country">
                     	<option>---- {l s='Country' mod='mailjet'} ----</option>
                     	{foreach $countries as $pays}
@@ -92,14 +92,14 @@
 		</fieldset>-->
 
 		<br />
-		<fieldset>
+		<fieldset id="mj_account_deliverability">
 			<legend>{l s='DKIM/SPF for better deliverability' mod='mailjet'}</legend>
             {foreach $domains as $domain}
             	<div>
 	            	<b>Domain @{$domain->DNS->Domain}</b> <i>( {if $domain->Status=='Active'}{l s='enabled' mod='mailjet'}{else}{l s='pending' mod='mailjet'}{/if} )</i><br />
-                    <p style="margin-left:10px;">
-	        	        {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/emptyfile.php?name={$domain->Filename|default:''}"><u>{$domain->Filename|default:''}</u></a><br />
-    	                <i style="font-size:11px;">{l s='File to put at your root folder to activate your domain' mod='mailjet'}</i>
+                    <p>
+	        	        {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/ajax.php?emptyfile&name={$domain->Filename|default:''}"><u>{$domain->Filename|default:''}</u></a><br />
+    	                <i>{l s='File to put at your root folder to activate your domain' mod='mailjet'}</i>
 					</p>
 				</div>
             {/foreach}
@@ -107,18 +107,18 @@
 			<center>
 	            {if $available_domain}
 		            {if $root_file}
-                    	<b style="color:#008000;">{l s='The activation file is present to the root folder !' mod='mailjet'}</b>
+                    	<b class="vert">{l s='The activation file is present to the root folder !' mod='mailjet'}</b>
 					{else}
     		        	<input type="submit" name="submitCreateRootFile" value="{l s='Create and place the activation file in the root folder' mod='mailjet'}" class="button" />
 	                {/if}
 				{else}
-                   	<b style="color:#990000;">{l s='The current domain is not present in the available domains list !' mod='mailjet'}</b>
+                   	<b class="rouge">{l s='The current domain is not present in the available domains list !' mod='mailjet'}</b>
                 {/if}
 			</center>
 		</fieldset>
 
 	</div>
-	<div style="width:455px;float:right;">
+	<div id="mj_account_page_right">
 <!--
 		<fieldset>
 			<legend>{l s='Tracking' mod='mailjet'}</legend>

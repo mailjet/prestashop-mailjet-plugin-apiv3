@@ -27,11 +27,23 @@ require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
 	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
+if (Tools::getIsset('emptyfile'))
+{
+	header('Content-Type: application/force-download; name="'.Tools::getValue('name').'"');
+	header('Content-Transfer-Encoding: binary');
+	header('Content-Length: 0');
+	header('Content-Disposition: attachment; filename="'.Tools::getValue('name').'"');
+	header('Expires: 0');
+	header('Cache-Control: no-cache, must-revalidate');
+	header('Pragma: no-cache');
+	exit();
+}
+
 $post = trim(Tools::file_get_contents('php://input'));
 /* mail("guillaume@dream-me-up.fr", "callback ajax mailjet", $post.print_r($_POST, true).print_r($_GET, true)); */
 /* die(); */
 
-require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
+require_once(_PS_ROOT_DIR_.'/config/config.inc.php');
 
 $method = Tools::getValue('method');
 $back_office_method = Tools::getValue('back_office_method');
@@ -39,10 +51,7 @@ $back_office_method = Tools::getValue('back_office_method');
 if (in_array($method, $back_office_method))
 	define('_PS_ADMIN_DIR_', true);
 
-if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
-	require_once(realpath(dirname(__FILE__).'/../../init.php'));
-
-require_once(dirname(__FILE__).'/mailjet.php');
+require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
 $method = Tools::isSubmit('method') ? Tools::getValue('method') : '';
 $token = Tools::isSubmit('token') ? Tools::getValue('token') : '';

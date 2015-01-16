@@ -25,11 +25,11 @@
 */
 
 require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
-
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
 	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
-require_once(dirname(__FILE__).'/mailjet.php');
+require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
+
 $mj = new Mailjet();
 
 $internalToken = null;
@@ -37,7 +37,7 @@ if (Tools::getIsset('internaltoken'))
 	$internalToken = Tools::getValue('internaltoken');
 
 $adminDirName = null;
-$maindirs = scandir(realpath(dirname(__FILE__).'/../../'));
+$maindirs = scandir(_PS_ROOT_DIR_);
 foreach ($maindirs as $dirName)
 {
 	if (strpos($dirName, 'admin') !== false)
