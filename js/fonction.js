@@ -450,6 +450,8 @@ function attribGroup()
 	if ($("#groupUser").val() == -1 && $("#newgrp").val().trim() == '')
 	{
 		alert(unescape("Error ! %0A[en] - You must specify the name of the new group !%0A[fr] - Vous devez renseign%E9 le nom du nouveau groupe !")); // message erreur
+		$('#newgrp').css('border', '1px solid #900');
+		$('#newgrpdiv').fadeIn();
 		return false;
 	}
 	

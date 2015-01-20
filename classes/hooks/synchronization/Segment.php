@@ -181,9 +181,19 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	 */
 	private function _update($contacts, $existingListId)
 	{
+		// ** ** Détection du bon Index
+		$mail_index = 'Email';
+		if ($contacts)
+		{
+			$contact_ids = array_keys($contacts[0]);
+			foreach ($contact_ids as $k)
+				if (preg_match('/(mail)/', $k)) $mail_index = $k;
+		}
+		// ** **
+
 		$prestashopContacts = array();
 		foreach ($contacts as $contact)
-			$prestashopContacts[] = $contact['Email'];
+			$prestashopContacts[] = $contact[$mail_index];
 
 		$this->_gatherCurrentContacts($existingListId);
 

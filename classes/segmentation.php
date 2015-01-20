@@ -463,6 +463,7 @@ class Segmentation /*extends Module*/
 
 	public function getQuery($post, $live, $limit = false, $speField = '')
 	{
+		if (empty($post)) $post = $_GET;
 		$post = $this->formatDate($post);
 
 		if ($live)
