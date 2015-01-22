@@ -120,6 +120,16 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	 */
 	private function _create($res_contacts, $filterId, $fiterName)
 	{
+		// ** ** Détection du bon Index
+		$mail_index = 'Email';
+		if ($res_contacts)
+		{
+			$contact_ids = array_keys($res_contacts[0]);
+			foreach ($contact_ids as $k)
+				if (preg_match('/(mail)/', $k)) $mail_index = $k;
+		}
+		// ** **
+
 		$newListId = $this->_createNewMailjetList($filterId, $fiterName);
 
 		if (!$newListId)
@@ -143,7 +153,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 			for ($ic = 1; $ic <= 50; $ic++)
 			{
 				$rc = array_pop($res_contacts);
-				$selected_contacts[] = $rc['Email'];
+				$selected_contacts[] = $rc[$mail_index];
 			}
 
 			$string_contacts = implode(' ', $selected_contacts);
