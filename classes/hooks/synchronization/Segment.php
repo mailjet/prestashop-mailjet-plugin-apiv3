@@ -332,7 +332,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		);
 
 		$this->_getApi()->resetRequest();
-		$response = $this->_getApi()->listrecipient($params);
+		$response = $this->_getApi()->listrecipient($params)->getResponse();
 
 		$totalCount = $response->Total;
 		$current 	= $response->Count;
