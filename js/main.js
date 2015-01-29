@@ -87,6 +87,7 @@ $(document).ready( function() {
 	 $("#save").click( function() {
 	 	$("#action").val('Save');
 	 	saveFilter();
+		location.reload();
 	 	return false;
 	 });
 	 

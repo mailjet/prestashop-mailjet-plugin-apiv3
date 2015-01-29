@@ -362,7 +362,7 @@ if (Tools::getValue('action') == 'getQuery')
 				$stat = array();
 				$nbcustomer = Db::getInstance()->getValue('SELECT COUNT(*) FROM `'._DB_PREFIX_.'customer`');
 				$req = Db::getInstance()->executeS($reqsql);
-				if (Tools::getIsset($req[0][$obj->getFieldLabel($fs[0])]))
+				if (Tools::getIsset($obj->getFieldLabel($fs[0])) && Tools::getIsset($req[0][$obj->getFieldLabel($fs[0])]))
 				{
 					$fieldSelect_nb = count(Tools::getValue('fieldSelect'));
 					for ($i = 0; $i < $fieldSelect_nb; $i++)
