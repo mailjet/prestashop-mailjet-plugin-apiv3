@@ -34,7 +34,7 @@
         <!--<p><label>API Key :</label><input type="text" name="mj_api_key" value="{$account.API_KEY|default:''}" size="80" /></p>
         <p><label>Secret Key :</label><input type="text" name="mj_secret_key" value="{$account.SECRET_KEY|default:''}" size="80" /></p>-->
         
-        <p><label>&nbsp;</label><input type="submit" name="MJ_set_connect" value="{l s='Save &amp; Login' mod='mailjet'}" class="button" /></p>
+        <p><label>&nbsp;</label><input type="submit" name="MJ_set_connect" value="{l s='Save & Login' mod='mailjet'}" class="button" /></p>
     </div>
 </fieldset>
 </form>

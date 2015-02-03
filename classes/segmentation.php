@@ -358,7 +358,7 @@ class Segmentation /*extends Module*/
 				*/
 			}
 
-			return (isset($_MODULE[$key])?$_MODULE[$key]:(parent::l($string, $specific)));
+			return (isset($_MODULE[$key])?$_MODULE[$key]:($module->l($string, $specific)));
 		}
 		else return $module->l($string, $specific);
 	}
