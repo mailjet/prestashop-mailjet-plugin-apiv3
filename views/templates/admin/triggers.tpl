@@ -86,7 +86,7 @@
         	{for $sel=1 to 9}
             	<li style="{if $sel==4}display:none;{/if}">
 	            	<label>
-	                	{if $sel==1}{l s='Abandon Cart Email' mod='mailjet'}{/if}
+	                	{if $sel==1}{l s='Abandoned Cart Email' mod='mailjet'}{/if}
 	                	{if $sel==2}{l s='Payment failure recovery after canceled or blocked payment' mod='mailjet'}{/if}
 	                	{if $sel==3}{l s='Order pending payment' mod='mailjet'}{/if}
 	                	{if $sel==4}{l s='Shipment Delay Notification' mod='mailjet'}{/if}
