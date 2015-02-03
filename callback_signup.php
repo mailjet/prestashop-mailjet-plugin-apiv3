@@ -30,7 +30,7 @@ if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
 
 require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
-$mj = Module::getInstanceByName('Mailjet');
+$mj = new Mailjet();
 
 $internalToken = null;
 if (Tools::getIsset('internaltoken'))

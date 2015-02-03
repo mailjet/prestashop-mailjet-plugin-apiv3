@@ -29,7 +29,7 @@ require_once(dirname(__FILE__).'/../../init.php');
 
 require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
-$mailjet = Module::getInstanceByName('Mailjet');
+$mailjet = new Mailjet();
 
 if (Tools::getValue('token') != $mailjet->getToken())
 	die('No hackers allowed here ! ;-)');

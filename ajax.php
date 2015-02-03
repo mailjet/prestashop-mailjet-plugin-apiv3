@@ -57,7 +57,7 @@ require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 $method = Tools::isSubmit('method') ? Tools::getValue('method') : '';
 $token = Tools::isSubmit('token') ? Tools::getValue('token') : '';
 
-$mj = Module::getInstanceByName('Mailjet');
+$mj = new Mailjet();
 $result = array();
 
 MailJetLog::write(MailJetLog::$file, 'New request sent');

@@ -338,7 +338,7 @@ class Segmentation /*extends Module*/
 
 	public static function l($string, $specific = false)
 	{
-		$module = Module::getInstanceByName('Mailjet');
+		$module = new Mailjet();
 		if ($string == $module->l($string, $specific))
 		{
 			$trad_file = _PS_MODULE_DIR_.'mailjet/translations/'.Context::getContext()->language->iso_code.'.php';

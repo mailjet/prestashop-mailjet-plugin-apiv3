@@ -69,12 +69,12 @@ class Mailjet extends Module
 
 	public static function mj_mail_server()
 	{
-		$mj = Module::getInstanceByName('Mailjet');
+		$mj = new Mailjet();
 		return $mj->mj_mail_server;
 	}
 	public static function mj_mail_port()
 	{
-		$mj = Module::getInstanceByName('Mailjet');
+		$mj = new Mailjet();
 		return $mj->mj_mail_port;
 	}
 
@@ -1512,7 +1512,7 @@ class Mailjet extends Module
 					self::mj_mail_port(),
 					Swift_Connection_SMTP::ENC_TLS
 			);
-			$takeinfo = Module::getInstanceByName('Mailjet');
+			$takeinfo = new Mailjet();
 			$connection->setUsername($takeinfo->account['API_KEY']);
 			$connection->setPassword($takeinfo->account['SECRET_KEY']);
 
