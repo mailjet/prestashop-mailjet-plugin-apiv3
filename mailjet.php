@@ -533,8 +533,8 @@ class Mailjet extends Module
 			if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0)
 				$this->checkAutoAssignment($id_customer);
 			
-		} 
-                else if (isset($params['cart'])) 
+		}
+                elseif (isset($params['cart'])) 
                 {
 			$cart = $params['cart'];
 			
