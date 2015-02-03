@@ -53,7 +53,7 @@
 				{l s='Create and send a marketing newsletter blast to your client base via a drag-and-drop HTML designer and a gallery of pre-defined templates all within a few clicks.' mod='mailjet'}
             </li>
         	<li>
-            	<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}=TRIGGERS" class="btn_tab_home">{l s='Transactional&nbsp;emails' mod='mailjet'}</a>
+            	<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}=TRIGGERS" class="btn_tab_home">{l s='Transactional emails' mod='mailjet'}</a>
 				{l s='... Description of Transactionnal emails on home page of the module ...' mod='mailjet'}
             </li>
         	<li>

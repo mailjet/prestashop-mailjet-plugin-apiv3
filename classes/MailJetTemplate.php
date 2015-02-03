@@ -177,7 +177,7 @@ class MailjetTemplate
 		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
 		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 
-		$url = 'https://'.$lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amsc';
+		$url = 'https://'.$lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amc';
 		$this->iframes_url[$name] = $url;
 	}
 

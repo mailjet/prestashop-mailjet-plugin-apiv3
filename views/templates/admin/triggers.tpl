@@ -34,7 +34,6 @@
 	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tinymce.inc.js"></script>
 	<script language="javascript" type="text/javascript">
 	var id_language = Number({$tinymce_id_language|default:'en'});
-	tinySetup();
 	</script>
 {else}
 	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
