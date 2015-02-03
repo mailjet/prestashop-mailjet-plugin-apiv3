@@ -75,7 +75,7 @@ class MailjetTemplate
 	 */
 	public static function getApi($with_overlay = true)
 	{
-		$obj = new Mailjet();
+		$obj = Module::getInstanceByName('Mailjet');
 		if ($with_overlay)
 		{
 			MailjetTemplate::$api = Mailjet_ApiOverlay::getInstance();
@@ -92,7 +92,7 @@ class MailjetTemplate
 
 	public static function getDataApi()
 	{
-		$obj = new Mailjet();
+		$obj = Module::getInstanceByName('Mailjet');
 
 		if (self::$data_api === null)
 		{

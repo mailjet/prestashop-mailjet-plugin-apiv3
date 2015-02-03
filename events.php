@@ -33,7 +33,7 @@ include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/Events.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
 require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
-$mj = new Mailjet();
+$mj = Module::getInstanceByName('Mailjet');
 
 if ($mj->getEventsHash() !== Tools::getValue('h'))
 {

@@ -69,12 +69,12 @@ class Mailjet extends Module
 
 	public static function mj_mail_server()
 	{
-		$mj = new Mailjet();
+		$mj = Module::getInstanceByName('Mailjet');
 		return $mj->mj_mail_server;
 	}
 	public static function mj_mail_port()
 	{
-		$mj = new Mailjet();
+		$mj = Module::getInstanceByName('Mailjet');
 		return $mj->mj_mail_port;
 	}
 
@@ -524,13 +524,23 @@ class Mailjet extends Module
 
 	public function hookUpdateOrderStatus($params)
 	{
-		$sql = 'SELECT id_customer 
-				FROM '._DB_PREFIX_.'order 
-				WHERE id_order = '.(int)$params['id_order'];
+		if (isset($params['id_order'])) 
+		{
+			$sql = 'SELECT id_customer 
+					FROM '._DB_PREFIX_.'order 
+					WHERE id_order = '.(int)$params['id_order'];
+	
+			if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0)
+				$this->checkAutoAssignment($id_customer);
+			
+		} else if (isset($params['cart'])) {
+			$cart = $params['cart'];
+			
+			if ($cart instanceof Cart && isset($cart->id_customer)) 
+				$this->checkAutoAssignment((int)$cart->id_customer);
 
-		if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0)
-			$this->checkAutoAssignment($id_customer);
-
+		}
+			
 		return '';
 	}
 
@@ -1500,7 +1510,7 @@ class Mailjet extends Module
 					self::mj_mail_port(),
 					Swift_Connection_SMTP::ENC_TLS
 			);
-			$takeinfo = new Mailjet();
+			$takeinfo = Module::getInstanceByName('Mailjet');
 			$connection->setUsername($takeinfo->account['API_KEY']);
 			$connection->setPassword($takeinfo->account['SECRET_KEY']);
 
