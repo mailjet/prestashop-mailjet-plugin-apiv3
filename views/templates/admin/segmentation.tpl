@@ -21,6 +21,238 @@
  * @copyright 2007-2015 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*}<div class="center_page">
+*}
+
+<link rel="stylesheet" type="text/css" href="{$mj_PS_JS_DIR_|default:'/js/'}jquery/datepicker/datepicker.css" />
+<link rel="stylesheet" type="text/css" href="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/css/style.css" />
+<link rel="stylesheet" type="text/css" href="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/css/bundlejs_prestashop.css" />
+<script type="text/javascript">
+	var tokenV = "{$mj_token|default:'0'}";
+	var ajaxFile =  "{$mj_ajaxFile|default:''}";
+	var ajaxSyncFile =  "{$mj_ajaxSyncFile|default:''}";
+	var ajaxBundle =  "{$mj_ajaxBundle|default:''}";
+	var id_employee = "{$mj_id_employee|default:'0'}";
+	var trad = new Array();
+	var datePickerJsFormat = "{$mj_datePickerJsFormat|default:'yy-mm-dd'}";
+	{foreach from=$mj_trads key=key item=value}
+		trad[{$key}] = "{$value|default:'?'}";
+	{/foreach}
+	var lblMan = "{$mj_lblMan|default:'Man'}";
+	var lblWoman = "{$mj_lblWoman|default:'Woman'}";
+	var lblUnknown = "{$mj_lblUnknown|default:'Unknow'}";
+	var loadingFilter = false;
+	var mj_trad_plus = ['{l s='And' mod='mailjet'}', '{l s='Or' mod='mailjet'}', '{l s='Include' mod='mailjet'}', '{l s='Exclude' mod='mailjet'}'];
+	var mj_base_select = new Array();
+	{foreach from=$mj_base_select key=id_basecondition item=label}
+		mj_base_select[{$id_basecondition}] = "{$mj_trads[$label.label]|default:'?'}";
+	{/foreach}
+</script>
+{$mj_datepickerPersonnalized|default:''}
+<script type="text/javascript" src="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/js/fonction.js"></script>
+<script type="text/javascript" src="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/js/main.js"></script>
+<script type="text/javascript" src="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/js/bundlejs_prestashop.js"></script>
+
 {$MJ_templates.SEGMENTATION|default:''}
+
+<div class="center_page">
+
+	<fieldset class="width6 hint seg_fieldset">&nbsp; 
+	{$mj_hint_fieldset.0|default:''}<br /><br />
+	{$mj_hint_fieldset.1|default:''}<br /><br />
+	{$mj_hint_fieldset.2|default:''}
+	</fieldset>
+
+	<div class="clear"> &nbsp; </div>
+	<fieldset id="mainFieldset">
+		<legend>{l s='Segment Module' mod='mailjet'}</legend>
+		<div class="newFilter custo">
+			<p class="result" id="listMessage" style="display:none;"></p>
+			{if !$mj_filter_list}
+				<div class="no_filter_string warn">{l s='You have no segment for now' mod='mailjet'}</div>
+			{/if}
+			<table class="table space" id="list" style="{if !$mj_filter_list}display:none;{/if}">
+				<tr>
+					<th>{l s='ID' mod='mailjet'}</th>
+					<th>{l s='Name' mod='mailjet'}</th>
+					<th>{l s='Description' mod='mailjet'}</th>
+					<th>{l s='Mode' mod='mailjet'}</th>
+					<th>{l s='Association' mod='mailjet'}</th>
+					<th>{l s='Group' mod='mailjet'}</th>
+					<th>{l s='Action' mod='mailjet'}</th>
+				</tr>
+			{foreach from=$mj_filter_list item=filter}
+				<tr class="trSelect" id="list{$filter.id_filter|default:'0'}">
+					<td>{$filter.id_filter|default:'0'}</td>
+					<td><b>{$filter.name|ucfirst}</b></td>
+					<td>{$filter.description|default:''}</td>
+					<td>{if ($filter.assignment_auto)}{if ($filter.replace_customer)}{$mj_trads[97]|default:'Replace'}{else}{$mj_trads[98]|default:'Add'}{/if}{else}--{/if}</td>
+					<td>{if ($filter.assignment_auto)}{$mj_trads[96]|default:'in real time'}{else}--{/if}</td>
+					<td>--</td>
+					<td><a href="javascript:deleteFilter({$filter.id_filter|default:'0'});"><img src="../modules/mailjet/img/delete.png" /></a></td>
+				</tr>
+			{/foreach}
+			</table>
+			<br />
+			<button id="newfilter" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />{l s='Create a New Segment' mod='mailjet'}</button>
+			<br />
+			<div class="div_new_filter">
+				<h2>{l s='Add a Segment' mod='mailjet'}</h2>
+				<div class="nameFilter">
+				<form method="post" id="mainForm" action="../modules/mailjet/views/templates/admin/export.php">
+					<input type="hidden" id="module_path" value="../modules/mailjet/views/templates/admin/" />
+					<table>
+						<tr>
+							<td class="titleFilter">{l s='Segment name' mod='mailjet'} <sup>*</sup></td>
+							<td><input id="name" type="text" value="" name="name" size="43"></td>
+						</tr>
+						<tr>
+							<td class="titleFilter">{l s='Description' mod='mailjet'}</td>
+							<td><textarea class="description" name="description" id="description"></textarea></td>
+						</tr>
+					</table>
+					<br />
+					<input type="hidden" value="{$mj_id_employee|default:'0'}" name="id_employee" />
+					<input type="hidden" value="{$mj_token|default:'0'}" name="token" />
+					<input type="hidden" value="getQuery" name="action" id="action" />
+					<input type="hidden" value="0" name="page" id="page" />
+					<input type="hidden" value="0" name="idfilter" id="idfilter" />
+					<input type="hidden" value="0" name="idgroup" id="idgroup" />
+					<input type="hidden" value="0" name="mode" id="mode" />
+					<dl id="filter-help">
+						<dt>{l s='Base' mod='mailjet'}</dt>
+						<dd>{l s='for example customers' mod='mailjet'}</dd>
+						<dt>{l s='Source' mod='mailjet'}</dt>
+						<dd>{l s='for example your customers\' orders or your customers\' profiles' mod='mailjet'}</dd>
+						<dt>{l s='Indic' mod='mailjet'}</dt>
+						<dd>{l s='select attributes you\'re looking for' mod='mailjet'}</dd>
+						<dt>{l s='Data' mod='mailjet'}</dt>
+						<dd>{l s='a quantity, a product\'s name, a category\'s name, a brand\'s name, a price, or another value' mod='mailjet'}</dd>
+						<dt>{l s='Value1' mod='mailjet'}, {l s='Value2' mod='mailjet'}</dt>
+						<dd>{l s='a quantity, a price, or another value, but you can leave this/these field(s) empty' mod='mailjet'}</dd>
+						<dt>{l s='+/-, A, Action' mod='mailjet'}</dt>
+						<dd>{l s='combine with others attributes to refine your search' mod='mailjet'}</dd>
+					</dl>
+					<table id="mainTable" class="table">
+						<tr id="mainTR">
+							<th></th>
+							<th>{l s='Rules' mod='mailjet'}</th>
+							<th class="filter-table-cond">{l s='A' mod='mailjet'}</th>
+							<th>{l s='Action' mod='mailjet'}</th>
+							<th>{l s='Base' mod='mailjet'}</th>
+							<th>{l s='Source' mod='mailjet'}</th>
+							<th>{l s='Indic' mod='mailjet'}</th>
+							<th>{l s='Data' mod='mailjet'}</th>
+							<th>{l s='Value1' mod='mailjet'}</th>
+							<th>{l s='Value2' mod='mailjet'}</th>
+						</tr>
+					</table>
+				</form>
+				<br />
+				<p class="result" id="syncMessage" style="display: none;">Mailjet list - Update successfully</p>
+				<p class="noResult" id="syncMessageError" style="display: none;">Mailjet list - Error occured</p>
+				<button id="save" class="my_button right"><img src="../modules/mailjet/img/save.png" /> {l s='Save' mod='mailjet'}</button>
+				<button id="view" class="my_button right"><img src="../modules/mailjet/img/table.png" /> {l s='View' mod='mailjet'}</button>
+				<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />{l s='Export' mod='mailjet'}</button>
+				<button id="sync" class="my_button right"><img src="../modules/mailjet/img/sync.png" />{l s='Create / Update Mailjet list' mod='mailjet'}</button>
+				<div class="perc_sync">Synchronisation : <span id="perc_sync_value">0</span>%</div>
+
+				<table id="newLine" style="display:none;">
+					<tr id="#####">
+						<td id="action#####">
+							<a href="javascript:addLine();" class="add"><img src="../modules/mailjet/img/add.png" /></a>
+							<a href="javascript:delLine(#####);" class="delete"><img src="../modules/mailjet/img/delete.png" /></a>
+						</td>
+						<td id="id#####">#####</td>
+						<td class="filter-table-cond">
+							<select name="rule_a[]" class="cond">
+								<option value="AND">{l s='And' mod='mailjet'}</option>
+								<option value="OR">{l s='Or' mod='mailjet'}</option>
+								<option value="+">{l s='+' mod='mailjet'}</option>
+							</select>
+						</td>
+						<td>
+							<select name="rule_action[]" class="cond">
+								<option value="IN">{l s='Include' mod='mailjet'}</option>
+								<option value="NOT IN">{l s='Exclude' mod='mailjet'}</option>
+							</select>
+						</td>
+						<td>
+							<select id="baseSelect#####" name="baseSelect[]" class="baseSelect fixed">
+								<option value="-1">--SELECT--</option>
+								{foreach from=$mj_base_select item=base}
+									<option value="{$base.id_basecondition|default:'-1'}">{$mj_trads[$base.label]|default:''}</option>
+								{/foreach}
+							</select>
+						</td>
+						<td id="sourceSelect#####" class="grey"></td>
+						<td id="indicSelect#####" class="grey"></td>
+						<td><input type="text" class="fixed" id="data#####" name="data[]" value="" /></td>
+						<td><input type="text" class="fixed" id="value1#####" name="value1[]" value="" /></td>
+						<td><input type="text" class="fixed" id="value2#####" name="value2[]" value="" /></td>
+					</tr>
+				</table>
+			</div>
+			<div id="load" style="display:none;"><center><img src="../modules/mailjet/img/load.gif" ></center></div>
+			<div id="result"></div>
+
+			<div class="blocAction">
+				<h2>{l s='Group association' mod='mailjet'}</h2>
+				<fieldset class="custo">
+				<p class="result" id="actionMessage" style="display:none;"></p>
+				<div class="rowAction">
+					<label>{l s='Customer Group' mod='mailjet'} :</label>
+					<select id="groupUser">
+						<option value="-1">{l s='New' mod='mailjet'}</option>
+						{if $mj_groups}
+							{foreach from=$mj_groups item=group}
+								<option value="{$group.id_group|default:'0'}">{$group.name|default:'?'}</option>
+							{/foreach}
+						{/if}
+					</select>
+					<span class="help">{l s='Select the customer group in which the selected customers will be affected.' mod='mailjet'}</span>
+				</div>
+				<hr>
+				<div class="rowAction" id="newgrpdiv">
+					<label>{l s='New customer group' mod='mailjet'} : </label>
+					<div class="size3">
+						<input type="text" name="newgrp" id="newgrp">
+						<span class="help">{l s='Fill in the name of the customer group that will be automatically created' mod='mailjet'}.</span>
+					</div>
+					<br />
+					<hr>
+				</div>
+				<div class="rowAction" id="type">
+					<label>{l s='Replace or add' mod='mailjet'} : </label>
+					<div class="size3">
+						<input type="radio" id="add" value="rep" name="add"><span> {l s='Replace' mod='mailjet'}</span>
+						<input type="radio" id="rep" value="add" name="add" checked ><span> {l s='Add' mod='mailjet'}</span>
+						<span class="help">{l s='Add: If the client belongs to the selected group without losing its other groups' mod='mailjet'}.</span><br /><br />
+						<span class="help">{l s='Replace: If the client belongs to the selected group, losing all other groups' mod='mailjet'}.</span>
+					</div>
+					<br /><br />
+					<hr>
+				</div>
+				<div class="rowAction" id="auto-assignment">
+					<label>{l s='Associate in real time' mod='mailjet'} :</label>
+					<select id="assign-auto" name="assign-auto">
+						<option value="0">{l s='No' mod='mailjet'}</option>
+						<option value="1">{l s='Yes' mod='mailjet'}</option>
+					</select>
+					<span class="help">{l s='Assign customers to this group automatically. It will create a new filter which associate customers in real time in your shop' mod='mailjet'}.</span>
+				</div>
+				<hr class="seg_hr">
+				<div class="rowAction" id="attrib">
+					<label>{l s='Assign group selection' mod='mailjet'}</label>
+					<div class="size3">
+						<button class="my_button" id="groupAttrib" ><img src="../modules/mailjet/img/table.png" /> {l s='Assign now' mod='mailjet'}</button>
+						<img src="{$mj__PS_BASE_URI__|default:'/'}modules/mailjet/img/load.gif" id="wait" style="display:none;" />
+						<span class="help">{l s='Customers will be assigned to the group after the click on the button' mod='mailjet'}.</span>
+						<br><span id="resultText"></span>
+					</div>
+					<hr>
+				</div>
+			</div>
+		</div>
+	</fieldset>
+
 </div>

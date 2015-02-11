@@ -355,7 +355,56 @@ function loadFilter(idfilter)
   		success: function(data) {
 			console.log('- return Ajax'); // **
   			loadingFilter = true;
-			$("#mainTable").html(data);
+
+			html = '<tr id="mainTR">';
+				html += '<th></th>';
+				html += '<th>'+trad[36]+'</th>';
+				html += '<th class="filter-table-cond">'+trad[79]+'</th>';
+				html += '<th>'+trad[80]+'</th>';
+				html += '<th>'+trad[38]+'</th>';
+				html += '<th>'+trad[39]+'</th>';
+				html += '<th>'+trad[40]+'</th>';
+				html += '<th>'+trad[41]+'</th>';
+				html += '<th>'+trad[42]+'</th>';
+				html += '<th>'+trad[35]+'</th>';
+			html += '</tr>';
+			data= JSON.parse(data);
+			for (i = 1; i <= data.length ; i++)
+			{
+				line = data[i-1];
+				html += '<tr id="'+i+'">';
+					html += '<td id="action'+i+'">';
+						html += '<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/img/add.png" /></a>';
+						html += '<a class="delete" href="javascript:delLine('+i+');"><img src="../modules/mailjet/img/delete.png" /></a>';
+					html += '</td>';
+					html += '<td id="id'+i+'">'+i+'</td>';
+					html += '<td><select name="rule_a[]" class="cond">';
+						html += '<option value="AND" '+((line.rule_a == 'AND') ? ' selected="selected"' : '')+'>'+mj_trad_plus[0]+'</option>';
+						html += '<option value="OR" '+((line.rule_a == 'OR') ? ' selected="selected"' : '')+'>'+mj_trad_plus[1]+'</option>';
+						html += '<option value="+" '+((line.rule_a == '+') ? ' selected="selected"' : '')+'>+</option>';
+					html += '</select></td>';
+					html += '<td><select name="rule_action[]">';
+						html += '<option value="IN" '+((line.rule_action == 'IN') ? ' selected="selected"' : '')+'>'+mj_trad_plus[2]+'</option>';
+						html += '<option value="NOT IN" '+((line.rule_action == 'NOT IN') ? ' selected="selected"' : '')+'>'+mj_trad_plus[3]+'</option>';
+					html += '</select></td>';
+					html += '<td><select id="baseSelect'+i+'" name="baseSelect[]" class="baseSelect fixed">';
+						html += '<option value="-1">--SELECT--</option>';
+						for (var id_basecondition in mj_base_select)
+						{
+							html += '<option value="'+id_basecondition+'"'+(id_basecondition == line.id_basecondition ? ' selected=selected' : '')+' >'+mj_base_select[id_basecondition]+'</option>';
+						}
+					html += '</select></td>';
+					html += '<td id="sourceSelect'+i+'">'+line.getSourceSelect+'</td>';
+					html += '<td id="indicSelect'+i+'">'+line.getIndicSelect+'</td>';
+/*					html += '<td id="sourceSelect'.$number.'">'.$this->getSourceSelect($idbase, $number, $idsource).'</td>';
+					html += '<td id="indicSelect'.$number.'">'.$this->getIndicSelect($idsource, $number, $idfield).'</td>';*/
+					html += '<td><input type="text" class="fixed" id="data'+i+'" name="data[]" value="'+line.data+'" /></td>';
+					html += '<td><input type="text" class="fixed" id="value1'+i+'" name="value1[]" value="'+line.value1+'" /></td>';
+					html += '<td><input type="text" class="fixed" id="value2'+i+'" name="value1[]" value="'+line.value2+'" /></td>';
+				html += '</tr>';
+			}
+			$("#mainTable").html(html);
+
 			$("#mainTable .fieldSelect").each( function(){
 				current = $(this).attr('id').replace('fieldSelect', '');
 				updateBinder($(this).val(), current , $("#data" + current).val(), true);

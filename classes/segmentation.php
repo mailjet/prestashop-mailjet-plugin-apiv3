@@ -32,7 +32,7 @@ include_once(_PS_MODULE_DIR_.'mailjet/libraries/Mailjet.Overlay.class.php');
 include_once(_PS_MODULE_DIR_.'mailjet/libraries/Mailjet.Api.class.php');
 include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
 
-class Segmentation /*extends Module*/
+class Segmentation
 {
 	public $page;
 	public $trad;
@@ -70,270 +70,41 @@ class Segmentation /*extends Module*/
 		return $this;
 	}
 
-	private function addScript()
+	public function initContent()
 	{
-		switch ((int)Context::getContext()->cookie->id_lang)
-		{
-			case 2:
-				$datePickerJsFormat = 'dd-mm-yy';
-				break;
-			default:
-				$datePickerJsFormat = 'yy-mm-dd';
-		}
+		Configuration::updateValue('SEGMENT_CUSTOMER_TOKEN', Tools::getValue('token'));
 
 		if (version_compare(_PS_VERSION_, '1.5', '>='))
 			Context::getContext()->controller->addJqueryUI('ui.datepicker');
 
-		$content = '
-			<link rel="stylesheet" type="text/css" href="'._PS_JS_DIR_.'jquery/datepicker/datepicker.css" />
-			<link rel="stylesheet" type="text/css" href="'._MODULE_DIR_.'mailjet/css/style.css" />
-			<link rel="stylesheet" type="text/css" href="'._MODULE_DIR_.'mailjet/css/bundlejs_prestashop.css" />
-			<script type="text/javascript">
-				var tokenV = "'.Tools::getValue('token').'";
-				var ajaxFile =  "'._MODULE_DIR_.'mailjet/views/templates/ajax/ajax.php";
-				var ajaxSyncFile =  "'._MODULE_DIR_.'mailjet/views/templates/ajax/sync.php";
-				var ajaxBundle =  "'._MODULE_DIR_.'mailjet/views/templates/ajax/bundlejs_prestashop.php";
-				var id_employee = "'.(int)Context::getContext()->cookie->id_employee.'";
-				var trad = new Array();
-				var datePickerJsFormat = "'.$datePickerJsFormat.'";
-				var lblMan = "'.preg_replace('/(\r|\n)/', '', $this->ll(20)).'";
-				var lblWoman = "'.preg_replace('/(\r|\n)/', '', $this->ll(21)).'";
-				var lblUnknown = "'.preg_replace('/(\r|\n)/', '', $this->ll(43)).'";
-				var loadingFilter = false;'."\r\n";
-		foreach ($this->trad as $key => $value)
-			$content .= 'trad['.$key.'] = "'.preg_replace('/(\r|\n)/', '', $value).'";'."\r\n";
-		$content .= '
-			</script>
-			'.(version_compare(_PS_VERSION_, '1.5', '<') ? '<script type="text/javascript" src="'._PS_JS_DIR_.'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>' : '').'
-			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/fonction.js"></script>
-			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/main.js"></script>
-			<script type="text/javascript" src="'._MODULE_DIR_.'mailjet/js/bundlejs_prestashop.js"></script>
-			';
-		return $content;
-	}
-	public function getContent()
-	{
-		Configuration::updateValue('SEGMENT_CUSTOMER_TOKEN', Tools::getValue('token'));
-
 		$this->clearCacheLang();
 		$this->initLang();
 
-		$html = $this->addScript().'
-			<fieldset class="width6 hint seg_fieldset">&nbsp; 
-			'.$this->l('This module enable you to create segments of customer according to any criteria you think of. You can then either display and export the selected customers or associate them to an existing customer group.', 'mailjet').'<br /><br />
-			'.$this->l('These segments are particularly useful to create special offer associated with customer groups (e.g., send a coupon to the customers interested in some products)', 'mailjet').'<br /><br />
-			'.$this->l('Create an infinity of filters corresponding to your needs!', 'mailjet').'
-			</fieldset>
-			<div class="clear"> &nbsp; </div>
-			<fieldset id="mainFieldset"><legend>'.$this->l('Segment Module').'</legend>
-				<div class="newFilter custo">
-					<p class="result" id="listMessage" style="display:none;"></p>
-					'.$this->getFilterList().'
-					<br />
-					<div class="div_new_filter">
-						<h2>'.$this->l('Add a Segment').'</h2>
-						<div class="nameFilter">
-						<form method="post" id="mainForm" action="../modules/mailjet/views/templates/admin/export.php">
-						<input type="hidden" id="module_path" value="../modules/mailjet/views/templates/admin/" />
-						<table>
-							<tr>
-								<td class="titleFilter">'.$this->l('Segment name').' <sup>*</sup></td>
-								<td><input id="name" type="text" value="" name="name" size="43"></td>
-							</tr>
-							<tr>
-								<td class="titleFilter">'.$this->l('Description').'</td>
-								<td><textarea class="description" name="description" id="description"></textarea></td>
-							</tr>
-						</table>
-						<br />
-							<input type="hidden" value="'.(int)Context::getContext()->cookie->id_employee.'" name="id_employee" />
-							<input type="hidden" value="'.Tools::getValue('token').'" name="token" />
-							<input type="hidden" value="getQuery" name="action" id="action" />
-							<input type="hidden" value="0" name="page" id="page" />
-							<input type="hidden" value="0" name="idfilter" id="idfilter" />
-							<input type="hidden" value="0" name="idgroup" id="idgroup" />
-							<input type="hidden" value="0" name="mode" id="mode" />
-							<dl id="filter-help">
-								<dt>'.$this->l('Base').'</dt>
-								<dd>'.$this->l('for example customers').'</dd>
-								<dt>'.$this->l('Source').'</dt>
-								<dd>'.$this->l('for example your customers\' orders or your customers\' profiles').'</dd>
-								<dt>'.$this->l('Indic').'</dt>
-								<dd>'.$this->l('select attributes you\'re looking for').'</dd>
-								<dt>'.$this->l('Data').'</dt>
-								<dd>'.$this->l('a quantity, a product\'s name, a category\'s name, a brand\'s name, a price, or another value').'</dd>
-								<dt>'.$this->l('Value1').', '.$this->l('Value2').'</dt>
-								<dd>'.$this->l('a quantity, a price, or another value, but you can leave this/these field(s) empty').'</dd>
-								<dt>'.$this->l('+/-, A, Action').'</dt>
-								<dd>'.$this->l('combine with others attributes to refine your search').'</dd>
-							</dl>
-							<table id="mainTable" class="table">
-								'.$this->tableHeader().'
-							</table>
-							</form>
-							<br />
-							<p class="result" id="syncMessage" style="display: none;">Mailjet list - Update successfully</p>
-							<p class="noResult" id="syncMessageError" style="display: none;">Mailjet list - Error occured</p>
-							<button id="save" class="my_button right"><img src="../modules/mailjet/img/save.png" /> '.$this->l('Save').'</button>
-							<button id="view" class="my_button right"><img src="../modules/mailjet/img/table.png" /> '.$this->l('View').'</button>
-							<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.$this->l('Export').'</button>
-							<button id="sync" class="my_button right"><img src="../modules/mailjet/img/sync.png" />'.$this->l('Create / Update Mailjet list').'</button>
-							<div class="perc_sync">Synchronisation : <span id="perc_sync_value">0</span>%</div>
-							'.$this->newLine(/*false*/).'
-						</div>
-						<div id="load" style="display:none;"><center><img src="../modules/mailjet/img/load.gif" ></center></div>
-						<div id="result"></div>
-						'.$this->getBlockGroup().'
-					</div>
-				</div>
-			</fieldset>';
-
-		return $html;
-	}
-
-	public function tableHeader()
-	{
-		return '<tr id="mainTR">
-			<th></th>
-			<th>'.$this->ll(36).'</th>
-			<th class="filter-table-cond">'.$this->ll(79).'</th>
-			<th>'.$this->ll(80).'</th>
-			<th>'.$this->ll(38).'</th>
-			<th>'.$this->ll(39).'</th>
-			<th>'.$this->ll(40).'</th>
-			<th>'.$this->ll(41).'</th>
-			<th>'.$this->ll(42).'</th>
-			<th>'.$this->ll(35).'</th>
-		</tr>';
-	}
-
-	public function newLine()/* $cond = true) */
-	{
-		return '
-			<table id="newLine" style="display:none;">
-				<tr id="#####">
-					<td id="action#####">
-						<a href="javascript:addLine();" class="add"><img src="../modules/mailjet/img/add.png" /></a>
-						<a href="javascript:delLine(#####);" class="delete"><img src="../modules/mailjet/img/delete.png" /></a>
-					</td>
-					<td id="id#####">#####</td>
-					<td class="filter-table-cond">'.$this->getRule('A').'</td>
-					<td>'.$this->getRule('Action').'</td>
-					<td>'.$this->getBaseSelect('#####').'</td>
-					<td id="sourceSelect#####" class="grey"></td>
-					<td id="indicSelect#####" class="grey"></td>
-					<td>'.$this->getInput('data[]', 'data#####').'</td>
-					<td>'.$this->getInput('value1[]', 'value1#####').'</td>
-					<td>'.$this->getInput('value2[]', 'value2#####').'</td>
-				</tr>
-			</table>
-			';
-	}
-
-	public function getFilterList()
-	{
-		$html = ''; // **
-		$res = Db::getInstance()->ExecuteS('SELECT * FROM `'._DB_PREFIX_.'mj_filter`');
-
-		if (empty($res))
-			$html .= '<div class="no_filter_string warn">'.$this->l('You have no segment for now').'</div>';
-
-		$html .= '';
-		$html .= '<table class="table space" id="list" style="'.(($res) ? '' : 'display:none;').'">';
-		$html .= '
-				<tr>
-					<th>'.$this->l('ID').'</th>
-					<th>'.$this->l('Name').'</th>
-					<th>'.$this->l('Description').'</th>
-					<th>'.$this->l('Mode').'</th>
-					<th>'.$this->l('Association').'</th>
-					<th>'.$this->l('Group').'</th>
-					<th>'.$this->l('Action').'</th>
-				</tr>';
-
-		foreach ($res as $r)
-		{
-			if ((bool)$r['assignment_auto'])
-			{
-				$auto_assign_text = $this->ll(96);
-
-				if ((bool)$r['replace_customer'])
-					$replace_customer_text = $this->ll(97);
-				else
-					$replace_customer_text = $this->ll(98);
-			}
-			else
-			{
-				$auto_assign_text = '--';
-				$replace_customer_text = '--';
-			}
-
-			if (!($group_name = $this->getGroupName($r['id_group'])))
-				$group_name = '--';
-
-			$html .= '
-				<tr class="trSelect" id="list'.$r['id_filter'].'">
-					<td>'.$r['id_filter'].'</td>
-					<td>'.$r['name'].'</td>
-					<td>'.$r['description'].'</td>
-					<td>'.$replace_customer_text.'</td>
-					<td>'.$auto_assign_text.'</td>
-					<td>'.$group_name.'</td>
-					<td><a href="javascript:deleteFilter('.$r['id_filter'].');"><img src="../modules/mailjet/img/delete.png" /></a></td>
-				</tr>';
-		}
-
-		$html .= '</table>';
-
-		$html .= '<br />
-		<button id="newfilter" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.$this->l('Create a New Segment').'</button>';
-
-		return $html;
-	}
-
-	public function getRule($value, $selected = '')
-	{
-		switch ($value)
-		{
-			case 'A':
-				$values = array(
-					'AND'	=>	$this->l('And'),
-					'OR'	=>	$this->l('Or'),
-					'+'		=>	$this->l('+')
-				);
-				break;
-			case 'Action':
-				$values = array(
-					'IN'		=>	$this->l('Include'),
-					'NOT IN'	=>	$this->l('Exclude')
-				);
-				break;
-			default:
-				throw new Exception('unknown rule');
-		}
-
-		$html = '<select name="rule_'.Tools::strtolower($value).'[]"'.(($value == 'A') ? ' class="cond"' : '').'>';
-		foreach ($values as $key => $value)
-			$html .= '<option value="'.$key.'"'.(($value == $selected) ? ' selected="selected"' : '').'>'.$value.'</option>';
-		$html .= '</select>';
-
-		return $html;
-	}
-
-	public function getBaseSelect($inputID, $selected = null)
-	{
-		$res = Db::getInstance()->ExecuteS('SELECT id_basecondition, label FROM `'._DB_PREFIX_.'mj_basecondition`');
-		$html = '<select id="baseSelect'.$inputID.'" name="baseSelect[]" class="baseSelect fixed">';
-		$html .= '<option value="-1">--SELECT--</option>';
-		foreach ($res as $r)
-		{
-			$html .= '<option value="'.$r['id_basecondition'].'"';
-			if ($selected == $r['id_basecondition'])
-				$html .= 'selected=selected';
-			$html .= ' >'.$this->ll($r['label']).'</option>';
-		}
-		$html .= '</select>';
-		return $html;
+		Context::getContext()->smarty->assign(array(
+			'mj__PS_BASE_URI__' => __PS_BASE_URI__,
+			'mj_PS_JS_DIR_' => _PS_JS_DIR_,
+			'mj_MODULE_DIR_' => _MODULE_DIR_,
+			'mj_hint_fieldset' => array(
+				$this->l('This module enable you to create segments of customer according to any criteria you think of. You can then either display and export the selected customers or associate them to an existing customer group.', 'mailjet'),
+				$this->l('These segments are particularly useful to create special offer associated with customer groups (e.g., send a coupon to the customers interested in some products)', 'mailjet'),
+				$this->l('Create an infinity of filters corresponding to your needs!', 'mailjet')),
+			'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
+			'mj_datepickerPersonnalized' => version_compare(_PS_VERSION_, '1.5', '<') ? '<script type="text/javascript" src="'._PS_JS_DIR_.'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>' : '',
+			'mj_token' => Tools::getValue('token'),
+			'mj_ajaxFile' => _MODULE_DIR_.'mailjet/views/templates/ajax/ajax.php',
+			'mj_ajaxSyncFile' => _MODULE_DIR_.'mailjet/views/templates/ajax/sync.php',
+			'mj_ajaxBundle' => _MODULE_DIR_.'mailjet/views/templates/ajax/bundlejs_prestashop.php',
+			'mj_id_employee' => (int)Context::getContext()->cookie->id_employee,
+			'mj_lblMan' => stripReturn($this->ll(20)),
+			'mj_lblWoman' => stripReturn($this->ll(21)),
+			'mj_lblUnknown' => stripReturn($this->ll(43)),
+			'mj_trads' => array_map('stripReturn', $this->trad),
+			'mj_groups' => Group::getGroups((int)Context::getContext()->cookie->id_lang),
+			'mj_filter_list' => Db::getInstance()->ExecuteS('SELECT * FROM `'._DB_PREFIX_.'mj_filter`'),
+			'mj_base_select' => Db::getInstance()->ExecuteS('SELECT id_basecondition, label FROM `'._DB_PREFIX_.'mj_basecondition`')
+		));
+		
+		return '';
 	}
 
 	public static function l($string, $specific = false)
@@ -405,21 +176,6 @@ class Segmentation /*extends Module*/
 	public function getBinder($ID)
 	{
 		return Db::getInstance()->getValue('SELECT binder FROM `'._DB_PREFIX_.'mj_fieldcondition` WHERE `id_fieldcondition` = '.(int)$ID);
-	}
-
-	public function getPeriod()/* $inputID) */
-	{
-		$html = '<select name="periodSelect[]">';
-		$html .= '<option value="-1">--SELECT--</option>';
-		$html .= '<option value="ALL">CUMUL</option>';
-		$html .= '<option value="MONTH">MONTH</option>';
-		$html .= '</select>';
-		return $html;
-	}
-
-	public function getInput($inputName, $id, $value = null)
-	{
-		return '<input type="text" class="fixed" id="'.$id.'" name="'.$inputName.'" value="'.$value.'" />';
 	}
 
 	public function formatDate($post)
@@ -1212,15 +968,12 @@ class Segmentation /*extends Module*/
 			case 'product' :
 				$p = new Product($id, false, Context::getContext()->cookie->id_lang);
 				return $p->name;
-				//break;
 			case 'category' :
 				$c = new Category($id, Context::getContext()->cookie->id_lang);
 				return $c->name;
-				//break;
 			case 'brand' :
 				$m = new manufacturer($id, Context::getContext()->cookie->id_lang);
 				return $m->name;
-				//break;
 		}
 		return false;
 	}
@@ -1307,17 +1060,6 @@ class Segmentation /*extends Module*/
 
 	public function deleteFilter($id)
 	{
-		/*$sql = 'SELECT id_group
-				FROM '._DB_PREFIX_.'mj_filter
-				WHERE id_filter = '.(int)$id;
-
-		$id_group = (int)Db::getInstance()->getValue($sql);
-
-		if ($id_group > 0)
-		{
-			$group = new Group($id_group);
-			$group->delete();
-		}*/
 		$deleteFromDb = Db::getInstance()->Execute('DELETE FROM `'._DB_PREFIX_.'mj_condition` WHERE `id_filter` ='.(int)$id) && Db::getInstance()->Execute('DELETE FROM `'._DB_PREFIX_.'mj_filter` WHERE `id_filter` ='.(int)$id);
 
 		if ($deleteFromDb)
@@ -1341,15 +1083,19 @@ class Segmentation /*extends Module*/
 
 	public function loadFilter($id_filter)
 	{
-		$res = Db::getInstance()->ExecuteS('SELECT c.* FROM `'._DB_PREFIX_.'mj_condition` c  WHERE c.`id_filter`='.(int)$id_filter);
-		$html = '';
-		$i = 1;
-		foreach ($res as $r)
+		if ($res = Db::getInstance()->ExecuteS('SELECT c.* FROM `'._DB_PREFIX_.'mj_condition` c  WHERE c.`id_filter`='.(int)$id_filter))
 		{
-			$html .= $this->getLine($i, $r['rule_a'], $r['rule_action'], $r['id_basecondition'], $r['id_sourcecondition'], $r['id_fieldcondition'], $r['data'], $r['value1'], $r['value2']);
-			$i++;
+			$i = 1;
+			foreach ($res as &$r)
+			{
+				$r['getSourceSelect'] = $this->getSourceSelect($r['id_basecondition'], $i, $r['id_sourcecondition']);
+				$r['getIndicSelect'] = $this->getIndicSelect($r['id_sourcecondition'], $i, $r['id_fieldcondition']);
+				$i++;
+			}
+
+			return Tools::jsonEncode($res);
 		}
-		return $this->tableHeader().$html;
+		return false;
 	}
 
 	public function loadFilterInfo($id_filter)
@@ -1365,110 +1111,19 @@ class Segmentation /*extends Module*/
 		{
 			case '+' :
 				return '>';
-				//break;
 			case '+=' :
 			case '=+':
 				return '>=';
-				//break;
 			case '-' :
 				return '<';
-				//break;
 			case '-=' :
 			case '=-' :
 				return '<=';
-				//break;
 			case '=' :
 				return '=';
-				//break;
 			default :
 				return false;
-				//break;
 		}
-	}
-
-	public function getLine($number, $rule_a, $rule_action, $idbase, $idsource, $idfield, $data, $value1, $value2)
-	{
-		return '<tr id="'.$number.'">
-					<td id="action'.$number.'">
-						<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/img/add.png" /></a>
-						<a class="delete" href="javascript:delLine('.$number.');"><img src="../modules/mailjet/img/delete.png" /></a>
-					</td>
-					<td id="id'.$number.'">'.$number.'</td>
-					<td>'.$this->getRule('A', $rule_a).'</td>
-					<td>'.$this->getRule('Action', $rule_action).'</td>
-					<td>'.$this->getBaseSelect($number, $idbase).'</td>
-					<td id="sourceSelect'.$number.'">'.$this->getSourceSelect($idbase, $number, $idsource).'</td>
-					<td id="indicSelect'.$number.'">'.$this->getIndicSelect($idsource, $number, $idfield).'</td>
-					<td>'.$this->getInput('data[]', 'data'.$number, $data).'</td>
-					<td>'.$this->getInput('value1[]', 'value1'.$number, $value1).'</td>
-					<td>'.$this->getInput('value2[]', 'value2'.$number, $value2).'</td>
-			</tr>';
-	}
-
-	public function getBlockGroup()
-	{
-		$content = '
-		<div class="blocAction">
-			<h2>'.$this->l('Group association').'</h2>
-			<fieldset class="custo">
-			<p class="result" id="actionMessage" style="display:none;"></p>
-			<div class="rowAction">
-				<label>'.$this->l('Customer Group').' :</label>
-					<select id="groupUser">
-						<option value="-1">'.$this->l('New').'</option>';
-						$groups = Group::getGroups((int)Context::getContext()->cookie->id_lang);
-						if ($groups)
-							foreach ($groups as $group)
-								$content .= '<option value="'.$group['id_group'].'">'.$group['name'].'</option>';
-
-		$content .=	'
-					</select>
-					<span class="help">'.$this->l('Select the customer group in which the selected customers will be affected.').'.</span>
-				</div>
-				<hr>
-			<div class="rowAction" id="newgrpdiv">
-				<label>'.$this->l('New customer group').' : </label>
-				<div class="size3">
-					<input type="text" name="newgrp" id="newgrp">
-					<span class="help">'.$this->l('Fill in the name of the customer group that will be automatically created').'.</span>
-				</div>
-				<br /><hr>
-			</div>
-			<div class="rowAction" id="type">
-				<label>'.$this->l('Replace or add').' : </label>
-				<div class="size3">
-					<input type="radio" id="add" value="rep" name="add"><span> '.$this->l('Replace').'</span>
-					<input type="radio" id="rep" value="add" name="add" checked ><span> '.$this->l('Add').'</span>
-					<span class="help">'.$this->l('Add: If the client belongs to the selected group without losing its other groups').'.</span><br /><br />
-					<span class="help">'.$this->l('Replace: If the client belongs to the selected group, losing all other groups').'.</span>
-				</div>
-				<br /><br />
-				<hr>
-			</div>
-			<div class="rowAction" id="auto-assignment">
-				<label>'.$this->l('Associate in real time').' :</label>
-				<select id="assign-auto" name="assign-auto">
-					<option value="0">'.$this->l('No').'</option>
-					<option value="1">'.$this->l('Yes').'</option>
-				</select>
-				<span class="help">'.$this->l('Assign customers to this group automatically. It will create a new filter which associate customers in real time in your shop').'.</span>
-			</div>
-				<hr class="seg_hr">
-			<div class="rowAction" id="attrib">
-				<label>'.$this->l('Assign group selection').'</label>
-				<div class="size3">
-					<button class="my_button" id="groupAttrib" >
-					<img src="../modules/mailjet/img/table.png" /> '.$this->l('Assign now').'
-					</button><img src="'.__PS_BASE_URI__.'modules/mailjet/img/load.gif" id="wait" style="display:none;" />
-					<span class="help">'.$this->l('Customers will be assigned to the group after the click on the button').'.</span>
-					<br><span id="resultText"></span>
-				</div>
-				<hr>
-			</div>';
-
-			$content .= '</fieldset>
-		</div>';
-		return $content;
 	}
 
 	private function getField($ID)
@@ -1741,11 +1396,9 @@ class Segmentation /*extends Module*/
 			return $this->_contactListsMap[$filterId];
 
 		$api = MailjetTemplate::getApi();
-
-		$lists = $api->getContactsLists();
+			$lists = $api->getContactsLists();
 
 		$id_list_contact = 0;
-
 		if ($lists !== false)
 		{
 			foreach ($lists as $l)
@@ -1756,7 +1409,6 @@ class Segmentation /*extends Module*/
 				{
 					$id_list_contact = (int)$l->ID;
 					$this->_contactListsMap[$filterId] = $id_list_contact;
-
 					break;
 				}
 			}
@@ -1764,4 +1416,9 @@ class Segmentation /*extends Module*/
 
 		return $id_list_contact;
 	}
+}
+
+function stripReturn($txt)
+{
+	return preg_replace('/(\r|\n)/', '', $txt);
 }

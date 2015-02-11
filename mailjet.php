@@ -850,19 +850,6 @@ class Mailjet extends Module
 				break;
 
 			case 'SETUP_STEP_1':
-				/*$callback_params = array(
-					'method' => 'check_subscription', //  check_subfscription
-					'token' => $this->account['TOKEN'],
-					);
-					$event_endpoint_params = array(
-					'method' => 'error_handling',
-					'token' => $this->account['TOKEN']
-					);
-					//die(Tools::getShopDomain().$this->module_access['uri'].'ajax.php');
-					$extra_params = array(
-					'callback_url' => 'http://'.Tools::getShopDomain().$this->module_access['uri'].'ajax.php?'.http_build_query($callback_params),
-					'event_endpointurl' => 'http://'.Tools::getShopDomain().$this->module_access['uri'].'ajax.php?'.http_build_query($event_endpoint_params)
-					);*/
 				$this->mj_template->getSignupURL('SETUP_STEP_1');
 				break;
 
@@ -873,22 +860,19 @@ class Mailjet extends Module
 
 			case 'SEGMENTATION':
 				$this->segmentation = new Segmentation();
-				$this->mj_template->setContent('SEGMENTATION', $this->segmentation->getContent());
+				$this->mj_template->setContent('SEGMENTATION', $this->segmentation->initContent());
 				break;
 
 			case 'CAMPAIGN':
 				$this->mj_template->getCampaignURL('CAMPAIGN', $this->account['TOKEN_'.$this->context->employee->id]);
-				//$this->displayCampaign();
 				break;
 
 			case 'STATS':
 				$this->mj_template->getStatsURL('STATS', $this->account['TOKEN_'.$this->context->employee->id]);
-				//$this->displayCampaign();
 				break;
 
 			case 'CONTACTS':
 				$this->mj_template->getContactsURL('CONTACTS', $this->account['TOKEN_'.$this->context->employee->id]);
-				//$this->displayCampaign();
 				break;
 
 			case 'NEWSLETTER':
