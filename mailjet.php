@@ -704,6 +704,7 @@ class Mailjet extends Module
 
 	public function postProcess()
 	{
+		$modif = false;
 		// Res is here to test page the time to wait the functional application
 		if (($res = Tools::getValue('mj_check_hosting')) && !$this->isAccountSet())
 			$this->page_name = $res ? 'SETUP_STEP_1' : 'SETUP_STEP_0';
@@ -765,6 +766,7 @@ class Mailjet extends Module
 					Tools::getValue('MJ_account_firstname'),
 					Tools::getValue('MJ_account_lastname'),
 					null);/* $locale = NULL */
+			$modif = true;
 		}
 		// Account settings : tracking
 		if (Tools::isSubmit('MJ_set_account_tracking'))
@@ -775,6 +777,7 @@ class Mailjet extends Module
 			if (Tools::getValue('MJ_account_tracking_openers') == '1') $tracking_openers = true;
 			else $tracking_openers = false;
 			$api->updateTracking($tracking_clicks, $tracking_openers);
+			$modif = true;
 		}
 		// Account settings : senders
 		if (Tools::isSubmit('MJ_set_account_senders'))
@@ -783,6 +786,7 @@ class Mailjet extends Module
 			$address = Tools::getValue('MJ_account_senders_new');
 
 			$api->createSender($address);
+			$modif = true;
 		}
 		// Triggers
 		if (Tools::isSubmit('MJ_set_triggers'))
@@ -804,11 +808,17 @@ class Mailjet extends Module
 				$languages = Language::getLanguages();
 				foreach ($languages as $l)
 				{
-					$this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = utf8_decode(Tools::getValue('MJ_triggers_trigger_'.$sel.'_subject_'.$l['id_lang']));
-					$this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = utf8_decode(Tools::getValue('MJ_triggers_trigger_'.$sel.'_mail_'.$l['id_lang']));
+					$this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_subject_'.$l['id_lang']);
+					$this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_mail_'.$l['id_lang']);
 				}
 			}
 			$this->updateTriggers();
+			$modif = true;
+		}
+		if ($modif)
+		{
+			$link = new Link();
+			Tools::redirectAdmin($link->getAdminLink('AdminModules').'&configure=mailjet&module_name=mailjet&MJ_request_page='.Tools::getValue('MJ_request_page').'&conf=4');
 		}
 	}
 

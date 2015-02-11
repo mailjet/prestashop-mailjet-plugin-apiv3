@@ -400,7 +400,7 @@ function loadFilter(idfilter)
 					html += '<td id="indicSelect'.$number.'">'.$this->getIndicSelect($idsource, $number, $idfield).'</td>';*/
 					html += '<td><input type="text" class="fixed" id="data'+i+'" name="data[]" value="'+line.data+'" /></td>';
 					html += '<td><input type="text" class="fixed" id="value1'+i+'" name="value1[]" value="'+line.value1+'" /></td>';
-					html += '<td><input type="text" class="fixed" id="value2'+i+'" name="value1[]" value="'+line.value2+'" /></td>';
+					html += '<td><input type="text" class="fixed" id="value2'+i+'" name="value2[]" value="'+line.value2+'" /></td>';
 				html += '</tr>';
 			}
 			$("#mainTable").html(html);

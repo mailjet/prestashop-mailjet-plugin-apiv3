@@ -446,7 +446,7 @@ legend {
 }
 #mj_triggers_page li div
 {
-	float:left;
+	/* float:left; */
 	vertical-align:middle;
 }
 span.clearspan
@@ -467,7 +467,9 @@ span.clearspan
 }
 .savebutton
 {
-	position:absolute;
+	clear: both;
+	float: right;
+	/* position:absolute; */
 	right:10px;
 	bottom:10px;
 	padding:5px 20px;
@@ -482,9 +484,10 @@ span.clearspan
 div.mj_triggers_parameters
 {
 	display:none;
-	width:870px;
+	width:90%;
 	min-height:380px !important;
 	margin:10px 0 0 0 !important;
+	padding-right:40px !important;
 }
 
 .sel_lang
@@ -565,12 +568,12 @@ div.mj_triggers_parameters
 #mj_triggers_page fieldset.hint div { padding-left:40px; }
 #triggers_options .mj_radios { padding-left:20px; }
 .MJ_triggers_trigger_buttons { display:inline-block;min-width:90px; }
-.mj_triggers_parameters input { text-align:right; }
+.mj_triggers_parameters input { /* text-align:right; */ }
 
-.mj_decalage { padding-left:60px; }
+.mj_decalage { /* padding-left:60px; */ }
 .mj_trigger_subjects { width:500px; }
 .mj_seps { width:5px;height:5px;display:block; }
-.mj_trigger_rtemails { width:100%;height:400px; }
+.mj_trigger_rtemails { width:95%;height:400px; }
 
 #mj_account_page_left { width:455px;float:left; }
 #mj_account_page_right { width:455px;float:right; }
@@ -593,5 +596,7 @@ div.mj_triggers_parameters
 
 .center_page.mj_home p.hint { display:block;position:relative; }
 .center_page.mj_home p.warn { display:block;position:relative;margin-top:5px; }
+
+fieldset#triggers_options img { vertical-align:top !important; }
 
 /* ** ** ******************* ** ** */
