@@ -43,8 +43,8 @@
 	var loadingFilter = false;
 	var mj_trad_plus = ['{l s='And' mod='mailjet'}', '{l s='Or' mod='mailjet'}', '{l s='Include' mod='mailjet'}', '{l s='Exclude' mod='mailjet'}'];
 	var mj_base_select = new Array();
-	{foreach from=$mj_base_select key=id_basecondition item=label}
-		mj_base_select[{$id_basecondition}] = "{$mj_trads[$label.label]|default:'?'}";
+	{foreach from=$mj_base_select item=base_select}
+		mj_base_select[{$base_select.id_basecondition}] = "{$mj_trads[$base_select.label]|default:'?'}";
 	{/foreach}
 </script>
 {$mj_datepickerPersonnalized|default:''}
