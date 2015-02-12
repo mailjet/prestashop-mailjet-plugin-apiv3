@@ -49,7 +49,6 @@ function addLine()
 
 function cleanAdd()
 {
-	$("#1 select.cond").hide();
 	$("#action1 a.delete").remove();
 	var items = ($("#mainTable a.add").length - 1);
 	$("#mainTable a.add").each(function(index) {

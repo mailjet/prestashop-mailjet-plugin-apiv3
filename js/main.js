@@ -36,7 +36,6 @@ $(document).ready( function() {
 	$('#baseSelect1').attr('value', 1);
 	updateSource($('#baseSelect1').val(), 1);
 	
-	$("#1 select.cond").hide();
 	$("#action1 a.delete").remove();
 	
 	$('select#groupUser').bind('change', function(){
