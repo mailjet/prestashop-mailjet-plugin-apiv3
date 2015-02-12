@@ -915,7 +915,13 @@ class Segmentation
 			}
 		}
 
-		$select = 'SELECT DISTINCT(c.id_customer) AS "'.$this->ll(47).'", CONCAT(UPPER(LEFT(c.firstname, 1)), LOWER(SUBSTRING(c.firstname FROM 2))) AS "'.$this->ll(48).'", UPPER(c.lastname) AS "'.$this->ll(49).'", LOWER(c.email) AS "'.$this->ll(75).'", ad.phone AS "'.$this->ll(73).'", ad.phone_mobile AS "'.$this->ll(74).'"'.$speField.' '.($label != '' ? ', '.$label : ' ').' FROM '.$from.' '.$join.' WHERE c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL) AND (ad.deleted = 0 OR ad.deleted IS NULL)'.$field;
+		$select = 'SELECT DISTINCT(c.id_customer) AS "'.$this->ll(47).'", CONCAT(UPPER(LEFT(c.firstname, 1)),
+			LOWER(SUBSTRING(c.firstname FROM 2))) AS "'.$this->ll(48).'", UPPER(c.lastname) AS "'.$this->ll(49).'",
+			LOWER(c.email) AS "'.$this->ll(75).'", ad.phone AS "'.$this->ll(73).'",
+			ad.phone_mobile AS "'.$this->ll(74).'"'.$speField.' '.($label != '' ? ', '.$label : ' ').'
+			FROM '.$from.' '.$join.'
+			WHERE c.newsletter=1 AND c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL)
+			AND (ad.deleted = 0 OR ad.deleted IS NULL)'.$field;
 
 		/*if ($post['date_start'] > 0 && $post['date_end'] > 0)
 			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) BETWEEN UNIX_TIMESTAMP("'.$post['date_start'].' 00:00:00") AND UNIX_TIMESTAMP("'.$post['date_end'].' 23:59:59")';
