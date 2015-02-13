@@ -423,6 +423,9 @@ class Segmentation
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;
 					case '12':
+						$dateFormat = Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'd-m-Y' : 'Y-m-d';
+						$val1 = date($dateFormat,strtotime($val1));
+						$val2 = date($dateFormat,strtotime($val2));
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
 							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
