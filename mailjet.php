@@ -368,8 +368,7 @@ class Mailjet extends Module
 				$initialSynchronization->remove($oldEmail);
 			}
 
-			$segmentation = new Segmentation();
-			$segmentation->checkAutoAssignment($customer->id);
+			$this->checkAutoAssignment($customer->id);
 
 			if ($customer->active == 0)
 				$initialSynchronization->unsubscribe($newEmail);
@@ -395,8 +394,7 @@ class Mailjet extends Module
 		);
 
 		try {
-			$segmentation = new Segmentation();
-			$segmentation->checkAutoAssignment($customer->id);
+			$this->checkAutoAssignment($customer->id);
 
 			if ($customer->active == 0)
 				$initialSynchronization->unsubscribe($customer->email);
@@ -473,10 +471,7 @@ class Mailjet extends Module
 
 		try {
 			$initialSynchronization->subscribe($params['newCustomer']->email);
-
-			$segmentation = new Segmentation();
-			$segmentation->checkAutoAssignment($params['newCustomer']->id);
-
+			$this->checkAutoAssignment($params['newCustomer']->id);
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
 			return false;
@@ -1145,9 +1140,14 @@ class Mailjet extends Module
 
 		$languages = Language::getLanguages();
 
-		for ($i = 1; $i <= 9; $i++)
-			foreach ($languages as $l)
-			$this->triggers['trigger'][$i]['mail'][$l['id_lang']] = rawurldecode($this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
+		for ($i = 1; $i <= 9; $i++) {
+			foreach ($languages as $l) {
+				if(!empty($this->triggers['trigger'][$i]['mail'][$l['id_lang']])){
+					$this->triggers['trigger'][$i]['mail'][$l['id_lang']] =
+						rawurldecode($this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
+				}
+			}
+		}
 	}
 
 	public function getTriggers()
