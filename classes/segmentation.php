@@ -423,7 +423,8 @@ class Segmentation
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;
 					case '12':
-						$dateFormat = Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'd-m-Y' : 'Y-m-d';
+						// MySQL DB date format
+						$dateFormat = 'Y-m-d';
 						$val1 = date($dateFormat,strtotime($val1));
 						$val2 = date($dateFormat,strtotime($val2));
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
