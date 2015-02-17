@@ -102,12 +102,12 @@
 					<input type="hidden" id="module_path" value="../modules/mailjet/views/templates/admin/" />
 					<table>
 						<tr>
-							<td class="titleFilter">{l s='Segment name' mod='mailjet'} <sup>*</sup></td>
-							<td><input id="name" type="text" value="" name="name" size="43"></td>
+							<td class="segmentNameLabel">{l s='Segment name' mod='mailjet'} <sup>*</sup></td>
+							<td class="padding2"><input id="name" type="text" value="" name="name" size="43"></td>
 						</tr>
 						<tr>
-							<td class="titleFilter">{l s='Description' mod='mailjet'}</td>
-							<td><textarea class="description" name="description" id="description"></textarea></td>
+							<td class="segmentNameLabel">{l s='Description' mod='mailjet'}</td>
+							<td class="padding2"><textarea class="description" name="description" id="description"></textarea></td>
 						</tr>
 					</table>
 					<br />
@@ -201,55 +201,62 @@
 				<p class="result" id="actionMessage" style="display:none;"></p>
 				<div class="rowAction">
 					<label>{l s='Customer Group' mod='mailjet'} :</label>
-					<select id="groupUser">
-						<option value="-1">{l s='New' mod='mailjet'}</option>
-						{if $mj_groups}
-							{foreach from=$mj_groups item=group}
-								<option value="{$group.id_group|default:'0'}">{$group.name|default:'?'}</option>
-							{/foreach}
-						{/if}
-					</select>
-					<span class="help">{l s='Select the customer group in which the selected customers will be affected.' mod='mailjet'}</span>
+					<span class="displayInlineBlock width200 verticalAlignTop">
+						<select id="groupUser">
+							<option value="-1">{l s='New' mod='mailjet'}</option>
+							{if $mj_groups}
+								{foreach from=$mj_groups item=group}
+									<option value="{$group.id_group|default:'0'}">{$group.name|default:'?'}</option>
+								{/foreach}
+							{/if}
+						</select>
+					</span>
+					<span class="help">{l s='Select the customer group in which the selected customers will be affected.'
+						mod='mailjet'}</span>
 				</div>
-				<hr>
 				<div class="rowAction" id="newgrpdiv">
 					<label>{l s='New customer group' mod='mailjet'} : </label>
-					<div class="size3">
+					<span class="displayInlineBlock width200 verticalAlignTop">
 						<input type="text" name="newgrp" id="newgrp">
-						<span class="help">{l s='Fill in the name of the customer group that will be automatically created' mod='mailjet'}.</span>
-					</div>
-					<br />
-					<hr>
+					</span>
+					<span class="help">{l s='Fill in the name of the customer group that will be automatically created'
+						mod='mailjet'}.</span>
 				</div>
 				<div class="rowAction" id="type">
 					<label>{l s='Replace or add' mod='mailjet'} : </label>
-					<div class="size3">
-						<input type="radio" id="add" value="rep" name="add"><span> {l s='Replace' mod='mailjet'}</span>
-						<input type="radio" id="rep" value="add" name="add" checked ><span> {l s='Add' mod='mailjet'}</span>
-						<span class="help">{l s='Add: If the client belongs to the selected group without losing its other groups' mod='mailjet'}.</span><br /><br />
-						<span class="help">{l s='Replace: If the client belongs to the selected group, losing all other groups' mod='mailjet'}.</span>
-					</div>
-					<br /><br />
-					<hr>
+					<span class="displayInlineBlock width200 verticalAlignTop">
+						<input type="radio" id="rep" value="add" name="add" checked="checked" class="displayInlineBlock floatLeft">
+						<label for="rep" class="label">{l s='Add' mod='mailjet'}</label>
+						<br/>
+						<input type="radio" id="add" value="rep" name="add" class="displayInlineBlock floatLeft">
+						<label for="add" class="label">{l s='Replace' mod='mailjet'}</label>
+					</span>
+					<span class="help">{l s='Add: If the client belongs to the selected group without losing its other groups'
+						mod='mailjet'}.<br/>
+						{l s='Replace: If the client belongs to the selected group, losing all other groups' mod='mailjet'}.
+					</span>
 				</div>
 				<div class="rowAction" id="auto-assignment">
 					<label>{l s='Associate in real time' mod='mailjet'} :</label>
-					<select id="assign-auto" name="assign-auto">
-						<option value="0">{l s='No' mod='mailjet'}</option>
-						<option value="1">{l s='Yes' mod='mailjet'}</option>
-					</select>
-					<span class="help">{l s='Assign customers to this group automatically. It will create a new filter which associate customers in real time in your shop' mod='mailjet'}.</span>
+					<span class="displayInlineBlock width200 verticalAlignTop">
+						<select id="assign-auto" name="assign-auto">
+							<option value="0">{l s='No' mod='mailjet'}</option>
+							<option value="1">{l s='Yes' mod='mailjet'}</option>
+						</select>
+					</span>
+					<span class="help">{l s='Assign customers to this group automatically. It will create a new filter
+						which associate customers in real time in your shop' mod='mailjet'}.</span>
 				</div>
-				<hr class="seg_hr">
 				<div class="rowAction" id="attrib">
 					<label>{l s='Assign group selection' mod='mailjet'}</label>
-					<div class="size3">
-						<button class="my_button" id="groupAttrib" ><img src="../modules/mailjet/img/table.png" /> {l s='Assign now' mod='mailjet'}</button>
+					<span class="displayInlineBlock width200 verticalAlignTop">
+						<button class="my_button" id="groupAttrib" ><img src="../modules/mailjet/img/table.png" />
+							{l s='Assign now' mod='mailjet'}</button>
 						<img src="{$mj__PS_BASE_URI__|default:'/'}modules/mailjet/img/load.gif" id="wait" style="display:none;" />
-						<span class="help">{l s='Customers will be assigned to the group after the click on the button' mod='mailjet'}.</span>
-						<br><span id="resultText"></span>
-					</div>
-					<hr>
+					</span>
+					<span class="help">{l s='Customers will be assigned to the group after the click on the button'
+						mod='mailjet'}.</span>
+					<br><span id="resultText"></span>
 				</div>
 			</div>
 		</div>

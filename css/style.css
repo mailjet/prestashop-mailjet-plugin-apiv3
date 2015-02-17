@@ -191,6 +191,8 @@ fieldset.custo .nameFilter {
 	
 }
 
+.segmentNameLabel{width:120px;}
+
 fieldset.custo .nameFilter .titleFilter {
 	font-weight: bold;
 	font-size: 12px;
@@ -270,15 +272,21 @@ width:90px;
 
 /*BLOC ACTION*/
 
-
+.displayInlineBlock {display: inline-block;}
+.width200 {width: 200px;}
+.widthAuto {width: auto;}
+.verticalAlignTop {vertical-align: top;}
+.floatLeft {float: left;}
+.padding2 {padding: 2px;}
 
 div.blocAction {
 	margin-top: 42px;
 }
 
-div.blocAction div.rowAction { display:block; width: auto; font-size:12px; font-weight:bold; margin:10px 0px; position:relative}
-div.blocAction div.rowAction label { float:left; text-align: left; width:210px; }
-
+div.blocAction div.rowAction { display:block; width: auto; font-size:12px; font-weight:bold; padding:10px 0px;
+	position:relative; border-bottom: 1px solid grey;}
+div.blocAction div.rowAction label { text-align: left; width:210px; }
+div.blocAction div.rowAction label.label { width:auto; margin: -4px 0 0 4px; }
 
 
 div.blocAction fieldset.custo { 
@@ -319,8 +327,8 @@ span.help
 	font-weight: bold;
 	color: #7F7F7F;
     font-size: 12px;
-    position:absolute;
-    left:400px;
+    display: inline-block;
+    width:400px;
 }
 span.help2
 {
