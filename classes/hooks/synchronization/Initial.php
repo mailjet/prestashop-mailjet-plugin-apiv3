@@ -66,9 +66,11 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 			throw new HooksSynchronizationException('You don\'t have any users in the database.');
 
 		$contacts = array();
-
-		foreach ($allUsers as $user)
-			$contacts[] = $user['email'];
+ 
+            
+		foreach ($allUsers as $user) {
+            $contacts[] = $user['email'];
+        }
 
 		$stringContacts = implode(' ', $contacts);
 
@@ -83,6 +85,25 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 			
 			throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
 		}
+        
+        /*
+        * Updates contact properties like First Name and Last Name
+        */
+        $segmentationObject = new Segmentation();
+        $allContacts = array();
+        foreach ($allUsers as $userInfo) {
+            $allContacts[0]['email'] = $userInfo['email'];
+            $allContacts[0][$segmentationObject->ll(48)] = $userInfo['firstname'];
+            $allContacts[0][$segmentationObject->ll(49)] = $userInfo['lastname'];
+        }
+        
+        if(isset($allContacts) && is_array($allContacts)) {
+            
+            $resUpdateContactData = $this->_getApiOverlay()->updateContactData($contacts, $allContacts);
+        
+            if ($resUpdateContactData == false)
+                throw new HooksSynchronizationException('Create contact data problem');
+        }
 
 		$batchJobResponse = $apiOverlay->batchJobContacts(
 			$newlyCreatedListId, $apiResponse->ID
@@ -101,7 +122,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 	private function _getAllActiveCustomers()
 	{
 		return $this->getDbInstance()->executeS('
-			SELECT email 
+			SELECT * 
 			FROM '._DB_PREFIX_.'customer 
 			WHERE active = 1 
 			AND deleted = 0

@@ -2515,7 +2515,8 @@ class Mailjet_ApiOverlay
     
     /**
      * 
-     * @param type $contacts
+     * @param array $contactsToProcess List of emails (Required)
+     * @param array $contacts Contacts Info, including email, firstname, lastname, etc...
      * @return boolean
      */
     public function updateContactData($contactsToProcess = array(), $contacts = array())
@@ -2537,7 +2538,7 @@ class Mailjet_ApiOverlay
                     }
                 }
             }
-        
+       
             foreach ($contacts as $contact) {
                 $prestashopContactsFirstNames[$contact[$mail_index]] = $contact[$firstNameIndex];
                 $prestashopContactsLastNames[$contact[$mail_index]] = $contact[$lastNameIndex];
@@ -2583,11 +2584,11 @@ class Mailjet_ApiOverlay
                 );
                 $resContactData = $this->createContactData($contactEmail, $params); 
             }
-            MailJetLog::write(MailJetLog::$file, print_r($contactsToProcess, 1).' -- '. print_r($contacts, 1));
+           
             return true;
 
         } catch (Exception $ex) {
-            MailJetLog::write(MailJetLog::$file, 'Exception - '.$ex->getMessage());
+            MailJetLog::write(MailJetLog::$file, 'Exception : '.$ex->getMessage());
             throw new Mailjet_ApiException($ex->getMessage());
         }
         
