@@ -120,6 +120,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	 */
 	private function _create($res_contacts, $filterId, $fiterName)
 	{
+        $totalContacts = $res_contacts;
 		// ** ** Détection du bon Index
 		$mail_index = 'Email';
 		if ($res_contacts)
@@ -165,6 +166,13 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
 
+                /*
+                 * Updates contact properties like First Name and Last Name
+                 */
+                $resUpdateContactData = $this->_getApiOverlay()->updateContactData($selected_contacts, $totalContacts);
+                if ($resUpdateContactData == false)
+					throw new HooksSynchronizationException('Create contact data problem');
+                
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($newListId, $res->ID);
 
 				if ($batchJobResponse == false)
@@ -195,15 +203,18 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		$mail_index = 'Email';
 		if ($contacts)
 		{
-			$contact_ids = array_keys($contacts[0]);
-			foreach ($contact_ids as $k)
-				if (preg_match('/(mail)/', $k)) $mail_index = $k;
+			$contact_ids = array_keys($contacts[0]); 
+			foreach ($contact_ids as $k) {
+                if (preg_match('/(mail)/', $k))  { 
+                    $mail_index = $k;
+                } 
+            }
 		}
-		// ** **
-
+        
 		$prestashopContacts = array();
-		foreach ($contacts as $contact)
-			$prestashopContacts[] = $contact[$mail_index];
+		foreach ($contacts as $contact) {
+            $prestashopContacts[] = $contact[$mail_index];
+        }
 
 		$this->_gatherCurrentContacts($existingListId);
 
@@ -223,17 +234,25 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		}
 
 		$response = 'Pending';
-
+ 
 		try {
 			if (!empty($contacstToAdd))
 			{
 				$contstToAddCsv = implode(' ', $contacstToAdd);
 
 				$res = $this->_getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
-
+                
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
 
+                /*
+                 * Updates contact properties like First Name and Last Name
+                 */
+                $resUpdateContactData = $this->_getApiOverlay()->updateContactData($contacstToAdd, $contacts);
+                if ($resUpdateContactData == false)
+                    throw new HooksSynchronizationException('Create contact data problem');
+                
+                   
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
 
 				if ($batchJobResponse == false)

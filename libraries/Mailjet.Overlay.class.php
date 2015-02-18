@@ -2501,8 +2501,6 @@ class Mailjet_ApiOverlay
         
         return json_decode($responesProfile);
         
-        
-        
         if (!is_null($force))
             $params['force'] = $force;
 
@@ -2512,6 +2510,202 @@ class Mailjet_ApiOverlay
         else
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
+    
+    
+    
+    /**
+     * 
+     * @param type $contacts
+     * @return boolean
+     */
+    public function updateContactData($contactsToProcess = array(), $contacts = array())
+    {
+        try {
+
+            $segmentationObject = new Segmentation();
+            
+            if (isset($contacts) && is_array($contacts)) {
+                
+                $contact_ids = array_keys($contacts[0]); 
+                foreach ($contact_ids as $k) {
+                    if (preg_match('/(mail)/', $k))  { 
+                        $mail_index = $k;
+                    } else if ($k == $segmentationObject->ll(48)) {
+                        $firstNameIndex = $k;
+                    } else if ($k == $segmentationObject->ll(49)) {
+                        $lastNameIndex = $k;
+                    }
+                }
+            }
+        
+            foreach ($contacts as $contact) {
+                $prestashopContactsFirstNames[$contact[$mail_index]] = $contact[$firstNameIndex];
+                $prestashopContactsLastNames[$contact[$mail_index]] = $contact[$lastNameIndex];
+            }
+
+        
+            /*
+            * Add contact properties like First Name and Last Name
+            */
+            $resContactMetaData = $this->getContactMetaData();
+            if(isset($resContactMetaData->Data) && count($resContactMetaData->Data) > 0) {
+
+                foreach($resContactMetaData->Data as $metaData) {
+                    if(isset($metaData->Name) && $metaData->Name = 'firstname') {
+                        $firstNameExists = true;
+                    }
+                    if(isset($metaData->Name) && $metaData->Name = 'lastname') {
+                        $lastNameExists = true;
+                    }
+                }
+            }
+            if(!$firstNameExists) {
+                $paramsContactMetaData['Datatype'] = 'str';
+                $paramsContactMetaData['Name'] = 'firstname';
+                $paramsContactMetaData['NameSpace'] = 'static';
+                $resContactMetaData = $this->createContactMetaData($paramsContactMetaData); 
+            }
+            if(!$lastNameExists) {
+                $paramsContactMetaData['Datatype'] = 'str';
+                $paramsContactMetaData['Name'] = 'lastname';
+                $paramsContactMetaData['NameSpace'] = 'static';
+                $resContactMetaData = $this->createContactMetaData($paramsContactMetaData); 
+            }
+
+
+            foreach ($contactsToProcess as $contactEmail) {
+                if(!isset($contactEmail) || empty($contactEmail)) {
+                    continue;
+                }
+                $params = array(
+                    array('Name' => 'firstname', 'value' => $prestashopContactsFirstNames[$contactEmail]),
+                    array('Name' => 'lastname', 'value' => $prestashopContactsLastNames[$contactEmail])
+                );
+                $resContactData = $this->createContactData($contactEmail, $params); 
+            }
+            MailJetLog::write(MailJetLog::$file, print_r($contactsToProcess, 1).' -- '. print_r($contacts, 1));
+            return true;
+
+        } catch (Exception $ex) {
+            MailJetLog::write(MailJetLog::$file, 'Exception - '.$ex->getMessage());
+            throw new Mailjet_ApiException($ex->getMessage());
+        }
+        
+        return false;
+    }
+    
+    /**
+     * 
+     * @param type $contactEmail
+     * @param type $params
+     * @return type
+     * @throws Mailjet_ApiException
+     */
+    public function createContactData($contactEmail, $params = array())
+    {
+        $contactData = $this->getContactByEmail($contactEmail);
+      
+        $paramsRequest = array(
+            'method' => 'JSON',  // JSON
+            'ID' => $contactData->Data[0]->ID,
+            'Data' => $params,
+    	);
+         
+        $this->_api->resetRequest();        
+        $this->_api->contactdata($paramsRequest);
+            
+        $response = $this->_api->getResponse();
+        if ($response !== FALSE) {
+            return ($response);
+        
+        
+        }
+        else { 
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
+    }
+    
+    public function deleteContactData($contactEmail)
+    {
+        $paramsRequest = array(
+            'method' => 'DELETE',
+            'ID' => $contactEmail
+    	);
+            
+        $this->_api->resetRequest();        
+        $this->_api->contactdata($paramsRequest);
+            
+        $response = $this->_api->getResponse();
+        if ($response !== FALSE) { 
+            return ($response);
+        }
+        else { 
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
+    }
+    
+    public function getContactByEmail($contactEmail)
+    {
+        $paramsRequest = array(
+            'method' => 'GET',
+            'ID' => $contactEmail,
+            'Email' => $contactEmail,
+        );
+        
+        $this->_api->resetRequest();    
+        
+        $this->_api->contact($paramsRequest);
+        
+        $response = $this->_api->getResponse(); 
+        
+        if ($response !== FALSE) { 
+            return ($response);
+        }
+        else {
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
+    }
+    
+    public function getContactMetaData()
+    {
+        $paramsRequest = array(
+            'method' => 'GET',
+        );
+            
+        $this->_api->resetRequest();        
+        $this->_api->contactmetadata($paramsRequest);
+            
+        $response = $this->_api->getResponse();
+        if ($response !== FALSE) {
+            return ($response);
+        }
+        else { 
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
+    }
+    
+    
+    public function createContactMetaData($params = array())
+    {
+        $paramsRequest = array(
+            'method' => 'JSON',  // JSON
+            'Datatype' => $params['Datatype'],
+            'Name' => $params['Name'],
+            'NameSpace' => $params['NameSpace'],
+    	);
+           
+        $this->_api->resetRequest();        
+        $this->_api->contactmetadata($paramsRequest);
+            
+        $response = $this->_api->getResponse();
+        if ($response !== FALSE) {
+            return ($response);
+        }
+        else { 
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
+    }
+    
     
     public function batchJobContacts($listID, $dataID, $status = 'addforce')
     {
