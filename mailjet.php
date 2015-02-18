@@ -503,7 +503,9 @@ class Mailjet extends Module
 
 	public function hookCart($params)
 	{
-		$this->checkAutoAssignment((int)$params['cart']->id_customer);
+		if(!empty($params['cart'])){
+			$this->checkAutoAssignment((int)$params['cart']->id_customer);
+		}
 		return '';
 	}
 

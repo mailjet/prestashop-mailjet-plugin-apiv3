@@ -183,37 +183,28 @@ class Segmentation
 		switch ((int)Context::getContext()->cookie->id_lang)
 		{
 			case 2:
-				/*if (strlen($post['date_start']) >= 10)
-					$post['date_start'] = substr($post['date_start'], 6, 4).'-'.substr($post['date_start'], 3, 2).'-'.substr($post['date_start'], 0, 2);
-
-				if (strlen($post['date_end']) >= 10)
-					$post['date_end'] = substr($post['date_end'], 6, 4).'-'.substr($post['date_end'], 3, 2).'-'.substr($post['date_end'], 0, 2);*/
-
 				$dataToFormat = array(33);
-				$valuesToFormat = array(12, 17, 18, 19, 20, 28, 35, 36);
-
 				if (isset($post['fieldSelect']))
-					foreach ($post['fieldSelect'] as $key => $value)
-					{
-						if (in_array($value, $valuesToFormat))
-						{
+					foreach ($post['fieldSelect'] as $key => $value) {
+						if (in_array($value, array(12, 17, 18, 19, 20, 28, 35, 36))) {
 							if (Tools::strlen($post['value1'][$key]) >= 10)
-								$post['value1'][$key] = Tools::substr($post['value1'][$key], 6, 4).'-'.Tools::substr($post['value1'][$key], 3, 2).'-'.Tools::substr($post['value1'][$key], 0, 2);
+								$post['value1'][$key] = Tools::substr($post['value1'][$key], 6, 4).'-'.
+									Tools::substr($post['value1'][$key], 3, 2).'-'.Tools::substr($post['value1'][$key], 0, 2);
 
 							if (Tools::strlen($post['value2'][$key]) >= 10)
-								$post['value2'][$key] = Tools::substr($post['value2'][$key], 6, 4).'-'.Tools::substr($post['value2'][$key], 3, 2).'-'.Tools::substr($post['value2'][$key], 0, 2);
+								$post['value2'][$key] = Tools::substr($post['value2'][$key], 6, 4).'-'.
+									Tools::substr($post['value2'][$key], 3, 2).'-'.Tools::substr($post['value2'][$key], 0, 2);
 						}
-
-						if (in_array($value, $dataToFormat))
-						{
-							if (Tools::strlen($post['data'][$key]) >= 10)
-								$post['data'][$key] = Tools::substr($post['data'][$key], 6, 4).'-'.Tools::substr($post['data'][$key], 3, 2).'-'.Tools::substr($post['data'][$key], 0, 2);
+						if (in_array($value, $dataToFormat)) {
+							if (Tools::strlen($post['data'][$key]) >= 10) {
+								$post['data'][$key] = Tools::substr($post['data'][$key], 6, 4).'-'.
+									Tools::substr($post['data'][$key], 3, 2).'-'.Tools::substr($post['data'][$key], 0, 2);
+							}
 						}
 					}
 				break;
 			default:
 		}
-
 		return $post;
 	}
 
@@ -237,18 +228,13 @@ class Segmentation
 				'LEFT JOIN '._DB_PREFIX_.'address ad ON ad.id_customer = c.id_customer'
 			);
 			$havings = array();
-			/*if ($post['baseSelect'][0] < 0)
-				return false;*/
 			$from = str_replace('%1', _DB_PREFIX_, $this->getBase($post['baseSelect'][0]));
-			/*if (in_array(-1, $post['sourceSelect']))
-				return false;*/
 			foreach ($post['sourceSelect'] as $p)
 				if (!in_array($p, $tmp) && $p > 0)
 				{
 					$join .= str_replace('%1', _DB_PREFIX_, $this->getSource($p));
 					$tmp[] = $p;
 				}
-			$tmp = array();
 			$nb = count($post['baseSelect']);
 			for ($i = 0; $i < $nb; $i++)
 			{
@@ -258,15 +244,12 @@ class Segmentation
 				if ($post['sourceSelect'][$i] == -1)
 					$this->displayRuleError($i + 1, $this->trad[86]);
 
-				$val1 = $post['value1'][$i];
-				$val2 = $post['value2'][$i];
+				$val1 = strtotime($post['value1'][$i]) === false ? $post['value1'][$i] : $this->_formatDate($post['value1'][$i]);
+				$val2 = strtotime($post['value2'][$i]) === false ? $post['value2'][$i] : $this->_formatDate($post['value2'][$i]);
 				$data = $post['data'][$i];
 				/*$op1 = */$this->translateOp($val1);
 				/*$op2 = */$this->translateOp($val2);
-				//$val1 = (trim($val1) == '') ? 0 : $val1;
-				//$val2 = (trim($val2) == '') ? 0 : $val2;
 
-				/* $default = false; */
 				$sub_where = '';
 				$sub_join = '';
 				$sub_groupby = '';
@@ -423,10 +406,6 @@ class Segmentation
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;
 					case '12':
-						// MySQL DB date format
-						$dateFormat = 'Y-m-d';
-						$val1 = date($dateFormat,strtotime($val1));
-						$val2 = date($dateFormat,strtotime($val2));
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
 							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
@@ -478,7 +457,7 @@ class Segmentation
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'guest g'.$i.' ON g'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'connections conn'.$i.' ON conn'.$i.'.id_guest = g'.$i.'.id_guest';
-						$sub_where = 'conn'.$i.'.date_add = (SELECT sconn'.$i.'.date_add FROM '._DB_PREFIX_.'connections sconn'.$i.' WHERE sconn'.$i.'.id_guest = g'.$i.'.id_guest ORDER BY sconn'.$i.'.date_add LIMIT 0,1)';
+						$sub_where = 'conn'.$i.'.date_add = (SELECT sconn'.$i.'.date_add FROM '._DB_PREFIX_.'connections sconn'.$i.' WHERE sconn'.$i.'.id_guest = g'.$i.'.id_guest ORDER BY sconn'.$i.'.date_add DESC LIMIT 0,1)';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
 							$sub_where .= ' AND UNIX_TIMESTAMP(conn'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						elseif (Tools::strlen($val1) > 0)
@@ -532,8 +511,7 @@ class Segmentation
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
 						break;
 					case '23':
-						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
-						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'order_slip os'.$i.' ON os'.$i.'.id_customer = c'.$i.'.id_customer';
+						$sub_joins[] = 'JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if ($data > 0)
 							$sub_where = 'os'.$i.'.id_customer IS NOT NULL';
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -649,7 +627,7 @@ class Segmentation
 					case '33':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						$sub_where = 'o'.$i.'.id_order = (SELECT so'.$i.'.id_order FROM '._DB_PREFIX_.'orders so'.$i.' WHERE so'.$i.'.id_customer = c'.$i.'.id_customer ORDER BY UNIX_TIMESTAMP(so'.$i.'.date_add) DESC LIMIT 0,1)';
-						if (sTools::trlen($data) > 0)
+						if (Tools::strlen($data) > 0)
 							$sub_where .= ' AND UNIX_TIMESTAMP(o'.$i.'.date_add) < UNIX_TIMESTAMP("'.pSQL($data).'")';
 						else
 							$this->displayRuleError($i + 1, $this->trad[93]);
@@ -851,7 +829,9 @@ class Segmentation
 						$sub_join .= ' '.$value;
 				}
 
-				$field .= ' '.$rule_a.' '.$sub_prefix.'c.id_customer '.$rule_action.' (SELECT '.$sub_field.' FROM '.$sub_from.' '.$sub_join.' WHERE c'.$i.'.id_customer = c.id_customer AND c'.$i.'.deleted = 0'.$sub_where.$sub_groupby.$sub_orderby.$sub_having.$sub_limit.')'.$sub_sufix;
+				$field .= ' '.$rule_a.' '.$sub_prefix.'c.id_customer '.$rule_action.' (SELECT '.$sub_field.' FROM '.
+					$sub_from.' '.$sub_join.' WHERE c'.$i.'.deleted = 0'.
+					$sub_where.$sub_groupby.$sub_orderby.$sub_having.$sub_limit.')'.$sub_sufix;
 			}
 		}
 
@@ -943,6 +923,11 @@ class Segmentation
 			$select .= ' LIMIT '.(int)$limit['start'].', '.(int)$limit['length'];
 
 		return $select;
+	}
+
+	// MySQL DB date format
+	private function _formatDate($date){
+		return date('Y-m-d',strtotime($date));
 	}
 
 	public function getSubCategories($id_category)
