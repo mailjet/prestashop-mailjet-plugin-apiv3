@@ -39,7 +39,7 @@
 {*        <a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}=PRICING" id="setup_landing_bt_pricing" class="default_button_style">
         	{l s='Pricing' mod='mailjet'}
         </a>*}
-        <a target="_blank" href="http://www.mailjet.com/pricing " id="setup_landing_bt_pricing" class="default_button_style">
+        <a target="_blank" href="http://www.mailjet.com/pricing_v3 " id="setup_landing_bt_pricing" class="default_button_style">
         	{l s='Pricing' mod='mailjet'}
         </a>
         <br clear="left"/>
