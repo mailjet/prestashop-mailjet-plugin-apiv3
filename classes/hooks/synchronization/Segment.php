@@ -119,15 +119,25 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	 * @return mixed
 	 */
 	private function _create($res_contacts, $filterId, $fiterName)
-	{
+	{        
+        $segmentationObject = new Segmentation();
+            
         $totalContacts = $res_contacts;
 		// ** ** Détection du bon Index
 		$mail_index = 'Email';
 		if ($res_contacts)
 		{
 			$contact_ids = array_keys($res_contacts[0]);
-			foreach ($contact_ids as $k)
-				if (preg_match('/(mail)/', $k)) $mail_index = $k;
+			foreach ($contact_ids as $k) {
+                if (preg_match('/(mail)/', $k))  {
+                    $mail_index = $k;
+                } else if ($k == $segmentationObject->ll(48)) {
+                    $firstNameIndex = $k;
+                } else if ($k == $segmentationObject->ll(49)) {
+                    $lastNameIndex = $k;
+                }  
+            }
+
 		}
 		// ** **
 
@@ -150,29 +160,48 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 			$val = 50;
 			if ($reste_contacts < $val) $val = $reste_contacts;
 
-			$selected_contacts = array();
+            $contactsToCsv = array();
 			for ($ic = 1; $ic <= 50; $ic++)
 			{
 				$rc = array_pop($res_contacts);
-				$selected_contacts[] = $rc[$mail_index];
-			}
-
-			$string_contacts = implode(' ', $selected_contacts);
-
+                if (!empty($rc[$mail_index])) {
+                    $contactsToCsv[] = array($rc[$mail_index], $rc[$firstNameIndex], $rc[$lastNameIndex]);
+                }
+               
+            }
+           
 			# Call
 			try {
-				$res = $this->_getApiOverlay()->createContacts($string_contacts, $newListId);
+                
+                 
+                $file = new SplFileObject('contacts.csv', 'w');
+                $headers = array("email","firstname","lastname");
+                $file->fputcsv($headers);
+                foreach ($contactsToCsv as $contact) {
+                    $file->fputcsv($contact);
+                }
 
+                $string_contacts = file_get_contents('contacts.csv');
+                $file = null;
+                unlink('contacts.csv');
+
+                
+                /*
+                 * Sets related contact meta data like firstname, lastname, etc...
+                 */
+                $this->_getApiOverlay()->setContactMetaData(
+                    array(
+                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'), 
+                        array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
+                    )
+                );
+                
+				$res = $this->_getApiOverlay()->createContacts($string_contacts, $newListId);
+                
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
 
-                /*
-                 * Updates contact properties like First Name and Last Name
-                 */
-                $resUpdateContactData = $this->_getApiOverlay()->updateContactData($selected_contacts, $totalContacts);
-                if ($resUpdateContactData == false)
-					throw new HooksSynchronizationException('Create contact data problem');
-                
+               
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($newListId, $res->ID);
 
 				if ($batchJobResponse == false)
@@ -181,7 +210,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 				$contacts_done += $val;
 
 				Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor(($contacts_done * 100) / $total_contacts));
-
+                
 				$response = 'OK';
 			} catch (Exception $e) {
 				$response = 'Try again later';
@@ -199,21 +228,30 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	 */
 	private function _update($contacts, $existingListId)
 	{
+        $segmentationObject = new Segmentation();
+        
 		// ** ** Détection du bon Index
 		$mail_index = 'Email';
 		if ($contacts)
 		{
 			$contact_ids = array_keys($contacts[0]); 
 			foreach ($contact_ids as $k) {
-                if (preg_match('/(mail)/', $k))  { 
+                if (preg_match('/(mail)/', $k))  {
                     $mail_index = $k;
-                } 
+                } else if ($k == $segmentationObject->ll(48)) {
+                    $firstNameIndex = $k;
+                } else if ($k == $segmentationObject->ll(49)) {
+                    $lastNameIndex = $k;
+                }  
             }
 		}
         
 		$prestashopContacts = array();
 		foreach ($contacts as $contact) {
             $prestashopContacts[] = $contact[$mail_index];
+            if (!empty($contact[$mail_index])) {
+                $contactsToCsv[$contact[$mail_index]] = array($contact[$mail_index], $contact[$firstNameIndex], $contact[$lastNameIndex]);
+            }
         }
 
 		$this->_gatherCurrentContacts($existingListId);
@@ -224,7 +262,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		foreach ($prestashopContacts as $email)
 		{
 			if (!in_array($email, $this->_mailjetContacts))
-				$contacstToAdd[] = $email;
+				$contacstToAdd[] = $contactsToCsv[$email];
 		}
 
 		foreach ($this->_mailjetContacts as $email)
@@ -238,25 +276,39 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		try {
 			if (!empty($contacstToAdd))
 			{
-				$contstToAddCsv = implode(' ', $contacstToAdd);
+                /*
+                 * Sets related contact meta data like firstname, lastname, etc...
+                 */
+                $this->_getApiOverlay()->setContactMetaData(
+                    array(
+                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'), 
+                        array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
+                    )
+                );
+                
+                $file = new SplFileObject('contacts.csv', 'w');
+                $headers = array("email","firstname","lastname");
+                $file->fputcsv($headers);
+                foreach ($contacstToAdd as $contact) {
+                    $file->fputcsv($contact);
+                }
 
+                $contstToAddCsv = file_get_contents('contacts.csv');
+                $file = null;
+                unlink('contacts.csv');
+                
+                
 				$res = $this->_getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
                 
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
 
-                /*
-                 * Updates contact properties like First Name and Last Name
-                 */
-                $resUpdateContactData = $this->_getApiOverlay()->updateContactData($contacstToAdd, $contacts);
-                if ($resUpdateContactData == false)
-                    throw new HooksSynchronizationException('Create contact data problem');
-                
-                   
+                 
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
 
 				if ($batchJobResponse == false)
 					throw new HooksSynchronizationException('Batchjob problem');
+                  
 			}
 
 			if (!empty($contacstToRemove))

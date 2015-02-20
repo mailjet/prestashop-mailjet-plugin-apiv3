@@ -1764,7 +1764,6 @@ class Mailjet_ApiOverlay
     	
         $call_newsletter_html = $this->_dataApi->DATA('GET', 'NewsLetter', $campaign->NewsLetterID, 'HTML', 'text/html', 'LAST', NULL, null);
 		
-		var_dump($call_newsletter_html); die;
 		if(!isset($call_newsletter_html->ErrorInfo))
 			$contents = $call_newsletter_html;
 		
@@ -2514,77 +2513,39 @@ class Mailjet_ApiOverlay
     
     
     /**
-     * 
-     * @param array $contactsToProcess List of emails (Required)
-     * @param array $contacts Contacts Info, including email, firstname, lastname, etc...
+     * setContactMetaData()
+     * First checks if certain contact meta data field is already created, 
+     * and if not - creates it in order to be populated by the followed createContacts call
      * @return boolean
      */
-    public function updateContactData($contactsToProcess = array(), $contacts = array())
+    public function setContactMetaData($params = array())
     {
-        try {
-
-            $segmentationObject = new Segmentation();
             
-            if (isset($contacts) && is_array($contacts)) {
-                
-                $contact_ids = array_keys($contacts[0]); 
-                foreach ($contact_ids as $k) {
-                    if (preg_match('/(mail)/', $k))  { 
-                        $mail_index = $k;
-                    } else if ($k == $segmentationObject->ll(48)) {
-                        $firstNameIndex = $k;
-                    } else if ($k == $segmentationObject->ll(49)) {
-                        $lastNameIndex = $k;
-                    }
-                }
-            }
-       
-            foreach ($contacts as $contact) {
-                $prestashopContactsFirstNames[$contact[$mail_index]] = $contact[$firstNameIndex];
-                $prestashopContactsLastNames[$contact[$mail_index]] = $contact[$lastNameIndex];
-            }
-
-        
+        try {
             /*
             * Add contact properties like First Name and Last Name
             */
             $resContactMetaData = $this->getContactMetaData();
-            if(isset($resContactMetaData->Data) && count($resContactMetaData->Data) > 0) {
 
-                foreach($resContactMetaData->Data as $metaData) {
-                    if(isset($metaData->Name) && $metaData->Name = 'firstname') {
-                        $firstNameExists = true;
-                    }
-                    if(isset($metaData->Name) && $metaData->Name = 'lastname') {
-                        $lastNameExists = true;
-                    }
-                }
-            }
-            if(!$firstNameExists) {
-                $paramsContactMetaData['Datatype'] = 'str';
-                $paramsContactMetaData['Name'] = 'firstname';
-                $paramsContactMetaData['NameSpace'] = 'static';
-                $resContactMetaData = $this->createContactMetaData($paramsContactMetaData); 
-            }
-            if(!$lastNameExists) {
-                $paramsContactMetaData['Datatype'] = 'str';
-                $paramsContactMetaData['Name'] = 'lastname';
-                $paramsContactMetaData['NameSpace'] = 'static';
-                $resContactMetaData = $this->createContactMetaData($paramsContactMetaData); 
-            }
-
-
-            foreach ($contactsToProcess as $contactEmail) {
-                if(!isset($contactEmail) || empty($contactEmail)) {
-                    continue;
-                }
-                $params = array(
-                    array('Name' => 'firstname', 'value' => $prestashopContactsFirstNames[$contactEmail]),
-                    array('Name' => 'lastname', 'value' => $prestashopContactsLastNames[$contactEmail])
-                );
-                $resContactData = $this->createContactData($contactEmail, $params); 
-            }
            
+            if(isset($resContactMetaData->Data) && count($resContactMetaData->Data) > 0) {
+                foreach($resContactMetaData->Data as $metaData) {
+                    foreach ($params as $paramsMetaData) {
+                        if(isset($metaData->Name) && $metaData->Name = $paramsMetaData['Name']) {
+                            $flagName = $paramsMetaData['Name']."NameExists";
+                            ${$flagName} = true;
+                        }
+                    }
+                }
+            }
+            
+            foreach ($params as $paramsMetaData) {
+                $flagName = $paramsMetaData['Name']."NameExists";
+                if(!${$flagName}) {
+                    $resContactMetaData = $this->createContactMetaData($paramsMetaData); 
+                }           
+            }
+
             return true;
 
         } catch (Exception $ex) {
@@ -2675,8 +2636,9 @@ class Mailjet_ApiOverlay
             
         $this->_api->resetRequest();        
         $this->_api->contactmetadata($paramsRequest);
-            
+           
         $response = $this->_api->getResponse();
+            
         if ($response !== FALSE) {
             return ($response);
         }
@@ -2713,7 +2675,7 @@ class Mailjet_ApiOverlay
 
     	$paramsProfile = array(
     			'method' => 'JSON',  // JSON
-    			'JobType' => 'Contact list import free format',
+    			'JobType' => 'Contact list import csv',
     			'DataID' => $dataID,
     			'Status' => 'Upload',
     			'RefId' => $listID,
