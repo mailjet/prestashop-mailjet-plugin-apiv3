@@ -524,7 +524,7 @@ class Mailjet extends Module
 		if (isset($params['id_order'])) 
 		{
 			$sql = 'SELECT id_customer 
-					FROM '._DB_PREFIX_.'order 
+					FROM '._DB_PREFIX_.'orders
 					WHERE id_order = '.(int)$params['id_order'];
 	
 			if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0)
