@@ -122,7 +122,6 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	{        
         $segmentationObject = new Segmentation();
             
-        $totalContacts = $res_contacts;
 		// ** ** Détection du bon Index
 		$mail_index = 'Email';
 		if ($res_contacts)
