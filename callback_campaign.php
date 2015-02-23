@@ -54,21 +54,21 @@ if ($data->next_step_url)
 	if (!empty($response) && ($response->message == 'last change of campaigns parameters' || $response->message == 'send details saved successfully'))
 	{
 		$mj_data = new Mailjet_Api($mj->getAccountSettingsKey('API_KEY'), $mj->getAccountSettingsKey('SECRET_KEY'));
-
-		$html = $mj_data->data('newsletter', $data->campaign_id, 'HTML', 'text/html', null, 'GET', 'LAST')->getResponse();
+        $campaignId = (int)$data->campaign_id;
+		$html = $mj_data->data('newsletter', $campaignId, 'HTML', 'text/html', null, 'GET', 'LAST')->getResponse();
 		
 		/* On enregistre la campagne en BDD et on génère un token */
-		$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign WHERE campaign_id = '.$data->campaign_id;
+		$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign WHERE campaign_id = '.$campaignId;
 		$res_campaign = Db::getInstance()->GetRow($sql);
 
 		if (empty($res_campaign))
 		{
 			$token_presta = md5(uniqid('mj', true));
 			$sql = 'INSERT INTO '._DB_PREFIX_.'mj_campaign (campaign_id, token_presta, date_add)
-			VALUES ('.$data->campaign_id.', \''.$token_presta.'\', NOW())';
+			VALUES ('.$campaignId.', \''.$token_presta.'\', NOW())';
 			Db::getInstance()->Execute($sql);
 
-			$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign WHERE campaign_id = '.$data->campaign_id;
+			$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign WHERE campaign_id = '.$campaignId;
 			$res_campaign = Db::getInstance()->GetRow($sql);
 		}
 
@@ -109,7 +109,7 @@ if ($data->next_step_url)
 			}
 		}
 				
-		$res = $mj_data->data('newsletter', $data->campaign_id, 'HTML', 'text/html', $html, 'PUT', 'LAST')->getResponse();
+		$res = $mj_data->data('newsletter', $campaignId, 'HTML', 'text/html', $html, 'PUT', 'LAST')->getResponse();
 	}
 	
 	$response = array(

@@ -559,7 +559,7 @@ class Mailjet_Api
             sort($params);
             $file = $object.'.'.hash('md5', $this->_apiKey.http_build_query($params, '', '')).'.'.$this->_output;
             if (file_exists($this->_cache_path.$file)) {
-                $data = unserialize(file_get_contents($this->_cache_path.$file));
+                $data = unserialize(Tools::file_get_contents($this->_cache_path.$file));
                 if ($data['timestamp'] > time() - $cache)
                     return ($data['result']);
             }

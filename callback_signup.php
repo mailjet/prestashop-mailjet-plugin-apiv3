@@ -47,7 +47,6 @@ foreach ($maindirs as $dirName)
 if (!$adminDirName)
 	throw new Exception('Admin dir must be found.');
 
-/* mail("astoyanov@mailjet.com", "", print_r($_POST, true)); */
 if (Tools::getIsset('data'))
 {
 	$data = Tools::getValue('data');
@@ -64,9 +63,6 @@ if (Tools::getIsset('data'))
 				$mj->updateAccountSettings();
 				$mj->activateAllEmailMailjet();
 			}
-		/*} catch (Exception $e) {
-			mail("astoyanov@mailjet.com", "", print_r($e, true));
-		}*/
 	}
 
 	if (isset($data['next_step_url']) && $data['next_step_url'] == 'reseller/signup/welcome')
@@ -97,8 +93,6 @@ if (Tools::getIsset('data'))
 				'continue_address'	=> $data['next_step_url'],
 			);
 	}
-
-	/* mail("astoyanov@mailjet.com", "", print_r($_POST, true).print_r($response, true).$internalToken); */
 
 	echo Tools::jsonEncode($response);
 }
