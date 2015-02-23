@@ -65,17 +65,37 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 		if (count($allUsers) === 0)
 			throw new HooksSynchronizationException('You don\'t have any users in the database.');
 
-		$contacts = array();
- 
-            
-		foreach ($allUsers as $user) {
-            $contacts[] = $user['email'];
+        $segmentationObject = new Segmentation();
+        $contstToAddCsv = array();
+        foreach ($allUsers as $userInfo) {
+            $contstToAddCsv[0]['email'] = $userInfo['email'];
+            $contstToAddCsv[0][$segmentationObject->ll(48)] = $userInfo['firstname'];
+            $contstToAddCsv[0][$segmentationObject->ll(49)] = $userInfo['lastname'];
+        }
+        
+        /*
+        * Sets related contact meta data like firstname, lastname, etc...
+        */
+        $this->_getApiOverlay()->setContactMetaData(
+            array(
+                array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'), 
+                array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
+            )
+        );
+
+        $file = new SplFileObject('contacts.csv', 'w');
+        $headers = array("email","firstname","lastname");
+        $file->fputcsv($headers);
+        foreach ($contacstToAdd as $contact) {
+            $file->fputcsv($contact);
         }
 
-		$stringContacts = implode(' ', $contacts);
+        $contstToAddCsvString = file_get_contents('contacts.csv');
+        $file = null;
+        unlink('contacts.csv');
 
 		$apiResponse = $apiOverlay->createContacts(
-			$stringContacts, $newlyCreatedListId
+			$contstToAddCsvString, $newlyCreatedListId
 		);
 
 		if (!isset($apiResponse->ID))
@@ -85,25 +105,6 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 			
 			throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
 		}
-        
-        /*
-        * Updates contact properties like First Name and Last Name
-        */
-        $segmentationObject = new Segmentation();
-        $allContacts = array();
-        foreach ($allUsers as $userInfo) {
-            $allContacts[0]['email'] = $userInfo['email'];
-            $allContacts[0][$segmentationObject->ll(48)] = $userInfo['firstname'];
-            $allContacts[0][$segmentationObject->ll(49)] = $userInfo['lastname'];
-        }
-        
-        if(isset($allContacts) && is_array($allContacts)) {
-            
-            $resUpdateContactData = $this->_getApiOverlay()->updateContactData($contacts, $allContacts);
-        
-            if ($resUpdateContactData == false)
-                throw new HooksSynchronizationException('Create contact data problem');
-        }
 
 		$batchJobResponse = $apiOverlay->batchJobContacts(
 			$newlyCreatedListId, $apiResponse->ID
