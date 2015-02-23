@@ -181,7 +181,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                     $file->fputcsv($contact);
                 }
 
-                $string_contacts = file_get_contents('contacts.csv');
+                $string_contacts = Tools::file_get_contents('contacts.csv');
                 $file = null;
                 unlink('contacts.csv');
 
@@ -247,6 +247,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		}
         
 		$prestashopContacts = array();
+        $contactsToCsv = array();
 		foreach ($contacts as $contact) {
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
@@ -293,7 +294,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                     $file->fputcsv($contact);
                 }
 
-                $contstToAddCsv = file_get_contents('contacts.csv');
+                $contstToAddCsv = Tools::file_get_contents('contacts.csv');
                 $file = null;
                 unlink('contacts.csv');
                 

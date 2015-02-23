@@ -86,11 +86,11 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         $file = new SplFileObject('contacts.csv', 'w');
         $headers = array("email","firstname","lastname");
         $file->fputcsv($headers);
-        foreach ($contacstToAdd as $contact) {
+        foreach ($contstToAddCsv as $contact) {
             $file->fputcsv($contact);
         }
 
-        $contstToAddCsvString = file_get_contents('contacts.csv');
+        $contstToAddCsvString = Tools::file_get_contents('contacts.csv');
         $file = null;
         unlink('contacts.csv');
 
