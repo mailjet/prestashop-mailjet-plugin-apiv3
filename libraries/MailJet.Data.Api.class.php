@@ -387,7 +387,7 @@ class mailjetdata
     public function getRawFile($File)
     {
         if (!is_null($File) && ($File = realpath($File)) !== FALSE)
-            return (file_get_contents($File));
+            return (Tools::file_get_contents($File));
             //return (curl_file_create($File));
             //$curl_file = new CURLFile($File);
             //return (array('data' => '@'.$File));
