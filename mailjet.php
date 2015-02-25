@@ -28,26 +28,9 @@
 if (!defined('_PS_VERSION_'))
 	exit;
 
-/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
-
-include_once(_PS_MODULE_DIR_.'mailjet/classes/segmentation.php');
-
+include_once _PS_MODULE_DIR_.'mailjet/classes/autoload.php';
 include_once(_PS_SWIFT_DIR_.'Swift.php');
 include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
-/* include_once(_PS_SWIFT_DIR_.'Swift/Connection/NativeMail.php'); */
-/* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
-
-
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
-
 include_once(_PS_MODULE_DIR_.'mailjet/ModuleTabRedirect.php');
 
 class Mailjet extends Module
@@ -162,8 +145,6 @@ class Mailjet extends Module
 			$this->context->shop = new Shop();
 		}
 
-		//var_dump($this->account); die;
-
 		if (!isset($this->context->shop->domain)) $this->context->shop->domain = Configuration::get('PS_SHOP_DOMAIN');
 	}
 
@@ -172,10 +153,8 @@ class Mailjet extends Module
 	*/
 	public function install()
 	{
-		//$this->account = array(); // **
 		$this->account['TOKEN'] = md5(rand());
 		$this->updateAccountSettings();
-		/* $segmentation = new Segmentation(); */
 
 		// Install SQL
 		$sql = array();
@@ -210,7 +189,6 @@ class Mailjet extends Module
 			&& $this->registerHook('header')
 			&& $this->registerHook('newOrder')
 			&& $this->registerHook('createAccount')
-			/* && $this->registerHook('newOrder') // SEGMENTATION ** ** */
 			&& $this->registerHook('updateQuantity')
 			&& $this->registerHook('cart')
 			&& $this->registerHook('authentication')

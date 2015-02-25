@@ -26,10 +26,6 @@
 
 include_once(realpath(dirname(__FILE__).'/../../').'/config/config.inc.php');
 
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/Events.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
 require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 

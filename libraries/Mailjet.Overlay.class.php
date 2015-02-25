@@ -2492,26 +2492,12 @@ class Mailjet_ApiOverlay
      */
     public function createContacts($contacts, $list_id, $force = null)
     {
-        $this->_api->resetRequest();        
+        $this->_api->resetRequest();
         $this->_api->data('contactslist', $list_id, 'CSVData', 'text/plain', $contacts, 'POST', null);
-        //$call_data = $this->mailjetdata->DATA('POST', 'ContactsList', $this->list_id, 'CSVData', 'text/csv', NULL, $contacts, get_app_id());
-  
         $responesProfile = $this->_api->getResponse();
-        
         return json_decode($responesProfile);
-        
-        if (!is_null($force))
-            $params['force'] = $force;
-
-        $response = $this->_api->listsAddManyContacts($params);
-        if ($response !== FALSE)
-            return ($response);
-        else
-            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
-    
-    
-    
+
     /**
      * setContactMetaData()
      * First checks if certain contact meta data field is already created, 
@@ -2672,7 +2658,6 @@ class Mailjet_ApiOverlay
     
     public function batchJobContacts($listID, $dataID, $status = 'addforce')
     {
-
     	$paramsProfile = array(
     			'method' => 'JSON',  // JSON
     			'JobType' => 'Contact list import csv',
@@ -2683,14 +2668,12 @@ class Mailjet_ApiOverlay
     			'APIKeyALT'	=> $this->_api->getAPIKey()
     	);
     	
-    	
     	$this->_api->resetRequest();
     	$this->_api->batchjob($paramsProfile);
     	
     	$responesProfile = $this->_api->getResponse();
     	 
     	if ($responesProfile->Count > 0) {
-    		 
     		return $responesProfile->Data;
     	}
     	 
@@ -2736,42 +2719,20 @@ class Mailjet_ApiOverlay
     	if (!empty($this->_contactLists)) {
     		return $this->_contactLists;
     	}
-    	
-    	$paramsProfile = array(
-    		'method'	 	=> 'GET',
-    		'limit'			=> 0
-    	);
-    	 
+
     	$this->_api->resetRequest();
-    	$this->_api->contactslist($paramsProfile);
-    	 
+    	$this->_api->contactslist(array(
+            'method'	 	=> 'GET',
+            'limit'			=> 0
+        ));
+
     	$responesProfile = $this->_api->getResponse();
-    	
-    	if ($responesProfile->Count > 0) {
-    		$this->_contactLists = $responesProfile->Data;
+        $this->_contactLists = $responesProfile->Data;
+        if ($responesProfile->Count > 0) {
     		return $responesProfile->Data;
     	}
-    	
-    	return false;
-    	
-    	
-        $params = array(
-            'method'	=> 'GET'
-        );
-        if (!is_null($start))
-            $params['start'] = $start;
-        if (!is_null($limit))
-            $params['limit'] = $limit;
-        if (!is_null($orderby))
-            $params['order_by'] = $orderby;
-        if (!is_null($cache))
-            $params['cache'] = $cache;
 
-        $response = $this->_api->listsAll($params);
-        if ($response !== FALSE)
-            return ($response);
-        else
-            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+    	return false;
     }
 
     /**
