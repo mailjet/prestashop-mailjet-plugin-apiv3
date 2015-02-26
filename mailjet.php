@@ -32,6 +32,7 @@ include_once _PS_MODULE_DIR_.'mailjet/classes/autoload.php';
 include_once(_PS_SWIFT_DIR_.'Swift.php');
 include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
 include_once(_PS_MODULE_DIR_.'mailjet/ModuleTabRedirect.php');
+ini_set('memory_limit', '1024M');
 
 class Mailjet extends Module
 {
