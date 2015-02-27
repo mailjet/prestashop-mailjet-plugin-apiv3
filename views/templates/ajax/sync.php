@@ -46,10 +46,10 @@ if (Tools::getValue('action') == 'getQuery')
 
 	$res_contacts = Db::getInstance()->executeS($obj->getQuery($_POST, true, false));
 
-	$api = MailjetTemplate::getApi();
+	$api = MailJetTemplate::getApi();
 
 	$synchronization = new HooksSynchronizationSegment(
-		MailjetTemplate::getApi()
+        MailJetTemplate::getApi()
 	);
 
 	$response = $synchronization->sychronize($res_contacts, Tools::getValue('idfilter'), Tools::getValue('name'));

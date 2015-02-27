@@ -1000,7 +1000,7 @@ class Segmentation
 
 			/* try { */
 				$segmentSynchronization = new HooksSynchronizationSegment(
-						MailjetTemplate::getApi()
+                    MailJetTemplate::getApi()
 				);
 				$mailjetFiterid = $this->_getMailjetContactListId($id_filter);
 				$segmentSynchronization->updateName($mailjetFiterid, $id_filter, pSQL($post['name']));
@@ -1056,7 +1056,7 @@ class Segmentation
 		if ($deleteFromDb)
 		{
 			/* try { */
-				$segmentSynchronization = new HooksSynchronizationSegment( MailjetTemplate::getApi() );
+				$segmentSynchronization = new HooksSynchronizationSegment( MailJetTemplate::getApi() );
 				$mailjetListId = $this->_getMailjetContactListId($id);
 
 				if ($mailjetListId)
@@ -1386,7 +1386,7 @@ class Segmentation
 		if (array_key_exists($filterId, $this->_contactListsMap))
 			return $this->_contactListsMap[$filterId];
 
-		$api = MailjetTemplate::getApi();
+		$api = MailJetTemplate::getApi();
 			$lists = $api->getContactsLists();
 
 		$id_list_contact = 0;
