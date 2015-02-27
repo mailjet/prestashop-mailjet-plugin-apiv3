@@ -23,9 +23,6 @@
  * International Registered Trademark & Property of PrestaShop SA
 *}
 
-<link rel="stylesheet" type="text/css" href="{$mj_PS_JS_DIR_|default:'/js/'}jquery/datepicker/datepicker.css" />
-<link rel="stylesheet" type="text/css" href="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/css/style.css" />
-<link rel="stylesheet" type="text/css" href="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/css/bundlejs_prestashop.css" />
 <script type="text/javascript">
 	var tokenV = "{$mj_token|default:'0'}";
 	var ajaxFile =  "{$mj_ajaxFile|default:''}";
@@ -48,10 +45,6 @@
 	{/foreach}
 </script>
 {$mj_datepickerPersonnalized|default:''}
-<script type="text/javascript" src="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/js/fonction.js"></script>
-<script type="text/javascript" src="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/js/main.js"></script>
-<script type="text/javascript" src="{$mj_MODULE_DIR_|default:'/modules/'}mailjet/js/bundlejs_prestashop.js"></script>
-
 {$MJ_templates.SEGMENTATION|default:''}
 
 <div class="center_page">

@@ -46,13 +46,27 @@ class Segmentation
 		$this->module_key = '986fb62d4efe6fb00788ecaefce96a1f';
 		$this->local_path = _PS_MODULE_DIR_.'mailjet';
 
+        $this->_addIncludes();
+        
 		$this->initCompatibility();
 
 		$this->displayName = $this->l('Segment Module');
 		$this->description = $this->l('Module for Customer Segmentation');
 		$this->page = 10;
 	}
+ 
+    private function _addIncludes()
+    {
+        Context::getContext()->controller->addCss($this->local_path.'/css/style.css');
+        Context::getContext()->controller->addCss($this->local_path.'/css/bundlejs_prestashop.css');
+        Context::getContext()->controller->addCss($this->local_path.'/css/bo.css');
+        
+        Context::getContext()->controller->addJs($this->local_path.'/js/fonction.js');             
+        Context::getContext()->controller->addJs($this->local_path.'/js/main.js');             
+        Context::getContext()->controller->addJs($this->local_path.'/js/bundlejs_prestashop.js');             
 
+    }
+    
 	public function initCompatibility()
 	{
 		if (strpos(_PS_MODULE_DIR_.'mailjet', $this->name) === false)

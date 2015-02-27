@@ -282,6 +282,11 @@ class Mailjet extends Module
 			$nobug = $value;
 		}
 
+        $this->context->controller->addCSS($this->local_path.'/css/bo.css');
+        $this->context->controller->addJs($this->local_path.'/js/jquery.timer.js');             
+        $this->context->controller->addJs($this->local_path.'/js/bo.js');             
+        $this->context->controller->addJs($this->local_path.'/js/events.js');    
+        
 		$this->context->smarty->assign(
 				array(
 						'MJ_base_dir' => $this->module_access['uri'],

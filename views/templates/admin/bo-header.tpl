@@ -22,9 +22,6 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}
-
-<link href="{$MJ_base_dir|default:''}css/bo.css" rel="stylesheet" type="text/css" media="all" />
-
 <script type="text/javascript">
 	var _PS_MJ_MODULE_DIR_ = "{$MJ_base_dir|default:''}";
 	var MJ_TOKEN = "{$MJ_TOKEN|default:''}";
@@ -38,9 +35,3 @@
 		var {$MJ_page_key} = "{$MJ_page_value|default:''}";
 	{/foreach}
 </script>
-
-<script type="text/javascript" src="{$MJ_base_dir|default:''}js/jquery.timer.js"></script>
-<script type="text/javascript" src="{$MJ_base_dir|default:''}js/bo.js"></script>
-<script type="text/javascript" src="{$MJ_base_dir|default:''}js/events.js"></script>
-
-
