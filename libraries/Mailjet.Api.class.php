@@ -534,9 +534,6 @@ class Mailjet_Api
     {
     	$this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api'.$this->env.'mailjet.com/v3/'.$this->_version;
     	$this->_request_post = false;
-        $this->_response = null;
-        $this->_curl_handle = null;
-        $this->_debugCallUrl = '';
     }
 
     /**

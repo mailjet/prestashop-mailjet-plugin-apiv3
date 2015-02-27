@@ -386,8 +386,9 @@ table#vsTable .titleImage {
 	float:left;
 	background-image:url(../img/head_logo_tiny.png);
 	width:164px;
-	height:57px;
-    margin-right:4px;
+	height:58px;
+	//margin-right:20px;
+	  margin-right:4px;
 }
 .logo_mailjet_center {
 	background-image:url(../img/head_logo_tiny.png);

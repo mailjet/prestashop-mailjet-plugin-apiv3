@@ -29,7 +29,7 @@
 include_once(dirname(__FILE__).'/../libraries/Mailjet.Api.class.php');
 include_once(dirname(__FILE__).'/../libraries/Mailjet.Overlay.class.php');
 
-class MailJetTemplate
+class MailjetTemplate
 {
 	static private $api = null;
 	static private $data_api = null;
@@ -78,16 +78,16 @@ class MailJetTemplate
 		$obj = new Mailjet();
 		if ($with_overlay)
 		{
-            MailJetTemplate::$api = Mailjet_ApiOverlay::getInstance();
-            MailJetTemplate::$api->setKeys($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
-            MailJetTemplate::$api->secure(false);
+			MailjetTemplate::$api = Mailjet_ApiOverlay::getInstance();
+			MailjetTemplate::$api->setKeys($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+			MailjetTemplate::$api->secure(false);
 		}
 		else
-            MailJetTemplate::$api = new Mailjet_Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+			MailjetTemplate::$api = new Mailjet_Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
 
 		unset($obj);
 
-		return MailJetTemplate::$api;
+		return MailjetTemplate::$api;
 	}
 
 	public static function getDataApi()

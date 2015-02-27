@@ -38,6 +38,10 @@ if (Tools::getValue('idfilter') == 0 && Tools::getValue('action') == 'getQuery')
 	die('You have to save the list first.');
 
 include_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
+/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
 
 if (Tools::getValue('action') == 'getQuery')
 {
@@ -46,10 +50,10 @@ if (Tools::getValue('action') == 'getQuery')
 
 	$res_contacts = Db::getInstance()->executeS($obj->getQuery($_POST, true, false));
 
-	$api = MailJetTemplate::getApi();
+	$api = MailjetTemplate::getApi();
 
 	$synchronization = new HooksSynchronizationSegment(
-        MailJetTemplate::getApi()
+		MailjetTemplate::getApi()
 	);
 
 	$response = $synchronization->sychronize($res_contacts, Tools::getValue('idfilter'), Tools::getValue('name'));

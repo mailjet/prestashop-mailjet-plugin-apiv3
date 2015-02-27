@@ -41,6 +41,8 @@ if (Tools::getIsset('emptyfile'))
 }
 
 $post = trim(Tools::file_get_contents('php://input'));
+/* mail("guillaume@dream-me-up.fr", "callback ajax mailjet", $post.print_r($_POST, true).print_r($_GET, true)); */
+/* die(); */
 
 require_once(_PS_ROOT_DIR_.'/config/config.inc.php');
 

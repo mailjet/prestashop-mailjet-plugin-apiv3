@@ -28,11 +28,27 @@
 if (!defined('_PS_VERSION_'))
 	exit;
 
-include_once _PS_MODULE_DIR_.'mailjet/classes/autoload.php';
+/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
+
+include_once(_PS_MODULE_DIR_.'mailjet/classes/segmentation.php');
+
 include_once(_PS_SWIFT_DIR_.'Swift.php');
 include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
+/* include_once(_PS_SWIFT_DIR_.'Swift/Connection/NativeMail.php'); */
+/* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
+
+
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
+
 include_once(_PS_MODULE_DIR_.'mailjet/ModuleTabRedirect.php');
-ini_set('memory_limit', '1024M');
 
 class Mailjet extends Module
 {
@@ -146,6 +162,8 @@ class Mailjet extends Module
 			$this->context->shop = new Shop();
 		}
 
+		//var_dump($this->account); die;
+
 		if (!isset($this->context->shop->domain)) $this->context->shop->domain = Configuration::get('PS_SHOP_DOMAIN');
 	}
 
@@ -154,8 +172,10 @@ class Mailjet extends Module
 	*/
 	public function install()
 	{
+		//$this->account = array(); // **
 		$this->account['TOKEN'] = md5(rand());
 		$this->updateAccountSettings();
+		/* $segmentation = new Segmentation(); */
 
 		// Install SQL
 		$sql = array();
@@ -190,6 +210,7 @@ class Mailjet extends Module
 			&& $this->registerHook('header')
 			&& $this->registerHook('newOrder')
 			&& $this->registerHook('createAccount')
+			/* && $this->registerHook('newOrder') // SEGMENTATION ** ** */
 			&& $this->registerHook('updateQuantity')
 			&& $this->registerHook('cart')
 			&& $this->registerHook('authentication')
@@ -335,7 +356,7 @@ class Mailjet extends Module
 	{
 		$customer = $params['return'];
 
-		$initialSynchronization = new HooksSynchronizationSingleUser( MailJetTemplate::getApi() );
+		$initialSynchronization = new HooksSynchronizationSingleUser( MailjetTemplate::getApi() );
 
 		$newEmail = $customer->email;
 		$oldEmail = Configuration::get('PREVIOUS_MJ_USER_MAIL');
@@ -374,7 +395,7 @@ class Mailjet extends Module
 		$customer = $params['return'];
 
 		$initialSynchronization = new HooksSynchronizationSingleUser(
-            MailJetTemplate::getApi()
+			MailjetTemplate::getApi()
 		);
 
 		try {
@@ -403,7 +424,7 @@ class Mailjet extends Module
 			return;
 
 		$singleUserSynchronization = new HooksSynchronizationSingleUser(
-            MailJetTemplate::getApi()
+			MailjetTemplate::getApi()
 		);
 
 		try {
@@ -418,7 +439,7 @@ class Mailjet extends Module
 		return;
 
 		/*
-		$api = MailJetTemplate::getApi();
+		$api = MailjetTemplate::getApi();
 		$customer = new Customer((int)Tools::getValue('id_customer'));
 
 		$params = array(
@@ -450,7 +471,7 @@ class Mailjet extends Module
 	public function hookCreateAccount($params)
 	{
 		$initialSynchronization = new HooksSynchronizationSingleUser(
-            MailJetTemplate::getApi()
+			MailjetTemplate::getApi()
 		);
 
 		try {
@@ -470,7 +491,7 @@ class Mailjet extends Module
 	 */
 	public function hookCustomerAccount($params)
 	{
-		$initialSynchronization = new HooksSynchronizationSingleUser( MailJetTemplate::getApi() );
+		$initialSynchronization = new HooksSynchronizationSingleUser( MailjetTemplate::getApi() );
 
 		try {
 			$initialSynchronization->subscribe($params['newCustomer']->email);
@@ -618,7 +639,7 @@ class Mailjet extends Module
 
 			$customer = new Customer($id_customer);
 			$initialSynchronization = new HooksSynchronizationSingleUser(
-                MailJetTemplate::getApi()
+					MailjetTemplate::getApi()
 			);
 			$mailjetListID = $this->_getMailjetContactListId($filterId);
 
@@ -722,7 +743,7 @@ class Mailjet extends Module
 		// Activation root file Creation
 		if (Tools::isSubmit('submitCreateRootFile'))
 		{
-			$api = MailJetTemplate::getApi();
+			$api = MailjetTemplate::getApi();
 			$domains = $api->getTrustDomains();
 			foreach ($domains->domains as $domain)
 			{
@@ -736,7 +757,7 @@ class Mailjet extends Module
 		// Account settings : details
 		if (Tools::isSubmit('MJ_set_account_details'))
 		{
-			$api = MailJetTemplate::getApi();
+			$api = MailjetTemplate::getApi();
 			$api->updateUser(
 					Tools::getValue('MJ_account_address_city'),
 					Tools::getValue('MJ_account_address_country'),
@@ -752,7 +773,7 @@ class Mailjet extends Module
 		// Account settings : tracking
 		if (Tools::isSubmit('MJ_set_account_tracking'))
 		{
-			$api = MailJetTemplate::getApi();
+			$api = MailjetTemplate::getApi();
 			if (Tools::getValue('MJ_account_tracking_clicks') == '1') $tracking_clicks = true;
 			else $tracking_clicks = false;
 			if (Tools::getValue('MJ_account_tracking_openers') == '1') $tracking_openers = true;
@@ -763,7 +784,7 @@ class Mailjet extends Module
 		// Account settings : senders
 		if (Tools::isSubmit('MJ_set_account_senders'))
 		{
-			$api = MailJetTemplate::getApi();
+			$api = MailjetTemplate::getApi();
 			$address = Tools::getValue('MJ_account_senders_new');
 
 			$api->createSender($address);
@@ -820,7 +841,7 @@ class Mailjet extends Module
 		if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0)
 			$this->initilSynchronize();
 
-		$this->mj_template = new MailJetTemplate();
+		$this->mj_template = new MailjetTemplate();
 		$this->page_name = $this->mj_pages->getCurrentPageName();
 		$this->postProcess();
 
@@ -953,7 +974,7 @@ class Mailjet extends Module
 
 	public function displayAccount()
 	{
-		$api = MailJetTemplate::getApi();
+		$api = MailjetTemplate::getApi();
 
 		// Traitements
 		//$tracking = $api->getTracking();
@@ -1019,7 +1040,7 @@ class Mailjet extends Module
 
 	public function displayROI()
 	{
-		$api = MailJetTemplate::getApi(false);
+		$api = MailjetTemplate::getApi(false);
 
 		// Traitements
 		$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign ORDER BY date_add DESC';
@@ -1222,7 +1243,7 @@ class Mailjet extends Module
 			//$api = new MailjetAPI();
 			//$api->apiKey = $this->account['API_KEY'];
 			//$api->secretKey = $this->account['SECRET_KEY'];
-			$api = MailJetTemplate::getApi(false);
+			$api = MailjetTemplate::getApi(false);
 
 			$params = array(
 				'AllowedAccess' => 'campaigns,contacts,stats,pricing,account,reports',
@@ -1317,7 +1338,7 @@ class Mailjet extends Module
 			return false;
 
 		$initialSynchronization = new HooksSynchronizationInitial(
-            MailJetTemplate::getApi()
+				MailjetTemplate::getApi()
 		);
 
 		try {

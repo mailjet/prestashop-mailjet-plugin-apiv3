@@ -38,7 +38,7 @@ if (Tools::getValue('token') != $token_ok)
 
 include_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
-$obj = new Segmentation();
+$obj = new segmentation();
 
 if (Tools::getValue('action') == 'getSource')
 	die($obj->getSourceSelect(Tools::getValue('baseID'), Tools::getValue('ID')));

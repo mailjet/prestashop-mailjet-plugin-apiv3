@@ -24,9 +24,13 @@
  * International Registered Trademark & Property of PrestaShop SA
 */
 
-include_once _PS_MODULE_DIR_.'mailjet/classes/autoload.php';
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
 include_once(_PS_MODULE_DIR_.'mailjet/libraries/Mailjet.Overlay.class.php');
 include_once(_PS_MODULE_DIR_.'mailjet/libraries/Mailjet.Api.class.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
 
 class Segmentation
 {
@@ -418,11 +422,11 @@ class Segmentation
 					case '12':
 						$sub_joins[] = 'LEFT JOIN '._DB_PREFIX_.'orders o'.$i.' ON o'.$i.'.id_customer = c'.$i.'.id_customer';
 						if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) BETWEEN UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00") AND UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						elseif (Tools::strlen($val1) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) >= UNIX_TIMESTAMP("'.pSQL($val1).' 00:00:00")';
 						elseif (Tools::strlen($val2) > 0)
-							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.newsletter_date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
+							$sub_where = 'UNIX_TIMESTAMP(c'.$i.'.date_add) <= UNIX_TIMESTAMP("'.pSQL($val2).' 23:59:59")';
 						else
 							$this->displayRuleError($i + 1, $this->trad[82]);
 						$sub_groupby = 'c'.$i.'.id_customer AND o'.$i.'.id_order, c'.$i.'.id_customer';
@@ -1014,7 +1018,7 @@ class Segmentation
 
 			/* try { */
 				$segmentSynchronization = new HooksSynchronizationSegment(
-                    MailJetTemplate::getApi()
+						MailjetTemplate::getApi()
 				);
 				$mailjetFiterid = $this->_getMailjetContactListId($id_filter);
 				$segmentSynchronization->updateName($mailjetFiterid, $id_filter, pSQL($post['name']));
@@ -1070,7 +1074,7 @@ class Segmentation
 		if ($deleteFromDb)
 		{
 			/* try { */
-				$segmentSynchronization = new HooksSynchronizationSegment( MailJetTemplate::getApi() );
+				$segmentSynchronization = new HooksSynchronizationSegment( MailjetTemplate::getApi() );
 				$mailjetListId = $this->_getMailjetContactListId($id);
 
 				if ($mailjetListId)
@@ -1400,7 +1404,7 @@ class Segmentation
 		if (array_key_exists($filterId, $this->_contactListsMap))
 			return $this->_contactListsMap[$filterId];
 
-		$api = MailJetTemplate::getApi();
+		$api = MailjetTemplate::getApi();
 			$lists = $api->getContactsLists();
 
 		$id_list_contact = 0;

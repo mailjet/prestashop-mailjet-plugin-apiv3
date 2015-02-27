@@ -76,7 +76,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
             array('Datatype' => 'str', 'Name' => $segmentationObject->ll(49), 'NameSpace' => 'static')
         ));
 
-        $csvStr = '"email","'.$segmentationObject->ll(48).'","'.$segmentationObject->ll(49)."\"\n";
+        $csvStr = 'email,'.$segmentationObject->ll(48).','.$segmentationObject->ll(49)."\n";
         foreach ($allUsers as $contact) {
             $csvStr .= implode(',',array($contact['email'],$contact['firstname'],$contact['lastname']))."\n";
         }
