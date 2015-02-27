@@ -22,113 +22,94 @@
  * @copyright 2007-2015 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
 /**
- * 
+ *
  * @author atanas
  */
 class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbstract
 {
-	/**
-	 * 
-	 * @throws Exception
-	 * @return int
-	 */
-	public function synchronize()
-	{
-		if ($masterListId = $this->_getAlreadyCteatedMasterListId())
-		{
-			$segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
-			$segmentSynch->deleteList($masterListId);
-		}
+    /**
+     *
+     * @throws Exception
+     * @return int
+     */
+    public function synchronize()
+    {
+        if ($masterListId = $this->_getAlreadyCteatedMasterListId())
+        {
+            $segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
+            $segmentSynch->deleteList($masterListId);
+        }
 
-		$apiOverlay = $this->_getApiOverlay();
+        $apiOverlay = $this->_getApiOverlay();
 
-		$params = array(
-			'method' 	=> 'JSON',
-			'Name' 		=> self::LIST_NAME
-		);
+        $params = array(
+            'method' 	=> 'JSON',
+            'Name' 		=> self::LIST_NAME
+        );
 
-		$newMailjetList = $apiOverlay->createContactsListP($params);
+        $newMailjetList = $apiOverlay->createContactsListP($params);
 
-		if (!$newMailjetList || !isset($newMailjetList->ID))
-			throw new HooksSynchronizationException('There is a problem with the list\'s creation.');
+        if (!$newMailjetList || !isset($newMailjetList->ID))
+            throw new HooksSynchronizationException('There is a problem with the list\'s creation.');
 
-		$newlyCreatedListId = $newMailjetList->ID;
+        $newlyCreatedListId = $newMailjetList->ID;
 
-		if (!is_numeric($newlyCreatedListId))
-			throw new HooksSynchronizationException('The API response is not correct.');
+        if (!is_numeric($newlyCreatedListId)) {
+            throw new HooksSynchronizationException('The API response is not correct.');
+        }
 
-		$allUsers = $this->_getAllActiveCustomers();
+        $allUsers = $this->_getAllActiveCustomers();
 
-		if (count($allUsers) === 0)
-			throw new HooksSynchronizationException('You don\'t have any users in the database.');
+        if (count($allUsers) === 0) {
+            throw new HooksSynchronizationException('You don\'t have any users in the database.');
+        }
 
         $segmentationObject = new Segmentation();
-        $contstToAddCsv = array();
-        foreach ($allUsers as $userInfo) {
-            $contstToAddCsv[0]['email'] = $userInfo['email'];
-            $contstToAddCsv[0][$segmentationObject->ll(48)] = $userInfo['firstname'];
-            $contstToAddCsv[0][$segmentationObject->ll(49)] = $userInfo['lastname'];
-        }
-        
         /*
         * Sets related contact meta data like firstname, lastname, etc...
         */
-        $this->_getApiOverlay()->setContactMetaData(
-            array(
-                array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'), 
-                array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
-            )
-        );
+        $this->_getApiOverlay()->setContactMetaData(array(
+            array('Datatype' => 'str', 'Name' => $segmentationObject->ll(48), 'NameSpace' => 'static'),
+            array('Datatype' => 'str', 'Name' => $segmentationObject->ll(49), 'NameSpace' => 'static')
+        ));
 
-        $file = new SplFileObject('contacts.csv', 'w');
-        $headers = array("email","firstname","lastname");
-        $file->fputcsv($headers);
-        foreach ($contstToAddCsv as $contact) {
-            $file->fputcsv($contact);
+        $csvStr = '"'.implode('","',array('email',$segmentationObject->ll(48),$segmentationObject->ll(49)))."\"\n";
+        foreach ($allUsers as $contact) {
+            $csvStr .= '"'.implode('","',array($contact['email'],$contact['firstname'],$contact['lastname']))."\"\n";
+        }
+        $apiResponse = $apiOverlay->createContacts($csvStr, $newlyCreatedListId);
+
+        if (!isset($apiResponse->ID)) {
+            $segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
+            $segmentSynch->deleteList($newlyCreatedListId);
+            throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
         }
 
-        $contstToAddCsvString = Tools::file_get_contents('contacts.csv');
-        $file = null;
-        unlink('contacts.csv');
+        $batchJobResponse = $apiOverlay->batchJobContacts($newlyCreatedListId, $apiResponse->ID);
 
-		$apiResponse = $apiOverlay->createContacts(
-			$contstToAddCsvString, $newlyCreatedListId
-		);
+        if ($batchJobResponse == false) {
+            throw new HooksSynchronizationException('Batchjob problem');
+        }
 
-		if (!isset($apiResponse->ID))
-		{
-			$segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
-			$segmentSynch->deleteList($newlyCreatedListId);
-			
-			throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
-		}
+        return $newlyCreatedListId;
+    }
 
-		$batchJobResponse = $apiOverlay->batchJobContacts(
-			$newlyCreatedListId, $apiResponse->ID
-		);
-
-		if ($batchJobResponse == false)
-			throw new HooksSynchronizationException('Batchjob problem');
-
-		return $newlyCreatedListId;
-	}
-
-	/**
-	 * 
-	 * @return array
-	 */
-	private function _getAllActiveCustomers()
-	{
-		return $this->getDbInstance()->executeS('
+    /**
+     *
+     * @return array
+     */
+    private function _getAllActiveCustomers()
+    {
+        return $this->getDbInstance()->executeS('
 			SELECT * 
 			FROM '._DB_PREFIX_.'customer 
 			WHERE active = 1 
 			AND deleted = 0
 		');
-	}
+    }
 
 }
 
