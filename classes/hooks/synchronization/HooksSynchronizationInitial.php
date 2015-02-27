@@ -57,61 +57,43 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 
 		$newlyCreatedListId = $newMailjetList->ID;
 
-		if (!is_numeric($newlyCreatedListId))
-			throw new HooksSynchronizationException('The API response is not correct.');
+		if (!is_numeric($newlyCreatedListId)) {
+            throw new HooksSynchronizationException('The API response is not correct.');
+        }
 
 		$allUsers = $this->_getAllActiveCustomers();
 
-		if (count($allUsers) === 0)
-			throw new HooksSynchronizationException('You don\'t have any users in the database.');
+		if (count($allUsers) === 0) {
+            throw new HooksSynchronizationException('You don\'t have any users in the database.');
+        }
 
         $segmentationObject = new Segmentation();
-        $contstToAddCsv = array();
-        foreach ($allUsers as $userInfo) {
-            $contstToAddCsv[0]['email'] = $userInfo['email'];
-            $contstToAddCsv[0][$segmentationObject->ll(48)] = $userInfo['firstname'];
-            $contstToAddCsv[0][$segmentationObject->ll(49)] = $userInfo['lastname'];
-        }
-        
         /*
         * Sets related contact meta data like firstname, lastname, etc...
         */
-        $this->_getApiOverlay()->setContactMetaData(
-            array(
-                array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'), 
-                array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
-            )
-        );
+        $this->_getApiOverlay()->setContactMetaData(array(
+            array('Datatype' => 'str', 'Name' => $segmentationObject->ll(48), 'NameSpace' => 'static'),
+            array('Datatype' => 'str', 'Name' => $segmentationObject->ll(49), 'NameSpace' => 'static')
+        ));
 
-        $file = new SplFileObject('contacts.csv', 'w');
-        $headers = array("email","firstname","lastname");
-        $file->fputcsv($headers);
-        foreach ($contstToAddCsv as $contact) {
-            $file->fputcsv($contact);
+        $csvStr = '"email","'.$segmentationObject->ll(48).'","'.$segmentationObject->ll(49)."\"\n";
+        foreach ($allUsers as $contact) {
+            $csvStr .= implode(',',$contact)."\n";
         }
 
-        $contstToAddCsvString = Tools::file_get_contents('contacts.csv');
-        $file = null;
-        unlink('contacts.csv');
+		$apiResponse = $apiOverlay->createContacts($csvStr, $newlyCreatedListId);
 
-		$apiResponse = $apiOverlay->createContacts(
-			$contstToAddCsvString, $newlyCreatedListId
-		);
-
-		if (!isset($apiResponse->ID))
-		{
+		if (!isset($apiResponse->ID)) {
 			$segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
 			$segmentSynch->deleteList($newlyCreatedListId);
-			
 			throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
 		}
 
-		$batchJobResponse = $apiOverlay->batchJobContacts(
-			$newlyCreatedListId, $apiResponse->ID
-		);
+		$batchJobResponse = $apiOverlay->batchJobContacts($newlyCreatedListId, $apiResponse->ID);
 
-		if ($batchJobResponse == false)
-			throw new HooksSynchronizationException('Batchjob problem');
+		if ($batchJobResponse == false) {
+            throw new HooksSynchronizationException('Batchjob problem');
+        }
 
 		return $newlyCreatedListId;
 	}
