@@ -78,7 +78,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 
         $csvStr = '"email","'.$segmentationObject->ll(48).'","'.$segmentationObject->ll(49)."\"\n";
         foreach ($allUsers as $contact) {
-            $csvStr .= implode(',',$contact)."\n";
+            $csvStr .= implode(',',array($contact['email'],$contact['firstname'],$contact['lastname']))."\n";
         }
 
 		$apiResponse = $apiOverlay->createContacts($csvStr, $newlyCreatedListId);
