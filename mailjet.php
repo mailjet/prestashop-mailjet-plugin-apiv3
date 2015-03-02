@@ -35,7 +35,7 @@ include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
 include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
 include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
 
-include_once(_PS_MODULE_DIR_.'mailjet/classes/segmentation.php');
+include_once(_PS_MODULE_DIR_.'mailjet/classes/Segmentation.php');
 
 include_once(_PS_SWIFT_DIR_.'Swift.php');
 include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
