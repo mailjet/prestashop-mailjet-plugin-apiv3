@@ -1106,7 +1106,7 @@ class Mailjet extends Module
 		$languages = Language::getLanguages();
 		$sel_lang = $this->context->language->id;
 
-		$cron = 'http://'.$this->context->shop->domain.'/modules/mailjet/mailjet.cron.php?token='.$this->account['TOKEN'];
+        $cron = Tools::getShopDomainSsl(true)._MODULE_DIR_.$this->name.'/mailjet.cron.php?token='.$this->account['TOKEN'];
 
 		$iso = $this->context->language->iso_code;
 
