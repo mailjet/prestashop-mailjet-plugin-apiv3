@@ -78,13 +78,13 @@ if (Tools::getValue('type') == 'baseadd')
 elseif (Tools::getValue('type') == 'sourceadd')
 {
 	Db::getInstance()->Execute('INSERT INTO '._DB_PREFIX_.'sourcecondition(id_basecondition,label, jointable)
-		values ('.pSQL(Tools::getValue('idbase')).',"'.pSQL(Tools::getValue('label')).'", "'.pSQL(Tools::getValue('jointable')).'")');
+		values ("'.pSQL(Tools::getValue('idbase')).'","'.pSQL(Tools::getValue('label')).'", "'.pSQL(Tools::getValue('jointable')).'")');
 	Tools::redirect('modules/segmentmodule/config.php?type=addtobase&idbase='.(int)Tools::getValue('idbase'));
 }
 elseif (Tools::getValue('type') == 'fieldadd')
 {
 	Db::getInstance()->Execute('INSERT INTO '._DB_PREFIX_.'fieldcondition(id_sourcecondition,label, field)
-		values ('.pSQL(Tools::getValue('idsource')).',"'.pSQL(Tools::getValue('label')).'", "'.pSQL(Tools::getValue('field')).'")');
+		values ("'.pSQL(Tools::getValue('idsource')).'","'.pSQL(Tools::getValue('label')).'", "'.pSQL(Tools::getValue('field')).'")');
 	Tools::redirect('modules/segmentmodule/config.php?type=addtosource&idsource='.(int)Tools::getValue('idsource'));
 }
 elseif (Tools::getValue('type') == 'addtosource')
