@@ -31,5 +31,5 @@
 		{/if}
 	{/if}
 {/if}
-<iframe border="0" id="mj_iframe" width="100%" height="1200px" src="{$MJ_iframes.$MJ_page_name}{if !empty($MJ_TOKEN_USER)}{/if}">
+<iframe border="0" id="mj_iframe" width="100%" height="1200px" src="{$MJ_iframes.$MJ_page_name|escape}{if !empty($MJ_TOKEN_USER)}{/if}">
 </iframe>

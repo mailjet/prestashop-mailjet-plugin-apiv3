@@ -22,5 +22,5 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}<!-- Mailjet : Campaigns -->
-<iframe border="0" class="mj_iframe" width="100%" height="800px" src="{$campaign.url|default:''}"></iframe>
+<iframe border="0" class="mj_iframe" width="100%" height="800px" src="{$campaign.url|escape|default:''}"></iframe>
 <!-- /Mailjet : Campaigns -->

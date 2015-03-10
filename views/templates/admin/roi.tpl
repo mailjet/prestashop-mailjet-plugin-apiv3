@@ -25,19 +25,19 @@
 	<table id="vsTable">
     	<thead>
         	<tr>
-                <th class="title">{$trad_title|default:''}</th>
-                <th class="title">{$trad_sentemails|default:''}</th>
-                <th class="title">{$trad_roiamount|default:''}</th>
-                <th class="title">{$trad_roipercent|default:''}</th>
+                <th class="title">{$trad_title|escape|default:''}</th>
+                <th class="title">{$trad_sentemails|escape|default:''}</th>
+                <th class="title">{$trad_roiamount|escape|default:''}</th>
+                <th class="title">{$trad_roipercent|escape|default:''}</th>
             </tr>
         </thead>
         <tbody>
         	{foreach from=$campaigns item=c}
         	<tr>
-                <td>{$c.title|default:''}</td>
-                <td>{$c.delivered|default:''}</td>
-                <td>{convertPrice price=$c.total_roi|default:''}</td>
-                <td>{$c.perc_roi|default:''}%</td>
+                <td>{$c.title|escape|default:''}</td>
+                <td>{$c.delivered|escape|default:''}</td>
+                <td>{convertPrice price=$c.total_roi|escape|default:''}</td>
+                <td>{$c.perc_roi|escape|default:''}%</td>
             </tr>
             {/foreach}
         </tbody>

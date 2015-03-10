@@ -33,7 +33,7 @@
 				{l s='Some elements canot be set has fixed' mod='mailjet'}
 				<ul>
 					{foreach from=$MJ_events_form_success item=id_mj_events}
-						<li>{$id_mj_events|default:''}</li>
+						<li>{$id_mj_events|escape|default:''}</li>
 					{/foreach}
 				</ul>
 			</div>
@@ -46,7 +46,7 @@
         	&nbsp; {l s='To activate Events, yous must go to your Mailjet account : ' mod='mailjet'} <a href="https://eu.mailjet.com/account/triggers" target="_blank"><u>https://eu.mailjet.com/account/triggers</u></a><br />
             <br />
             <b >
-            {l s='Specify the' mod='mailjet'} <span>Endpoint Url</span> : <input type="text" value="{$url}"/><br />
+            {l s='Specify the' mod='mailjet'} <span>Endpoint Url</span> : <input type="text" value="{$url|escape}"/><br />
             {l s='and click the Events you want to activate' mod='mailjet'}...<br />
             </b>
             <br />
@@ -63,7 +63,7 @@
 						<th class="title">&nbsp;</th>
 						<th class="title">ID</th>
 						{foreach from=$MJ_title_list item=title}
-							<th class="title">{$title|default:''}</th>
+							<th class="title">{$title|escape|default:''}</th>
 						{/foreach}
 					</tr>
 				</thead>
@@ -71,10 +71,10 @@
 					{foreach from=$MJ_events_list item=fields}
 						<tr class="cat">
 							<td>
-								<input type="checkbox" value="{$fields.id_mj_events|default:''}" name="events[]" />
+								<input type="checkbox" value="{$fields.id_mj_events|escape|default:''}" name="events[]" />
 							</td>
 							{foreach from=$fields item=field}
-								<td>{$field|default:''}</td>
+								<td>{$field|escape|default:''}</td>
 							{/foreach}
 						</tr>
 					{/foreach}

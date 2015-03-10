@@ -26,17 +26,17 @@
 {* $tinymce|default:'' *}
 {if $tinymce_new}
 	<script type="text/javascript">
-	var iso = '{$tinymce_iso|default:'en'}';
-	var pathCSS = '{$tinymce_pathCSS|default:''}';
-	var ad = '{$tinymce_ad|default:''}';
+	var iso = '{$tinymce_iso|escape|default:'en'}';
+	var pathCSS = '{$tinymce_pathCSS|escape|default:''}';
+	var ad = '{$tinymce_ad|escape|default:''}';
 	</script>
-	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tiny_mce/tiny_mce.js"></script>
-	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tinymce.inc.js"></script>
+	<script type="text/javascript" src="{$tinymce_pathBase|escape|default:'/'}js/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="{$tinymce_pathBase|escape|default:'/'}js/tinymce.inc.js"></script>
 	<script language="javascript" type="text/javascript">
-	var id_language = Number({$tinymce_id_language|default:'en'});
+	var id_language = Number({$tinymce_id_language|escape|default:'en'});
 	</script>
 {else}
-	<script type="text/javascript" src="{$tinymce_pathBase|default:'/'}js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+	<script type="text/javascript" src="{$tinymce_pathBase|escape|default:'/'}js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
 	<script type="text/javascript">
 	tinyMCE.init({
 		mode : "textareas",
@@ -50,8 +50,8 @@
 		theme_advanced_toolbar_align : "left",
 		theme_advanced_statusbar_location : "bottom",
 		theme_advanced_resizing : false,
-		content_css : "{$tinymce_pathBase}themes/{$tinymce_theme|default:'default-bootstrap'}/css/global.css",
-		document_base_url : "{$tinymce_pathBase|default:'/'}",
+		content_css : "{$tinymce_pathBase|escape}themes/{$tinymce_theme|escape|default:'default-bootstrap'}/css/global.css",
+		document_base_url : "{$tinymce_pathBase|escape|default:'/'}",
 		width: "600",
 		height: "auto",
 		font_size_style_values : "8pt, 10pt, 12pt, 14pt, 18pt, 24pt, 36pt",
@@ -62,15 +62,15 @@
 		elements : "nourlconvert",
 		entity_encoding: "raw",
 		convert_urls : false,
-		language : "{$tinymce_iso|default:'en'}"
+		language : "{$tinymce_iso|escape|default:'en'}"
 	});
-	id_language = Number({$tinymce_id_language|default:'en'});
+	id_language = Number({$tinymce_id_language|escape|default:'en'});
 	</script>
 {/if}
 
-<form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
+<form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
-	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />&nbsp; <a href="{$cron}" target="_blank"><b>{$cron|default:''}</b></a></div>
+	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />&nbsp; <a href="{$cron|escape}" target="_blank"><b>{$cron|escape|default:''}</b></a></div>
 	<fieldset class="hint">
 		<legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
         <div>
@@ -97,18 +97,18 @@
 	                	{if $sel==9}{l s='Loyalty points reminder' mod='mailjet'}{/if} : 
 					</label>
 					<div class="mj_radios">
-						<input type="radio" name="MJ_triggers_trigger_{$sel}_active" id="MJ_triggers_trigger_{$sel}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel}_button').show();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp; 
-						<input type="radio" name="MJ_triggers_trigger_{$sel}_active" id="MJ_triggers_trigger_{$sel}_active_0" value=0 {if !$triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel}_button').hide();$('#MJ_triggers_trigger_{$sel}_parameters').hide();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp; 
-						<a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel}_parameters').slideToggle();" id="MJ_triggers_trigger_{$sel}_button" class="button MJ_triggers_trigger_buttons" style="{if !$triggers.trigger.$sel.active}display:none;{/if}" />{l s='parameters' mod='mailjet'}</a> &nbsp; 
+						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').show();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp; 
+						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_0" value=0 {if !$triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').hide();$('#MJ_triggers_trigger_{$sel|escape}_parameters').hide();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp; 
+						<a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_parameters').slideToggle();" id="MJ_triggers_trigger_{$sel|escape}_button" class="button MJ_triggers_trigger_buttons" style="{if !$triggers.trigger.$sel.active}display:none;{/if}" />{l s='parameters' mod='mailjet'}</a> &nbsp; 
                         <br />
 					</div>
 					<span class="clearspan"></span>
-					<div id="MJ_triggers_trigger_{$sel|default:''}_parameters" class="warn mj_triggers_parameters">
+					<div id="MJ_triggers_trigger_{$sel|escape|default:''}_parameters" class="warn mj_triggers_parameters">
 						<b>{l s='Parameters' mod='mailjet'}</b><br />
                         {if $sel!=5 && $sel!=6}
 	                        <label>{l s='Trigger sending after how long ?' mod='mailjet'}</label>
-							<input type="text" name="MJ_triggers_trigger_{$sel|default:''}_period" size=5 value="{$triggers.trigger.$sel.period|default:''}" />
-							<select name="MJ_triggers_trigger_{$sel|default:''}_periodType">
+							<input type="text" name="MJ_triggers_trigger_{$sel|escape|default:''}_period" size=5 value="{$triggers.trigger.$sel.period|escape|default:''}" />
+							<select name="MJ_triggers_trigger_{$sel|escape|default:''}_periodType">
 								<option value=1 {if $triggers.trigger.{$sel}.periodType==1}selected{/if}>{l s='Month' mod='mailjet'}</option>
 								<option value=2 {if $triggers.trigger.{$sel}.periodType==2}selected{/if}>{l s='Days' mod='mailjet'}</option>
 								<option value=3 {if $triggers.trigger.{$sel}.periodType==3}selected{/if}>{l s='Hours' mod='mailjet'}</option>
@@ -117,8 +117,8 @@
                             <br />
 						{else}
 	                        <label>{l s='Reduction amount' mod='mailjet'} :</label>
-							<input type="text" name="MJ_triggers_trigger_{$sel|default:''}_discount" size=5 value="{$triggers.trigger.$sel.discount|default:''}" />
-							<select name="MJ_triggers_trigger_{$sel|default:''}_discountType">
+							<input type="text" name="MJ_triggers_trigger_{$sel|escape|default:''}_discount" size=5 value="{$triggers.trigger.$sel.discount|escape|default:''}" />
+							<select name="MJ_triggers_trigger_{$sel|escape|default:''}_discountType">
 								<option value=1 {if $triggers.trigger.{$sel}.discountType==1}selected{/if}>(%) {l s='Percentage' mod='mailjet'}</option>
 {*								<option value=2 {if $triggers.trigger.{$sel}.discountType==2}selected{/if}>({$sign}) {l s='Amount' mod='mailjet'}</option>*}
 								<option value=2 {if $triggers.trigger.{$sel}.discountType==2}selected{/if}>($,€,£) {l s='Amount' mod='mailjet'}</option>
@@ -131,16 +131,16 @@
                             <b class="b_black">{l s='Message' mod='mailjet'}</b> - {l s='Language select' mod='mailjet'} : &nbsp;
 	                        {foreach $languages as $language}
 	                        	{assign var="id_lang" value=$language.id_lang}
-                            	<a href="javascript:;" onClick="$('.id_lang_close_{$sel}').hide();$('#id_lang_{$sel}_{$id_lang}').show();$('.flags_{$sel}').removeClass('selFlag');$(this).addClass('selFlag');" class="{if $id_lang==$sel_lang}selFlag{/if} flags_{$sel}" title="{$language.name}"><img src="../img/l/{$id_lang}.jpg" alt="{$language.name}" /></a>
+                            	<a href="javascript:;" onClick="$('.id_lang_close_{$sel|escape}').hide();$('#id_lang_{$sel|escape}_{$id_lang|escape}').show();$('.flags_{$sel|escape}').removeClass('selFlag');$(this).addClass('selFlag');" class="{if $id_lang==$sel_lang}selFlag{/if} flags_{$sel}" title="{$language.name}"><img src="../img/l/{$id_lang}.jpg" alt="{$language.name}" /></a>
                             {/foreach}
                             </div>
                             <div class="mj_decalage">
 	                        {foreach $languages as $language}
 	                        	{assign var="id_lang" value=$language.id_lang}
-								<div id="id_lang_{$sel}_{$id_lang}" class="id_lang_close_{$sel}" style="{if $id_lang!=$sel_lang}display:none;{/if}">
-   	 	                    		{l s='Subject' mod='mailjet'} : <input type="text" name="MJ_triggers_trigger_{$sel|default:''}_subject_{$id_lang|default:''}" class="mj_trigger_subjects" value="{$triggers.trigger.$sel.subject.$id_lang|default:''}" /><br />
+								<div id="id_lang_{$sel|escape}_{$id_lang|escape}" class="id_lang_close_{$sel}" style="{if $id_lang!=$sel_lang}display:none;{/if}">
+   	 	                    		{l s='Subject' mod='mailjet'} : <input type="text" name="MJ_triggers_trigger_{$sel|escape|default:''}_subject_{$id_lang|escape|default:''}" class="mj_trigger_subjects" value="{$triggers.trigger.$sel.subject.$id_lang|escape|default:''}" /><br />
                                     <div class="mj_seps"></div>
-									<textarea name="MJ_triggers_trigger_{$sel|default:''}_mail_{$id_lang|default:''}" class="mj_trigger_rtemails" class="rte">{$triggers.trigger.$sel.mail.$id_lang|default:''}</textarea>
+									<textarea name="MJ_triggers_trigger_{$sel|escape|default:''}_mail_{$id_lang|default:''}" class="mj_trigger_rtemails" class="rte">{$triggers.trigger.$sel.mail.$id_lang|escape|default:''}</textarea>
 								</div>
 							{/foreach}
                             </div>

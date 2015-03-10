@@ -26,7 +26,7 @@
 	<div id="login_form">
 		<fieldset>
 			<legend>{l s='You already have an mailjet account' mod='mailjet'}</legend>
-			<form id="MJ_auth_form" action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
+			<form id="MJ_auth_form" action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 				<ul>
 					<li>
 						<label for="MJ_email_address">{l s='Email address' mod='mailjet'}</label>

@@ -24,15 +24,15 @@
 *}
 
 <script type="text/javascript">
-	var tokenV = "{$mj_token|default:'0'}";
-	var ajaxFile =  "{$mj_ajaxFile|default:''}";
-	var ajaxSyncFile =  "{$mj_ajaxSyncFile|default:''}";
-	var ajaxBundle =  "{$mj_ajaxBundle|default:''}";
-	var id_employee = "{$mj_id_employee|default:'0'}";
+	var tokenV = "{$mj_token|escape|default:'0'}";
+	var ajaxFile =  "{$mj_ajaxFile|escape|default:''}";
+	var ajaxSyncFile =  "{$mj_ajaxSyncFile|escape|default:''}";
+	var ajaxBundle =  "{$mj_ajaxBundle|escape|default:''}";
+	var id_employee = "{$mj_id_employee|escape|default:'0'}";
 	var trad = new Array();
-	var datePickerJsFormat = "{$mj_datePickerJsFormat|default:'yy-mm-dd'}";
+	var datePickerJsFormat = "{$mj_datePickerJsFormat|escape|default:'yy-mm-dd'}";
 	{foreach from=$mj_trads key=key item=value}
-		trad[{$key}] = "{$value|default:'?'}";
+		trad[{$key}] = "{$value|escape|default:'?'}";
 	{/foreach}
 	var lblMan = "{$mj_lblMan|default:'Man'}";
 	var lblWoman = "{$mj_lblWoman|default:'Woman'}";
@@ -41,11 +41,11 @@
 	var mj_trad_plus = ['{l s='And' mod='mailjet'}', '{l s='Or' mod='mailjet'}', '{l s='Include' mod='mailjet'}', '{l s='Exclude' mod='mailjet'}'];
 	var mj_base_select = new Array();
 	{foreach from=$mj_base_select item=base_select}
-		mj_base_select[{$base_select.id_basecondition}] = "{$mj_trads[$base_select.label]|default:'?'}";
+		mj_base_select[{$base_select.id_basecondition}] = "{$mj_trads[$base_select.label]|escape|default:'?'}";
 	{/foreach}
 </script>
-{$mj_datepickerPersonnalized|default:''}
-{$MJ_templates.SEGMENTATION|default:''}
+{$mj_datepickerPersonnalized|escape|default:''}
+{$MJ_templates.SEGMENTATION|escape|default:''}
 
 <div class="center_page">
 
@@ -74,14 +74,14 @@
 					<th>{l s='Action' mod='mailjet'}</th>
 				</tr>
 			{foreach from=$mj_filter_list item=filter}
-				<tr class="trSelect" id="list{$filter.id_filter|default:'0'}">
+				<tr class="trSelect" id="list{$filter.id_filter|escape|default:'0'}">
 					<td>{$filter.id_filter|default:'0'}</td>
 					<td><b>{$filter.name|ucfirst}</b></td>
 					<td>{$filter.description|default:''}</td>
-					<td>{if ($filter.assignment_auto)}{if ($filter.replace_customer)}{$mj_trads[97]|default:'Replace'}{else}{$mj_trads[98]|default:'Add'}{/if}{else}--{/if}</td>
-					<td>{if ($filter.assignment_auto)}{$mj_trads[96]|default:'in real time'}{else}--{/if}</td>
+					<td>{if ($filter.assignment_auto)}{if ($filter.replace_customer)}{$mj_trads[97]|escape|default:'Replace'}{else}{$mj_trads[98]|escape|default:'Add'}{/if}{else}--{/if}</td>
+					<td>{if ($filter.assignment_auto)}{$mj_trads[96]|escape|default:'in real time'}{else}--{/if}</td>
 					<td>--</td>
-					<td><a href="javascript:deleteFilter({$filter.id_filter|default:'0'});"><img src="../modules/mailjet/img/delete.png" /></a></td>
+					<td><a href="javascript:deleteFilter({$filter.id_filter|escape|default:'0'});"><img src="../modules/mailjet/img/delete.png" /></a></td>
 				</tr>
 			{/foreach}
 			</table>
@@ -104,8 +104,8 @@
 						</tr>
 					</table>
 					<br />
-					<input type="hidden" value="{$mj_id_employee|default:'0'}" name="id_employee" />
-					<input type="hidden" value="{$mj_token|default:'0'}" name="token" />
+					<input type="hidden" value="{$mj_id_employee|escape|default:'0'}" name="id_employee" />
+					<input type="hidden" value="{$mj_token|escape|default:'0'}" name="token" />
 					<input type="hidden" value="getQuery" name="action" id="action" />
 					<input type="hidden" value="0" name="page" id="page" />
 					<input type="hidden" value="0" name="idfilter" id="idfilter" />
@@ -173,7 +173,7 @@
 							<select id="baseSelect#####" name="baseSelect[]" class="baseSelect fixed">
 								<option value="-1">--SELECT--</option>
 								{foreach from=$mj_base_select item=base}
-									<option value="{$base.id_basecondition|default:'-1'}">{$mj_trads[$base.label]|default:''}</option>
+									<option value="{$base.id_basecondition|escape|default:'-1'}">{$mj_trads[$base.label]|escape|default:''}</option>
 								{/foreach}
 							</select>
 						</td>
@@ -199,7 +199,7 @@
 							<option value="-1">{l s='New' mod='mailjet'}</option>
 							{if $mj_groups}
 								{foreach from=$mj_groups item=group}
-									<option value="{$group.id_group|default:'0'}">{$group.name|default:'?'}</option>
+									<option value="{$group.id_group|escape|default:'0'}">{$group.name|escape|default:'?'}</option>
 								{/foreach}
 							{/if}
 						</select>
