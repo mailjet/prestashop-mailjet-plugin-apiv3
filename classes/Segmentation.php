@@ -158,14 +158,14 @@ class Segmentation
 	public function getSourceSelect($ID, $inputID, $selected = null)
 	{
 		$res = Db::getInstance()->executeS('SELECT id_sourcecondition, label FROM `'._DB_PREFIX_.'mj_sourcecondition` WHERE `id_basecondition` = '.(int)$ID);
-		$html = '<select id="sourceSelect'.$inputID.'" name="sourceSelect[]" class="sourceSelect fixed">';
+		$html = '<select id="sourceSelect'.Tools::safeOutput($inputID).'" name="sourceSelect[]" class="sourceSelect fixed">';
 		$html .= '<option value="-1">--SELECT--</option>';
 		foreach ($res as $r)
 		{
-			$html .= '<option value="'.$r['id_sourcecondition'].'"';
+			$html .= '<option value="'.Tools::safeOutput($r['id_sourcecondition']).'"';
 			if ($selected == $r['id_sourcecondition'])
 				$html .= 'selected=selected';
-			$html .= ' >'.$this->ll($r['label']).'</option>';
+			$html .= ' >'.Tools::safeOutput($this->ll($r['label'])).'</option>';
 		}
 		$html .= '</select>';
 		return $html;
@@ -174,14 +174,14 @@ class Segmentation
 	public function getIndicSelect($ID, $inputID, $selected = null)
 	{
 		$res = Db::getInstance()->ExecuteS('SELECT id_fieldcondition, label FROM `'._DB_PREFIX_.'mj_fieldcondition` WHERE `id_sourcecondition` = '.(int)$ID);
-		$html = '<select name="fieldSelect[]" class="fieldSelect fixed" id="fieldSelect'.$inputID.'">';
+		$html = '<select name="fieldSelect[]" class="fieldSelect fixed" id="fieldSelect'.Tools::safeOutput($inputID).'">';
 		$html .= '<option value="-1">--SELECT--</option>';
 		foreach ($res as $r)
 		{
-			$html .= '<option value="'.$r['id_fieldcondition'].'"';
+			$html .= '<option value="'.Tools::safeOutput($r['id_fieldcondition']).'"';
 			if ($selected == $r['id_fieldcondition'])
 				$html .= 'selected=selected';
-			$html .= ' >'.$this->ll($r['label']).'</option>';
+			$html .= ' >'.Tools::safeOutput($this->ll($r['label'])).'</option>';
 		}
 		$html .= '</select>';
 		return $html;
@@ -965,7 +965,7 @@ class Segmentation
 
 	public function displayRuleError($id, $error) /* alias */
 	{
-		die('<p class="noResult">'.$this->trad[81].' '.$id.' : '.$error.'</p>');
+		die('<p class="noResult">'.Tools::safeOutput($this->trad[81]).' '.Tools::safeOutput($id).' : '.Tools::safeOutput($error).'</p>');
 	}
 
 	public function getName($idfield, $id)

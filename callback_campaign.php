@@ -28,6 +28,7 @@ require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
 	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
+header('Content-Type: application/json');
 
 if (Tools::getIsset('data'))
 	$data = (object)Tools::getValue('data');

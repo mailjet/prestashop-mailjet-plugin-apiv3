@@ -808,25 +808,25 @@ class Mailjet_Api
             if ($this->_response_code == 200) {
                 $this->_debugErrorHtml .= '<table>';
                 $this->_debugErrorHtml .= '<tr class="Success"><th>Success</th><td></td></tr>';
-                $this->_debugErrorHtml .= '<tr><th>Status code</th><td>'.$this->_response_code.'</td></tr>';
+                $this->_debugErrorHtml .= '<tr><th>Status code</th><td>'.Tools::safeOutput($this->_response_code).'</td></tr>';
                 if (isset($this->_response))
                     $this->_debugErrorHtml .= '<tr><th>Response</th><td><pre>'.utf8_decode(print_r($this->_response,1)).'</pre></td></tr>';
                 $this->_debugErrorHtml .= '</table>';
             } elseif ($this->_response_code == 304) {
                 $this->_debugErrorHtml .= '<table>';
                 $this->_debugErrorHtml .= '<tr class="Not-modified"><th>Error</th><td></td></tr>';
-                $this->_debugErrorHtml .= '<tr><th>Error no</th><td>'.$this->_response_code.'</td></tr>';
+                $this->_debugErrorHtml .= '<tr><th>Error no</th><td>'.Tools::safeOutput($this->_response_code).'</td></tr>';
                 $this->_debugErrorHtml .= '<tr><th>Message</th><td>Not Modified</td></tr>';
                 $this->_debugErrorHtml .= '</table>';
             } else {
                 $this->_debugErrorHtml .= '<table>';
                 $this->_debugErrorHtml .= '<tr class="Error"><th>Error</th><td></td></tr>';
-                $this->_debugErrorHtml .= '<tr><th>Error no</th><td>'.$this->_response_code.'</td></tr>';
+                $this->_debugErrorHtml .= '<tr><th>Error no</th><td>'.Tools::safeOutput($this->_response_code).'</td></tr>';
                 if (isset($this->_response)) {
                     if ( is_array($this->_response) OR  is_object($this->_response) ) {
-                        $this->_debugErrorHtml .= '<tr><th>Status</th><td><pre>'.print_r($this->_response,TRUE).'</pre></td></tr>';
+                        $this->_debugErrorHtml .= '<tr><th>Status</th><td><pre>'.Tools::safeOutput(print_r($this->_response,TRUE)).'</pre></td></tr>';
                     } else {
-                        $this->_debugErrorHtml .= '<tr><th>Status</th><td><pre>'.$this->_response.'</pre></td></tr>';
+                        $this->_debugErrorHtml .= '<tr><th>Status</th><td><pre>'.Tools::safeOutput($this->_response).'</pre></td></tr>';
                     }
                 }
                 $this->_debugErrorHtml .= '</table>';
@@ -837,15 +837,15 @@ class Mailjet_Api
 
         $this->_debugErrorHtml .= '<table>';
         $this->_debugErrorHtml .= '<tr class="h"><th>API config</th><td></td></tr>';
-        $this->_debugErrorHtml .= '<tr><th>Protocole</th><td>'.$call_url['scheme'].'</td></tr>';
-        $this->_debugErrorHtml .= '<tr><th>Host</th><td>'.$call_url['host'].'</td></tr>';
-        $this->_debugErrorHtml .= '<tr><th>Version</th><td>'.$this->_version.'</td></tr>';
+        $this->_debugErrorHtml .= '<tr><th>Protocole</th><td>'.Tools::safeOutput($call_url['scheme']).'</td></tr>';
+        $this->_debugErrorHtml .= '<tr><th>Host</th><td>'.Tools::safeOutput($call_url['host']).'</td></tr>';
+        $this->_debugErrorHtml .= '<tr><th>Version</th><td>'.Tools::safeOutput($this->_version).'</td></tr>';
         $this->_debugErrorHtml .= '</table>';
 
         $this->_debugErrorHtml .= '<table>';
         $this->_debugErrorHtml .= '<tr class="h"><th>Call infos</th><td></td></tr>';
-        $this->_debugErrorHtml .= '<tr><th>Method</th><td>'.$this->_debugMethod.'</td></tr>';
-        $this->_debugErrorHtml .= '<tr><th>Request type</th><td>'.$this->_debugRequest.'</td></tr>';
+        $this->_debugErrorHtml .= '<tr><th>Method</th><td>'.Tools::safeOutput($this->_debugMethod).'</td></tr>';
+        $this->_debugErrorHtml .= '<tr><th>Request type</th><td>'.Tools::safeOutput($this->_debugRequest).'</td></tr>';
         $this->_debugErrorHtml .= '<tr><th>Get Arguments</th><td>';
         
         $args = array();
@@ -855,7 +855,7 @@ class Mailjet_Api
         if(sizeof($args)>0){
             foreach ($args as $arg) {
                 $arg = explode("=",$arg);
-                $this->_debugErrorHtml .= ''.$arg[0].' = <span style="color:#ff6e56;">'.$arg[1].'</span><br/>';
+                $this->_debugErrorHtml .= ''.$arg[0].' = <span style="color:#ff6e56;">'.Tools::safeOutput($arg[1]).'</span><br/>';
             }
         }
 
@@ -865,13 +865,13 @@ class Mailjet_Api
             $this->_debugErrorHtml .= '<tr><th>Post Arguments</th><td>';
 
             foreach ($this->_request_post as $k=>$v) {
-                $this->_debugErrorHtml .= $k.' = <span style="color:#ff6e56;">'.$v.'</span><br/>';
+                $this->_debugErrorHtml .= $k.' = <span style="color:#ff6e56;">'.Tools::safeOutput($v).'</span><br/>';
             }
 
             $this->_debugErrorHtml .= '</td></tr>';
         }
 
-        $this->_debugErrorHtml .= '<tr><th>Call url</th><td>'.$this->_debugCallUrl.'</td></tr>';
+        $this->_debugErrorHtml .= '<tr><th>Call url</th><td>'.Tools::safeOutput($this->_debugCallUrl).'</td></tr>';
         $this->_debugErrorHtml .= '</table>';
 
         $this->_debugErrorHtml .= '</div>';

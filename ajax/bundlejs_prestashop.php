@@ -40,15 +40,15 @@ if (Tools::getValue('action') == 'product')
 		if ($products)
 		{
 			$i = 0;
-			$return = '<ul id="plugproduct'.Tools::getValue('id').'">';
+			$return = '<ul id="plugproduct'.Tools::safeOutput(Tools::getValue('id')).'">';
 			foreach ($products as $product)
 			{
 				$name = str_replace("'", '&#146;', $product['name']);
 				$name = str_replace('"', '\"', $name);
 				if (($i % 2) == 0)
-					$return .= '<li id="'.$product['id_product'].'" class="pair">'.$name.'</li>';
+					$return .= '<li id="'.Tools::safeOutput($product['id_product']).'" class="pair">'.Tools::safeOutput($name).'</li>';
 				else
-					$return .= '<li id="'.$product['id_product'].'" class="impair">'.$name.'</li>';
+					$return .= '<li id="'.Tools::safeOutput($product['id_product']).'" class="impair">'.Tools::safeOutput($name).'</li>';
 				$i++;
 			}
 			$return .= '</ul>';
@@ -82,15 +82,15 @@ if (Tools::getValue('action') == 'category')
 		if ($products)
 		{
 			$i = 0;
-			$return = '<ul id="plugproduct'.Tools::getValue('id').'">';
+			$return = '<ul id="plugproduct'.Tools::safeOutput(Tools::getValue('id')).'">';
 			foreach ($products as $product)
 			{
 				$name = str_replace("'", '&#146;', $product['name']);
 				$name = str_replace('"', '\"', $name);
 				if (($i % 2) == 0)
-					$return .= '<li id="'.$product['id_category'].'" class="pair">'.$name.'</li>';
+					$return .= '<li id="'.Tools::safeOutput($product['id_category']).'" class="pair">'.Tools::safeOutput($name).'</li>';
 				else
-					$return .= '<li id="'.$product['id_category'].'" class="impair">'.$name.'</li>';
+					$return .= '<li id="'.Tools::safeOutput($product['id_category']).'" class="impair">'.Tools::safeOutput($name).'</li>';
 				$i++;
 			}
 			$return .= '</ul>';
@@ -107,15 +107,15 @@ if (Tools::getValue('action') == 'manufacturer')
 		if ($manufacturers)
 		{
 			$i = 0;
-			$return = '<ul id="plugproduct'.Tools::getValue('id').'">';
+			$return = '<ul id="plugproduct'.Tools::safeOutput(Tools::getValue('id')).'">';
 			foreach ($manufacturers as $manufacturer)
 			{
 				$name = str_replace("'", '&#146;', $manufacturer['name']);
 				$name = str_replace('"', '\"', $name);
 				if (($i % 2) == 0)
-					$return .= '<li id="'.$manufacturer['id_manufacturer'].'" class="pair">'.$name.'</li>';
+					$return .= '<li id="'.Tools::safeOutput($manufacturer['id_manufacturer']).'" class="pair">'.Tools::safeOutput($name).'</li>';
 				else
-					$return .= '<li id="'.$manufacturer['id_manufacturer'].'" class="impair">'.$name.'</li>';
+					$return .= '<li id="'.Tools::safeOutput($manufacturer['id_manufacturer']).'" class="impair">'.Tools::safeOutput($name).'</li>';
 				$i++;
 			}
 			$return .= '</ul>';

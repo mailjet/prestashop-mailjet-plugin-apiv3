@@ -27,6 +27,8 @@
 include_once(realpath(dirname(__FILE__).'/../../../').'/config/config.inc.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
 
+header('Content-Type: application/json');
+
 if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN'))
 	exit();
 
@@ -296,7 +298,7 @@ if (Tools::getValue('action') == 'getQuery')
 	$reqsql = $obj->getQuery($_POST, true);
 
 	if (!$reqsql)
-		die('<p class="noResult">'.$obj->trad[22].'</p>');
+		die('<p class="noResult">'.Tools::safeOutput($obj->trad[22]).'</p>');
 	$req = Db::getInstance()->executeS($reqsql);
 	$nb1 = count($req);
 	$nb = round($nb1 / $obj->page);
@@ -306,27 +308,27 @@ if (Tools::getValue('action') == 'getQuery')
 		$page = 0;
 
 		$req = Db::getInstance()->executeS($obj->getQuery($_POST, true, array('start' => ($page * $obj->page), 'length' => $obj->page)));
-		$content = '<h2>'.$obj->trad[25].'</h2>';
+		$content = '<h2>'.Tools::safeOutput($obj->trad[25]).'</h2>';
 		if ($req)
 		{
 			$header = array_keys($req[0]);
 
 			$content .= '
-					<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.$obj->trad[26].'</button>
+					<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.Tools::safeOutput($obj->trad[26]).'</button>
 					<div class="right" id="seg_pagination">
 						<a href="javascript:next(1, '.$nb.')"><<</a>
 						<a href="javascript:next('.(Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1).', '.$nb.')"><</a>
-						'.$obj->trad[27].' <b>'.(Tools::getvalue('page') ? Tools::getvalue('page') : 1).'</b> / '.$nb.'
+						'.Tools::safeOutput($obj->trad[27]).' <b>'.(Tools::getvalue('page') ? Tools::getvalue('page') : 1).'</b> / '.$nb.'
 						<a href="javascript:next('.(Tools::getvalue('page') ? Tools::getvalue('page') + 1 : 2).', '.$nb.')">></a>
 						<a href="javascript:next('.$nb.','.$nb.')">>></a>
-						<font size="3">'.$nb1.' '.$obj->trad[25].'</font>
+						<font size="3">'.$nb1.' '.Tools::safeOutput($obj->trad[25]).'</font>
 					</div>
 					<br />';
 
 			$content .=	'<table cellspacing="0" cellpadding="0" class="table space">
 					<tr>';
 				foreach ($header as $h)
-					$content .= '<th>'.$h.'</th>';
+					$content .= '<th>'.Tools::safeOutput($h).'</th>';
 				$content .= '
 					</tr>';
 			foreach ($req as $s)
@@ -338,7 +340,7 @@ if (Tools::getValue('action') == 'getQuery')
 					if ($field == '')
 						$field = '--';
 					$content .= '
-						<td>'.$field.'</td>';
+						<td>'.Tools::safeOutput($field).'</td>';
 				}
 						$content .= '
 					</tr>';
@@ -346,14 +348,14 @@ if (Tools::getValue('action') == 'getQuery')
 
 			$content .= '
 					</table>
-					<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.$obj->trad[26].'</button>
+					<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.Tools::safeOutput($obj->trad[26]).'</button>
 					<div class="right" id="seg_pagination">
 						<a href="javascript:next(1, '.$nb.')"><<</a>
 						<a href="javascript:next('.(Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1).', '.$nb.')"><</a>
-						'.$obj->trad[27].' <b>'.(Tools::getvalue('page') ? Tools::getvalue('page') : 1).'</b> / '.$nb.'
+						'.Tools::safeOutput($obj->trad[27]).' <b>'.(Tools::getvalue('page') ? Tools::getvalue('page') : 1).'</b> / '.$nb.'
 						<a href="javascript:next('.(Tools::getvalue('page') ? Tools::getvalue('page') + 1 : 2).', '.$nb.')">></a>
 						<a href="javascript:next('.$nb.','.$nb.')">>></a>
-						<font size="3">'.$nb1.' '.$obj->trad[25].'</font>
+						<font size="3">'.$nb1.' '.Tools::safeOutput($obj->trad[25]).'</font>
 					</div>
 					<div class="clear">&nbsp;</div>';
 
@@ -389,7 +391,7 @@ if (Tools::getValue('action') == 'getQuery')
 			}
 		}
 		else
-			$content .= '<p class="noResult">'.$obj->trad[22].'</p>';
+			$content .= '<p class="noResult">'.Tools::safeOutput($obj->trad[22]).'</p>';
 
 	die ($content);
 }
