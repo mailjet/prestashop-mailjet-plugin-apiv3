@@ -1139,13 +1139,12 @@ class Mailjet extends Module
 			foreach ($languages as $l)
 			$triggers['trigger'][$i]['mail'][$l['id_lang']] = rawurlencode($triggers['trigger'][$i]['mail'][$l['id_lang']]);
 
-		$serialize = serialize($triggers);
-		return Configuration::updateValue('MJ_TRIGGERS', $serialize);
+		return Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
 	}
 
 	private function initTriggers()
 	{
-		$this->triggers = ($triggers = unserialize(Configuration::get('MJ_TRIGGERS'))) ? $triggers : $this->triggers;
+		$this->triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'))) ? $triggers : $this->triggers;
 
 		$languages = Language::getLanguages();
 
@@ -1253,7 +1252,7 @@ class Mailjet extends Module
 				'APIKeyALT' 	=> $api->getAPIKey(),
 				'TokenType'		=> 'iframe',
 				'IsActive'		=> true,
-				'SentData'		=> serialize(array('plugin' => 'prestashop-3.0')),
+				'SentData'		=> json_encode(array('plugin' => 'prestashop-3.0')),
 			);
 
 			$api->apitoken($params);
@@ -1392,7 +1391,7 @@ class Mailjet extends Module
 	 */
 	public function initAccountSettings()
 	{
-		$this->account = ($account = unserialize(Configuration::get('MAILJET'))) ? $account : $this->account;
+		$this->account = ($account = json_decode(Configuration::get('MAILJET'))) ? $account : $this->account;
 	}
 
 	/**
@@ -1412,7 +1411,7 @@ class Mailjet extends Module
 	 */
 	public function updateAccountSettings()
 	{
-		return Configuration::updateValue('MAILJET', serialize($this->account));
+		return Configuration::updateValue('MAILJET', json_encode($this->account));
 	}
 
 	/**
@@ -1506,7 +1505,7 @@ class Mailjet extends Module
 	{
 		try
 		{
-			$account = unserialize(Configuration::get('MAILJET'));
+			$account = json_decode(Configuration::get('MAILJET'));
 			$from = $account['EMAIL'];
 			$from_name = Configuration::get('PS_SHOP_NAME');
 
