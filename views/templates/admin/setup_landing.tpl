@@ -24,7 +24,7 @@
 *}
 <div class="center_page">
 	<div class="logo_mailjet_center"></div>
-    {$MJ_templates.setup_landing_message|escape|default:''}
+    {$MJ_templates.setup_landing_message|default:''}
     
     <div id="setup_landing_bt">
 {*        <a href="{$smarty.server.REQUEST_URI|default:''}&mj_check_hosting=true" id="setup_landing_bt_activate" class="default_button_style default_background_orange">

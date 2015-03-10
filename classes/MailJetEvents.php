@@ -146,7 +146,7 @@ class MailJetEvents extends ObjectModel
 		if (($key = array_search('original_address', $select)) !== false) unset($select[$key]);
 		if (($key = array_search('new_address', $select)) !== false) unset($select[$key]);
 
-		$query = 'SELECT `'.$this->identifier.'`, '.implode('`,`', array_map('bqSQL',$select)).' FROM `'._DB_PREFIX_.$this->table.'` e ';
+		$query = 'SELECT `'.$this->identifier.'`, `'.implode('`,`', array_map('bqSQL',$select)).'` FROM `'._DB_PREFIX_.$this->table.'` e ';
 		if ($this->params['event']['value'] && $this->params['event']['value'] != MailJetEvents::ALL_EVENTS_KEYS)
 			$query .= 'WHERE e.`event` = "'.pSQL($this->params['event']['value']).'"';
 
