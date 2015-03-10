@@ -361,12 +361,16 @@ class Segmentation
 						switch ($data)
 						{
 							case '1': // Taxes included
-								$labels[] = '(SELECT FORMAT((SUM(wo1.total_paid_real)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo1 WHERE wo1.valid = 1 AND wo1.id_customer = o.id_customer) AS "'.$this->ll(55).'"';
+								$labels[] = '(SELECT FORMAT((SUM(wo1.total_paid_real)/cu.conversion_rate), 2)
+								    FROM '._DB_PREFIX_.'orders wo1 WHERE wo1.valid = 1 AND wo1.id_customer = o.id_customer)
+								    AS "'.pSQL($this->ll(55)).'"';
 								$sub_having_amount = 'o'.$i.'.total_paid_real';
 								break;
 							case '2': // Taxes excluded
 							default:
-								$labels[] = '(SELECT FORMAT((SUM(wo2.total_products)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo2 WHERE wo2.valid = 1 AND wo2.id_customer = o.id_customer) AS "'.$this->ll(56).'"';
+								$labels[] = '(SELECT FORMAT((SUM(wo2.total_products)/cu.conversion_rate), 2)
+								    FROM '._DB_PREFIX_.'orders wo2 WHERE wo2.valid = 1 AND wo2.id_customer = o.id_customer)
+								    AS "'.pSQL($this->ll(56)).'"';
 								$sub_having_amount = 'o'.$i.'.total_products';
 						}
 						$sub_groupby = 'c'.$i.'.id_customer';
@@ -384,12 +388,16 @@ class Segmentation
 						switch ($data)
 						{
 							case '1': // Taxes included
-								$labels[] = '(SELECT FORMAT((AVG(wo3.total_paid_real)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo3 WHERE wo3.valid = 1 AND wo3.id_customer = o.id_customer) AS "'.$this->ll(57).'"';
+								$labels[] = '(SELECT FORMAT((AVG(wo3.total_paid_real)/cu.conversion_rate), 2)
+								    FROM '._DB_PREFIX_.'orders wo3 WHERE wo3.valid = 1 AND wo3.id_customer = o.id_customer)
+								    AS "'.pSQL($this->ll(57)).'"';
 								$sub_having_amount = 'o'.$i.'.total_paid_real';
 								break;
 							case '2': // Taxes excluded
 							default:
-								$labels[] = '(SELECT FORMAT((AVG(wo4.total_products)/cu.conversion_rate), 2) FROM '._DB_PREFIX_.'orders wo4 WHERE wo4.valid = 1 AND wo4.id_customer = o.id_customer) AS "'.$this->ll(58).'"';
+								$labels[] = '(SELECT FORMAT((AVG(wo4.total_products)/cu.conversion_rate), 2)
+								    FROM '._DB_PREFIX_.'orders wo4 WHERE wo4.valid = 1 AND wo4.id_customer = o.id_customer)
+								    AS "'.pSQL($this->ll(58)).'"';
 								$sub_having_amount = 'o'.$i.'.total_products';
 						}
 						$sub_groupby = 'c'.$i.'.id_customer';
