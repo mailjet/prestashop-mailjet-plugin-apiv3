@@ -28,7 +28,6 @@ require_once(realpath(dirname(__FILE__).'/../../config/config.inc.php'));
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_'))
 	require_once(realpath(dirname(__FILE__).'/../../init.php'));
 
-header('Content-Type: application/json');
 
 if (Tools::getIsset('emptyfile'))
 {
@@ -74,4 +73,5 @@ else
 $message = isset($result['error']) ? $result['error'] : 'Success with method: '.$method;
 MailJetLog::write(MailJetLog::$file, $message);
 
+header('Content-Type: application/json');
 die(Tools::jsonEncode($result));

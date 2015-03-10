@@ -24,8 +24,6 @@
  * International Registered Trademark & Property of PrestaShop SA
 */
 
-header('Content-Type: application/json');
-
 ?><script type="text/javascript">
 function $_GET(key, default_)
 {

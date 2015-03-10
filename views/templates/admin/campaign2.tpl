@@ -27,7 +27,7 @@
     <input type="hidden" name="MJ_submitCampaign2" value=1 />
 	<fieldset>
     	<legend>{l s='New Campaign' mod='mailjet'}</legend>
-        <div class="button" style="padding:10px;"><b style="font-size:15px;">{l s='Campaign' mod='mailjet'} : &#171; {$campaign.title|default:''} &#187;</b></div>
+        <div class="button" style="padding:10px;"><b style="font-size:15px;">{l s='Campaign' mod='mailjet'} : &#171; {$campaign.title|escape|default:''} &#187;</b></div>
         <br />
         <b>When do you want to send this campaign :</b>
         <div class="margin-form" style="padding-left:300px;">
@@ -44,31 +44,31 @@
                 <input type="hidden" name="programmed" id="programmed" />
                 {if $lang=="en"}
             	<select id="month" name="month" style="text-align:right;">
-	                {for $var=1 to 12}<option value="{$var}"{if $var==$month} selected{/if}>{$months.$var}</option>{/for}
+	                {for $var=1 to 12}<option value="{$var|escape}"{if $var==$month} selected{/if}>{$months.$var|escape}</option>{/for}
                 </select> 
             	<select id="day" name="day" style="text-align:center;">
-	                {for $var=1 to 31}<option value="{$var}"{if $var==$day} selected{/if}>{$var}</option>{/for}
+	                {for $var=1 to 31}<option value="{$var|escape}"{if $var==$day} selected{/if}>{$var|escape}</option>{/for}
                 </select> 
             	<select id="year" name="year">
-	                {for $var=0 to 9}<option value="{$var+$year}">{$var+$year}</option>{/for}
+	                {for $var=0 to 9}<option value="{$var+$year|escape}">{$var+$year|escape}</option>{/for}
                 </select>
                 {else}
             	<select id="day" name="day" style="text-align:right;">
-	                {for $var=1 to 31}<option value="{$var}"{if $var==$day} selected{/if}>{$var}</option>{/for}
+	                {for $var=1 to 31}<option value="{$var|escape}"{if $var==$day} selected{/if}>{$var|escape}</option>{/for}
                 </select> 
             	<select id="month" name="month" style="text-align:center;">
-	                {for $var=1 to 12}<option value="{$var}"{if $var==$month} selected{/if}>{$months.$var}</option>{/for}
+	                {for $var=1 to 12}<option value="{$var|escape}"{if $var==$month} selected{/if}>{$months.$var|escape}</option>{/for}
                 </select> 
             	<select id="year" name="year">
-	                {for $var=0 to 9}<option value="{$var+$year}">{$var+$year}</option>{/for}
+	                {for $var=0 to 9}<option value="{$var+$year|escape}">{$var+$year|escape}</option>{/for}
                 </select>
                 {/if}
                 &nbsp;&nbsp; {l s='to' mod='mailjet'} &nbsp;&nbsp;
             	<select id="hour" name="hour" style="text-align:right;">
-	                {for $var=0 to 23}<option value="{$var}"{if $var==$hour} selected{/if}>{$var}</option>{/for}
+	                {for $var=0 to 23}<option value="{$var|escape}"{if $var==$hour} selected{/if}>{$var|escape}</option>{/for}
                 </select>{l s='H' mod='mailjet'} 
             	<select id="minute" name="minute">
-	                {for $var=0 to 59}<option value="{$var}"{if $var==$min} selected{/if}>{$var}</option>{/for}
+	                {for $var=0 to 59}<option value="{$var|escape}"{if $var==$min} selected{/if}>{$var|escape}</option>{/for}
                 </select>{l s='min' mod='mailjet'} 
             </div>
             <br /><br />
@@ -91,7 +91,7 @@
     function check_program(sendlater)
 	{
     	if (sendlater) {
-        	var today = create_date_object("{$today|default:''}")
+        	var today = create_date_object("{$today|escape|default:''}")
 			// *****
 			{literal}
 				year = parseInt($('#year').val());

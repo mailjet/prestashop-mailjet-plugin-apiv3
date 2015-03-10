@@ -30,8 +30,8 @@
 
 	<dl class="MJ_data">
 		{foreach from=$fields item=field}
-			<dt>{$field.title|default:''}&nbsp;</dt>
-			<dd>{$field.value|default:''}&nbsp;</dd>
+			<dt>{$field.title|escape|default:''}&nbsp;</dt>
+			<dd>{$field.value|escape|default:''}&nbsp;</dd>
 		{/foreach}
 	</dl>
 	{/foreach}

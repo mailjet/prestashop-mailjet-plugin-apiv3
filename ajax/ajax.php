@@ -27,7 +27,7 @@
 include_once(realpath(dirname(__FILE__).'/../../../').'/config/config.inc.php');
 include_once(_PS_ROOT_DIR_.'/init.php');
 
-header('Content-Type: application/json');
+//header('Content-Type: application/json');
 
 if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN'))
 	exit();

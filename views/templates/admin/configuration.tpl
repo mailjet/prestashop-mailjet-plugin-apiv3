@@ -23,7 +23,7 @@
  * International Registered Trademark & Property of PrestaShop SA
 *}{* Has to be initiated here cause it's defined after the postProcess *}
 <script type="text/javascript">
-	var MJ_page_name = "{$MJ_page_name|default:''}";
+	var MJ_page_name = "{$MJ_page_name|escape|default:''}";
 </script>
 
 {if !$is_landing}
@@ -34,11 +34,11 @@
             {foreach from=$MJ_tab_page key=MJ_key item=MJ_title}
             	{if $MJ_key == 'PRICING'}
                 <li {if $MJ_page_name == $MJ_key}class="active"{/if}>
-                    <a href="http://www.mailjet.com/pricing" target="_blank">{$MJ_title|default:''}</a>
+                    <a href="http://www.mailjet.com/pricing" target="_blank">{$MJ_title|escape|default:''}</a>
                 </li>
             	{else}
 	                <li {if $MJ_page_name == $MJ_key}class="active"{/if}>
-	                    <a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_key|default:''}">{$MJ_title|default:''}</a>
+	                    <a href="{$MJ_adminmodules_link|escape|default:''}&{$MJ_REQUEST_PAGE_TYPE|escape|default:''}={$MJ_key|escape|default:''}">{$MJ_title|escape|default:''}</a>
 	                </li>
             	{/if}
             	
@@ -55,7 +55,7 @@
 		{l s='Errors list:' mod='mailjet'}
 		<ul class="mj_errors">
 			{foreach from=$MJ_errors item=current_error}
-				<li>{$current_error|default:''}</li>
+				<li>{$current_error|escape|default:''}</li>
 			{/foreach}
 		</ul>
 	</div>

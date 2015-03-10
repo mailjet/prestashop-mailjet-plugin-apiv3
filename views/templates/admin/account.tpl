@@ -55,29 +55,29 @@
             <div id="mj_account_details_mod" style="display:none;">
             	<div>
 	            	{l s='Firstname' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname|default:''}" /><br />
+					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname|escape|default:''}" /><br />
 				</div>
                 <div>
 					{l s='Lastname' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname|default:''}" /><br />
+					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname|escape|default:''}" /><br />
 				</div>
                 <div style="display:block;">
                     <div class="mj_account_sep"></div>
 	            	{l s='e-mail' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_contact_email" readonly value="{$infos->Email|default:''}" /><br />
+					<input type="text" name="MJ_account_contact_email" readonly value="{$infos->Email|escape|default:''}" /><br />
                     <div class="mj_account_sep"></div>
 	            	{l s='Company' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_company_name" value="{$infos->CompanyName|default:''}" /><br />
+					<input type="text" name="MJ_account_company_name" value="{$infos->CompanyName|escape|default:''}" /><br />
 	            	{l s='Address' mod='mailjet'}<br />
-    	            <textarea name="MJ_account_address_street">{$infos->AddressStreet|default:''}</textarea><br />
+    	            <textarea name="MJ_account_address_street">{$infos->AddressStreet|escape|default:''}</textarea><br />
                     <div class="mj_account_sep2"></div>
-	                <input type="text" name="MJ_account_address_postal_code" value="{$infos->AddressPostalCode|default:''}" />&nbsp;
-                  		<input type="text"name="MJ_account_address_city" value="{$infos->AddressCity|default:''}" /><br />
+	                <input type="text" name="MJ_account_address_postal_code" value="{$infos->AddressPostalCode|escape|default:''}" />&nbsp;
+                  		<input type="text"name="MJ_account_address_city" value="{$infos->AddressCity|escape|default:''}" /><br />
                     <div class="mj_account_sep2"></div>
                     <select name="MJ_account_address_country">
                     	<option>---- {l s='Country' mod='mailjet'} ----</option>
                     	{foreach $countries as $pays}
-                        	<option value="{$pays.iso_code|default:''}"{if $pays.iso_code==$infos->AddressCountry} selected{/if}>{$pays.name|default:''}</option>
+                        	<option value="{$pays.iso_code|escape|default:''}"{if $pays.iso_code==$infos->AddressCountry} selected{/if}>{$pays.name|escape|default:''}</option>
                         {/foreach}
                     	</select><br />
 				</div>
@@ -98,7 +98,7 @@
             	<div>
 	            	<b>Domain @{$domain->DNS->Domain}</b> <i>( {if $domain->Status=='Active'}{l s='enabled' mod='mailjet'}{else}{l s='pending' mod='mailjet'}{/if} )</i><br />
                     <p>
-	        	        {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/ajax.php?emptyfile&name={$domain->Filename|default:''}"><u>{$domain->Filename|default:''}</u></a><br />
+	        	        {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/ajax.php?emptyfile&name={$domain->Filename|escape|default:''}"><u>{$domain->Filename|escape|default:''}</u></a><br />
     	                <i>{l s='File to put at your root folder to activate your domain' mod='mailjet'}</i>
 					</p>
 				</div>

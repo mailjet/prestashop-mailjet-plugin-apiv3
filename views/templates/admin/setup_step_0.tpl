@@ -22,11 +22,11 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}<div class="center_page">
-    {$MJ_templates.setup_hosting_error_message|default:''}
+    {$MJ_templates.setup_hosting_error_message|escape|default:''}
     
     <div id="setup_hosting_error_support">
         <div id="setup_hosting_error_bt_support" class="default_button_style default_background_orange">
-            <a href="">{$MJ_templates.setup_hosting_error_bt_support|default:''}</a>
+            <a href="">{$MJ_templates.setup_hosting_error_bt_support|escape|default:''}</a>
         </div>
         <br clear="left"/>
     </div>
