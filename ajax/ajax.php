@@ -277,10 +277,10 @@ if (Tools::getValue('action') == 'addGroup')
 	foreach ($rows as $row)
 	{
 		$values = array(
-			'id_customer'	=>	$row[$obj->ll(47)],
+			'id_customer'	=>	pSQL($row[$obj->ll(47)]),
 			'id_group'		=>	(int)Tools::getValue('idgroup')
 		);
-		Db::getInstance()->AutoExecute(_DB_PREFIX_.'customer_group', $values, 'INSERT');
+		Db::getInstance()->insert(_DB_PREFIX_.'customer_group', $values);
 	}
 
 	die(true);

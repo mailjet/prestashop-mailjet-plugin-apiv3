@@ -255,7 +255,8 @@ class Mailjet extends Module
 				$this->context->cookie->id_cart = $this->context->cart->id;
 			}
 				
-			Db::getInstance()->execute('REPLACE INTO `'._DB_PREFIX_.'mj_roi_cart`(id_cart, token_presta) VALUES('.$this->context->cart->id.', \''.Tools::getValue('tokp').'\')');
+			Db::getInstance()->execute('REPLACE INTO `'._DB_PREFIX_.'mj_roi_cart`(id_cart, token_presta)
+			    VALUES('.$this->context->cart->id.', \''.pSQL(Tools::getValue('tokp')).'\')');
 		}
 	}
 
@@ -269,7 +270,7 @@ class Mailjet extends Module
 		if ($tokp = Db::getInstance()->getRow($sql))
 		{
 			// On enregistre le ROI
-			$sql = 'SELECT campaign_id FROM '._DB_PREFIX_.'mj_campaign WHERE token_presta = \''.$tokp['token_presta']."'";
+			$sql = 'SELECT campaign_id FROM '._DB_PREFIX_.'mj_campaign WHERE token_presta = \''.pSQL($tokp['token_presta'])."'";
 			$campaign = Db::GetInstance()->GetRow($sql);
 
 			if (!empty($campaign))
@@ -1066,14 +1067,15 @@ class Mailjet extends Module
 					$sql = 'UPDATE '._DB_PREFIX_.'mj_campaign
 					SET stats_campaign_id = 1,
 					delivered = '.(int)$mjc->Data[0]->ProcessedCount.',
-					title = \''.$mjc->Data[0]->CampaignSubject.'\'
+					title = \''.pSQL($mjc->Data[0]->CampaignSubject).'\'
 					WHERE id_campaign_presta = '.(int)$c['id_campaign_presta'];
 					Db::getInstance()->Execute($sql);
 				}
 			}
 
 			// Allons chercher le ROI de cette campagne
-			$sql = 'SELECT COUNT(id_order) AS nb, SUM(total_paid) AS total FROM '._DB_PREFIX_.'mj_roi WHERE campaign_id = '.(int)$c['campaign_id'];
+			$sql = 'SELECT COUNT(id_order) AS nb, SUM(total_paid) AS total
+              FROM '._DB_PREFIX_.'mj_roi WHERE campaign_id = '.(int)$c['campaign_id'];
 			$totaux = Db::getInstance()->GetRow($sql);
 
 			if (!empty($totaux['total']))
