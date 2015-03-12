@@ -98,10 +98,10 @@ class Segmentation
 			'mj__PS_BASE_URI__' => __PS_BASE_URI__,
 			'mj_PS_JS_DIR_' => _PS_JS_DIR_,
 			'mj_MODULE_DIR_' => _MODULE_DIR_,
-			'mj_hint_fieldset' => array(
-				$this->l('This module enable you to create segments of customer according to any criteria you think of. You can then either display and export the selected customers or associate them to an existing customer group.', 'mailjet'),
-				$this->l('These segments are particularly useful to create special offer associated with customer groups (e.g., send a coupon to the customers interested in some products)', 'mailjet'),
-				$this->l('Create an infinity of filters corresponding to your needs!', 'mailjet')),
+            'mj_hint_fieldset' => array(
+                $this->l('This module enables you to create segments of customers according to any criteria you think of. You can then either display and export the selected customers or associate them to an existing customer group.', 'mailjet'),
+                $this->l('These segments are particularly useful to create special offers associated with customer groups (e.g., send a coupon to the customers interested in some products)', 'mailjet'),
+                $this->l('Create an infinite number of filters corresponding to your needs!', 'mailjet')),
 			'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
 			'mj_datepickerPersonnalized' => version_compare(_PS_VERSION_, '1.5', '<') ? '<script type="text/javascript" src="'._PS_JS_DIR_.'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>' : '',
 			'mj_token' => Tools::getValue('token'),

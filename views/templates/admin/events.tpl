@@ -43,7 +43,7 @@
 	{if !count($MJ_events_list)}
 
     	<div class="warn">
-        	&nbsp; {l s='To activate Events, yous must go to your Mailjet account : ' mod='mailjet'} <a href="https://eu.mailjet.com/account/triggers" target="_blank"><u>https://eu.mailjet.com/account/triggers</u></a><br />
+        	&nbsp; {l s='To activate Events, yous must go to your Mailjet account : ' mod='mailjet'} <a href="https://mailjet.com/account/triggers" target="_blank"><u>https://mailjet.com/account/triggers</u></a><br />
             <br />
             <b >
             {l s='Specify the' mod='mailjet'} <span>Endpoint Url</span> : <input type="text" value="{$url|escape}"/><br />
