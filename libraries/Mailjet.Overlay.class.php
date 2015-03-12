@@ -2481,7 +2481,7 @@ class Mailjet_ApiOverlay
   
         $responesProfile = $this->_api->getResponse();
         
-        return json_decode($responesProfile);
+        return Tools::jsonDecode($responesProfile);
         
         if (!is_null($force))
             $params['force'] = $force;

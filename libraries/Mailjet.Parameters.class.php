@@ -41,7 +41,7 @@
  * echo 'Nb : '.$parameters->count();
  *
  * // Retrieve it later by doing a
- * $storedParameters = new Parameters(json_decode($stored));
+ * $storedParameters = new Parameters(Tools::jsonDecode($stored));
  *
  * //Reset all the parameters to use it with a new Api call
  * $parameters->reset();
