@@ -541,7 +541,7 @@ class mailjetdata
             break;            
             
             case 'JSON':
-            	$RawData = json_encode($RawData);
+            	$RawData = Tools::jsonEncode($RawData);
             	curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
 				curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $RawData);
 				curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
@@ -562,7 +562,7 @@ class mailjetdata
         
         // If an error is encountered, return an array
         if($this->_info['http_code'] >= 300)
-        	$buffer = json_decode($buffer);
+        	$buffer = Tools::jsonDecode($buffer);
         	
         return $buffer;
     }
@@ -623,7 +623,7 @@ class mailjetdata
 
         $status_message = '';
         if ($this->_info['http_code'] >= 400) {
-            $buffer = json_decode($this->_buffer);
+            $buffer = Tools::jsonDecode($this->_buffer);
             if (!is_null($buffer) && isset($buffer->StatusCode) && isset($buffer->ErrorMessage)) {
                 $status_message = $buffer->StatusCode.' - '.$buffer->ErrorMessage;
                 if (isset($buffer->ErrorInfo) && !empty($buffer->ErrorInfo))

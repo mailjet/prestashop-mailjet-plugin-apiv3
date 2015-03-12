@@ -282,11 +282,11 @@ class Mailjet_Api
                 curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 /*curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));*/
                 $this->_request_post = $params;
-                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($this->_request_post));
                 curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
                         'Content-Type: application/json',
-                        'Content-Length: ' . strlen(json_encode($this->_request_post)))
+                        'Content-Length: ' . strlen(Tools::jsonEncode($this->_request_post)))
                 );
             break;
             case 'JSON':
@@ -296,11 +296,11 @@ class Mailjet_Api
                     curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
                  
                 $this->_request_post = $params;
-                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($this->_request_post));
                 curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
                         'Content-Type: application/json',
-                        'Content-Length: ' . strlen(json_encode($this->_request_post)))
+                        'Content-Length: ' . strlen(Tools::jsonEncode($this->_request_post)))
                 );
                 break;
         }
@@ -559,7 +559,7 @@ class Mailjet_Api
             sort($params);
             $file = $object.'.'.hash('md5', $this->_apiKey.http_build_query($params, '', '')).'.'.$this->_output;
             if (file_exists($this->_cache_path.$file) && 0 === strpos(realpath($this->_cache_path.$file), realpath($this->_cache_path))) {
-                $data = json_decode(Tools::file_get_contents($this->_cache_path.$file));
+                $data = Tools::jsonDecode(Tools::file_get_contents($this->_cache_path.$file));
                 if ($data['timestamp'] > time() - $cache)
                     return ($data['result']);
             }
@@ -590,7 +590,7 @@ class Mailjet_Api
             sort($params);
             $file = $object.'.'.hash('md5', $this->_apiKey.http_build_query($params, '', '')).'.'.$this->_output;
             $data = array('timestamp' => time(), 'result' => $result);
-            file_put_contents($this->_cache_path.$file, json_encode($data));
+            file_put_contents($this->_cache_path.$file, Tools::jsonEncode($data));
         }
     }
 
@@ -721,7 +721,7 @@ class Mailjet_Api
                 
                 curl_setopt($this->_curl_handle, CURLOPT_POST, count($params));
                 if( isset($params['Action']) && isset($params['ListID']) ){
-                    curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($params));
+                    curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($params));
                     curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
                 }
                 else{
@@ -738,11 +738,11 @@ class Mailjet_Api
                 curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'DELETE');
                 /*curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));*/
                 $this->_request_post = $params;
-                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($this->_request_post));
                 curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
                         'Content-Type: application/json',
-                        'Content-Length: ' . strlen(json_encode($this->_request_post)))
+                        'Content-Length: ' . strlen(Tools::jsonEncode($this->_request_post)))
                 );
             break;
             case 'JSON':
@@ -752,11 +752,11 @@ class Mailjet_Api
             		curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
             	 
             	$this->_request_post = $params;
-            	curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, json_encode($this->_request_post));
+            	curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($this->_request_post));
             	curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
             	curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
             			'Content-Type: application/json',
-            			'Content-Length: ' . strlen(json_encode($this->_request_post)))
+            			'Content-Length: ' . strlen(Tools::jsonEncode($this->_request_post)))
             	);
             	break;
         }
@@ -767,7 +767,7 @@ class Mailjet_Api
             var_dump($buffer);
 
         $this->_response_code = curl_getinfo($this->_curl_handle,CURLINFO_HTTP_CODE);
-        $this->_response = ($this->_output == 'json') ? json_decode($buffer) : $buffer;
+        $this->_response = ($this->_output == 'json') ? Tools::jsonDecode($buffer) : $buffer;
 
         return ($this->_response_code == 200) ? TRUE : FALSE;
     }

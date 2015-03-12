@@ -1223,7 +1223,7 @@ class Segmentation
 			$id_lang = $this->getCurrentIdLang();
 
 		if (file_exists($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'))
-			$this->trad = json_decode(Tools::file_get_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'));
+			$this->trad = Tools::jsonDecode(Tools::file_get_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'));
 		else
 		{
 			$this->cacheLang();
@@ -1244,7 +1244,7 @@ class Segmentation
 					fwrite($fp, $trad."\r\n");
 				fclose($fp);
 			}
-			file_put_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt', json_encode($this->trad));
+			file_put_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt', Tools::jsonEncode($this->trad));
 		}
 	}
 
