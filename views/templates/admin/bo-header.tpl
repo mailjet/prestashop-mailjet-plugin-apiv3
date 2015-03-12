@@ -23,15 +23,15 @@
  * International Registered Trademark & Property of PrestaShop SA
 *}
 <script type="text/javascript">
-	var _PS_MJ_MODULE_DIR_ = "{$MJ_base_dir|escape|default:''}";
-	var MJ_TOKEN = "{$MJ_TOKEN|escape|default:''}";
-	var MJ_ADMINMODULES_TOKEN = "{$MJ_ADMINMODULES_TOKEN|escape|default:''}";
+	var _PS_MJ_MODULE_DIR_ = "{$MJ_base_dir|escape:'javascript'|default:''}";
+	var MJ_TOKEN = "{$MJ_TOKEN|escape:'javascript'|default:''}";
+	var MJ_ADMINMODULES_TOKEN = "{$MJ_ADMINMODULES_TOKEN|escape:'javascript'|default:''}";
 
 	// Const from module to a better understanding if it used under the javascript file
-	var MJ_REQUEST_PAGE_TYPE = "{$MJ_REQUEST_PAGE_TYPE|escape|default:''}";
+	var MJ_REQUEST_PAGE_TYPE = "{$MJ_REQUEST_PAGE_TYPE|escape:'javascript'|default:''}";
 
 	// Generate from the xml
 	{foreach from=$MJ_available_pages key=MJ_page_key item=MJ_page_value}
-		var {$MJ_page_key} = "{$MJ_page_value|escape|default:''}";
+		var {$MJ_page_key|escape:'javascript'} = "{$MJ_page_value|escape:'javascript'|default:''}";
 	{/foreach}
 </script>

@@ -22,7 +22,7 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}<!-- Mailjet : Account -->
-<form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
+<form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_account_page" class="center_page">
 	<div id="mj_account_page_left">
     
@@ -32,23 +32,23 @@
 			    <div>
 				    {if $infos->Firstname || $infos->Lastname}
 	                	<p>
-				    	{if $infos->Firstname}{$infos->Firstname}&nbsp;{/if}
-				    	{if $infos->Lastname}{$infos->Lastname}{/if}
+				    	{if $infos->Firstname}{$infos->Firstname|escape}&nbsp;{/if}
+				    	{if $infos->Lastname}{$infos->Lastname|escape}{/if}
 				        </p>
 					{/if}
-				    {if $infos->Email}<p>{$infos->Email}</p>{/if}
+				    {if $infos->Email}<p>{$infos->Email|escape}</p>{/if}
 	                <br />
 				    {* if $language}{l s='Display' mod='mailjet'} : {$language}<br />{/if *}
 			    </div>
-			    {if $infos->CompanyName}<p>{$infos->CompanyName}</p>{/if}
+			    {if $infos->CompanyName}<p>{$infos->CompanyName|escape}</p>{/if}
 	            <p>
-			    {if $infos->AddressStreet}{$infos->AddressStreet|nl2br}<br />{/if}
+			    {if $infos->AddressStreet}{$infos->AddressStreet|escape|nl2br}<br />{/if}
 			    {if $infos->AddressPostalCode || $infos->AddressPostalCode}
-			    	{if $infos->AddressPostalCode}{$infos->AddressPostalCode}&nbsp;{/if}
-			    	{if $infos->AddressCity}{$infos->AddressCity}{/if}
+			    	{if $infos->AddressPostalCode}{$infos->AddressPostalCode|escape}&nbsp;{/if}
+			    	{if $infos->AddressCity}{$infos->AddressCity|escape}{/if}
 			        <br />
 				{/if}
-			    {if $country}{$country}<br />{/if}
+			    {if $country}{$country|escape}<br />{/if}
 	            </p>
 			    <a href="javascript:;" onClick="$('#mj_account_details_mod').show();$('#mj_account_details').hide();" class="savebutton button">{l s='Modify' mod='mailjet'}</a>
 			</div>
@@ -96,7 +96,7 @@
 			<legend>{l s='DKIM/SPF for better deliverability' mod='mailjet'}</legend>
             {foreach $domains as $domain}
             	<div>
-	            	<b>Domain @{$domain->DNS->Domain}</b> <i>( {if $domain->Status=='Active'}{l s='enabled' mod='mailjet'}{else}{l s='pending' mod='mailjet'}{/if} )</i><br />
+	            	<b>Domain @{$domain->DNS->Domain|escape}</b> <i>( {if $domain->Status=='Active'}{l s='enabled' mod='mailjet'}{else}{l s='pending' mod='mailjet'}{/if} )</i><br />
                     <p>
 	        	        {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/ajax.php?emptyfile&name={$domain->Filename|escape|default:''}"><u>{$domain->Filename|escape|default:''}</u></a><br />
     	                <i>{l s='File to put at your root folder to activate your domain' mod='mailjet'}</i>
@@ -145,7 +145,7 @@
 		</fieldset>
 		
         <br />
-		--!>
+		-->
 
 		<fieldset>
 			<legend>{l s='Sender addresses' mod='mailjet'}</legend>
@@ -155,7 +155,7 @@
 	            	<ul>
 		            {foreach $sender as $address}
                    
-		            		<li style="{if $address->Status=='Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->Email->Email} {if $address->Status!='Active'}({l s='pending' mod='mailjet'}){/if}</li>
+		            		<li style="{if $address->Status=='Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->Email->Email|escape} {if $address->Status!='Active'}({l s='pending' mod='mailjet'}){/if}</li>
 						
 	    	        {/foreach}
 	                </ul>
@@ -168,7 +168,7 @@
 	            	<ul>
 		            {foreach $domains as $address}
 		            	{if $address->Status=='Active'}
-	            			<li style="{if $address->Status=='Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->DNS->Domain} {if $address->Status!='Active'}({l s='pending' mod='mailjet'}){/if}</li>
+	            			<li style="{if $address->Status=='Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->DNS->Domain|escape} {if $address->Status!='Active'}({l s='pending' mod='mailjet'}){/if}</li>
 	    	        	{/if}
 	    	        {/foreach}
 	

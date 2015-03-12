@@ -24,24 +24,24 @@
 *}
 
 <script type="text/javascript">
-	var tokenV = "{$mj_token|escape|default:'0'}";
-	var ajaxFile =  "{$mj_ajaxFile|escape|default:''}";
-	var ajaxSyncFile =  "{$mj_ajaxSyncFile|escape|default:''}";
-	var ajaxBundle =  "{$mj_ajaxBundle|escape|default:''}";
-	var id_employee = "{$mj_id_employee|escape|default:'0'}";
+	var tokenV = "{$mj_token|escape:'javascript'|default:'0'}";
+	var ajaxFile =  "{$mj_ajaxFile|escape:'javascript'|default:''}";
+	var ajaxSyncFile =  "{$mj_ajaxSyncFile|escape:'javascript'|default:''}";
+	var ajaxBundle =  "{$mj_ajaxBundle|escape:'javascript'|default:''}";
+	var id_employee = "{$mj_id_employee|escape:'javascript'|default:'0'}";
 	var trad = new Array();
-	var datePickerJsFormat = "{$mj_datePickerJsFormat|escape|default:'yy-mm-dd'}";
+	var datePickerJsFormat = "{$mj_datePickerJsFormat|escape:'javascript'|default:'yy-mm-dd'}";
 	{foreach from=$mj_trads key=key item=value}
-		trad[{$key}] = "{$value|escape|default:'?'}";
+		trad[{$key}] = "{$value|escape:'javascript'|default:'?'}";
 	{/foreach}
-	var lblMan = "{$mj_lblMan|default:'Man'}";
-	var lblWoman = "{$mj_lblWoman|default:'Woman'}";
-	var lblUnknown = "{$mj_lblUnknown|default:'Unknow'}";
+	var lblMan = "{$mj_lblMan|escape:'javascript'|default:'Man'}";
+	var lblWoman = "{$mj_lblWoman|escape:'javascript'|default:'Woman'}";
+	var lblUnknown = "{$mj_lblUnknown|escape:'javascript'|default:'Unknow'}";
 	var loadingFilter = false;
 	var mj_trad_plus = ['{l s='And' mod='mailjet'}', '{l s='Or' mod='mailjet'}', '{l s='Include' mod='mailjet'}', '{l s='Exclude' mod='mailjet'}'];
 	var mj_base_select = new Array();
 	{foreach from=$mj_base_select item=base_select}
-		mj_base_select[{$base_select.id_basecondition}] = "{$mj_trads[$base_select.label]|escape|default:'?'}";
+		mj_base_select[{$base_select.id_basecondition|escape}] = "{$mj_trads[$base_select.label]|escape:'javascript'|default:'?'}";
 	{/foreach}
 </script>
 {$mj_datepickerPersonnalized|escape|default:''}
@@ -50,9 +50,9 @@
 <div class="center_page">
 
 	<fieldset class="width6 hint seg_fieldset">&nbsp; 
-	{$mj_hint_fieldset.0|default:''}<br /><br />
-	{$mj_hint_fieldset.1|default:''}<br /><br />
-	{$mj_hint_fieldset.2|default:''}
+	{$mj_hint_fieldset.0|escape|default:''}<br /><br />
+	{$mj_hint_fieldset.1|escape|default:''}<br /><br />
+	{$mj_hint_fieldset.2|escape|default:''}
 	</fieldset>
 
 	<div class="clear"> &nbsp; </div>
@@ -75,9 +75,9 @@
 				</tr>
 			{foreach from=$mj_filter_list item=filter}
 				<tr class="trSelect" id="list{$filter.id_filter|escape|default:'0'}">
-					<td>{$filter.id_filter|default:'0'}</td>
-					<td><b>{$filter.name|ucfirst}</b></td>
-					<td>{$filter.description|default:''}</td>
+					<td>{$filter.id_filter|escape|default:'0'}</td>
+					<td><b>{$filter.name|escape|ucfirst}</b></td>
+					<td>{$filter.description|escape|default:''}</td>
 					<td>{if ($filter.assignment_auto)}{if ($filter.replace_customer)}{$mj_trads[97]|escape|default:'Replace'}{else}{$mj_trads[98]|escape|default:'Add'}{/if}{else}--{/if}</td>
 					<td>{if ($filter.assignment_auto)}{$mj_trads[96]|escape|default:'in real time'}{else}--{/if}</td>
 					<td>--</td>
