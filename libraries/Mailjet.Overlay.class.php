@@ -1136,33 +1136,17 @@ class Mailjet_ApiOverlay
     {
 
     	$params = array(
-    		'method'	 	=> 'GET',
-    		'style' 		=> 'full'
+    		'method' => 'GET',
+    		'style'	=> 'full',
+            'limit' => 0
     	);
-    	 
     	$this->_api->resetRequest();
     	$this->_api->sender($params);
-    	 
     	$responesSender = $this->_api->getResponse();
-    	
     	if ($responesSender->Count > 0) {
     		return $responesSender->Data;
     	}
-    	
     	return false;
-    	
-    	
-//         $params = array(
-//             'method'	=> 'GET'
-//         );
-//         if (!is_null($cache))
-//             $params['cache'] = $cache;
-
-//         $response = $this->_api->userSenderList($params);
-//         if ($response !== FALSE)
-//             return ($response);
-//         else
-//             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
@@ -1182,7 +1166,6 @@ class Mailjet_ApiOverlay
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
-
         return $response;
     }
 

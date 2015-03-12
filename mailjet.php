@@ -173,7 +173,7 @@ class Mailjet extends Module
 	public function install()
 	{
 		//$this->account = array(); // **
-		$this->account['TOKEN'] = md5(rand());
+		$this->account->TOKEN = md5(rand());
 		$this->updateAccountSettings();
 		/* $segmentation = new Segmentation(); */
 
@@ -294,7 +294,7 @@ class Mailjet extends Module
 			return '';
 
 		// Need to set some js value
-		$this->mj_pages = new MailJetPages($this->account['AUTHENTICATION']);
+		$this->mj_pages = new MailJetPages($this->account->AUTHENTICATION);
 
 		$smarty_page = array();
 		$nobug = array();
@@ -319,7 +319,7 @@ class Mailjet extends Module
 						'MJ_tab_page' => $this->mj_pages->getPages(MailJetPages::REQUIRE_PAGE),
 						'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
 						'MJ_allemails_active' => Configuration::get('MJ_ALLEMAILS'),
-						'MJ_TOKEN' => $this->account['TOKEN'],
+						'MJ_TOKEN' => $this->account->TOKEN,
 						'nobug' => $nobug
 				)
 		);
@@ -794,25 +794,21 @@ class Mailjet extends Module
 		// Triggers
 		if (Tools::isSubmit('MJ_set_triggers'))
 		{
-			$this->triggers['active'] = Tools::getValue('MJ_triggers_active');
+			$this->triggers->active = Tools::getValue('MJ_triggers_active');
 			for ($sel = 1; $sel <= 9; $sel++)
 			{
-				$this->triggers['trigger'][$sel]['active'] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_active');
-				if ($sel != 5 && $sel != 6)
-				{
-					$this->triggers['trigger'][$sel]['period'] = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_period');
-					$this->triggers['trigger'][$sel]['periodType'] = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_periodType');
-				}
-				else
-				{
-					$this->triggers['trigger'][$sel]['discount'] = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discount');
-					$this->triggers['trigger'][$sel]['discountType'] = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discountType');
+				$this->triggers->trigger->$sel->active = Tools::getValue('MJ_triggers_trigger_'.$sel.'_active');
+				if ($sel != 5 && $sel != 6){
+					$this->triggers->trigger->$sel->period = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_period');
+					$this->triggers->trigger->$sel->periodType = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_periodType');
+				}else{
+					$this->triggers->trigger->$sel->discount = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discount');
+					$this->triggers->trigger->$sel->discountType = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discountType');
 				}
 				$languages = Language::getLanguages();
-				foreach ($languages as $l)
-				{
-					$this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_subject_'.$l['id_lang']);
-					$this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_mail_'.$l['id_lang']);
+				foreach ($languages as $l){
+					$this->triggers->trigger->$sel->subject->$l['id_lang'] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_subject_'.$l['id_lang']);
+					$this->triggers->trigger->$sel->mail->$l['id_lang'] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_mail_'.$l['id_lang']);
 				}
 			}
 			$this->updateTriggers();
@@ -830,16 +826,15 @@ class Mailjet extends Module
 		Configuration::updateValue('PS_MAIL_SERVER', $this->mj_mail_server);
 		Configuration::updateValue('PS_MAIL_SMTP_PORT', $this->mj_mail_port);
 		Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
-		Configuration::updateValue('PS_MAIL_USER', $this->account['API_KEY']);
-		Configuration::updateValue('PS_MAIL_PASSWD', $this->account['SECRET_KEY']);
+		Configuration::updateValue('PS_MAIL_USER', $this->account->API_KEY);
+		Configuration::updateValue('PS_MAIL_PASSWD', $this->account->SECRET_KEY);
 		Configuration::updateValue('PS_MAIL_METHOD', 2);
-
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
 	}
 
 	public function getContent()
 	{
-		if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0)
+		if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
 			$this->initilSynchronize();
 
 		$this->mj_template = new MailjetTemplate();
@@ -877,15 +872,15 @@ class Mailjet extends Module
 				break;
 
 			case 'CAMPAIGN':
-				$this->mj_template->getCampaignURL('CAMPAIGN', $this->account['TOKEN_'.$this->context->employee->id]);
+				$this->mj_template->getCampaignURL('CAMPAIGN', $this->account->{'TOKEN_'.$this->context->employee->id});
 				break;
 
 			case 'STATS':
-				$this->mj_template->getStatsURL('STATS', $this->account['TOKEN_'.$this->context->employee->id]);
+				$this->mj_template->getStatsURL('STATS', $this->account->{'TOKEN_'.$this->context->employee->id});
 				break;
 
 			case 'CONTACTS':
-				$this->mj_template->getContactsURL('CONTACTS', $this->account['TOKEN_'.$this->context->employee->id]);
+				$this->mj_template->getContactsURL('CONTACTS', $this->account->{'TOKEN_'.$this->context->employee->id});
 				break;
 
 			case 'NEWSLETTER':
@@ -909,7 +904,7 @@ class Mailjet extends Module
 				break;
 
 			case 'PRICING':
-				$this->mj_template->getPricingURL('PRICING', $this->account['TOKEN_'.$this->context->employee->id]);
+				$this->mj_template->getPricingURL('PRICING', $this->account->{'TOKEN_'.$this->context->employee->id});
 				break;
 
 			case 'ROI':
@@ -966,7 +961,8 @@ class Mailjet extends Module
 				'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
 				'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
 				'MJ_authentication' => $this->isAccountSet(),
-				'MJ_TOKEN_USER' => isset($this->account['TOKEN_'.$this->context->employee->id]) ? $this->account['TOKEN_'.$this->context->employee->id] : null,
+				'MJ_TOKEN_USER' => isset($this->account->{'TOKEN_'.$this->context->employee->id}) ?
+                    $this->account->{'TOKEN_'.$this->context->employee->id} : null,
 				'MJ_user_plan'	=> $this->_getPlan(),
 		));
 
@@ -1108,7 +1104,7 @@ class Mailjet extends Module
 		$languages = Language::getLanguages();
 		$sel_lang = $this->context->language->id;
 
-        $cron = Tools::getShopDomainSsl(true)._MODULE_DIR_.$this->name.'/mailjet.cron.php?token='.$this->account['TOKEN'];
+        $cron = Tools::getShopDomainSsl(true)._MODULE_DIR_.$this->name.'/mailjet.cron.php?token='.$this->account->TOKEN;
 
 		$iso = $this->context->language->iso_code;
 
@@ -1131,29 +1127,24 @@ class Mailjet extends Module
 
 	private function updateTriggers()
 	{
-		$triggers = $this->triggers;
-
 		$languages = Language::getLanguages();
-
-		for ($i = 1; $i <= 9; $i++)
-			foreach ($languages as $l)
-			$triggers['trigger'][$i]['mail'][$l['id_lang']] = rawurlencode($triggers['trigger'][$i]['mail'][$l['id_lang']]);
-
-		$serialize = serialize($triggers);
-		return Configuration::updateValue('MJ_TRIGGERS', $serialize);
+		for ($i = 1; $i <= 9; $i++){
+            foreach ($languages as $l){
+                $this->triggers->trigger->$i->mail->$l['id_lang'] = rawurlencode($this->triggers->trigger->$i->mail->$l['id_lang']);
+            }
+        }
+		return Configuration::updateValue('MJ_TRIGGERS', json_encode($this->triggers));
 	}
 
 	private function initTriggers()
 	{
-		$this->triggers = ($triggers = unserialize(Configuration::get('MJ_TRIGGERS'))) ? $triggers : $this->triggers;
-
+		$this->triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'))) ? $triggers : $this->triggers;
 		$languages = Language::getLanguages();
-
 		for ($i = 1; $i <= 9; $i++) {
 			foreach ($languages as $l) {
-				if(!empty($this->triggers['trigger'][$i]['mail'][$l['id_lang']])){
-					$this->triggers['trigger'][$i]['mail'][$l['id_lang']] =
-						rawurldecode($this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
+				if(!empty($this->triggers->trigger->$i->mail->$l['id_lang'])){
+					$this->triggers->trigger->$i->mail->$l['id_lang'] =
+						rawurldecode($this->triggers->trigger->$i->mail->$l['id_lang']);
 				}
 			}
 		}
@@ -1174,33 +1165,35 @@ class Mailjet extends Module
 		$shop_name = $this->context->shop->name;
 		$shop_url = 'http://'.$this->context->shop->domain;
 
-		for ($i = 1; $i <= 9; $i++)
-		{
-			if ($i != 5 && $i != 6)
-			{
-				$this->triggers['trigger'][$i]['period'] = 0;
-				$this->triggers['trigger'][$i]['periodType'] = 1;
+		for ($i = 1; $i <= 9; $i++){
+			if ($i != 5 && $i != 6){
+				$this->triggers->trigger->$i->period = 0;
+				$this->triggers->trigger->$i->periodType = 1;
+			}else{
+				$this->triggers->trigger->$i->discount = 0;
+				$this->triggers->trigger->$i->discountType = 1;
 			}
-			else
-			{
-				$this->triggers['trigger'][$i]['discount'] = 0;
-				$this->triggers['trigger'][$i]['discountType'] = 1;
-			}
-			foreach ($languages as $l)
-			{
-				$this->triggers['trigger'][$i]['subject'][$l['id_lang']] = 'New message to {firstname} {lastname} !';
-				if (isset($subject[$i]['en'])) $this->triggers['trigger'][$i]['subject'][$l['id_lang']] = utf8_decode($subject[$i]['en']);
-				if (isset($subject[$i][$l['iso_code']])) $this->triggers['trigger'][$i]['subject'][$l['id_lang']] = utf8_decode($subject[$i][$l['iso_code']]);
-
-				$this->triggers['trigger'][$i]['mail'][$l['id_lang']] = '';
-				if (isset($mail[$i]['en'])) $this->triggers['trigger'][$i]['mail'][$l['id_lang']] = utf8_decode($mail[$i]['en']);
-				if (isset($mail[$i][$l['iso_code']])) $this->triggers['trigger'][$i]['mail'][$l['id_lang']] = utf8_decode($mail[$i][$l['iso_code']]);
+			foreach ($languages as $l){
+				$this->triggers->trigger->$i->subject->$l['id_lang'] = 'New message to {firstname} {lastname} !';
+				if (isset($subject[$i]['en'])) {
+                    $this->triggers->trigger->$i->subject->$l['id_lang'] = utf8_decode($subject[$i]['en']);
+                }
+				if (isset($subject[$i][$l['iso_code']])) {
+                    $this->triggers->trigger->$i->subject->$l['id_lang'] = utf8_decode($subject[$i][$l['iso_code']]);
+                }
+				$this->triggers->trigger->$i->mail->$l['id_lang'] = '';
+				if (isset($mail[$i]['en'])) {
+                    $this->triggers->trigger->$i->mail->$l['id_lang'] = utf8_decode($mail[$i]['en']);
+                }
+				if (isset($mail[$i][$l['iso_code']])) {
+                    $this->triggers->trigger->$i->mail->$l['id_lang'] = utf8_decode($mail[$i][$l['iso_code']]);
+                }
 
 				// replace {shop_name}, {shop_url}
-				$this->triggers['trigger'][$i]['subject'][$l['id_lang']] = str_replace('{shop_name}', $shop_name, $this->triggers['trigger'][$i]['subject'][$l['id_lang']]);
-				$this->triggers['trigger'][$i]['subject'][$l['id_lang']] = str_replace('{shop_url}', $shop_url, $this->triggers['trigger'][$i]['subject'][$l['id_lang']]);
-				$this->triggers['trigger'][$i]['mail'][$l['id_lang']] = str_replace('{shop_name}', $shop_name, $this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
-				$this->triggers['trigger'][$i]['mail'][$l['id_lang']] = str_replace('{shop_url}', $shop_url, $this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
+				$this->triggers->trigger->$i->subject->$l['id_lang'] = str_replace('{shop_name}', $shop_name, $this->triggers->trigger->$i->subject->$l['id_lang']);
+				$this->triggers->trigger->$i->subject->$l['id_lang'] = str_replace('{shop_url}', $shop_url, $this->triggers->trigger->$i->subject->$l['id_lang']);
+				$this->triggers->trigger->$i->mail->$l['id_lang'] = str_replace('{shop_name}', $shop_name, $this->triggers->trigger->$i->mail->$l['id_lang']);
+				$this->triggers->trigger->$i->mail->$l['id_lang'] = str_replace('{shop_url}', $shop_url, $this->triggers->trigger->$i->mail->$l['id_lang']);
 			}
 		}
 		$this->updateTriggers();
@@ -1237,36 +1230,30 @@ class Mailjet extends Module
 	 */
 	public function checkTokenValidity()
 	{
-		if (!isset($this->account['TOKEN_'.$this->context->employee->id]) || $this->account['IP_'.$this->context->employee->id] != $_SERVER['REMOTE_ADDR'] || ($this->account['TIMESTAMP_'.$this->context->employee->id] <= strtotime('-1 day')))
+		if (!isset($this->account->{'TOKEN_'.$this->context->employee->id}) ||
+            $this->account->{'IP_'.$this->context->employee->id} != $_SERVER['REMOTE_ADDR'] ||
+            ($this->account->{'TIMESTAMP_'.$this->context->employee->id} <= strtotime('-1 day')))
 		{
-			$this->account['IP_'.$this->context->employee->id] = $_SERVER['REMOTE_ADDR'];
-			$this->account['TIMESTAMP_'.$this->context->employee->id] = strtotime('now');
-
-			//$api = new MailjetAPI();
-			//$api->apiKey = $this->account['API_KEY'];
-			//$api->secretKey = $this->account['SECRET_KEY'];
+			$this->account->{'IP_'.$this->context->employee->id} = $_SERVER['REMOTE_ADDR'];
+			$this->account->{'TIMESTAMP_'.$this->context->employee->id} = strtotime('now');
 			$api = MailjetTemplate::getApi(false);
-
 			$params = array(
 				'AllowedAccess' => 'campaigns,contacts,stats,pricing,account,reports',
 				'method'	 	=> 'JSON',
 				'APIKeyALT' 	=> $api->getAPIKey(),
 				'TokenType'		=> 'iframe',
 				'IsActive'		=> true,
-				'SentData'		=> serialize(array('plugin' => 'prestashop-3.0')),
+				'SentData'		=> json_encode(array('plugin' => 'prestashop-3.0')),
 			);
-
 			$api->apitoken($params);
 			$response = $api->getResponse();
-
-			if ($response && ($response->Count > 0))
-			{
-				$this->account['TOKEN_'.$this->context->employee->id] = $response->Data[0]->Token;
+			if ($response && ($response->Count > 0)){
+				$this->account->{'TOKEN_'.$this->context->employee->id} = $response->Data[0]->Token;
 				$this->updateAccountSettings();
 			}
-
-			if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0)
-				$this->initilSynchronize();
+			if ($this->account->{'MASTER_LIST_SYNCHRONIZED'} == 0){
+                $this->initilSynchronize();
+            }
 		}
 	}
 
@@ -1283,7 +1270,7 @@ class Mailjet extends Module
 
 	public function checkPlanValidity()
 	{
-		/*$test = */new Mailjet_ApiOverlay($this->account['API_KEY'], $this->account['SECRET_KEY']);
+		/*$test = */new Mailjet_ApiOverlay($this->account->API_KEY, $this->account->SECRET_KEY);
 		return;
 		/*
 		$plan = $test->getUserPlan();
@@ -1304,11 +1291,10 @@ class Mailjet extends Module
 
 		if ($result !== false)
 		{
-			$this->account['API_KEY'] = $apiKey;
-			$this->account['SECRET_KEY'] = $secretKey;
-			$this->account['EMAIL'] = $result->Email;
-			// $this->account['PASSWD'] = ?;
-			$this->account['AUTHENTICATION'] = 1;
+			$this->account->API_KEY = $apiKey;
+			$this->account->SECRET_KEY = $secretKey;
+			$this->account->EMAIL = $result->Email;
+			$this->account->AUTHENTICATION = 1;
 
 			$this->updateAccountSettings();
 
@@ -1319,7 +1305,7 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
 
-			if ($this->account['MASTER_LIST_SYNCHRONIZED'] == 0)
+			if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
 				return $this->initilSynchronize();
 
 			return true;
@@ -1336,31 +1322,23 @@ class Mailjet extends Module
 	 */
 	public function initilSynchronize()
 	{
-		if (!$this->isAccountSet())
-			return false;
-
-		$initialSynchronization = new HooksSynchronizationInitial(
-				MailjetTemplate::getApi()
-		);
-
+		if (!$this->isAccountSet()){
+            return false;
+        }
+		$initialSynchronization = new HooksSynchronizationInitial(MailjetTemplate::getApi());
 		try {
 			$newlyCreatedListId = $initialSynchronization->synchronize();
-
-			if ($newlyCreatedListId)
-			{
-				$this->account['MASTER_LIST_SYNCHRONIZED'] 	= 1;
-				$this->account['MASTER_LIST_ID'] 			= $newlyCreatedListId;
-
+			if ($newlyCreatedListId){
+				$this->account->MASTER_LIST_SYNCHRONIZED = 1;
+				$this->account->MASTER_LIST_ID = $newlyCreatedListId;
 				$this->updateAccountSettings();
-			}
-			else
-				throw new Exception('The master list is not created.');
-
+			}else{
+                throw new Exception('The master list is not created.');
+            }
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
 			return false;
 		}
-
 		return true;
 	}
 
@@ -1383,8 +1361,7 @@ class Mailjet extends Module
 	 */
 	public function isAccountSet()
 	{
-		$is_account = $this->account['AUTHENTICATION'] && !(empty($this->account['API_KEY'])) && !empty($this->account['SECRET_KEY']);
-		return (bool)$is_account;
+		return $this->account->AUTHENTICATION && !(empty($this->account->API_KEY)) && !empty($this->account->SECRET_KEY);
 	}
 
 	/**
@@ -1392,7 +1369,7 @@ class Mailjet extends Module
 	 */
 	public function initAccountSettings()
 	{
-		$this->account = ($account = unserialize(Configuration::get('MAILJET'))) ? $account : $this->account;
+		$this->account = ($account = json_decode(Configuration::get('MAILJET'))) ? $account : $this->account;
 	}
 
 	/**
@@ -1402,7 +1379,7 @@ class Mailjet extends Module
 	 */
 	public function getAccountSettingsKey($key)
 	{
-		return isset($this->account[$key]) ? $this->account[$key] : '';
+		return isset($this->account->$key) ? $this->account->$key : '';
 	}
 
 	/**
@@ -1412,7 +1389,7 @@ class Mailjet extends Module
 	 */
 	public function updateAccountSettings()
 	{
-		return Configuration::updateValue('MAILJET', serialize($this->account));
+		return Configuration::updateValue('MAILJET', json_encode($this->account));
 	}
 
 	/**
@@ -1506,7 +1483,7 @@ class Mailjet extends Module
 	{
 		try
 		{
-			$account = unserialize(Configuration::get('MAILJET'));
+			$account = json_decode(Configuration::get('MAILJET'));
 			$from = $account['EMAIL'];
 			$from_name = Configuration::get('PS_SHOP_NAME');
 
@@ -1542,7 +1519,7 @@ class Mailjet extends Module
 	 */
 	public function getEventsHash()
 	{
-		return md5($this->account['TOKEN']);
+		return md5($this->account->TOKEN);
 	}
 
 }
