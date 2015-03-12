@@ -58,9 +58,9 @@
 					<input type="text" name="MJ_account_firstname" value="{$infos->Firstname|escape|default:''}" /><br />
 				</div>
                 <div>
-					{l s='Lastname' mod='mailjet'}<br />
-					<input type="text" name="MJ_account_lastname" value="{$infos->Lastname|escape|default:''}" /><br />
-				</div>
+                    {l s='Lastname' mod='mailjet'}<br />
+                    <input type="text" name="MJ_account_lastname" value="{$infos->Lastname|escape|default:''}" /><br />
+                </div>
                 <div style="display:block;">
                     <div class="mj_account_sep"></div>
 	            	{l s='e-mail' mod='mailjet'}<br />
@@ -85,12 +85,6 @@
                 <a href="javascript:;" onClick="$('#mj_account_details').show();$('#mj_account_details_mod').hide();" class="closebutton">X</a>
             </div>
 		</fieldset>
-
-		<!--<br />
-		<fieldset>
-			<legend>{l s='Current plan' mod='mailjet'}</legend>
-		</fieldset>-->
-
 		<br />
 		<fieldset id="mj_account_deliverability">
 			<legend>{l s='DKIM/SPF for better deliverability' mod='mailjet'}</legend>
@@ -119,36 +113,8 @@
 
 	</div>
 	<div id="mj_account_page_right">
-<!--
-		<fieldset>
-			<legend>{l s='Tracking' mod='mailjet'}</legend>
-            <div id="mj_account_tracking">
-		    	<p>{l s='Tracking of openers' mod='mailjet'} : {if $tracking->tracking_openers}{l s='yes' mod='mailjet'}{else}{l s='no' mod='mailjet'}{/if}</p>
-		        <p>{l s='Tracking of links' mod='mailjet'} : {if $tracking->tracking_clicks}{l s='yes' mod='mailjet'}{else}{l s='no' mod='mailjet'}{/if}</p>
-			    <a href="javascript:;" onClick="$('#mj_account_tracking_mod').show();$('#mj_account_tracking').hide();" class="savebutton button">{l s='Modify' mod='mailjet'}</a>
-		    </div>
-            <div id="mj_account_tracking_mod" style="display:none;">
-            	<p>
-                	<label>{l s='Tracking of openers' mod='mailjet'}</label>
-					<input type="radio" name="MJ_account_tracking_openers" id="MJ_account_tracking_openers_1" value=1 {if $tracking->tracking_openers}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_openers_1').click()">{l s='yes' mod='mailjet'}</a>
-                     &nbsp; <input type="radio" name="MJ_account_tracking_openers" id="MJ_account_tracking_openers_0" value=0 {if !$tracking->tracking_openers}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_openers_0').click()">{l s='no' mod='mailjet'}</a><br />
-				</p>
-            	<p>
-                	<label>{l s='Tracking of links' mod='mailjet'}</label>
-					<input type="radio" name="MJ_account_tracking_clicks" id="MJ_account_tracking_clicks_1" value=1 {if $tracking->tracking_clicks}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_clicks_1').click()">{l s='yes' mod='mailjet'}</a>
-                     &nbsp; <input type="radio" name="MJ_account_tracking_clicks" id="MJ_account_tracking_clicks_0" value=0 {if !$tracking->tracking_clicks}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_account_tracking_clicks_0').click()">{l s='no' mod='mailjet'}</a><br />
-				</p>
-				<div style="height:40px;"></div>
-			    <input type="submit" name="MJ_set_account_tracking" value="{l s='Save' mod='mailjet'}" class="savebutton button" />
-                <a href="javascript:;" onClick="$('#mj_account_tracking').show();$('#mj_account_tracking_mod').hide();" class="closebutton">X</a>
-            </div>
-		</fieldset>
-		
-        <br />
-		-->
-
-		<fieldset>
-			<legend>{l s='Sender addresses' mod='mailjet'}</legend>
+        <fieldset>
+            <legend>{l s='Sender addresses' mod='mailjet'}</legend>
             <div id="mj_account_senders">
 	            <p><b>{l s='Individual addresses' mod='mailjet'}</b></p>
 	            {if $is_senders}
@@ -179,23 +145,17 @@
 			    <a href="javascript:;" onClick="$('#mj_account_senders_mod').show();$('#mj_account_senders').hide();" class="savebutton button">{l s='Modify' mod='mailjet'}</a>
 			</div>
             <div id="mj_account_senders_mod" style="display:none;">
-				<center>
+                    <center>
                 	<br />
             		<b>{l s='Add a new email or domain' mod='mailjet'}</b><br />
         	        <br />
-    	            <input type="text" name="MJ_account_senders_new" style="width:250px;" /><br />
-				</center>
-				<div style="height:40px;"></div>
-			    <input type="submit" name="MJ_set_account_senders" value="{l s='Add' mod='mailjet'}" class="savebutton button" />
+                        <input type="text" name="MJ_account_senders_new" style="width:250px;" /><br />
+                    </center>
+                    <div style="height:40px;"></div>
+                    <input type="submit" name="MJ_set_account_senders" value="{l s='Add' mod='mailjet'}" class="savebutton button" />
                 <a href="javascript:;" onClick="$('#mj_account_senders').show();$('#mj_account_senders_mod').hide();" class="closebutton">X</a>
             </div>
-		</fieldset>
-
-        <!--<br />
-		<fieldset>
-			<legend>{l s='Invoicing and payment' mod='mailjet'}</legend>
-		    <a href="javascript:;" class="savebutton button">{l s='Modify' mod='mailjet'}</a>
-		</fieldset>-->
+        </fieldset>
 
         <br />
         <a href="https://www.mailjet.com/account" class="paramsbutton button" target="_blank">{l s='Advanced parameters' mod='mailjet'}</a>
