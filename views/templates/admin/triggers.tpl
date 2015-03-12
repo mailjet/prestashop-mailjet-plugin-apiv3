@@ -129,24 +129,24 @@
                         	<div class="sel_lang">
                             <b class="b_black">{l s='Message' mod='mailjet'}</b> - {l s='Language select' mod='mailjet'} : &nbsp;
 	                        {foreach $languages as $language}
-	                        	{assign var="id_lang" value=$language.id_lang}
+	                        	{assign var="id_lang" value=$language.id_lang|escape}
                             	<a href="javascript:;"
                                    onClick="$('.id_lang_close_{$sel|escape}').hide();$('#id_lang_{$sel|escape}_{$id_lang|escape}').show();$('.flags_{$sel|escape}').removeClass('selFlag');$(this).addClass('selFlag');"
-                                   class="{if $id_lang==$sel_lang}selFlag{/if} flags_{$sel}"
-                                   title="{$language.name}"><img src="../img/l/{$id_lang}.jpg" alt="{$language.name}" /></a>
+                                   class="{if $id_lang==$sel_lang}selFlag{/if} flags_{$sel|escape}"
+                                   title="{$language.name|escape}"><img src="../img/l/{$id_lang|escape}.jpg" alt="{$language.name|escape}" /></a>
                             {/foreach}
                             </div>
                             <div class="mj_decalage">
 	                        {foreach $languages as $language}
-	                        	{assign var="id_lang" value=$language.id_lang}
-								<div id="id_lang_{$sel|escape}_{$id_lang|escape}" class="id_lang_close_{$sel}"
+	                        	{assign var="id_lang" value=$language.id_lang|escape}
+								<div id="id_lang_{$sel|escape}_{$id_lang|escape}" class="id_lang_close_{$sel|escape}"
                                      style="{if $id_lang!=$sel_lang}display:none;{/if}">
    	 	                    		{l s='Subject' mod='mailjet'} : <input type="text"
                                         name="MJ_triggers_trigger_{$sel|escape|default:''}_subject_{$id_lang|escape|default:''}"
                                         class="mj_trigger_subjects"
                                         value="{$triggers->trigger->$sel->subject->$id_lang|escape|default:''}" /><br />
                                     <div class="mj_seps"></div>
-									<textarea name="MJ_triggers_trigger_{$sel|escape|default:''}_mail_{$id_lang|default:''}"
+									<textarea name="MJ_triggers_trigger_{$sel|escape|default:''}_mail_{$id_lang|escape|default:''}"
                                         class="mj_trigger_rtemails"
                                         class="rte">{$triggers->trigger->$sel->mail->$id_lang|escape|default:''}</textarea>
 								</div>
