@@ -55,7 +55,7 @@
 
 	{else}
 
-	<form action="{$smarty.server.REQUEST_URI|default:''}" method="POST">
+	<form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 		<div id="tableWrapper">
 			<table cellpadding="1" cellspacing="1" id="vsTable">
 				<thead>
@@ -85,14 +85,14 @@
 			<input type="submit" value="{l s='Fix the selected errors' mod='mailjet'}" />
 			{if $MJ_paging.prev}
             	{assign var=calc value=$MJ_paging.current_page - 1}
-				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page=1"><<</a>
-				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page={$calc|default:''}"><</a>
+				<a href="{$MJ_adminmodules_link|escape|default:''}&{$MJ_REQUEST_PAGE_TYPE|escape|default:''}={$MJ_page_name|escape|default:''}&page=1"><<</a>
+				<a href="{$MJ_adminmodules_link|escape|default:''}&{$MJ_REQUEST_PAGE_TYPE|escape|default:''}={$MJ_page_name|escape|default:''}&page={$calc|escape|default:''}"><</a>
 			{/if}
-			<a href="javascript:void(0)">{$MJ_paging.current_page|default:''}</a>
+			<a href="javascript:void(0)">{$MJ_paging.current_page|escape|default:''}</a>
 			{if $MJ_paging.next}
             	{assign var=calc value=$MJ_paging.current_page + 1}
-				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page={$calc|default:''}">></a>
-				<a href="{$MJ_adminmodules_link|default:''}&{$MJ_REQUEST_PAGE_TYPE|default:''}={$MJ_page_name|default:''}&page={$MJ_paging.last}">>></a>
+				<a href="{$MJ_adminmodules_link|escape|default:''}&{$MJ_REQUEST_PAGE_TYPE|escape|default:''}={$MJ_page_name|escape|default:''}&page={$calc|escape|default:''}">></a>
+				<a href="{$MJ_adminmodules_link|escape|default:''}&{$MJ_REQUEST_PAGE_TYPE|escape|default:''}={$MJ_page_name|escape|default:''}&page={$MJ_paging.last|escape}">>></a>
 			{/if}
 		</div>
 	</form>
