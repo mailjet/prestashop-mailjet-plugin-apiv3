@@ -1247,7 +1247,7 @@ class Mailjet extends Module
 			);
 			$api->apitoken($params);
 			$response = $api->getResponse();
-			if ($response && ($response->Count > 0)){
+            if (!empty($response->Count) && ($response->Count > 0)){
 				$this->account->{'TOKEN_'.$this->context->employee->id} = $response->Data[0]->Token;
 				$this->updateAccountSettings();
 			}
