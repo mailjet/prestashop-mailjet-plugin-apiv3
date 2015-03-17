@@ -26,7 +26,7 @@ Create & manage all Mailjet campaigns and contacts directly within PrestaShop
 5. Enter your API and Secret key
 6. Connect your Mailjet Account. 
 
-If you are not yet a Mailjet user, please click ‘Register’[signup now](https://app.mailjet.com/signup?p=prestashop-3.0) to create a new account. 
+If you are not yet a Mailjet user, please click [Register](https://app.mailjet.com/signup?p=prestashop-3.0) to create a new account. 
 To view the different pricing plans, please click the ‘Pricing’ button.
 
 Once you have a Mailjet account, click ‘Connect’ to enter your Mailjet Main Account API Key & Secret Key information as shown below.  Click the Mailjet account link to view your API Key information [Account API keys](https://www.mailjet.com/account/api_keys)
