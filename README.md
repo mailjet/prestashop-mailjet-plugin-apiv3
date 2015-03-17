@@ -20,11 +20,10 @@ Create & manage all Mailjet campaigns and contacts directly within PrestaShop
 
 # Installation:
 1. Download the zip.
-2. Unzip the archive and rename the folder to mailjet
-3. The zip again the folder
+2. Unzip the archive and rename the folder to "mailjet"
+3. Then zip again the folder
 4. Upload the zip in your Prestashop installation.
-5. Enter your API and Secret key
-6. Connect your Mailjet Account. 
+5. Connect your Mailjet Account. 
 
 If you are not yet a Mailjet user, please click [Register](https://app.mailjet.com/signup?p=prestashop-3.0) to create a new account. 
 To view the different pricing plans, please click the ‘Pricing’ button.
