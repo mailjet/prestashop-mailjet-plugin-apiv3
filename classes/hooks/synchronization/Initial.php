@@ -37,7 +37,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      */
     public function synchronize()
     {
-        if ($masterListId = $this->_getAlreadyCteatedMasterListId())
+        if ($masterListId = $this->_getAlreadyCreatedMasterListId())
         {
             $segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
             $segmentSynch->deleteList($masterListId);
@@ -60,7 +60,8 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         if (!is_numeric($newlyCreatedListId)) {
             throw new HooksSynchronizationException('The API response is not correct.');
         }
-
+        // increase the memory limit because the database could contain too many customers
+        ini_set('memory_limit', '1028M');
         $allUsers = $this->_getAllActiveCustomers();
 
         if (count($allUsers) === 0) {
