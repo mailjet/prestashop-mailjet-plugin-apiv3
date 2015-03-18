@@ -96,7 +96,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
 	 *
 	 * @return number|boolean
 	 */
-	protected function _getAlreadyCteatedMasterListId()
+	protected function _getAlreadyCreatedMasterListId()
 	{
 		if (!$this->_masterListId)
 		{

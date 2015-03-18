@@ -835,7 +835,7 @@ class Mailjet extends Module
 	public function getContent()
 	{
 		if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
-			$this->initilSynchronize();
+			$this->initalSynchronize();
 
 		$this->mj_template = new MailjetTemplate();
 		$this->page_name = $this->mj_pages->getCurrentPageName();
@@ -1252,7 +1252,7 @@ class Mailjet extends Module
 				$this->updateAccountSettings();
 			}
 			if ($this->account->{'MASTER_LIST_SYNCHRONIZED'} == 0){
-                $this->initilSynchronize();
+                $this->initalSynchronize();
             }
 		}
 	}
@@ -1306,7 +1306,7 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
 
 			if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
-				return $this->initilSynchronize();
+				return $this->initalSynchronize();
 
 			return true;
 		}
@@ -1320,7 +1320,7 @@ class Mailjet extends Module
 	 * 
 	 * @throws Exception
 	 */
-	public function initilSynchronize()
+	public function initalSynchronize()
 	{
 		if (!$this->isAccountSet()){
             return false;

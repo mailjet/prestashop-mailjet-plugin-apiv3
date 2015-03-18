@@ -65,7 +65,7 @@ class Segmentation
         Context::getContext()->controller->addCss($this->local_path.'/css/bundlejs_prestashop.css');
         Context::getContext()->controller->addCss($this->local_path.'/css/bo.css');
         
-        Context::getContext()->controller->addJs($this->local_path.'/js/fonction.js');             
+        Context::getContext()->controller->addJs($this->local_path.'/js/functions.js');
         Context::getContext()->controller->addJs($this->local_path.'/js/main.js');             
         Context::getContext()->controller->addJs($this->local_path.'/js/bundlejs_prestashop.js');             
 
