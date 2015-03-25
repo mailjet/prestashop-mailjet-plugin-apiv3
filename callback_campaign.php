@@ -75,7 +75,6 @@ if ($data->next_step_url)
 		$regexp = '<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>';
 		preg_match_all("/$regexp/siU", $html, $liens);
 
-		$debug = '';
 		$changed_html = false;
 
 		foreach ($liens[2] as $key => $l)
@@ -91,21 +90,12 @@ if ($data->next_step_url)
 				if (preg_match('`tokp`iUs', $l))
 					$link_without_token = preg_replace('`(\?tokp=.+$)`iUs', '', $link_without_token);
 
-				$debug .= $liens[2][$key]."\r\n";
-				$debug .= $link_without_token."\r\n";
-
 				if (!preg_match('`\?`iUs', $liens[2][$key]))
 					$link_with_token = $link_without_token.'?tokp='.$res_campaign['token_presta'];
 				else
 					$link_with_token = $link_without_token.'&tokp='.$res_campaign['token_presta'];
 
-				$debug .= $link_with_token."\r\n";
-
-				$lien_total = preg_replace('`href="'.$liens[2][$key].'`iUs', 'href="'.$link_with_token, $liens[0][$key]);
-
-				$debug .= $lien_total."\r\n";
-
-				$html = str_replace($liens[0][$key], $lien_total, $html);
+				$html = str_replace($link_without_token, $link_with_token, $html);
 			}
 		}
 				
