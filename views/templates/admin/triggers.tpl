@@ -74,13 +74,13 @@
 	<fieldset class="hint">
 		<legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
         <div>
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options').slideDown()" {if $triggers->active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options').slideUp()" {if !$triggers->active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
+			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options').slideDown()" {if $triggers.active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
+			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options').slideUp()" {if !$triggers.active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
 		</div>
         <input type="submit" name="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button" />
 	</fieldset>
     <br />
-    <fieldset id="triggers_options" {if !$triggers->active}style="display:none;"{/if}>
+    <fieldset id="triggers_options" {if !$triggers.active}style="display:none;"{/if}>
     	<legend>{l s='Triggers' mod='mailjet'}</legend>
         <ul>
         	{for $sel=1 to 9}
@@ -97,9 +97,9 @@
 	                	{if $sel==9}{l s='Loyalty points reminder' mod='mailjet'}{/if} : 
 					</label>
 					<div class="mj_radios">
-						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_1" value=1 {if $triggers->trigger->$sel->active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').show();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp;
-						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_0" value=0 {if !$triggers->trigger->$sel->active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').hide();$('#MJ_triggers_trigger_{$sel|escape}_parameters').hide();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp;
-						<a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_parameters').slideToggle();" id="MJ_triggers_trigger_{$sel|escape}_button" class="button MJ_triggers_trigger_buttons" style="{if !$triggers->trigger->$sel->active}display:none;{/if}" />{l s='parameters' mod='mailjet'}</a> &nbsp;
+						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').show();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp;
+						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_0" value=0 {if !$triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').hide();$('#MJ_triggers_trigger_{$sel|escape}_parameters').hide();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp;
+						<a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_parameters').slideToggle();" id="MJ_triggers_trigger_{$sel|escape}_button" class="button MJ_triggers_trigger_buttons" style="{if !$triggers.trigger.$sel.active}display:none;{/if}" />{l s='parameters' mod='mailjet'}</a> &nbsp;
                         <br />
 					</div>
 					<span class="clearspan"></span>
@@ -107,20 +107,20 @@
 						<b>{l s='Parameters' mod='mailjet'}</b><br />
                         {if $sel!=5 && $sel!=6}
 	                        <label>{l s='Trigger sending after how long ?' mod='mailjet'}</label>
-							<input type="text" name="MJ_triggers_trigger_{$sel|escape|default:''}_period" size=5 value="{$triggers->trigger->$sel->period|escape|default:''}" />
+							<input type="text" name="MJ_triggers_trigger_{$sel|escape|default:''}_period" size=5 value="{$triggers.trigger.$sel.period|escape|default:''}" />
 							<select name="MJ_triggers_trigger_{$sel|escape|default:''}_periodType">
-								<option value=1 {if $triggers->trigger->$sel->periodType==1}selected{/if}>{l s='Month' mod='mailjet'}</option>
-								<option value=2 {if $triggers->trigger->$sel->periodType==2}selected{/if}>{l s='Days' mod='mailjet'}</option>
-								<option value=3 {if $triggers->trigger->$sel->periodType==3}selected{/if}>{l s='Hours' mod='mailjet'}</option>
-								<option value=4 {if $triggers->trigger->$sel->periodType==4}selected{/if}>{l s='Minutes' mod='mailjet'}</option>
+								<option value=1 {if $triggers.trigger.$sel.periodType==1}selected{/if}>{l s='Month' mod='mailjet'}</option>
+								<option value=2 {if $triggers.trigger.$sel.periodType==2}selected{/if}>{l s='Days' mod='mailjet'}</option>
+								<option value=3 {if $triggers.trigger.$sel.periodType==3}selected{/if}>{l s='Hours' mod='mailjet'}</option>
+								<option value=4 {if $triggers.trigger.$sel.periodType==4}selected{/if}>{l s='Minutes' mod='mailjet'}</option>
 							</select>
                             <br />
 						{else}
 	                        <label>{l s='Reduction amount' mod='mailjet'} :</label>
-							<input type="text" name="MJ_triggers_trigger_{$sel|escape|default:''}_discount" size=5 value="{$triggers->trigger->$sel->discount|escape|default:''}" />
+							<input type="text" name="MJ_triggers_trigger_{$sel|escape|default:''}_discount" size=5 value="{$triggers.trigger.$sel.discount|escape|default:''}" />
 							<select name="MJ_triggers_trigger_{$sel|escape|default:''}_discountType">
-								<option value=1 {if $triggers->trigger->$sel->discountType==1}selected{/if}>(%) {l s='Percentage' mod='mailjet'}</option>
-								<option value=2 {if $triggers->trigger->$sel->discountType==2}selected{/if}>($,€,£) {l s='Amount' mod='mailjet'}</option>
+								<option value=1 {if $triggers.trigger.$sel.discountType==1}selected{/if}>(%) {l s='Percentage' mod='mailjet'}</option>
+								<option value=2 {if $triggers.trigger.$sel.discountType==2}selected{/if}>($,€,£) {l s='Amount' mod='mailjet'}</option>
 							</select>
                             <br />
 						{/if}
@@ -144,11 +144,11 @@
    	 	                    		{l s='Subject' mod='mailjet'} : <input type="text"
                                         name="MJ_triggers_trigger_{$sel|escape|default:''}_subject_{$id_lang|escape|default:''}"
                                         class="mj_trigger_subjects"
-                                        value="{$triggers->trigger->$sel->subject->$id_lang|escape|default:''}" /><br />
+                                        value="{$triggers.trigger.$sel.subject.$id_lang|escape|default:''}" /><br />
                                     <div class="mj_seps"></div>
 									<textarea name="MJ_triggers_trigger_{$sel|escape|default:''}_mail_{$id_lang|escape|default:''}"
                                         class="mj_trigger_rtemails"
-                                        class="rte">{$triggers->trigger->$sel->mail->$id_lang|escape|default:''}</textarea>
+                                        class="rte">{$triggers.trigger.$sel.mail.$id_lang|escape|default:''}</textarea>
 								</div>
 							{/foreach}
                             </div>

@@ -792,23 +792,21 @@ class Mailjet extends Module
 			$modif = true;
 		}
 		// Triggers
-		if (Tools::isSubmit('MJ_set_triggers'))
-		{
-			$this->triggers->active = Tools::getValue('MJ_triggers_active');
-			for ($sel = 1; $sel <= 9; $sel++)
-			{
-				$this->triggers->trigger->$sel->active = Tools::getValue('MJ_triggers_trigger_'.$sel.'_active');
-				if ($sel != 5 && $sel != 6){
-					$this->triggers->trigger->$sel->period = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_period');
-					$this->triggers->trigger->$sel->periodType = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_periodType');
-				}else{
-					$this->triggers->trigger->$sel->discount = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discount');
-					$this->triggers->trigger->$sel->discountType = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discountType');
+        if (Tools::isSubmit('MJ_set_triggers')) {
+			$this->triggers['active'] = Tools::getValue('MJ_triggers_active');
+			for ($sel = 1; $sel <= 9; $sel++) {
+				$this->triggers['trigger'][$sel]['active'] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_active');
+				if ($sel != 5 && $sel != 6) {
+					$this->triggers['trigger'][$sel]['period'] = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_period');
+					$this->triggers['trigger'][$sel]['periodType'] = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_periodType');
+				} else {
+					$this->triggers['trigger'][$sel]['discount'] = (float)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discount');
+					$this->triggers['trigger'][$sel]['discountType'] = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discountType');
 				}
 				$languages = Language::getLanguages();
-				foreach ($languages as $l){
-					$this->triggers->trigger->$sel->subject->$l['id_lang'] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_subject_'.$l['id_lang']);
-					$this->triggers->trigger->$sel->mail->$l['id_lang'] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_mail_'.$l['id_lang']);
+				foreach ($languages as $l) {
+					$this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_subject_'.$l['id_lang']);
+					$this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_mail_'.$l['id_lang']);
 				}
 			}
 			$this->updateTriggers();
@@ -1125,37 +1123,44 @@ class Mailjet extends Module
 		));
 	}
 
-	private function updateTriggers()
+		
+    private function updateTriggers()
 	{
+		$triggers = $this->triggers;
+
 		$languages = Language::getLanguages();
-		for ($i = 1; $i <= 9; $i++){
-            foreach ($languages as $l){
-                $this->triggers->trigger->$i->mail->$l['id_lang'] = rawurlencode($this->triggers->trigger->$i->mail->$l['id_lang']);
-            }
-        }
-		return Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($this->triggers));
+
+		for ($i = 1; $i <= 9; $i++)
+			foreach ($languages as $l)
+			$triggers['trigger'][$i]['mail'][$l['id_lang']] = rawurlencode($triggers['trigger'][$i]['mail'][$l['id_lang']]);
+
+		return Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
 	}
 
+    
 	private function initTriggers()
 	{
-		$this->triggers = ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'))) ? $triggers : $this->triggers;
+		$this->triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), 1)) ? $triggers : $this->triggers;
+
 		$languages = Language::getLanguages();
+
 		for ($i = 1; $i <= 9; $i++) {
 			foreach ($languages as $l) {
-				if(!empty($this->triggers->trigger->$i->mail->$l['id_lang'])){
-					$this->triggers->trigger->$i->mail->$l['id_lang'] =
-						rawurldecode($this->triggers->trigger->$i->mail->$l['id_lang']);
+				if(!empty($this->triggers['trigger'][$i]['mail'][$l['id_lang']])){
+					$this->triggers['trigger'][$i]['mail'][$l['id_lang']] =
+						rawurldecode($this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
 				}
 			}
 		}
 	}
+
 
 	public function getTriggers()
 	{
 		return $this->triggers;
 	}
 
-	public function createTriggers()
+    public function createTriggers()
 	{
 		$subject = array();
 		$mail = array();
@@ -1165,35 +1170,28 @@ class Mailjet extends Module
 		$shop_name = $this->context->shop->name;
 		$shop_url = 'http://'.$this->context->shop->domain;
 
-		for ($i = 1; $i <= 9; $i++){
-			if ($i != 5 && $i != 6){
-				$this->triggers->trigger->$i->period = 0;
-				$this->triggers->trigger->$i->periodType = 1;
-			}else{
-				$this->triggers->trigger->$i->discount = 0;
-				$this->triggers->trigger->$i->discountType = 1;
+		for ($i = 1; $i <= 9; $i++) {
+			if ($i != 5 && $i != 6) {
+				$this->triggers['trigger'][$i]['period'] = 0;
+				$this->triggers['trigger'][$i]['periodType'] = 1;
+			} 	else {
+				$this->triggers['trigger'][$i]['discount'] = 0;
+				$this->triggers['trigger'][$i]['discountType'] = 1;
 			}
-			foreach ($languages as $l){
-				$this->triggers->trigger->$i->subject->$l['id_lang'] = 'New message to {firstname} {lastname} !';
-				if (isset($subject[$i]['en'])) {
-                    $this->triggers->trigger->$i->subject->$l['id_lang'] = utf8_decode($subject[$i]['en']);
-                }
-				if (isset($subject[$i][$l['iso_code']])) {
-                    $this->triggers->trigger->$i->subject->$l['id_lang'] = utf8_decode($subject[$i][$l['iso_code']]);
-                }
-				$this->triggers->trigger->$i->mail->$l['id_lang'] = '';
-				if (isset($mail[$i]['en'])) {
-                    $this->triggers->trigger->$i->mail->$l['id_lang'] = utf8_decode($mail[$i]['en']);
-                }
-				if (isset($mail[$i][$l['iso_code']])) {
-                    $this->triggers->trigger->$i->mail->$l['id_lang'] = utf8_decode($mail[$i][$l['iso_code']]);
-                }
+			foreach ($languages as $l) {
+				$this->triggers['trigger'][$i]['subject'][$l['id_lang']] = 'New message to {firstname} {lastname} !';
+				if (isset($subject[$i]['en'])) $this->triggers['trigger'][$i]['subject'][$l['id_lang']] = utf8_decode($subject[$i]['en']);
+				if (isset($subject[$i][$l['iso_code']])) $this->triggers['trigger'][$i]['subject'][$l['id_lang']] = utf8_decode($subject[$i][$l['iso_code']]);
+
+				$this->triggers['trigger'][$i]['mail'][$l['id_lang']] = '';
+				if (isset($mail[$i]['en'])) $this->triggers['trigger'][$i]['mail'][$l['id_lang']] = utf8_decode($mail[$i]['en']);
+				if (isset($mail[$i][$l['iso_code']])) $this->triggers['trigger'][$i]['mail'][$l['id_lang']] = utf8_decode($mail[$i][$l['iso_code']]);
 
 				// replace {shop_name}, {shop_url}
-				$this->triggers->trigger->$i->subject->$l['id_lang'] = str_replace('{shop_name}', $shop_name, $this->triggers->trigger->$i->subject->$l['id_lang']);
-				$this->triggers->trigger->$i->subject->$l['id_lang'] = str_replace('{shop_url}', $shop_url, $this->triggers->trigger->$i->subject->$l['id_lang']);
-				$this->triggers->trigger->$i->mail->$l['id_lang'] = str_replace('{shop_name}', $shop_name, $this->triggers->trigger->$i->mail->$l['id_lang']);
-				$this->triggers->trigger->$i->mail->$l['id_lang'] = str_replace('{shop_url}', $shop_url, $this->triggers->trigger->$i->mail->$l['id_lang']);
+				$this->triggers['trigger'][$i]['subject'][$l['id_lang']] = str_replace('{shop_name}', $shop_name, $this->triggers['trigger'][$i]['subject'][$l['id_lang']]);
+				$this->triggers['trigger'][$i]['subject'][$l['id_lang']] = str_replace('{shop_url}', $shop_url, $this->triggers['trigger'][$i]['subject'][$l['id_lang']]);
+				$this->triggers['trigger'][$i]['mail'][$l['id_lang']] = str_replace('{shop_name}', $shop_name, $this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
+				$this->triggers['trigger'][$i]['mail'][$l['id_lang']] = str_replace('{shop_url}', $shop_url, $this->triggers['trigger'][$i]['mail'][$l['id_lang']]);
 			}
 		}
 		$this->updateTriggers();
