@@ -43,9 +43,3 @@
         </tbody>
     </table>
 </div>
-        
-<!-- div style="clear:both;width:960px;margin:0 auto;">
-    <div align="center"><br>
-    	Coming soon!
-    </div>
-</div -->
