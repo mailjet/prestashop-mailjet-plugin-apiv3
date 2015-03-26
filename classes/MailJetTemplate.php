@@ -162,7 +162,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
 		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-		$url = 'https://'.$this->_lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amc&locale='.self::$_langCodesMap[$this->_lang];
+		$url = 'https://'.$this->_lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -181,7 +181,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
 		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-		$url = 'https://'.$this->_lang.'.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amc&locale='.self::$_langCodesMap[$this->_lang];
+		$url = 'https://'.$this->_lang.'.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -190,7 +190,7 @@ class MailjetTemplate
 		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
 		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 
-		$url = 'https://'.$this->_lang.'.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=amc&locale='.self::$_langCodesMap[$this->_lang];
+		$url = 'https://'.$this->_lang.'.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
 		$this->iframes_url[$name] = $url;
 	}
 
