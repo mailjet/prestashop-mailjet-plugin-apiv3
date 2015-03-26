@@ -66,9 +66,9 @@ $mail[6]['en'] = '
 	';
 $mail[7]['en'] = '
 	Dear {firstname} {lastname},<br />
-	It has been a while since you have visited us!<br />
-	Come check out what is new - <a href="{shop_url}">click here</a> !
-	';
+    It`s been awhile since you came to {shop_name}!<br />
+    Come check out what is new - <a href="{shop_url}">click here</a>!
+    ';
 $mail[8]['en'] = '
 	Dear {firstname} {lastname},<br />
 	You recently made a purchase with us!<br />
