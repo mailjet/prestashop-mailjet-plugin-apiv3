@@ -224,8 +224,8 @@ class Segmentation
 
 	public function getQuery($post, $live, $limit = false, $speField = '')
 	{
-		if (empty($post)) $post = $_GET;
-		$post = $this->formatDate($post);
+		if (empty($post))
+            $post = $_GET;
 
 		if ($live)
 		{
@@ -999,9 +999,6 @@ class Segmentation
 	{
 		ini_set('display_errors', 'on');
 
-		$post = $this->formatDate($post);
-
-		//if ($post['idfilter'] != 0 && $auto_assign == false)
 		if ($post['idfilter'] != 0)
 		{
 			$id_filter = $post['idfilter'];
@@ -1042,7 +1039,10 @@ class Segmentation
 
 		for ($i = 0; $i < $nb; $i++)
 			Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_.'mj_condition`(`id_filter`, `id_basecondition`, `id_sourcecondition`, `id_fieldcondition`, `rule_a`, `rule_action`, `data`, `value1`, `value2`)
-					VALUES ('.(int)$id_filter.', '.pSQL($post['baseSelect'][$i]).', '.pSQL($post['sourceSelect'][$i]).', '.pSQL($post['fieldSelect'][$i]).', "'.pSQL($post['rule_a'][$i]).'", "'.pSQL($post['rule_action'][$i]).'", "'.pSQL($post['data'][$i]).'", "'.pSQL($post['value1'][$i]).'", "'.pSQL($post['value2'][$i]).'")');
+					VALUES ('.(int)$id_filter.', '.pSQL($post['baseSelect'][$i]).', '.pSQL($post['sourceSelect'][$i]).', '.
+                pSQL($post['fieldSelect'][$i]).', "'.pSQL($post['rule_a'][$i]).'", "'.pSQL($post['rule_action'][$i]).'", "'.
+                pSQL($post['data'][$i]).'", "'.$this->_formatDate(pSQL($post['value1'][$i])).'", "'.
+                $this->_formatDate(pSQL($post['value2'][$i])).'")');
 
 		if ($auto_assign)
 		{

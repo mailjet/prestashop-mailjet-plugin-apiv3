@@ -87,13 +87,14 @@ for ($i = 1; $i <= 9; $i++)
 
 $mail[1]['fr'] = '
 	Cher {firstname} {lastname},<br />
-	Il y a quelques temps vous avez remplis un caddie sur {shop_name} mais n\'&ecirc;tes pas all&eacute; jusqu\'au bout de votre commande...<br />
-	<a href="{shop_url}">cliquez-ici</a> pour terminer votre commande !
+	Il y a quelques temps, vous avez rempli un caddie avec un produit mais n\'&ecirc;tes pas all&eacute; jusqu\'au bout de
+	votre commande...<br />
+	<a href="{shop_url}">Cliquez ici</a> pour terminer votre commande !
 	';
 $mail[2]['fr'] = '
 	Cher {firstname} {lastname},<br />
-	Vous avez eu un soucis de paiement lors de votre derni&egrave;re commande sur notre site...<br />
-	Le probl&egrave;me est surement r&eacute;gl&eacute; depuis, <a href="{shop_url}">cliquez-ici</a> pour repasser commande !
+	Vous avez eu un souci de paiement lors de votre derni&egrave;re commande sur notre site...<br />
+	Le probl&egrave;me est s&ucirc;rement r&eacute;gl&eacute; depuis.  <a href="{shop_url}">Cliquez ici</a> pour repasser commande !
 	';
 $mail[3]['fr'] = '
 	Cher {firstname} {lastname},<br />
@@ -107,25 +108,25 @@ $mail[5]['fr'] = '
 	Cher {firstname} {lastname},<br />
 	JOYEUX ANNIVERSAIRE ! Pour vous remercier de votre int&eacute;r&ecirc;t pour notre magasin<br />
 	nous vous offrons un bon de r&eacute;duction valable 1 mois !<br />
-	Pour en profiter, rendez-vous tout de suite dans votre compte : <a href="{shop_url}">cliquez-ici</a> !
+	Pour en profiter, rendez-vous tout de suite dans votre compte : <a href="{shop_url}">Cliquez ici</a> !
 	';
 $mail[6]['fr'] = '
 	Cher {firstname} {lastname},<br />
-	OFFRE EXCEPTIONNEL ! Nous vous offrons un bon de r&eacute;duction valable pendant 1 mois.<br />
-	Profitez en !!! <a href="{shop_url}">cliquez-ici</a> ! :)
+	OFFRE EXCEPTIONNELLE ! Nous vous offrons un bon de r&eacute;duction valable pendant 1 mois.<br />
+	Profitez-en ! <a href="{shop_url}">Cliquez ici</a> ! :)
 	';
 $mail[7]['fr'] = '
 	Cher {firstname} {lastname},<br />
-	Cela fait longtemps que vous n\&ecirc;tes pas venu sur {shop_name} !<br />
-	Venez voir nos nouveaut&eacute;s, <a href="{shop_url}">cliquez-ici</a> !
+	Cela fait longtemps que vous n’&ecirc;tes pas venu sur Mailjet !<br />
+	Venez voir nos nouveaut&eacute;s.  <a href="{shop_url}">Cliquez ici</a> !
 	';
 $mail[8]['fr'] = '
 	Cher {firstname} {lastname},<br />
-	Il y a peu de temps vous avez fait un achat sur {shop_name} !<br />
-	En &egrave;tes vous satisfait ? laissez nous un commentaire en <a href="{shop_url}">cliquant-ici</a> !
+	Il y a peu de temps vous avez fait un achat sur Mailjet !<br />
+	En &egrave;tes-vous satisfait ? Laissez-nous un commentaire en <a href="{shop_url}">cliquant ici</a> !
 	';
 $mail[9]['fr'] = '
 	Cher {firstname} {lastname},<br />
-	Il vous reste encore des points de fid&eacute;lit&eacute;, transformez les en achat et faites vous plaisir !<br />
-	A bient&ocirc;t sur {shop_name} : <a href="{shop_url}">cliquez-ici</a> !
+	Il vous reste encore des points de fid&eacute;lit&eacute;. Transformez-les en achats et faites-vous plaisir !<br />
+	A bient&ocirc;t sur Mailjet : <a href="{shop_url}">Cliquez ici</a> !
 	';

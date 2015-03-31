@@ -70,7 +70,9 @@
 
 <form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
-	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />&nbsp; <a href="{$cron|escape}" target="_blank"><b>{$cron|escape|default:''}</b></a></div>
+	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
+        <input type="text" readonly value="{$cron|escape}" size=135" />
+    </div>
 	<fieldset class="hint">
 		<legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
         <div>
