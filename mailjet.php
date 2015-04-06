@@ -1074,7 +1074,7 @@ class Mailjet extends Module
 
 			if (!empty($totaux['total']))
 			{
-				$campaigns[$key]['perc_roi'] = (int)$totaux['nb'] * 100 / (int)$campaigns[$key]['delivered'];
+				$campaigns[$key]['perc_roi'] = round((int)$totaux['nb'] * 100 / (int)$campaigns[$key]['delivered'],2);
 				$campaigns[$key]['total_roi'] = $totaux['total'];
 			}
 			else
