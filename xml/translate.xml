@@ -11,7 +11,7 @@
 			<CAMPAIGN>Campaign</CAMPAIGN>
 			<EVENTS>List Cleanup</EVENTS>
 			<TRIGGERS>Triggers</TRIGGERS>
-			<ROI>R.O.I</ROI>
+			<ROI>ROI</ROI>
 			<CONTACTS>Contacts</CONTACTS>
 			<STATS>Stats</STATS>
 			<ACCOUNT>Account</ACCOUNT>
@@ -30,7 +30,7 @@
 			<CONTACTS>Contacts</CONTACTS>
 			<STATS>Stats</STATS>
 			<TRIGGERS>E-Mails transactionnels</TRIGGERS>
-			<ROI>R.O.I</ROI>
+			<ROI>ROI</ROI>
 			<ACCOUNT>Mon compte</ACCOUNT>
 			<FAQ>FAQ</FAQ>
 			<PRICING>UPGRADE</PRICING>
