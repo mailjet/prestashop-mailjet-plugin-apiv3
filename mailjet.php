@@ -1045,16 +1045,11 @@ class Mailjet extends Module
 		{
 			if (empty($c['stats_campaign_id']) || empty($c['delivered']))
 			{
-				$params = array(
-						'NewsLetter'	=> $c['campaign_id'],
-				);
-			
 				$api->resetRequest();
-				$api->campaignstatistics($params);
+				$api->campaignstatistics(array('NewsLetter' => $c['campaign_id']));
 				$mjc = $api->getResponse();
 
-				if (isset($mjc->Data) && isset($mjc->Data[0]))
-				{	
+				if (isset($mjc->Data) && isset($mjc->Data[0])) {
 					$campaigns[$key]['delivered'] = (int)$mjc->Data[0]->ProcessedCount;
 					$campaigns[$key]['title'] = $mjc->Data[0]->CampaignSubject;
 		
@@ -1067,29 +1062,27 @@ class Mailjet extends Module
 				}
 			}
 
-			// Allons chercher le ROI de cette campagne
 			$sql = 'SELECT COUNT(id_order) AS nb, SUM(total_paid) AS total
               FROM '._DB_PREFIX_.'mj_roi WHERE campaign_id = '.(int)$c['campaign_id'];
 			$totaux = Db::getInstance()->GetRow($sql);
 
-			if (!empty($totaux['total']))
-			{
-				$campaigns[$key]['perc_roi'] = round((int)$totaux['nb'] * 100 / (int)$campaigns[$key]['delivered'],2);
-				$campaigns[$key]['total_roi'] = $totaux['total'];
-			}
-			else
-			{
-				$campaigns[$key]['perc_roi'] = 0;
-				$campaigns[$key]['total_roi'] = 0;
+			if(empty($totaux['total'])) {
+                $campaigns[$key]['num_sales_roi'] = 0;
+                $campaigns[$key]['perc_roi'] = 0;
+                $campaigns[$key]['total_roi'] = 0;
+			} else {
+                $campaigns[$key]['num_sales_roi'] = $totaux['nb'];
+                $campaigns[$key]['perc_roi'] = round((int)$totaux['nb'] * 100 / (int)$campaigns[$key]['delivered'],2);
+                $campaigns[$key]['total_roi'] = $totaux['total'];
 			}
 		}
 
-		// Assign
 		$this->context->smarty->assign(array(
 			'trad_title' => $this->l('Title'),
 			'trad_sentemails' => $this->l('Sent emails'),
 			'trad_roiamount' => $this->l('ROI Amount'),
 			'trad_roipercent' => $this->l('ROI Percent'),
+			'trad_roi_num_sales' => $this->l('Number of sales'),
 			'campaigns' => $campaigns
 		));
 	}
