@@ -1089,7 +1089,7 @@ class Mailjet extends Module
 			'trad_title' => $this->l('Title'),
 			'trad_sentemails' => $this->l('Sent emails'),
 			'trad_roiamount' => $this->l('ROI Amount'),
-			'trad_roipercent' => $this->l('ROI percent'),
+			'trad_roipercent' => $this->l('ROI Percent'),
 			'campaigns' => $campaigns
 		));
 	}
