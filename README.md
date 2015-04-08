@@ -2,9 +2,17 @@
 
 # Description 
 
-Boost your ROI and increase your merchant revenue with the Mailjet PrestaShop plugin! Create, send and analyze your transactional and email marketing campaigns straight from within your PrestaShop account.
+Boost your ROI and increase your merchant revenue with the Mailjet v3 all-in-one PrestaShop email plugin! Create, send and analyze your transactional and email marketing campaigns straight from within your PrestaShop merchant account and boost your bottom line.
 
-Be careful - this version of Mailjet’s add-on is compatible with only Mailjet v3 users.  If you are a v1 user (any account created before April 2014), please request to get your account migrated via https://www.mailjet.com/support/ticket. 
+<b>PLEASE NOTE</b> - this version of Mailjet’s add-on is compatible with only Mailjet v3 users.  If you are a v1 user (any account created before April 2014), please request to get your account migrated via https://www.mailjet.com/support/ticket. 
+
+# Plug-in Key Info
+
+Plug-in languages: EN FR
+PrestaShop Compatibility: PrestaShop v1.4.0.1 - v1.6.0.14
+Mailjet Compatibility: Mailjet v3
+Support: https://www.mailjet.com/support/ticket
+Requires Mailjet account
 
 # Merchant Benefits
 
@@ -54,3 +62,4 @@ Once you have a Mailjet account, click ‘Connect’ to enter your Mailjet Main 
 
 Copy and paste your credentials and click ‘Save & Login’.
 
+Happy emailing!
