@@ -28,6 +28,7 @@
                 <th class="title">{$trad_title|escape|default:''}</th>
                 <th class="title">{$trad_sentemails|escape|default:''}</th>
                 <th class="title">{$trad_roiamount|escape|default:''}</th>
+                <th class="title">{$trad_roi_num_sales|escape|default:''}</th>
                 <th class="title">{$trad_roipercent|escape|default:''}</th>
             </tr>
         </thead>
@@ -37,6 +38,7 @@
                 <td>{$c.title|escape|default:''}</td>
                 <td>{$c.delivered|escape|default:''}</td>
                 <td>{convertPrice price=$c.total_roi|escape|default:''}</td>
+                <td>{$c.num_sales_roi|escape|default:''}</td>
                 <td>{$c.perc_roi|escape|default:''}%</td>
             </tr>
             {/foreach}

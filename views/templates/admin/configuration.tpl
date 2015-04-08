@@ -64,9 +64,11 @@
 {include file="$MJ_local_path/views/templates/admin/$MJ_template_name.tpl"}
 
 {if !$is_landing}
-<div class="mj_landing">
-    <div align="center"><br />
-    <a href="http://fr.mailjet.com/support" target="_blank">{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}</a>
+    <div class="mj_landing">
+        <div align="center">
+            <br />
+            <a href="https://www.mailjet.com/support"
+               target="_blank">{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}</a>
+        </div>
     </div>
-</div>
 {/if}
