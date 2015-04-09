@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<translate>
+	<pages>
+		<iso code="en">
+			<SETUP_LANDING>Setup Landing</SETUP_LANDING>
+			<SETUP_STEP_0>Setup step 0</SETUP_STEP_0>
+			<SETUP_STEP_1>Setup step 1</SETUP_STEP_1>
+			<LOGIN>Login</LOGIN>
+			<HOME>Home</HOME>
+			<SEGMENTATION>Segmentation</SEGMENTATION>
+			<CAMPAIGN>Campaign</CAMPAIGN>
+			<EVENTS>List Cleanup</EVENTS>
+			<TRIGGERS>Triggers</TRIGGERS>
+			<ROI>ROI</ROI>
+			<CONTACTS>Contacts</CONTACTS>
+			<STATS>Stats</STATS>
+			<ACCOUNT>Account</ACCOUNT>
+			<FAQ>FAQ</FAQ>
+			<PRICING>UPGRADE</PRICING>
+		</iso>
+		<iso code="fr">
+			<SETUP_LANDING>Présentation de l'installation</SETUP_LANDING>
+			<SETUP_STEP_0>Etape 1 de l'installation</SETUP_STEP_0>
+			<SETUP_STEP_1>Etape 1 de l'installation</SETUP_STEP_1>
+			<LOGIN>Identification</LOGIN>
+			<HOME>Accueil</HOME>
+			<SEGMENTATION>Segmentation</SEGMENTATION>
+			<CAMPAIGN>Campagnes</CAMPAIGN>
+			<EVENTS>Gestion d'erreur</EVENTS>
+			<CONTACTS>Contacts</CONTACTS>
+			<STATS>Stats</STATS>
+			<TRIGGERS>E-Mails transactionnels</TRIGGERS>
+			<ROI>ROI</ROI>
+			<ACCOUNT>Mon compte</ACCOUNT>
+			<FAQ>FAQ</FAQ>
+			<PRICING>UPGRADE</PRICING>
+		</iso>
+	</pages>
+	<stats>
+		<iso code="en">
+			<avg_clicked_day>Average clicked delay</avg_clicked_day>
+			<avg_opened_rate>Average opened rate</avg_opened_rate>
+			<blocked>Emails blocked</blocked>
+			<blocked_rate>Blocked rate</blocked_rate>
+			<bounce>Emails bounced</bounce>
+			<bounce_rate>Bounce rate</bounce_rate>
+			<clicked>Emails clicked</clicked>
+			<clicked_rate>Clicked rate</clicked_rate>
+			<cnt_campaigns>Amount of campaigns</cnt_campaigns>
+			<cnt_messages>Amount of messages</cnt_messages>
+			<cnt_transac>Amount of transactional email</cnt_transac>
+			<ctdr>Click / delivered rate</ctdr>
+			<cto>Click / open rate</cto>
+			<delivered>Emails delivered</delivered>
+			<delivered_rate>Delivered rate</delivered_rate>
+			<failure_rate>Failure rate</failure_rate>
+			<opened>Emails opened</opened>
+			<opened_rate>Opened rate</opened_rate>
+			<queued>Emails queued</queued>
+			<queued_rate>Queued rate</queued_rate>
+			<spam>Spam emails</spam>
+			<spam_rate>Spam rate</spam_rate>
+			<total>Total emails</total>
+			<unsub>Unsubscribed emails</unsub>
+			<unsub_rate>Unsubscribe rate</unsub_rate>
+		</iso>
+		<iso code="fr">
+			<avg_clicked_day>Average clicked delay</avg_clicked_day>
+			<avg_opened_rate>Average opened rate</avg_opened_rate>
+			<blocked>Emails blocked</blocked>
+			<blocked_rate>Blocked rate</blocked_rate>
+			<bounce>Emails bounced</bounce>
+			<bounce_rate>Bounce rate</bounce_rate>
+			<clicked>Emails clicked</clicked>
+			<clicked_rate>Clicked rate</clicked_rate>
+			<cnt_campaigns>Amount of campaigns</cnt_campaigns>
+			<cnt_messages>Amount of messages</cnt_messages>
+			<cnt_transac>Amount of transactional email</cnt_transac>
+			<ctdr>Click / delivered rate</ctdr>
+			<cto>Click / open rate</cto>
+			<delivered>Emails delivered</delivered>
+			<delivered_rate>Delivered rate</delivered_rate>
+			<failure_rate>Failure rate</failure_rate>
+			<opened>Emails opened</opened>
+			<opened_rate>Opened rate</opened_rate>
+			<queued>Emails queued</queued>
+			<queued_rate>Queued rate</queued_rate>
+			<spam>Spam emails</spam>
+			<spam_rate>Spam rate</spam_rate>
+			<total>Total emails</total>
+			<unsub>Unsubscribed emails</unsub>
+			<unsub_rate>Unsubscribe rate</unsub_rate>
+		</iso>
+	</stats>
+	<events>
+		<iso code="en">
+			<event>Event</event>
+			<time>Date</time>
+			<email>Email</email>
+			<mj_contact_id>Contact ID</mj_contact_id>
+			<customcampaign>Compaign Name</customcampaign>
+			<ip>IP</ip>
+			<geo>ISO code</geo>
+			<agent>User Agent</agent>
+			<url>URL</url>
+			<blocked>Blocked</blocked>
+			<hard_bounce>Hard bounce</hard_bounce>
+			<error_related_to>Error to</error_related_to>
+			<error>Error</error>
+			<source>Source</source>
+			<original_address>Original address</original_address>
+			<new_address>New address</new_address>
+		</iso>
+	</events>
+</translate>

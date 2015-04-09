@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<events>
+	<event name="open">
+		<key type="string">email</key>
+		<key type="int">mj_contact_id</key>
+		<key type="string">customcampaign</key>
+		<key type="string">ip</key>
+		<key type="string">geo</key>
+		<key type="string">agent</key>
+	</event>
+	<event name="click">
+		<key type="string">url</key>
+	</event>
+	<event name="bounce">
+		<key type="string">email</key>
+		<key type="int">mj_contact_id</key>
+		<key type="string">customcampaign</key>
+		<key type="string">blocked</key>
+		<key type="string">hard_bounce</key>
+		<key type="string">error_related_to</key>
+		<key type="string">error</key>
+	</event>
+	<event name="spam">
+		<key type="string">email</key>
+		<key type="int">mj_contact_id</key>
+		<key type="string">customcampaign</key>
+		<key type="string">source</key>
+	</event>
+	<event name="blocked">
+		<key type="string">email</key>
+		<key type="int">mj_contact_id</key>
+		<key type="string">customcampaign</key>
+		<key type="string">error_related_to</key>
+		<key type="string">error</key>
+	</event>
+	<event name="typofix">
+		<key type="string">original_address</key>
+		<key type="int">new_address</key>
+	</event>
+
+	<event name="keys_list">
+		<key type="string">email</key>
+		<key type="int">mj_contact_id</key>
+		<key type="string">customcampaign</key>
+		<key type="string">ip</key>
+		<key type="string">geo</key>
+		<key type="string">agent</key>
+		<key type="string">url</key>
+		<key type="string">blocked</key>
+		<key type="string">hard_bounce</key>
+		<key type="string">error_related_to</key>
+		<key type="string">error</key>
+		<key type="string">source</key>
+		<key type="string">original_address</key>
+		<key type="int">new_address</key>
+	</event>
+</events>

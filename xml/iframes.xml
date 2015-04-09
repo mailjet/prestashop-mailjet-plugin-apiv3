@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<iframes>
+		<iframe name="CAMPAIGN">https://{lang}.mailjet.com/campaigns/create?r=prestashop</iframe>
+		<iframe name="CONTACTS">https://{lang}.mailjet.com/contacts?r=prestashop&amp;show_menu=0</iframe>
+		<iframe name="STATS">https://{lang}.mailjet.com/stats?r=prestashop</iframe>
+		<iframe name="PRICING">https://{lang}.mailjet.com/reseller/pricing?r=prestashop</iframe>
+</iframes>

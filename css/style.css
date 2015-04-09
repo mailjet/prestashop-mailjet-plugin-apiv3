@@ -1,0 +1,424 @@
+/*
+* 2007-2015 PrestaShop
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* http://opensource.org/licenses/afl-3.0.php
+* If you did not receive a copy of the license and are unable to
+* obtain it through the world-wide-web, please send an email
+* to license@prestashop.com so we can send you a copy immediately.
+*
+* DISCLAIMER
+*
+* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
+* versions in the future. If you wish to customize PrestaShop for your
+* needs please refer to http://www.prestashop.com for more information.
+*
+* @author PrestaShop SA <contact@prestashop.com>
+* @copyright  2007-2015 PrestaShop SA
+* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+* International Registered Trademark & Property of PrestaShop SA
+*/
+
+#mainFieldset
+{
+	 #width: 900px;
+}
+
+select.fixed
+{
+	width:100px;
+}
+input.fixed
+{
+	width:90px;
+}
+td.fixed {
+	width: 110px;	
+}
+input.alertbox
+{
+	border: 1px solid red;
+}
+h2 {
+	font-family: Arial,Helvetica,'sans-serif';
+    font-size: 18px;
+    font-weight: bold;
+	color: #585A69;
+    margin-bottom: 10px;
+	text-transform:uppercase;
+}
+
+
+
+label.noFloat {
+float:none;
+}
+
+div.hidden_filters,div.hidden_conditiongroups,div.hidden_conditions {
+display:none;
+}
+
+
+
+div.newFilter,div.newConditionGroup {
+padding-left:15px;
+padding-top:10px;
+margin:15px;
+}
+
+div#container_conditiongroups {
+margin:20px;
+}
+
+div#container_conditiongroups label {
+font-size:13px;
+}
+
+
+/*RESULTAT FILTRE*/
+#result {
+	margin: 25px 0 10px;
+}
+
+#result table.table{
+	width:100%;
+	margin-bottom: 7px;
+}
+
+#result table.table tr th {
+font-size:12px;
+}
+
+#result table.table tr:nth-child(2n+1) { 
+background-color:#EFEFEF;
+}
+
+#result table.table tr td {
+font-size:12px;
+}
+
+
+
+
+fieldset.custo2 {
+border:2px solid #456A9A;
+-moz-border-radius:8px;
+-webkit-border-radius:8px;
+border-radius:8px;
+margin-bottom:10px;
+height:35px;
+}
+
+
+button.nostyle {
+border:0;
+}
+
+.filterName,.pointer {
+cursor:pointer;
+}
+
+
+/*Add*/
+div.header {
+ margin: 0 auto;
+ text-align: center;	
+}
+
+
+button.my_button {
+background: -moz-linear-gradient(center top , #f9F9F9, #ededed) repeat scroll 0 0 transparent;
+background: -webkit-gradient(linear, center top ,center bottom, from(#F9F9F9), to(#ededed)) repeat scroll 0 0 transparent;
+border-color: #CCCCCC #BBBBBB #A0A0A0;
+border-style: solid;
+border-width: 1px;
+font-size: 12px;
+text-shadow: 0 1px 0 #FFFFFF;
+padding: 2px 4px;
+border-radius: 3px;
+-moz-border-radius: 3px;
+-webkit-border-radius: 3px;
+	background: transparent url(../img/sprites-button.png) repeat-x scroll left top !ie;
+	padding:2px 0 !ie;
+
+} 
+
+button.my_button:hover {
+background: -moz-linear-gradient(center top , #ffffff, #ededed) repeat scroll 0 0 transparent;
+background: -webkit-gradient(linear, center top ,center bottom, from(#ffffff), to(#ededed)) repeat scroll 0 0 transparent;
+border: 1px solid #A0A0A0;
+cursor: pointer;
+	background-position: left center !ie;
+
+}
+
+
+button.my_button:active {
+background: -moz-linear-gradient(center top , #ededed, #f9F9F9) repeat scroll 0 0 transparent;
+background: -webkit-gradient(linear, center top ,center bottom, from(#ededed), to(#f9F9F9)) repeat scroll 0 0 transparent;
+border: 1px solid #A0A0A0;
+border-bottom: 1px solid #ccc;
+text-shadow: 0 -1px 0 #FFFFFF;
+	background-position: left bottom !ie;
+}
+
+
+div.new_filter h2 {
+display: inline-block;
+}
+
+
+fieldset.custo {
+	#background-color: #fieldset.custo;
+    border: none;
+    margin-bottom: 10px;
+    min-height: 67px;
+    padding: 10px;
+    
+}
+
+fieldset.custo .nameFilter {
+	#background-color: #FFF6D3;
+    #border: 1px solid #E2D9C7;
+    #float: left;
+    margin-bottom: 10px;
+    padding: 10px;
+    #width: 858px;
+	
+}
+
+.segmentNameLabel{width:120px;}
+
+fieldset.custo .nameFilter .titleFilter {
+	font-weight: bold;
+	font-size: 12px;
+	float:left;
+}
+input#name {
+	width: 252px;	
+}
+.description
+{
+	width: 450px;
+	height: 100px;
+	resize: none;
+}
+fieldset #filter_2.custo { 
+	padding-left:10px;
+}
+
+
+.right
+{
+	margin-right:5px;
+	float:right;
+	text-align:left;
+}
+
+div.filtersDetails { 
+font-weight:bold;
+}
+
+div.filtersDetails label.noFloat {
+font-weight: normal;
+}
+
+p.condition {
+margin-left:7px;
+margin-top:17px;
+font-size:12px;
+}
+p.conditionGroup,p.select {
+margin-left:7px;
+margin-top:17px;
+font-size:12px;
+}
+.noborder
+{
+border:0;
+background-color:transparent;
+margin-top:-20px;
+}
+.nomargin
+{
+margin-top:-8px;
+}
+h2.grpCond {
+font-family: Arial;
+font-weight: bold;
+font-size : 12px;
+} 
+.size2
+{
+	font-size:12px;
+	font-weight: bold;
+	
+}
+.size3
+{
+	font-size:12px;
+	font-weight: bold;
+	
+}
+select.selectStyle {
+background-color:#FFF;
+width:90px;
+}
+
+
+/*BLOC ACTION*/
+
+.displayInlineBlock {display: inline-block;}
+.width200 {width: 200px;}
+.widthAuto {width: auto;}
+.verticalAlignTop {vertical-align: top;}
+.floatLeft {float: left;}
+.padding2 {padding: 2px;}
+
+div.blocAction {
+	margin-top: 42px;
+}
+
+div.blocAction div.rowAction { display:block; width: auto; font-size:12px; font-weight:bold; padding:10px 0px;
+	position:relative; border-bottom: 1px solid grey;}
+div.blocAction div.rowAction label { text-align: left; width:210px; }
+div.blocAction div.rowAction label.label { width:auto; margin: -4px 0 0 4px; }
+
+
+div.blocAction fieldset.custo { 
+	#background-color: #fff6d3;
+	#border:1px solid #ccc;
+}
+
+div.blocAction fieldset.custo tr {
+	margin:2px 0;
+}
+
+
+p.condition input,
+.size3 input { vertical-align: middle; margin-bottom:3px !important; }
+.size3 span { margin-right:5px;}
+
+
+
+
+p.noResult {
+background: url("../img/no-result.png") no-repeat scroll 10px 50% #FFEBE8;
+border: 1px solid #CC0000;
+font-size: 12px;
+font-weight: bold;
+padding: 10px 35px;
+}
+
+p.result {
+background: url("../img/accept.png") no-repeat scroll 1% 50% #b7e2a7;
+border: 1px solid #85c10c;
+font-size: 12px;
+font-weight: bold;
+padding: 10px 35px;
+}
+
+span.help
+{
+	font-weight: bold;
+	color: #7F7F7F;
+    font-size: 12px;
+    display: inline-block;
+    width:400px;
+}
+span.help2
+{
+	font-weight: bold;
+	color: #7F7F7F;
+    font-size: 12px;
+    margin-left:20px;
+    left:400px;
+}
+#selectFilter
+{
+	 width: 180px;
+}
+/* Liste des filtres */
+#list
+{
+	width:100%;
+}
+
+#list tr:hover
+{
+	background:#FFF6D3;
+	cursor:pointer;
+}
+
+/* Main table */
+
+#mainTable
+{
+	width:100%;
+}
+
+.grey
+{
+	 opacity:0.3; 
+	background:gray;
+}
+
+dl#filter-help {
+	display:none;
+	background: url(/img/admin/help2.png) no-repeat scroll 6px 5px #DDE9F7;
+	border: 1px solid #50B0EC;
+	color: #383838;
+	padding: 8px 6px 8px 42px;
+	position: relative;
+	margin-top: 4px;
+	margin-bottom: 20px;
+	overflow: hidden;
+}
+dl#filter-help dt {
+	font-weight: bold;
+	float: left;
+	clear: left;
+	margin-bottom: 5px;
+}
+dl#filter-help dd {
+	font-style: italic;
+	margin: 0 0 5px 125px;
+}
+
+.perc_sync {
+	float:right;	
+	margin-right:20px;
+	padding-top:5px;
+	display:none
+}
+
+.div_new_filter {
+	display:none;	
+}
+
+/* ** ** ******************* ** ** */
+
+.seg_fieldset {
+	display:block;
+	position:relative;
+	/* text-align:justify; */
+}
+.seg_hr { margin-top:25px; }
+#wait { margin:3px; }
+
+#seg_pagination {
+	margin-top:4px;
+	font-size:12px;
+}
+#seg_pagination a {
+	font-weight:bold;
+	margin:0 3px;
+}
+
+input.alertbox { border: 1px solid red !important; }
+
+/* ** ** ******************* ** ** */

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<groups>
+
+	<pages>
+		<default_page name="SETUP_LANDING"/>
+
+		<page name="SETUP_LANDING" />
+		<page name="SETUP_STEP_0" />
+		<page name="SETUP_STEP_1"/>
+		<page name="CONNECT_STEP_0"/>
+		<page name="LOGIN" />
+	</pages>
+
+	<tabs>
+		<tab name="AUTHENTICATED">
+			<default_page name="HOME"/>
+			<page name="HOME" />
+			<page name="SEGMENTATION" />
+			<page name="CAMPAIGN" />
+			<page name="TRIGGERS" />
+			<page name="CONTACTS" />
+			<page name="STATS" />
+
+			<page name="ROI" />
+			<page name="EVENTS" />
+			<page name="ACCOUNT" />
+			<page name="PRICING" />
+
+		</tab>
+	</tabs>
+</groups>
