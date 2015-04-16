@@ -729,8 +729,17 @@ class Mailjet extends Module
 		// All emails sending by Mailjet ?
 		if (Tools::isSubmit('MJ_set_allemails'))
 		{
-			if (Tools::getValue('MJ_allemails_active')) $this->activateAllEmailMailjet();
-			else Configuration::updateValue('PS_MAIL_METHOD', 1);
+			if (Tools::getValue('MJ_allemails_active')) {
+                $this->activateAllEmailMailjet();
+            } else {
+                Configuration::updateValue('PS_MAIL_METHOD', 1);
+                /*
+                 * deactivate triggers if Mailjet emails are disabled
+                 */
+                $triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), 1)) ? $triggers : $this->triggers;
+                $triggers['active'] = 0;
+                Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
+            }
 
 			Configuration::updateValue('MJ_ALLEMAILS', Tools::getValue('MJ_allemails_active'));
 			$this->context->smarty->assign(array(
