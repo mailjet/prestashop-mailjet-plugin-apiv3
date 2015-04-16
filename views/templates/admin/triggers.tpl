@@ -76,13 +76,22 @@
 	<fieldset class="hint">
 		<legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
         <div>
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options').slideDown()" {if $triggers.active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options').slideUp()" {if !$triggers.active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
+			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options').slideDown()" {if $MJ_allemails_active && $triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
+			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options').slideUp()" {if !$MJ_allemails_active || !$triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
 		</div>
-        <input type="submit" name="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button" />
-	</fieldset>
+        <input type="submit" name="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button"  {if !$MJ_allemails_active}disabled{/if} />
+	<br />
+      
+        {if !$MJ_allemails_active}
+            <br />
+            <p class="warn">
+                {l s="Because you have selected to not send your transactional email via Mailjet on the plug-in Homepage, this means the triggered email module can't be activated either. To activate triggered emails, please go to the plug-in homepage and select 'Yes' to have Mailjet send all of your email. This will then allow you to select 'Yes' to activate the triggered emails module." mod='mailjet'}
+            </p>
+        {/if}
+
+        </fieldset>
     <br />
-    <fieldset id="triggers_options" {if !$triggers.active}style="display:none;"{/if}>
+    <fieldset id="triggers_options" {if !$MJ_allemails_active || !$triggers.active}style="display:none;"{/if}>
     	<legend>{l s='Triggers' mod='mailjet'}</legend>
         <ul>
         	{for $sel=1 to 9}
