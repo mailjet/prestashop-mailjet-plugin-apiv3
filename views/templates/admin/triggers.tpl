@@ -91,7 +91,7 @@
 
         </fieldset>
     <br />
-    <fieldset id="triggers_options" {if !$MJ_allemails_active || !$triggers.active}style="display:none;"{/if}>
+    <fieldset id="triggers_options" {if $MJ_allemails_active && !$triggers.active}style="display:none;"{/if}>
     	<legend>{l s='Triggers' mod='mailjet'}</legend>
         <ul>
         	{for $sel=1 to 9}
@@ -108,8 +108,8 @@
 	                	{if $sel==9}{l s='Loyalty points reminder' mod='mailjet'}{/if} : 
 					</label>
 					<div class="mj_radios">
-						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').show();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp;
-						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_0" value=0 {if !$triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').hide();$('#MJ_triggers_trigger_{$sel|escape}_parameters').hide();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp;
+						<input {if !$MJ_allemails_active}disabled{/if} type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').show();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp;
+						<input {if !$MJ_allemails_active}disabled{/if} type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_0" value=0 {if !$triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').hide();$('#MJ_triggers_trigger_{$sel|escape}_parameters').hide();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp;
 						<a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_parameters').slideToggle();" id="MJ_triggers_trigger_{$sel|escape}_button" class="button MJ_triggers_trigger_buttons" style="{if !$triggers.trigger.$sel.active}display:none;{/if}" />{l s='parameters' mod='mailjet'}</a> &nbsp;
                         <br />
 					</div>

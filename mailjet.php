@@ -729,16 +729,19 @@ class Mailjet extends Module
 		// All emails sending by Mailjet ?
 		if (Tools::isSubmit('MJ_set_allemails'))
 		{
+            $triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), 1)) ? $triggers : $this->triggers;
+            Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
+                
 			if (Tools::getValue('MJ_allemails_active')) {
                 $this->activateAllEmailMailjet();
+                $triggers['active'] = 1;
+                
             } else {
                 Configuration::updateValue('PS_MAIL_METHOD', 1);
                 /*
                  * deactivate triggers if Mailjet emails are disabled
                  */
-                $triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), 1)) ? $triggers : $this->triggers;
                 $triggers['active'] = 0;
-                Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
             }
 
 			Configuration::updateValue('MJ_ALLEMAILS', Tools::getValue('MJ_allemails_active'));
@@ -1288,8 +1291,8 @@ class Mailjet extends Module
 		$test = new Mailjet_ApiOverlay($apiKey, $secretKey);
 		$result = $test->getUser();
 
-		if ($result !== false)
-		{
+		if ($result !== false) {
+            
 			$this->account->API_KEY = $apiKey;
 			$this->account->SECRET_KEY = $secretKey;
 			$this->account->EMAIL = $result->Email;
@@ -1309,8 +1312,9 @@ class Mailjet extends Module
 
 			return true;
 		}
-		else
-			$this->errors_list[] = $this->l('Api key or Secret key incorrect, please review it.');
+		else{
+            $this->errors_list[] = $this->l('Please verify that you have entered your API and secret key correctly. Please note this plug-in is compatible for Mailjet v3 accounts only.').'<a href="https://app.mailjet.com/support/why-do-i-get-an-api-error-when-trying-to-activate-a-mailjet-plug-in,497.htm" target="_blank" style="text-decoration:underline;">'.$this->l('Click here ').'</a>'.$this->l(' to check the version of your Mailjet account');
+        }
 
 		return false;
 	}
