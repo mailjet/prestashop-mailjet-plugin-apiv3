@@ -150,9 +150,9 @@ class MailjetTemplate
 	 */
 	public function getSignupURL($name = 'SETUP_STEP_1')
 	{
-		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
+		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$token = Tools::getAdminTokenLite('AdminModules');
-		$sign_up_call_back = urlencode('http://'.$ps_shop_domain.'/modules/mailjet/callback_signup.php?internaltoken='.$token);
+		$sign_up_call_back = urlencode($ps_shop_domain.'/modules/mailjet/callback_signup.php?internaltoken='.$token);
 		$url = 'https://'.$this->_lang.'.mailjet.com/reseller/signup?r=prestashop&cb={'.$sign_up_call_back.'}&show_menu=none&locale='.self::$_langCodesMap[$lang];
 
 		$this->iframes_url[$name] = $url;
@@ -160,16 +160,16 @@ class MailjetTemplate
 
 	public function getCampaignURL($name = 'CAMPAIGN', $token)
 	{
-		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
-		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
+		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 		$url = 'https://'.$this->_lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
 		$this->iframes_url[$name] = $url;
 	}
 
 	public function getPricingURL($name = 'PRICING', $token = null)
 	{
-		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
-		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
+		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 		if ($token)
 			$url = 'https://'.$this->_lang.'.mailjet.com/reseller/pricing?t='.$token.'&r=prestashop&cb='.$cb.'&show_menu=none&locale='.self::$_langCodesMap[$this->_lang];
 		else
@@ -179,16 +179,16 @@ class MailjetTemplate
 
 	public function getStatsURL($name = 'STATS', $token)
 	{
-		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
-		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
+		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 		$url = 'https://'.$this->_lang.'.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
 		$this->iframes_url[$name] = $url;
 	}
 
 	public function getContactsURL($name = 'CONTACTS', $token)
 	{
-		$ps_shop_domain = Configuration::get('PS_SHOP_DOMAIN');
-		$cb = 'http://'.$ps_shop_domain.'/modules/mailjet/callback_campaign.php';
+		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 
 		$url = 'https://'.$this->_lang.'.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
 		$this->iframes_url[$name] = $url;
