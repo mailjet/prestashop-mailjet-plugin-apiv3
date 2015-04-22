@@ -1,12 +1,12 @@
 # [API v3] Mailjet for PrestaShop
 
-# Description 
+## Description 
 
 Boost your ROI and increase your merchant revenue with the Mailjet v3 all-in-one PrestaShop email plugin! Create, send and analyze your transactional and email marketing campaigns straight from within your PrestaShop merchant account and boost your bottom line.
 
 <b>PLEASE NOTE</b> - this version of Mailjet’s add-on is compatible with only Mailjet v3 users.  If you are a v1 user (any account created before April 2014), please request to get your account migrated via https://www.mailjet.com/support/ticket. 
 
-# Plug-in Key Info
+## Plug-in Key Info
 
 Plug-in languages: EN FR
 PrestaShop Compatibility: PrestaShop v1.4.0.1 - v1.6.0.14
@@ -14,41 +14,41 @@ Mailjet Compatibility: Mailjet v3
 Support: https://www.mailjet.com/support/ticket
 Requires Mailjet account
 
-# Merchant Benefits
+## Merchant Benefits
 
 With Mailjet, optimise your  deliverability,  get your emails delivered to the inbox and avoid the spam folder. Install the official Mailjet PrestaShop add-on and get access to:
  
-- ROI Stats:  Real-time sales and net revenue figures per marketing newsletter. Find out who opened, clicked, bounced or unsubscribed from your mailings, create graphs, export data and much more
+* ROI Stats:  Real-time sales and net revenue figures per marketing newsletter. Find out who opened, clicked, bounced or unsubscribed from your mailings, create graphs, export data and much more
  
-- Setup triggered email events based on customer behavior (birthday promo, abandoned cart, survey request, …)
+* Setup triggered email events based on customer behavior (birthday promo, abandoned cart, survey request, …)
  
-- Group and create specific customer segments  to send targeted  content to thus increasing engagement and  open rates
+* Group and create specific customer segments  to send targeted  content to thus increasing engagement and  open rates
  
-- Automatically remove unsubscribers from your contact lists and Newsletter list to keep your deliverability reputation intact
+* Automatically remove unsubscribers from your contact lists and Newsletter list to keep your deliverability reputation intact
  
-- Personalize your mailings with any contact list properties
+* Personalize your mailings with any contact list properties
  
-- Create & manage all Mailjet campaigns and contacts directly within PrestaShop
+* Create & manage all Mailjet campaigns and contacts directly within PrestaShop
 
-# Features
+## Features
 
-- Create personalized messages for your client base using our segmentation feature
+* Create personalized messages for your client base using our segmentation feature
  
-- Compare the sending rates of multiple campaigns to target the best performing newsletters with Mailjet’s campaign comparison tool
+* Compare the sending rates of multiple campaigns to target the best performing newsletters with Mailjet’s campaign comparison tool
  
-- Use our drag-and-drop (WYSIWYG)  template builder to create beautiful newsletters -- no coding necessary
+* Use our drag-and-drop (WYSIWYG)  template builder to create beautiful newsletters -- no coding necessary
  
-- 24/7 customer support is available in English, French, German and Spanish
+* 24/7 customer support is available in English, French, German and Spanish
 
 Is your shop using version 1.5? This module is already pre-installed and ready to use! To activate it, go to the “Modules” tab in your back office and click “Install”.
 
 To connect your Mailjet account, sign up or sign into your account and copy/paste your API and Secret Keys over into the add-on. 
 
-# Customer Benefits
+## Customer Benefits
 
 Your customers will benefit by receiving personalized and pertinent emails delivered straight into their inbox increasing engagement and repeat buying. 
 
-# Installation:
+## Installation:
 1. Download the zip.
 2. Unzip the archive and rename the folder to "mailjet"
 3. Then zip again the folder
