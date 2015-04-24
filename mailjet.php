@@ -841,7 +841,7 @@ class Mailjet extends Module
             $triggers = ($triggers = Configuration::get('MJ_TRIGGERS')) ? $triggers : json_encode($this->triggers);
 
             header("Content-Type: plain/text");
-            header("Content-Disposition: Attachment; filename=triggers.txt");
+            header("Content-Disposition: Attachment; filename=Mailjet_Trigger_Templates.txt");
             header("Pragma: no-cache");
 
             echo "$triggers";
