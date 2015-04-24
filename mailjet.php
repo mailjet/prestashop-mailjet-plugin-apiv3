@@ -824,7 +824,32 @@ class Mailjet extends Module
 			$this->updateTriggers();
 			$modif = true;
 		}
-		if ($modif)
+        
+        if (Tools::isSubmit('MJ_triggers_import_submit')) {
+            
+            $file = new SplFileObject($_FILES['MJ_triggers_import_file']['tmp_name']);
+            while (!$file->eof()) {
+                $triggers .= $file->fgets();
+            }
+            
+            Configuration::updateValue('MJ_TRIGGERS', $triggers);
+            $modif = true;
+		}
+		
+        if (Tools::isSubmit('MJ_triggers_export_submit')) {
+            
+            $triggers = ($triggers = Configuration::get('MJ_TRIGGERS')) ? $triggers : json_encode($this->triggers);
+
+            header("Content-Type: plain/text");
+            header("Content-Disposition: Attachment; filename=triggers.txt");
+            header("Pragma: no-cache");
+
+            echo "$triggers";
+            die();
+		}
+		
+        
+        if ($modif)
 		{
 			$link = new Link();
 			Tools::redirectAdmin($link->getAdminLink('AdminModules').'&configure=mailjet&module_name=mailjet&MJ_request_page='.Tools::getValue('MJ_request_page').'&conf=4');

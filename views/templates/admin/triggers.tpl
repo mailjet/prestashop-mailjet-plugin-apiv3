@@ -170,8 +170,29 @@
 					<span class="clearspan"></span>
 				</li>
             {/for}
+            
+           
         </ul>
     </fieldset>
 </div>
 </form>
+<div id="mj_triggers_page" class="center_page" >
+    <fieldset id="triggers_import_export">
+        <legend>{l s='Triggers Import/Export' mod='mailjet'}</legend>
+        <form id="MJ_triggers_import_form" name="MJ_triggers_import_form"  action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST" enctype="multipart/form-data" >
+            <input type="hidden" name="MAX_FILE_SIZE" value="512000" />
+            <ul>
+                <li>
+                    <input type="submit" name="MJ_triggers_export_submit" id="MJ_triggers_export_submit" value=" {l s='Export triggers' mod='mailjet'} " />
+                    <label>{l s='Click to export(save) available triggers templates' mod='mailjet'}</label>
+                </li>
+                <li>
+                    <input type="file" name="MJ_triggers_import_file" id="MJ_triggers_import_file" />
+                    <input type="submit" name="MJ_triggers_import_submit" id="MJ_triggers_import_submit" value=" {l s='Import triggers' mod='mailjet'} " />
+                    <label>{l s='Select already exported file with triggers templates and import it to replace current ones' mod='mailjet'}</label>
+                </li>
+            </ul>
+        </form>
+    </fieldset>
+</div>
 <!-- /Mailjet : Triggers -->
