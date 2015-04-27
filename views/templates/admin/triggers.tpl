@@ -188,7 +188,7 @@
                 </li>
                 <li>
                     <input type="file" name="MJ_triggers_import_file" id="MJ_triggers_import_file" />
-                    <input type="submit" name="MJ_triggers_import_submit" id="MJ_triggers_import_submit" value=" {l s='Import triggers' mod='mailjet'} " />
+                    <input onClick="if ($('#MJ_triggers_import_file').val() == '') { alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'} '); return false;}" type="submit" name="MJ_triggers_import_submit" id="MJ_triggers_import_submit" value=" {l s='Import triggers' mod='mailjet'} " />
                     <label>{l s='Select already exported file with triggers templates and import it to replace current ones' mod='mailjet'}</label>
                 </li>
             </ul>

@@ -827,13 +827,17 @@ class Mailjet extends Module
         
         if (Tools::isSubmit('MJ_triggers_import_submit')) {
             
-            $file = new SplFileObject($_FILES['MJ_triggers_import_file']['tmp_name']);
-            while (!$file->eof()) {
-                $triggers .= $file->fgets();
+            if (isset($_FILES['MJ_triggers_import_file']['tmp_name']) 
+                && !empty($_FILES['MJ_triggers_import_file']['tmp_name'])) {
+               
+                $file = new SplFileObject($_FILES['MJ_triggers_import_file']['tmp_name']);
+                while (!$file->eof()) {
+                    $triggers .= $file->fgets();
+                }
+
+                Configuration::updateValue('MJ_TRIGGERS', $triggers);
+                $modif = true;
             }
-            
-            Configuration::updateValue('MJ_TRIGGERS', $triggers);
-            $modif = true;
 		}
 		
         if (Tools::isSubmit('MJ_triggers_export_submit')) {
