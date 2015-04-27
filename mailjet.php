@@ -729,8 +729,8 @@ class Mailjet extends Module
 		// All emails sending by Mailjet ?
 		if (Tools::isSubmit('MJ_set_allemails'))
 		{
-            $triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), 1)) ? $triggers : $this->triggers;
-            Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
+            $triggers = ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'), true)) ? $triggers : $this->triggers;
+            Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
                 
 			if (Tools::getValue('MJ_allemails_active')) {
                 $this->activateAllEmailMailjet();
@@ -838,7 +838,7 @@ class Mailjet extends Module
 		
         if (Tools::isSubmit('MJ_triggers_export_submit')) {
             
-            $triggers = ($triggers = Configuration::get('MJ_TRIGGERS')) ? $triggers : json_encode($this->triggers);
+            $triggers = ($triggers = Configuration::get('MJ_TRIGGERS')) ? $triggers : Tools::jsonEncode($this->triggers);
 
             header("Content-Type: plain/text");
             header("Content-Disposition: Attachment; filename=Mailjet_Trigger_Templates.txt");
@@ -1163,13 +1163,13 @@ class Mailjet extends Module
 			foreach ($languages as $l)
 			$triggers['trigger'][$i]['mail'][$l['id_lang']] = rawurlencode($triggers['trigger'][$i]['mail'][$l['id_lang']]);
 
-		return Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
+		return Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
 	}
 
     
 	private function initTriggers()
 	{
-		$this->triggers = ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), 1)) ? $triggers : $this->triggers;
+		$this->triggers = ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'), true)) ? $triggers : $this->triggers;
 
 		$languages = Language::getLanguages();
 
