@@ -91,6 +91,20 @@
             $('#importLabel').fadeIn(500);
         });
     });
+    
+    function validateFile() {
+        var ext = $('#MJ_triggers_import_file').val().split('.').pop().toLowerCase();
+        if($.inArray(ext, ['txt']) == -1) {
+            alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'}');
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+
 </script>
 <form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
@@ -212,7 +226,7 @@
                 </li>
                 <li>
                     <input type="file" name="MJ_triggers_import_file" id="MJ_triggers_import_file" />
-                    <input onClick="if ($('#MJ_triggers_import_file').val() == '') { alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'} '); return false;}" type="submit" name="MJ_triggers_import_submit" id="MJ_triggers_import_submit" value=" {l s='Import triggers' mod='mailjet'} " />
+                    <input onClick="if ($('#MJ_triggers_import_file').val() == '') { alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'} '); return false;} else { return validateFile();}" type="submit" name="MJ_triggers_import_submit" id="MJ_triggers_import_submit" value=" {l s='Import triggers' mod='mailjet'} " />
                     <label id="importLabel">{l s='Import trigger templates' mod='mailjet'}</label>
                 </li>
             </ul>
