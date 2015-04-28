@@ -67,7 +67,45 @@
 	id_language = Number({$tinymce_id_language|escape|default:'en'});
 	</script>
 {/if}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#exportLabel, #importLabel').css('cursor', 'pointer');
+        var initialExportLabelText = $('#exportLabel').text();
+        var initialImportLabelText = $('#importLabel').text();
+            
+        $('#exportLabel, #MJ_triggers_export_submit').mouseover(function() {
+            $('#exportLabel').text("{l s='(Useful when upgrading Mailjet add-on)' mod='mailjet'}");
+            $('#exportLabel').fadeIn(500);
+        });
+        $('#exportLabel, #MJ_triggers_export_submit').mouseout(function() {
+            $('#exportLabel').text(initialExportLabelText);
+            $('#exportLabel').fadeIn(500);
+        });
+        
+        $('#importLabel, #MJ_triggers_import_submit').mouseover(function() {
+            $('#importLabel').text("{l s='(WARNING - this overwrites your current trigger templates)' mod='mailjet'}");
+            $('#importLabel').fadeIn(500);
+        });
+        $('#importLabel, #MJ_triggers_import_submit').mouseout(function() {
+            $('#importLabel').text(initialImportLabelText);
+            $('#importLabel').fadeIn(500);
+        });
+    });
+    
+    function validateFile() {
+        var ext = $('#MJ_triggers_import_file').val().split('.').pop().toLowerCase();
+        if($.inArray(ext, ['txt']) == -1) {
+            alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'}');
+            return false;
+        }
+        return true;
+    }
 
+
+
+
+
+</script>
 <form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
 	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
@@ -76,13 +114,22 @@
 	<fieldset class="hint">
 		<legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
         <div>
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options').slideDown()" {if $triggers.active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options').slideUp()" {if !$triggers.active}checked{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
+			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options, #triggers_import_export').slideDown()" {if $MJ_allemails_active && $triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
+			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options, #triggers_import_export').slideUp()" {if !$MJ_allemails_active || !$triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
 		</div>
-        <input type="submit" name="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button" />
-	</fieldset>
+        <input type="submit" name="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button"  {if !$MJ_allemails_active}disabled{/if} style="{if !$MJ_allemails_active}display:none;{/if}" />
+	<br />
+      
+        {if !$MJ_allemails_active}
+            <br />
+            <p class="warn">
+                {l s="Because you have selected to not send your transactional email via Mailjet on the plug-in Homepage, this means the triggered email module can't be activated either. To activate triggered emails, please go to the plug-in homepage and select 'Yes' to have Mailjet send all of your email. This will then allow you to select 'Yes' to activate the triggered emails module." mod='mailjet'}
+            </p>
+        {/if}
+
+        </fieldset>
     <br />
-    <fieldset id="triggers_options" {if !$triggers.active}style="display:none;"{/if}>
+    <fieldset id="triggers_options" {if $MJ_allemails_active && !$triggers.active}style="display:none;"{/if}>
     	<legend>{l s='Triggers' mod='mailjet'}</legend>
         <ul>
         	{for $sel=1 to 9}
@@ -99,9 +146,9 @@
 	                	{if $sel==9}{l s='Loyalty points reminder' mod='mailjet'}{/if} : 
 					</label>
 					<div class="mj_radios">
-						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').show();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp;
-						<input type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_0" value=0 {if !$triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').hide();$('#MJ_triggers_trigger_{$sel|escape}_parameters').hide();" /> <a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp;
-						<a href="javascript:;" onClick="$('#MJ_triggers_trigger_{$sel|escape}_parameters').slideToggle();" id="MJ_triggers_trigger_{$sel|escape}_button" class="button MJ_triggers_trigger_buttons" style="{if !$triggers.trigger.$sel.active}display:none;{/if}" />{l s='parameters' mod='mailjet'}</a> &nbsp;
+						<input {if !$MJ_allemails_active}disabled{/if} type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').show();" /> <a href="javascript:;" onClick="{if !$MJ_allemails_active}return false;{/if}  $('#MJ_triggers_trigger_{$sel|escape}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp;
+						<input {if !$MJ_allemails_active}disabled{/if} type="radio" name="MJ_triggers_trigger_{$sel|escape}_active" id="MJ_triggers_trigger_{$sel|escape}_active_0" value=0 {if !$MJ_allemails_active || !$triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape}_button').hide();$('#MJ_triggers_trigger_{$sel|escape}_parameters').hide();" /> <a href="javascript:;" onClick="{if !$MJ_allemails_active}return false;{/if} $('#MJ_triggers_trigger_{$sel|escape}_active_0').click();">{l s='No' mod='mailjet'}</a> &nbsp;
+						<a href="javascript:;" onClick="{if !$MJ_allemails_active}return false;{/if} $('#MJ_triggers_trigger_{$sel|escape}_parameters').slideToggle();" id="MJ_triggers_trigger_{$sel|escape}_button" class="button MJ_triggers_trigger_buttons" style="{if !$MJ_allemails_active || !$triggers.trigger.$sel.active}display:none;{/if}" />{l s='parameters' mod='mailjet'}</a> &nbsp;
                         <br />
 					</div>
 					<span class="clearspan"></span>
@@ -161,8 +208,29 @@
 					<span class="clearspan"></span>
 				</li>
             {/for}
+            
+           
         </ul>
     </fieldset>
 </div>
 </form>
+<div id="mj_triggers_page" class="center_page">
+    <fieldset id="triggers_import_export" {if $MJ_allemails_active && !$triggers.active}style="display:none;"{/if}>
+        <legend>{l s='Triggers Import/Export' mod='mailjet'}</legend>
+        <form id="MJ_triggers_import_form" name="MJ_triggers_import_form"  action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST" enctype="multipart/form-data" >
+            <input type="hidden" name="MAX_FILE_SIZE" value="512000" />
+            <ul>
+                <li>
+                    <input type="submit" name="MJ_triggers_export_submit" id="MJ_triggers_export_submit" value=" {l s='Export triggers' mod='mailjet'} " />
+                    <label id="exportLabel">{l s='Export trigger templates' mod='mailjet'}</label>
+                </li>
+                <li>
+                    <input type="file" name="MJ_triggers_import_file" id="MJ_triggers_import_file" />
+                    <input onClick="if ($('#MJ_triggers_import_file').val() == '') { alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'} '); return false;} else { return validateFile();}" type="submit" name="MJ_triggers_import_submit" id="MJ_triggers_import_submit" value=" {l s='Import triggers' mod='mailjet'} " />
+                    <label id="importLabel">{l s='Import trigger templates' mod='mailjet'}</label>
+                </li>
+            </ul>
+        </form>
+    </fieldset>
+</div>
 <!-- /Mailjet : Triggers -->
