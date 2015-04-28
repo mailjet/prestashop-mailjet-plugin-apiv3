@@ -73,22 +73,22 @@
         var initialExportLabelText = $('#exportLabel').text();
         var initialImportLabelText = $('#importLabel').text();
             
-        $('#exportLabel').mouseover(function() {
-            $(this).text("{l s='(Useful when upgrading Mailjet add-on)' mod='mailjet'}");
-            $(this).fadeIn(500);
+        $('#exportLabel, #MJ_triggers_export_submit').mouseover(function() {
+            $('#exportLabel').text("{l s='(Useful when upgrading Mailjet add-on)' mod='mailjet'}");
+            $('#exportLabel').fadeIn(500);
         });
-        $('#exportLabel').mouseout(function() {
-            $(this).text(initialExportLabelText);
-            $(this).fadeIn(500);
+        $('#exportLabel, #MJ_triggers_export_submit').mouseout(function() {
+            $('#exportLabel').text(initialExportLabelText);
+            $('#exportLabel').fadeIn(500);
         });
         
-        $('#importLabel').mouseover(function() {
-            $(this).text("{l s='(WARNING - this overwrites your current trigger templates)' mod='mailjet'}");
-            $(this).fadeIn(500);
+        $('#importLabel, #MJ_triggers_import_submit').mouseover(function() {
+            $('#importLabel').text("{l s='(WARNING - this overwrites your current trigger templates)' mod='mailjet'}");
+            $('#importLabel').fadeIn(500);
         });
-        $('#importLabel').mouseout(function() {
-            $(this).text(initialImportLabelText);
-            $(this).fadeIn(500);
+        $('#importLabel, #MJ_triggers_import_submit').mouseout(function() {
+            $('#importLabel').text(initialImportLabelText);
+            $('#importLabel').fadeIn(500);
         });
     });
 </script>
