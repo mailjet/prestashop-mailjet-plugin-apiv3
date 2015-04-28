@@ -200,8 +200,8 @@
     </fieldset>
 </div>
 </form>
-<div id="mj_triggers_page" class="center_page" >
-    <fieldset id="triggers_import_export">
+<div id="mj_triggers_page" class="center_page">
+    <fieldset id="triggers_import_export" {if $MJ_allemails_active && !$triggers.active}style="display:none;"{/if}>
         <legend>{l s='Triggers Import/Export' mod='mailjet'}</legend>
         <form id="MJ_triggers_import_form" name="MJ_triggers_import_form"  action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST" enctype="multipart/form-data" >
             <input type="hidden" name="MAX_FILE_SIZE" value="512000" />
