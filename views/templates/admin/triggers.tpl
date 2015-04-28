@@ -67,7 +67,31 @@
 	id_language = Number({$tinymce_id_language|escape|default:'en'});
 	</script>
 {/if}
-
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#exportLabel, #importLabel').css('cursor', 'pointer');
+        var initialExportLabelText = $('#exportLabel').text();
+        var initialImportLabelText = $('#importLabel').text();
+            
+        $('#exportLabel').mouseover(function() {
+            $(this).text("{l s='(Useful when upgrading Mailjet add-on)' mod='mailjet'}");
+            $(this).fadeIn(500);
+        });
+        $('#exportLabel').mouseout(function() {
+            $(this).text(initialExportLabelText);
+            $(this).fadeIn(500);
+        });
+        
+        $('#importLabel').mouseover(function() {
+            $(this).text("{l s='(WARNING - this overwrites your current trigger templates)' mod='mailjet'}");
+            $(this).fadeIn(500);
+        });
+        $('#importLabel').mouseout(function() {
+            $(this).text(initialImportLabelText);
+            $(this).fadeIn(500);
+        });
+    });
+</script>
 <form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
 	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
@@ -184,12 +208,12 @@
             <ul>
                 <li>
                     <input type="submit" name="MJ_triggers_export_submit" id="MJ_triggers_export_submit" value=" {l s='Export triggers' mod='mailjet'} " />
-                    <label>{l s='Click to export(save) available triggers templates' mod='mailjet'}</label>
+                    <label id="exportLabel">{l s='Export trigger templates' mod='mailjet'}</label>
                 </li>
                 <li>
                     <input type="file" name="MJ_triggers_import_file" id="MJ_triggers_import_file" />
                     <input onClick="if ($('#MJ_triggers_import_file').val() == '') { alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'} '); return false;}" type="submit" name="MJ_triggers_import_submit" id="MJ_triggers_import_submit" value=" {l s='Import triggers' mod='mailjet'} " />
-                    <label>{l s='Select already exported file with triggers templates and import it to replace current ones' mod='mailjet'}</label>
+                    <label id="importLabel">{l s='Import trigger templates' mod='mailjet'}</label>
                 </li>
             </ul>
         </form>
