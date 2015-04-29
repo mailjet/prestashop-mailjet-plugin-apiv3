@@ -703,7 +703,8 @@ class Mailjet_Api
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->_curl_handle, CURLOPT_TIMEOUT, 10); //timeout in seconds
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey.':'.$this->_secretKey);
-
+        curl_setopt($this->_curl_handle, CURLOPT_USERAGENT, 'prestashop-3.0');
+    	
         switch ($request) {
             case 'GET' :
                 curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'GET');
