@@ -524,7 +524,8 @@ class mailjetdata
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey.':'.$this->_secretKey);
         curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array("Content-Type: ".$MimeType));
         curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, $Method);
-
+        curl_setopt($this->_curl_handle, CURLOPT_USERAGENT, 'prestashop-3.0');
+    	
         switch ($Method) {
             case 'GET' :
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPGET, TRUE);
