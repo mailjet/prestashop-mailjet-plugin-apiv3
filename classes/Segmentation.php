@@ -1407,7 +1407,7 @@ class Segmentation
 	 * @param int $filterId
 	 * @return int
 	 */
-	protected function _getMailjetContactListId($filterId)
+	public function _getMailjetContactListId($filterId)
 	{
 		if (array_key_exists($filterId, $this->_contactListsMap))
 			return $this->_contactListsMap[$filterId];
