@@ -598,11 +598,13 @@ class Mailjet extends Module
 
 		foreach ($formatRows as $filterId => $formatRow)
 		{
-			$sql = $this->getQuery($formatRow, true).' HAVING c.id_customer = '.(int)$id_customer;
+            $obj = new Segmentation();
+
+			$sql = $obj->getQuery($formatRow, true).' HAVING c.id_customer = '.(int)$id_customer;
 
 			$result = DB::getInstance()->executeS($sql);
 
-			if ($result && !$this->belongsToGroup($formatRow['idgroup'], $id_customer))
+			if ($result && !$obj->belongsToGroup($formatRow['idgroup'], $id_customer))
 			{
 
 				if ($formatRow['replace_customer'])
@@ -625,7 +627,7 @@ class Mailjet extends Module
 				$customer = new Customer($id_customer);
 
 			}
-			else if (!$result && $this->belongsToGroup($formatRow['idgroup'], $id_customer))
+			else if (!$result && $obj->belongsToGroup($formatRow['idgroup'], $id_customer))
 			{
 
 				$sql = 'DELETE FROM '._DB_PREFIX_.'customer_group 
@@ -640,9 +642,9 @@ class Mailjet extends Module
 
 			$customer = new Customer($id_customer);
 			$initialSynchronization = new HooksSynchronizationSingleUser(
-					MailjetTemplate::getApi()
+                MailjetTemplate::getApi()
 			);
-			$mailjetListID = $this->_getMailjetContactListId($filterId);
+			$mailjetListID = $obj->_getMailjetContactListId($filterId);
 
 			if ($result)
 				$initialSynchronization->subscribe($customer->email, $mailjetListID);
