@@ -121,7 +121,7 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.0.0';
+		$this->version = '3.2.0';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
@@ -224,7 +224,7 @@ class Mailjet extends Module
 
 	public function uninstall()
 	{
-		$fileTranslationCache = $this->local_path.'/translations/translation_cache.txt';
+		$fileTranslationCache = $this->_path.'translations/translation_cache.txt';
 		if (file_exists($fileTranslationCache))
 			unlink($fileTranslationCache);
 
@@ -304,11 +304,15 @@ class Mailjet extends Module
 			$nobug = $value;
 		}
 
-        $this->context->controller->addCSS($this->local_path.'/css/bo.css');
-        $this->context->controller->addJs($this->local_path.'/js/jquery.timer.js');             
-        $this->context->controller->addJs($this->local_path.'/js/bo.js');             
-        $this->context->controller->addJs($this->local_path.'/js/events.js');    
-        
+        $this->context->controller->addCss($this->_path.'css/style.css');
+        $this->context->controller->addCSS($this->_path.'css/bo.css');
+        $this->context->controller->addJs($this->_path.'js/jquery.timer.js');
+        $this->context->controller->addJs($this->_path.'js/bo.js');
+        $this->context->controller->addJs($this->_path.'js/events.js');
+        $this->context->controller->addJs($this->_path.'js/functions.js');
+        $this->context->controller->addJs($this->_path.'js/main.js');
+        $this->context->controller->addJs($this->_path.'js/bundlejs_prestashop.js');
+
 		$this->context->smarty->assign(
 				array(
 						'MJ_base_dir' => $this->module_access['uri'],
@@ -598,11 +602,13 @@ class Mailjet extends Module
 
 		foreach ($formatRows as $filterId => $formatRow)
 		{
-			$sql = $this->getQuery($formatRow, true).' HAVING c.id_customer = '.(int)$id_customer;
+            $obj = new Segmentation();
+
+			$sql = $obj->getQuery($formatRow, true).' HAVING c.id_customer = '.(int)$id_customer;
 
 			$result = DB::getInstance()->executeS($sql);
 
-			if ($result && !$this->belongsToGroup($formatRow['idgroup'], $id_customer))
+			if ($result && !$obj->belongsToGroup($formatRow['idgroup'], $id_customer))
 			{
 
 				if ($formatRow['replace_customer'])
@@ -625,7 +631,7 @@ class Mailjet extends Module
 				$customer = new Customer($id_customer);
 
 			}
-			else if (!$result && $this->belongsToGroup($formatRow['idgroup'], $id_customer))
+			else if (!$result && $obj->belongsToGroup($formatRow['idgroup'], $id_customer))
 			{
 
 				$sql = 'DELETE FROM '._DB_PREFIX_.'customer_group 
@@ -640,9 +646,9 @@ class Mailjet extends Module
 
 			$customer = new Customer($id_customer);
 			$initialSynchronization = new HooksSynchronizationSingleUser(
-					MailjetTemplate::getApi()
+                MailjetTemplate::getApi()
 			);
-			$mailjetListID = $this->_getMailjetContactListId($filterId);
+			$mailjetListID = $obj->_getMailjetContactListId($filterId);
 
 			if ($result)
 				$initialSynchronization->subscribe($customer->email, $mailjetListID);
