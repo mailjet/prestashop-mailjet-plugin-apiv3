@@ -224,7 +224,7 @@ class Mailjet extends Module
 
 	public function uninstall()
 	{
-		$fileTranslationCache = $this->local_path.'/translations/translation_cache.txt';
+		$fileTranslationCache = $this->_path.'/translations/translation_cache.txt';
 		if (file_exists($fileTranslationCache))
 			unlink($fileTranslationCache);
 
@@ -304,10 +304,10 @@ class Mailjet extends Module
 			$nobug = $value;
 		}
 
-        $this->context->controller->addCSS($this->local_path.'/css/bo.css');
-        $this->context->controller->addJs($this->local_path.'/js/jquery.timer.js');             
-        $this->context->controller->addJs($this->local_path.'/js/bo.js');             
-        $this->context->controller->addJs($this->local_path.'/js/events.js');    
+        $this->context->controller->addCSS($this->_path.'/css/bo.css');
+        $this->context->controller->addJs($this->_path.'/js/jquery.timer.js');
+        $this->context->controller->addJs($this->_path.'/js/bo.js');
+        $this->context->controller->addJs($this->_path.'/js/events.js');
         
 		$this->context->smarty->assign(
 				array(

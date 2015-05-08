@@ -48,7 +48,7 @@ class Segmentation
 		$this->tab = 'administration';
 		$this->version = '2.8';
 		$this->module_key = '986fb62d4efe6fb00788ecaefce96a1f';
-		$this->local_path = _PS_MODULE_DIR_.'mailjet';
+		$this->_path = _PS_MODULE_DIR_.'mailjet';
 
         $this->_addIncludes();
         
@@ -61,13 +61,13 @@ class Segmentation
  
     private function _addIncludes()
     {
-        Context::getContext()->controller->addCss($this->local_path.'/css/style.css');
-        Context::getContext()->controller->addCss($this->local_path.'/css/bundlejs_prestashop.css');
-        Context::getContext()->controller->addCss($this->local_path.'/css/bo.css');
+        Context::getContext()->controller->addCss($this->_path.'/css/style.css');
+        Context::getContext()->controller->addCss($this->_path.'/css/bundlejs_prestashop.css');
+        Context::getContext()->controller->addCss($this->_path.'/css/bo.css');
         
-        Context::getContext()->controller->addJs($this->local_path.'/js/functions.js');
-        Context::getContext()->controller->addJs($this->local_path.'/js/main.js');             
-        Context::getContext()->controller->addJs($this->local_path.'/js/bundlejs_prestashop.js');             
+        Context::getContext()->controller->addJs($this->_path.'/js/functions.js');
+        Context::getContext()->controller->addJs($this->_path.'/js/main.js');
+        Context::getContext()->controller->addJs($this->_path.'/js/bundlejs_prestashop.js');
 
     }
     
@@ -1222,12 +1222,12 @@ class Segmentation
 		if (!$id_lang)
 			$id_lang = $this->getCurrentIdLang();
 
-		if (file_exists($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'))
-			$this->trad = Tools::jsonDecode(Tools::file_get_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'));
+		if (file_exists($this->_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'))
+			$this->trad = Tools::jsonDecode(Tools::file_get_contents($this->_path.'/translations/translation_cache_'.(int)$id_lang.'.txt'));
 		else
 		{
 			$this->cacheLang();
-			$tmp_create = $this->local_path.'/translations/translation_create_'.(int)$id_lang.'.txt';
+			$tmp_create = $this->_path.'/translations/translation_create_'.(int)$id_lang.'.txt';
 			if (file_exists($tmp_create))
 			{
 				$fp = fopen($tmp_create, 'r');
@@ -1244,7 +1244,7 @@ class Segmentation
 					fwrite($fp, $trad."\r\n");
 				fclose($fp);
 			}
-			file_put_contents($this->local_path.'/translations/translation_cache_'.(int)$id_lang.'.txt', Tools::jsonEncode($this->trad));
+			file_put_contents($this->_path.'/translations/translation_cache_'.(int)$id_lang.'.txt', Tools::jsonEncode($this->trad));
 		}
 	}
 
@@ -1264,8 +1264,8 @@ class Segmentation
 	{
 		$langs = Language::getLanguages();
 		foreach ($langs as $lang)
-			if (file_exists($this->local_path.'/translations/translation_cache_'.$lang['id_lang'].'.txt'))
-				unlink($this->local_path.'/translations/translation_cache_'.$lang['id_lang'].'.txt');
+			if (file_exists($this->_path.'/translations/translation_cache_'.$lang['id_lang'].'.txt'))
+				unlink($this->_path.'/translations/translation_cache_'.$lang['id_lang'].'.txt');
 	}
 	public function cacheLang()
 	{
