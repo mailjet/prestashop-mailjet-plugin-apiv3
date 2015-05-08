@@ -49,11 +49,13 @@
 
 <div class="center_page">
 
-	<fieldset class="width6 hint seg_fieldset">&nbsp; 
-	{$mj_hint_fieldset.0|escape|default:''}<br /><br />
-	{$mj_hint_fieldset.1|escape|default:''}<br /><br />
-	{$mj_hint_fieldset.2|escape|default:''}
-	</fieldset>
+    {if !empty($mj_hint_fieldset) }
+        <fieldset class="width6 hint seg_fieldset">&nbsp;
+            {$mj_hint_fieldset.0|escape|default:''}<br /><br />
+            {$mj_hint_fieldset.1|escape|default:''}<br /><br />
+            {$mj_hint_fieldset.2|escape|default:''}
+        </fieldset>
+    {/if}
 
 	<div class="clear"> &nbsp; </div>
 	<fieldset id="mainFieldset">
