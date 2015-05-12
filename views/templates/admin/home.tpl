@@ -77,7 +77,7 @@
                 {l s='This menu allows you to modify your settings and update them in order to optimise your deliverability. You will also find all your profile and billing details here.' mod='mailjet'}
             </li>
         	<li>
-            	<a href="http://www.mailjet.com/pricing" target="_blank" class="btn_tab_home"><span></span><span>{l s='Upgrade' mod='mailjet'}</span></a>
+            	<a href="http://www.mailjet.com/pricing_v3" target="_blank" class="btn_tab_home"><span></span><span>{l s='Upgrade' mod='mailjet'}</span></a>
                 {l s='Click here to change/upgrade your current plan.' mod='mailjet'}
             </li>
             
