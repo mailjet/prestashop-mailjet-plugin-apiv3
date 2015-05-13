@@ -876,12 +876,14 @@ class Mailjet extends Module
 		Configuration::updateValue('PS_MAIL_METHOD', 2);
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
         
+        $account = Tools::jsonDecode(Configuration::get('MAILJET'));
+        Configuration::updateValue('PS_SHOP_EMAIL', $account['EMAIL']);
         self::setSMTPconnectionParams();
 	}
     
     public static function setSMTPconnectionParams()
 	{
-	
+        
         $configs = array(array('ssl://', 465),
                               array('tls://', 587),
                               array('', 587),
@@ -890,6 +892,7 @@ class Mailjet extends Module
                               array('', 25));
 
         $host = Configuration::get('PS_MAIL_SERVER');
+        
         $connected = FALSE;
 
         for ($i = 0; $i < count($configs); ++$i) {
@@ -1381,6 +1384,8 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
  
+            $account = Tools::jsonDecode(Configuration::get('MAILJET'));
+            Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
             
 			if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
