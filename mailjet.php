@@ -870,13 +870,55 @@ class Mailjet extends Module
 	{
 		Configuration::updateValue('PS_MAIL_SERVER', $this->mj_mail_server);
 		Configuration::updateValue('PS_MAIL_SMTP_PORT', $this->mj_mail_port);
-		Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
+		//Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
 		Configuration::updateValue('PS_MAIL_USER', $this->account->API_KEY);
 		Configuration::updateValue('PS_MAIL_PASSWD', $this->account->SECRET_KEY);
 		Configuration::updateValue('PS_MAIL_METHOD', 2);
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
+        
+        $account = Tools::jsonDecode(Configuration::get('MAILJET'));
+        Configuration::updateValue('PS_SHOP_EMAIL', $account['EMAIL']);
+        self::setSMTPconnectionParams();
 	}
+    
+    public static function setSMTPconnectionParams()
+	{
+        
+        $configs = array(array('ssl://', 465),
+                              array('tls://', 587),
+                              array('', 587),
+                              array('', 588),
+                              array('tls://', 25),
+                              array('', 25));
 
+        $host = Configuration::get('PS_MAIL_SERVER');
+        
+        $connected = FALSE;
+
+        for ($i = 0; $i < count($configs); ++$i) {
+
+            $soc = @fSockOpen($configs [$i] [0].$host, $configs [$i] [1], $errno, $errstr, 5);
+
+            if ($soc) {
+                fClose ($soc);
+                $connected = TRUE;
+                break;
+            }
+        }
+
+        if ($connected) {
+            if ('ssl://' == $configs [$i] [0]) {
+                Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'ssl');
+            } elseif ('tls://' == $configs [$i] [0]) {
+                Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
+            }  else {
+                Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', '');
+            }
+            Configuration::updateValue('PS_MAIL_SMTP_PORT', $configs[$i][1]);
+        }
+    }
+    
+    
 	public function getContent()
 	{
 		if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
@@ -1337,11 +1379,15 @@ class Mailjet extends Module
 
 			Configuration::updateValue('PS_MAIL_SERVER', $this->mj_mail_server);
 			Configuration::updateValue('PS_MAIL_SMTP_PORT', $this->mj_mail_port);
-			Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
+			//Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
 			Configuration::updateValue('PS_MAIL_USER', $apiKey);
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
-
+ 
+            $account = Tools::jsonDecode(Configuration::get('MAILJET'));
+            Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
+            self::setSMTPconnectionParams();
+            
 			if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
 				return $this->initalSynchronize();
 
@@ -1525,10 +1571,23 @@ class Mailjet extends Module
 			$from = $account['EMAIL'];
 			$from_name = Configuration::get('PS_SHOP_NAME');
 
+            $mj_mail_server_encryption = Configuration::get('PS_MAIL_SMTP_ENCRYPTION');
+            switch (Configuration::get('PS_MAIL_SMTP_PORT')) :
+                case 'tls':
+                    $mj_mail_server_port = Swift_Connection_SMTP::ENC_TLS;
+                    break;
+                case 'ssl':
+                    $mj_mail_server_port = Swift_Connection_SMTP::ENC_SSL;
+                    break;
+                default:
+                    $mj_mail_server_port = Swift_Connection_SMTP::ENC_OFF;
+                    break;
+            endswitch;
+            
 			$connection = new Swift_Connection_SMTP(
 					self::mj_mail_server(),
-					self::mj_mail_port(),
-					Swift_Connection_SMTP::ENC_TLS
+					$mj_mail_server_encryption,
+					$mj_mail_server_port
 			);
 			$takeinfo = new Mailjet();
 			$connection->setUsername($takeinfo->account['API_KEY']);
