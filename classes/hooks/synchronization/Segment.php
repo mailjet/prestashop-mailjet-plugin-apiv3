@@ -173,12 +173,13 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 			try {
                 
                  
-                $file = new SplFileObject('contacts.csv', 'w');
+                $file = fopen('contacts.csv', 'w');
                 $headers = array("email","firstname","lastname");
-                $file->fputcsv($headers);
+                fputcsv($file, $headers);
                 foreach ($contactsToCsv as $contact) {
-                    $file->fputcsv($contact);
+                    fputcsv($file, $contact);
                 }
+                fclose($file);
 
                 $string_contacts = Tools::file_get_contents('contacts.csv');
                 $file = null;
@@ -286,12 +287,13 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                     )
                 );
                 
-                $file = new SplFileObject('contacts.csv', 'w');
+                $file = fopen('contacts.csv', 'w');
                 $headers = array("email","firstname","lastname");
-                $file->fputcsv($headers);
+                fputcsv($file, $headers);
                 foreach ($contacstToAdd as $contact) {
-                    $file->fputcsv($contact);
+                    fputcsv($file, $contact);
                 }
+                fclose($file);
 
                 $contstToAddCsv = Tools::file_get_contents('contacts.csv');
                 $file = null;
