@@ -63,3 +63,11 @@ Once you have a Mailjet account, click ‘Connect’ to enter your Mailjet Main 
 Copy and paste your credentials and click ‘Save & Login’.
 
 Happy emailing!
+
+
+
+## Changelog
+
+= 3.2.1 =
+* Simplification of home page text
+
