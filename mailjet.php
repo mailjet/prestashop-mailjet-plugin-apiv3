@@ -876,7 +876,7 @@ class Mailjet extends Module
 		Configuration::updateValue('PS_MAIL_METHOD', 2);
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
         
-        $account = Tools::jsonDecode(Configuration::get('MAILJET'));
+        $account = (array) Tools::jsonDecode(Configuration::get('MAILJET'));
         Configuration::updateValue('PS_SHOP_EMAIL', $account['EMAIL']);
         self::setSMTPconnectionParams();
 	}
@@ -1384,7 +1384,7 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
  
-            $account = Tools::jsonDecode(Configuration::get('MAILJET'));
+            $account = (array) Tools::jsonDecode(Configuration::get('MAILJET'));
             Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
             
@@ -1567,32 +1567,30 @@ class Mailjet extends Module
 	{
 		try
 		{
-			$account = Tools::jsonDecode(Configuration::get('MAILJET'));
-			$from = $account['EMAIL'];
+			$account = (array) Tools::jsonDecode(Configuration::get('MAILJET'));
+            $from = $account['EMAIL'];
 			$from_name = Configuration::get('PS_SHOP_NAME');
 
-            $mj_mail_server_encryption = Configuration::get('PS_MAIL_SMTP_ENCRYPTION');
-            switch (Configuration::get('PS_MAIL_SMTP_PORT')) :
+            $mj_mail_server_port = Configuration::get('PS_MAIL_SMTP_PORT');
+            switch (Configuration::get('PS_MAIL_SMTP_ENCRYPTION')) :
                 case 'tls':
-                    $mj_mail_server_port = Swift_Connection_SMTP::ENC_TLS;
+                    $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_TLS;
                     break;
                 case 'ssl':
-                    $mj_mail_server_port = Swift_Connection_SMTP::ENC_SSL;
+                    $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_SSL;
                     break;
                 default:
-                    $mj_mail_server_port = Swift_Connection_SMTP::ENC_OFF;
+                    $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_OFF;
                     break;
             endswitch;
-            
-			$connection = new Swift_Connection_SMTP(
-					self::mj_mail_server(),
-					$mj_mail_server_encryption,
-					$mj_mail_server_port
+            $connection = new Swift_Connection_SMTP(
+					Configuration::get('PS_MAIL_SERVER'),
+					$mj_mail_server_port,
+                    $mj_mail_server_encryption
 			);
-			$takeinfo = new Mailjet();
-			$connection->setUsername($takeinfo->account['API_KEY']);
-			$connection->setPassword($takeinfo->account['SECRET_KEY']);
-
+			$connection->setUsername($account['API_KEY']);
+			$connection->setPassword($account['SECRET_KEY']);
+ 
 			$swift = new Swift($connection);
 
 			$sMessage = new Swift_Message('['.$from_name.'] '.$subject);
@@ -1607,6 +1605,8 @@ class Mailjet extends Module
 			return $send;
 		}
 		catch (Swift_Exception $e) {
+            			
+
 			return false;
 		}
 	}
