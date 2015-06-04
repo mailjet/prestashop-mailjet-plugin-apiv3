@@ -876,7 +876,7 @@ class Mailjet extends Module
 		Configuration::updateValue('PS_MAIL_METHOD', 2);
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
         
-        $account = (array) Tools::jsonDecode(Configuration::get('MAILJET'));
+        $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
         Configuration::updateValue('PS_SHOP_EMAIL', $account['EMAIL']);
         self::setSMTPconnectionParams();
 	}
@@ -1384,7 +1384,7 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
  
-            $account = (array) Tools::jsonDecode(Configuration::get('MAILJET'));
+            $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
             Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
             
@@ -1567,7 +1567,7 @@ class Mailjet extends Module
 	{
 		try
 		{
-			$account = (array) Tools::jsonDecode(Configuration::get('MAILJET'));
+			$account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
             $from = $account['EMAIL'];
 			$from_name = Configuration::get('PS_SHOP_NAME');
 
