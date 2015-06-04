@@ -114,7 +114,7 @@ class Mailjet extends Module
 	 ** Construct Method
 	*/
 	public function __construct()
-	{$this->sendMail('test Subject ROI', 'test Content', 'fismailov@mailjet.com'); 
+	{
 		//$this->getAdminFullUrl();
 		// Default module variable
 		$this->name = 'mailjet';
