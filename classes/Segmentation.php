@@ -926,7 +926,7 @@ class Segmentation
 			LOWER(c.email) AS "'.$this->ll(75).'", ad.phone AS "'.$this->ll(73).'",
 			ad.phone_mobile AS "'.$this->ll(74).'"'.$speField.' '.($label != '' ? ', '.$label : ' ').'
 			FROM '.$from.' '.$join.'
-			WHERE c.newsletter=1 AND c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL)
+			WHERE c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL)
 			AND (ad.deleted = 0 OR ad.deleted IS NULL)'.$field;
 
 		/*if ($post['date_start'] > 0 && $post['date_end'] > 0)
