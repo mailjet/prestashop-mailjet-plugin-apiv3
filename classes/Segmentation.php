@@ -949,6 +949,10 @@ class Segmentation
 
 	// MySQL DB date format
 	private function _formatDate($date){
+        if(empty($date)) {
+            return '';
+            
+        }
 		return date('Y-m-d',strtotime($date));
 	}
 
@@ -1037,12 +1041,13 @@ class Segmentation
 		}
 		$nb = count($post['fieldSelect']);
 
-		for ($i = 0; $i < $nb; $i++)
+		for ($i = 0; $i < $nb; $i++) {
 			Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_.'mj_condition`(`id_filter`, `id_basecondition`, `id_sourcecondition`, `id_fieldcondition`, `rule_a`, `rule_action`, `data`, `value1`, `value2`)
 					VALUES ('.(int)$id_filter.', '.pSQL($post['baseSelect'][$i]).', '.pSQL($post['sourceSelect'][$i]).', '.
                 pSQL($post['fieldSelect'][$i]).', "'.pSQL($post['rule_a'][$i]).'", "'.pSQL($post['rule_action'][$i]).'", "'.
                 pSQL($post['data'][$i]).'", "'.$this->_formatDate(pSQL($post['value1'][$i])).'", "'.
                 $this->_formatDate(pSQL($post['value2'][$i])).'")');
+        }
 
 		if ($auto_assign)
 		{
