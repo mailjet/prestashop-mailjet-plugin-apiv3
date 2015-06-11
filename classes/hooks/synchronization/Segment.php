@@ -173,19 +173,13 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 			try {
                 
                  
-                $file = fopen('contacts.csv', 'w');
                 $headers = array("email","firstname","lastname");
-                fputcsv($file, $headers);
+                $string_contacts = '';
+                $string_contacts .= implode(",", $headers) ."\n";
                 foreach ($contactsToCsv as $contact) {
-                    fputcsv($file, $contact);
+                    $string_contacts .= implode(",", $contact) ."\n";
                 }
-                fclose($file);
 
-                $string_contacts = Tools::file_get_contents('contacts.csv');
-                $file = null;
-                unlink('contacts.csv');
-
-                
                 /*
                  * Sets related contact meta data like firstname, lastname, etc...
                  */
@@ -287,19 +281,13 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                     )
                 );
                 
-                $file = fopen('contacts.csv', 'w');
                 $headers = array("email","firstname","lastname");
-                fputcsv($file, $headers);
-                foreach ($contacstToAdd as $contact) {
-                    fputcsv($file, $contact);
+                $contstToAddCsv = '';
+                $contstToAddCsv .= implode(",", $headers) ."\n";
+                foreach ($contactsToCsv as $contact) {
+                    $contstToAddCsv .= implode(",", $contact) ."\n";
                 }
-                fclose($file);
 
-                $contstToAddCsv = Tools::file_get_contents('contacts.csv');
-                $file = null;
-                unlink('contacts.csv');
-                
-                
 				$res = $this->_getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
                 
 				if (!isset($res->ID))

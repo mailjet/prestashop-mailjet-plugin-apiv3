@@ -926,7 +926,7 @@ class Segmentation
 			LOWER(c.email) AS "'.$this->ll(75).'", ad.phone AS "'.$this->ll(73).'",
 			ad.phone_mobile AS "'.$this->ll(74).'"'.$speField.' '.($label != '' ? ', '.$label : ' ').'
 			FROM '.$from.' '.$join.'
-			WHERE c.newsletter=1 AND c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL)
+			WHERE c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL)
 			AND (ad.deleted = 0 OR ad.deleted IS NULL)'.$field;
 
 		/*if ($post['date_start'] > 0 && $post['date_end'] > 0)
@@ -949,6 +949,10 @@ class Segmentation
 
 	// MySQL DB date format
 	private function _formatDate($date){
+        if(empty($date)) {
+            return '';
+            
+        }
 		return date('Y-m-d',strtotime($date));
 	}
 
@@ -1037,12 +1041,13 @@ class Segmentation
 		}
 		$nb = count($post['fieldSelect']);
 
-		for ($i = 0; $i < $nb; $i++)
+		for ($i = 0; $i < $nb; $i++) {
 			Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_.'mj_condition`(`id_filter`, `id_basecondition`, `id_sourcecondition`, `id_fieldcondition`, `rule_a`, `rule_action`, `data`, `value1`, `value2`)
 					VALUES ('.(int)$id_filter.', '.pSQL($post['baseSelect'][$i]).', '.pSQL($post['sourceSelect'][$i]).', '.
                 pSQL($post['fieldSelect'][$i]).', "'.pSQL($post['rule_a'][$i]).'", "'.pSQL($post['rule_action'][$i]).'", "'.
                 pSQL($post['data'][$i]).'", "'.$this->_formatDate(pSQL($post['value1'][$i])).'", "'.
                 $this->_formatDate(pSQL($post['value2'][$i])).'")');
+        }
 
 		if ($auto_assign)
 		{
