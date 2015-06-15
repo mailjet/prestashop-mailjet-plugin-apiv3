@@ -68,9 +68,6 @@ Happy emailing!
 
 ## Changelog
 
-= 3.3.0 =
-* slight refactoring on Segmentation classes to avoid unneeded include of CSS and JS files
-
 = 3.2.1 =
 * Simplification of home page text
 
