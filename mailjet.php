@@ -303,9 +303,10 @@ class Mailjet extends Module
 			$smarty_page['MJ_'.$name] = $name;
 			$nobug = $value;
 		}
-
+        
         $this->context->controller->addCss($this->_path.'/css/style.css');
         $this->context->controller->addCSS($this->_path.'/css/bo.css');
+        $this->context->controller->addCSS($this->_path.'/css/bundlejs_prestashop.css');
         $this->context->controller->addJs($this->_path.'/js/jquery.timer.js');
         $this->context->controller->addJs($this->_path.'/js/bo.js');
         $this->context->controller->addJs($this->_path.'/js/events.js');
