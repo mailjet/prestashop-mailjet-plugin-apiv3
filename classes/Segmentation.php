@@ -923,7 +923,11 @@ class Segmentation
             return '';
             
         }
-		return date('Y-m-d',strtotime($date));
+        if (@DateTime::createFromFormat('Y-m-d', $date) !== FALSE) {
+            // it's a date
+            return date('Y-m-d',strtotime($date));
+        } else return $date;
+		
 	}
 
 	public function getSubCategories($id_category)
