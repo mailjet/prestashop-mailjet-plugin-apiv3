@@ -46,44 +46,14 @@ class Segmentation
 	{
 		$this->name = 'segmentation';
 		$this->tab = 'administration';
-		$this->version = '2.8';
-		$this->module_key = '986fb62d4efe6fb00788ecaefce96a1f';
 		$this->_path = _PS_MODULE_DIR_.'mailjet';
-
-        $this->_addIncludes();
         
-		$this->initCompatibility();
-
 		$this->displayName = $this->l('Segment Module');
 		$this->description = $this->l('Module for Customer Segmentation');
 		$this->page = 10;
 	}
  
-    private function _addIncludes()
-    {
-        Context::getContext()->controller->addCss($this->_path.'/css/style.css');
-        Context::getContext()->controller->addCss($this->_path.'/css/bundlejs_prestashop.css');
-        Context::getContext()->controller->addCss($this->_path.'/css/bo.css');
-        
-        Context::getContext()->controller->addJs($this->_path.'/js/functions.js');
-        Context::getContext()->controller->addJs($this->_path.'/js/main.js');
-        Context::getContext()->controller->addJs($this->_path.'/js/bundlejs_prestashop.js');
-
-    }
     
-	public function initCompatibility()
-	{
-		if (strpos(_PS_MODULE_DIR_.'mailjet', $this->name) === false)
-			return $this;
-
-		if (!class_exists('Context'))
-			require_once(_PS_MODULE_DIR_.'mailjet/libraries/compatibility/Context.php');
-
-		$this->initLang();
-
-		return $this;
-	}
-
 	public function initContent()
 	{
 		Configuration::updateValue('SEGMENT_CUSTOMER_TOKEN', Tools::getValue('token'));
@@ -953,7 +923,11 @@ class Segmentation
             return '';
             
         }
-		return date('Y-m-d',strtotime($date));
+        if (@DateTime::createFromFormat('Y-m-d', $date) !== FALSE) {
+            // it's a date
+            return date('Y-m-d',strtotime($date));
+        } else return $date;
+		
 	}
 
 	public function getSubCategories($id_category)
