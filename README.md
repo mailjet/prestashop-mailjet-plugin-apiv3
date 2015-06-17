@@ -70,4 +70,5 @@ Happy emailing!
 
 = 3.2.1 =
 * Simplification of home page text
+* Improvements in Segmentation tool 
 
