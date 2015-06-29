@@ -35,6 +35,7 @@ class MailjetTemplate
     public static $_langCodesMap = array('en' => 'en_US', 'fr' => 'fr_FR', 'de' => 'de_DE', 'es' => 'es_ES');
     private $_defaultLang = 'en';
     private $_lang;
+    private $_locale;
     
 	/* List of available template for webservice call */
 	private $templates = array(
@@ -67,6 +68,10 @@ class MailjetTemplate
 	{
         $context = Context::getContext();
         $this->_lang = empty($context->language->iso_code) ? $this->_defaultLang : $context->language->iso_code; // language_code
+        if(!array_key_exists($this->_lang, self::$_langCodesMap)){
+            $this->_lang = $this->_defaultLang;
+        }
+        $this->_locale = self::$_langCodesMap[$this->_lang];
 		$this->initIframeLink();
 	}
 
@@ -113,7 +118,6 @@ class MailjetTemplate
 	 */
 	public function initIframeLink()
 	{
-		$context = Context::getContext();
 		$file = dirname(__FILE__).'/../xml/iframes.xml';
 		if (file_exists($file) && ($xml = simplexml_load_file($file))){
 			foreach ($xml->iframe as $iframe)
@@ -132,7 +136,6 @@ class MailjetTemplate
 	public function fetchTemplate($name)
 	{
 		if (isset($this->templates[$name])){
-			$context = Context::getContext();
 			$file = dirname(__FILE__).'/../translations/templates/'.$this->_lang.'/'.$name.'.txt';
 			if (file_exists($file)){
 				$template = Tools::file_get_contents($file);
@@ -153,7 +156,7 @@ class MailjetTemplate
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$token = Tools::getAdminTokenLite('AdminModules');
 		$sign_up_call_back = urlencode($ps_shop_domain.'/modules/mailjet/callback_signup.php?internaltoken='.$token);
-		$url = 'https://'.$this->_lang.'.mailjet.com/reseller/signup?r=prestashop&cb={'.$sign_up_call_back.'}&show_menu=none&locale='.self::$_langCodesMap[$lang];
+		$url = 'https://app.mailjet.com/reseller/signup?r=prestashop&cb={'.$sign_up_call_back.'}&show_menu=none&locale='.$this->_locale;
 
 		$this->iframes_url[$name] = $url;
 	}
@@ -162,7 +165,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-		$url = 'https://'.$this->_lang.'.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
+		$url = 'https://app.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -171,9 +174,9 @@ class MailjetTemplate
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 		if ($token)
-			$url = 'https://'.$this->_lang.'.mailjet.com/reseller/pricing?t='.$token.'&r=prestashop&cb='.$cb.'&show_menu=none&locale='.self::$_langCodesMap[$this->_lang];
+			$url = 'https://app.mailjet.com/reseller/pricing?t='.$token.'&r=prestashop&cb='.$cb.'&show_menu=none&locale='.$this->_locale;
 		else
-			$url = 'https://'.$this->_lang.'.mailjet.com/reseller/pricing?r=prestashop&show_menu=none&locale='.self::$_langCodesMap[$this->_lang];
+			$url = 'https://app.mailjet.com/reseller/pricing?r=prestashop&show_menu=none&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -181,7 +184,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-		$url = 'https://'.$this->_lang.'.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
+		$url = 'https://app.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -189,8 +192,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-
-		$url = 'https://'.$this->_lang.'.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.self::$_langCodesMap[$this->_lang];
+		$url = 'https://app.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 
