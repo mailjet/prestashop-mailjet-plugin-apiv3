@@ -68,7 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.2 =
+* Iframe URL localization fix
+
 = 3.2.1 =
 * Simplification of home page text
 * Improvements in Segmentation tool 
-
