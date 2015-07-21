@@ -121,7 +121,7 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.2';
+		$this->version = '3.2.3';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
@@ -934,7 +934,11 @@ class Mailjet extends Module
 		switch ($this->page_name)
 		{
 			case 'SETUP_LANDING':
-				$this->context->smarty->assign(array('is_landing' => true));
+				$mt = new MailjetTemplate();
+				$this->context->smarty->assign(array(
+					'is_landing' => true,
+					'lang' => $mt->getLang()
+				));
 				$this->mj_template->fetchTemplate('setup_landing_message');
 				$this->mj_template->fetchTemplate('setup_landing_bt_more');
 				$this->mj_template->fetchTemplate('setup_landing_bt_activate');
