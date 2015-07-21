@@ -36,6 +36,10 @@ class MailjetTemplate
     private $_defaultLang = 'en';
     private $_lang;
     private $_locale;
+
+	public function getLang(){
+		return $this->_lang;
+	}
     
 	/* List of available template for webservice call */
 	private $templates = array(
