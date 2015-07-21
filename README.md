@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.3 =
+* Localization URL fix on module setup
+
 = 3.2.2 =
 * Iframe URL localization fix
 

@@ -49,7 +49,7 @@
 
 <div class="center_page">
 
-    {if !empty($mj_hint_fieldset) }
+    {if !empty($mj_hint_fieldset.0) || !empty($mj_hint_fieldset.1) || !empty($mj_hint_fieldset.2) }
         <fieldset class="width6 hint seg_fieldset">&nbsp;
             {$mj_hint_fieldset.0|escape|default:''}<br /><br />
             {$mj_hint_fieldset.1|escape|default:''}<br /><br />
