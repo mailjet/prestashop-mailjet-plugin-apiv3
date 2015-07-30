@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.4 =
+* Added new iFrame param - sp=display - to display sending policy block
+
 = 3.2.3 =
 * Localization URL fix on module setup
 

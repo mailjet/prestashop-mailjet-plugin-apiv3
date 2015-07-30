@@ -121,7 +121,7 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.3';
+		$this->version = '3.2.4';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
@@ -254,7 +254,7 @@ class Mailjet extends Module
 				$this->context->cart->add();
 				$this->context->cookie->id_cart = $this->context->cart->id;
 			}
-				
+
 			Db::getInstance()->execute('REPLACE INTO `'._DB_PREFIX_.'mj_roi_cart`(id_cart, token_presta)
 			    VALUES('.$this->context->cart->id.', \''.pSQL(Tools::getValue('tokp')).'\')');
 		}
@@ -303,7 +303,7 @@ class Mailjet extends Module
 			$smarty_page['MJ_'.$name] = $name;
 			$nobug = $value;
 		}
-        
+
         $this->context->controller->addCss($this->_path.'/css/style.css');
         $this->context->controller->addCSS($this->_path.'/css/bo.css');
         $this->context->controller->addCSS($this->_path.'/css/bundlejs_prestashop.css');
@@ -354,7 +354,7 @@ class Mailjet extends Module
 	}
 
 	/**
-	 * 
+	 *
 	 * @author atanas
 	 * @param array $params
 	 */
@@ -469,7 +469,7 @@ class Mailjet extends Module
 	}
 
 	/**
-	 * 
+	 *
 	 * @author atanas
 	 * @param unknown_type $params
 	 * @return boolean
@@ -532,25 +532,25 @@ class Mailjet extends Module
 
 	public function hookUpdateOrderStatus($params)
 	{
-		if (isset($params['id_order'])) 
+		if (isset($params['id_order']))
 		{
-			$sql = 'SELECT id_customer 
+			$sql = 'SELECT id_customer
 					FROM '._DB_PREFIX_.'orders
 					WHERE id_order = '.(int)$params['id_order'];
-	
+
 			if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0)
 				$this->checkAutoAssignment($id_customer);
-			
-		} 
-		elseif (isset($params['cart'])) 
+
+		}
+		elseif (isset($params['cart']))
 		{
 			$cart = $params['cart'];
-			
-			if ($cart instanceof Cart && isset($cart->id_customer)) 
+
+			if ($cart instanceof Cart && isset($cart->id_customer))
 				$this->checkAutoAssignment((int)$cart->id_customer);
 
 		}
-			
+
 		return '';
 	}
 
@@ -571,7 +571,7 @@ class Mailjet extends Module
 
 	public function checkAutoAssignment($id_customer = 0)
 	{
-		$sql = 'SELECT * 
+		$sql = 'SELECT *
 				FROM '._DB_PREFIX_.'mj_filter f
 				LEFT JOIN '._DB_PREFIX_.'mj_condition c ON c.id_filter = f.id_filter
 				WHERE f.assignment_auto = 1';
@@ -614,8 +614,8 @@ class Mailjet extends Module
 
 				if ($formatRow['replace_customer'])
 				{
-					$sql = 'DELETE 
-						FROM '._DB_PREFIX_.'customer_group 
+					$sql = 'DELETE
+						FROM '._DB_PREFIX_.'customer_group
 						WHERE id_customer = '.(int)$id_customer;
 
 					Db::getInstance()->execute($sql);
@@ -635,7 +635,7 @@ class Mailjet extends Module
 			else if (!$result && $obj->belongsToGroup($formatRow['idgroup'], $id_customer))
 			{
 
-				$sql = 'DELETE FROM '._DB_PREFIX_.'customer_group 
+				$sql = 'DELETE FROM '._DB_PREFIX_.'customer_group
 						WHERE id_group = '.(int)$formatRow['idgroup'].' AND id_customer = '.(int)$id_customer;
 
 				DB::getInstance()->execute($sql);
@@ -662,7 +662,7 @@ class Mailjet extends Module
 
 	public function loadConfiguration()
 	{
-		return Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_basecondition` VALUES 
+		return Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_basecondition` VALUES
 				(1, 0, '`%1customer` c')")
 			&& Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_fieldcondition` VALUES
 				(2, 1, 105, '', '', 1, NULL),
@@ -738,11 +738,11 @@ class Mailjet extends Module
 		{
             $triggers = ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'), true)) ? $triggers : $this->triggers;
             Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
-                
+
 			if (Tools::getValue('MJ_allemails_active')) {
                 $this->activateAllEmailMailjet();
                 $triggers['active'] = 1;
-                
+
             } else {
                 Configuration::updateValue('PS_MAIL_METHOD', 1);
                 /*
@@ -831,12 +831,12 @@ class Mailjet extends Module
 			$this->updateTriggers();
 			$modif = true;
 		}
-        
+
         if (Tools::isSubmit('MJ_triggers_import_submit')) {
-            
-            if (isset($_FILES['MJ_triggers_import_file']['tmp_name']) 
+
+            if (isset($_FILES['MJ_triggers_import_file']['tmp_name'])
                 && !empty($_FILES['MJ_triggers_import_file']['tmp_name'])) {
-               
+
                 $file = new SplFileObject($_FILES['MJ_triggers_import_file']['tmp_name']);
                 while (!$file->eof()) {
                     $triggers .= $file->fgets();
@@ -846,9 +846,9 @@ class Mailjet extends Module
                 $modif = true;
             }
 		}
-		
+
         if (Tools::isSubmit('MJ_triggers_export_submit')) {
-            
+
             $triggers = ($triggers = Configuration::get('MJ_TRIGGERS')) ? $triggers : Tools::jsonEncode($this->triggers);
 
             header("Content-Type: plain/text");
@@ -858,8 +858,8 @@ class Mailjet extends Module
             echo "$triggers";
             die();
 		}
-		
-        
+
+
         if ($modif)
 		{
 			$link = new Link();
@@ -876,15 +876,15 @@ class Mailjet extends Module
 		Configuration::updateValue('PS_MAIL_PASSWD', $this->account->SECRET_KEY);
 		Configuration::updateValue('PS_MAIL_METHOD', 2);
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
-        
+
         $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
         Configuration::updateValue('PS_SHOP_EMAIL', $account['EMAIL']);
         self::setSMTPconnectionParams();
 	}
-    
+
     public static function setSMTPconnectionParams()
 	{
-        
+
         $configs = array(array('ssl://', 465),
                               array('tls://', 587),
                               array('', 587),
@@ -893,7 +893,7 @@ class Mailjet extends Module
                               array('', 25));
 
         $host = Configuration::get('PS_MAIL_SERVER');
-        
+
         $connected = FALSE;
 
         for ($i = 0; $i < count($configs); ++$i) {
@@ -918,8 +918,8 @@ class Mailjet extends Module
             Configuration::updateValue('PS_MAIL_SMTP_PORT', $configs[$i][1]);
         }
     }
-    
-    
+
+
 	public function getContent()
 	{
 		if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
@@ -1146,7 +1146,7 @@ class Mailjet extends Module
 				if (isset($mjc->Data) && isset($mjc->Data[0])) {
 					$campaigns[$key]['delivered'] = (int)$mjc->Data[0]->ProcessedCount;
 					$campaigns[$key]['title'] = $mjc->Data[0]->CampaignSubject;
-		
+
 					$sql = 'UPDATE '._DB_PREFIX_.'mj_campaign
 					SET stats_campaign_id = 1,
 					delivered = '.(int)$mjc->Data[0]->ProcessedCount.',
@@ -1210,7 +1210,7 @@ class Mailjet extends Module
 		));
 	}
 
-		
+
     private function updateTriggers()
 	{
 		$triggers = $this->triggers;
@@ -1224,7 +1224,7 @@ class Mailjet extends Module
 		return Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
 	}
 
-    
+
 	private function initTriggers()
 	{
 		$this->triggers = ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'), true)) ? $triggers : $this->triggers;
@@ -1343,7 +1343,7 @@ class Mailjet extends Module
 	}
 
 	/**
-	 * 
+	 *
 	 * @author atanas
 	 * @return mixed
 	 */
@@ -1375,7 +1375,7 @@ class Mailjet extends Module
 		$result = $test->getUser();
 
 		if ($result !== false) {
-            
+
 			$this->account->API_KEY = $apiKey;
 			$this->account->SECRET_KEY = $secretKey;
 			$this->account->EMAIL = $result->Email;
@@ -1389,11 +1389,11 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_USER', $apiKey);
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
- 
+
             $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
             Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
-            
+
 			if ($this->account->MASTER_LIST_SYNCHRONIZED == 0)
 				return $this->initalSynchronize();
 
@@ -1407,7 +1407,7 @@ class Mailjet extends Module
 	}
 
 	/**
-	 * 
+	 *
 	 * @throws Exception
 	 */
 	public function initalSynchronize()
@@ -1596,7 +1596,7 @@ class Mailjet extends Module
 			);
 			$connection->setUsername($account['API_KEY']);
 			$connection->setPassword($account['SECRET_KEY']);
- 
+
 			$swift = new Swift($connection);
 
 			$sMessage = new Swift_Message('['.$from_name.'] '.$subject);
@@ -1611,7 +1611,7 @@ class Mailjet extends Module
 			return $send;
 		}
 		catch (Swift_Exception $e) {
-            			
+
 
 			return false;
 		}
