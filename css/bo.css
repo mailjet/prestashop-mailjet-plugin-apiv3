@@ -26,6 +26,7 @@
 /* */
 a { text-decoration:none; }
 ul { list-style-type:none !important; }
+ul.ulDisc { list-style-type:disc !important; }
 span.help { padding-left:20px; }
 /* */
 #main { min-width: 1040px !important; margin:auto; }
