@@ -2,20 +2,25 @@
 
 <div class="mj-text">
 
-	<p>Vous n’êtes plus qu’à quelques clics de l’activation du plus puissant add-on d’emailing e-commerce conçu pour Prestashop.
-	</p>
-	
-	<p>Utilisez Mailjet pour générer de l’engagement, analyser et améliorer le retour sur investissement de votre base clientèle Prestashop, grâce à de meilleurs envois, des outils de suivi avancés et une meilleure délivrabilité, à la fois pour vos emails transactionnels et marketing.
-	</p>
-	
-	<p>Nos fonctionnalités comprennent : la personnalisation et la segmentation de vos envois, un outil de création d’emails en WYSIWYG, des templates de messages e-commerce prêts à l’emploi, l'envoi d'emails/campagnes automatisés (panier abandonné, anniversaire…) et des statistiques en temps réel. A cela s'ajoute la reconnaissance de revenue généré par chacune de vos campagnes marketing.
-	</p>
-	
-	<p>Inscrivez-vous ou connectez-vous et profitez dès maintenant du meilleur de votre base clientèle grâce à la puissance de Mailjet!
-	</p>
+    <b>Vous n’êtes plus qu’à quelques clics de l’activation du plus puissant add-on d’emailing e-commerce conçu pour Prestashop.</b>
+    <br /><br />
+    Utilisez Mailjet pour générer de l’engagement, analyser et améliorer le retour sur investissement de votre base clientèle Prestashop, grâce à de meilleurs envois, des outils de suivi avancés et une meilleure délivrabilité, à la fois pour vos emails transactionnels et marketing.
+    <br /><br />
+    <b>Nos fonctionnalités comprennent :</b> 
+    <br />
+    <ul class="ulDisc">
+        <li>la personnalisation,</li>
+        <li>la segmentation de vos envois,</li>
+        <li>un outil de création d’emails en WYSIWYG,</li>
+        <li>des templates de messages e-commerce prêts à l’emploi,</li>
+        <li>l'envoi d'emails/campagnes automatisés (panier abandonné, anniversaire…)</li>
+        <li>des statistiques en temps réel. A cela s'ajoute la reconnaissance de revenue généré par chacune de vos campagnes marketing.</li>
+    </ul>
+    <br /><br />
+    <b>Inscrivez-vous ou connectez-vous et profitez dès maintenant du meilleur de votre base clientèle grâce à la puissance de Mailjet!</b>
+
 </div>
 
-
 <div class="mj-video">
-
+	
 </div>
