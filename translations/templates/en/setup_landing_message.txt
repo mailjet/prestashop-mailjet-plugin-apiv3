@@ -19,7 +19,6 @@
     </ul>
     <br /><br />
     <b>Sign up or sign in and enhance your client base with the power of Mailjet today!</b>
-
 </div>
 
 
