@@ -4,7 +4,7 @@ global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{mailjet}prestashop>ajax_210056c8a36e035de0a336f7fa055f27'] = 'Token error';
 $_MODULE['<{mailjet}prestashop>ajax_21a5d428ea929b1e12aa8ea0c57feede'] = 'The requested method doesn\'t exist';
-$_MODULE['<{mailjet}prestashop>mailjet_e3e4a2ed183511046825d8937a155a8d'] = 'Aktivieren Sie Mailjet noch heute, um der Zustellbarkeit Ihrer Marketing- und Werbe-E-Mails neuen Schub zu verleihen. Segmentieren und personalisieren Sie HTML-Newsletter, erstellen Sie sie einfach im Drag-and-Drop-Verfahren oder wählen Sie aus unseren eCommerce-Vorlagen oder automatisch generierten E-Mails (verlassener Warenkorb etc.), um Ihr Händlereinkommen zu verbessern. Verfolgen Sie Ihre Statistiken, darunter auch Umsätze und Einnahmen pro Newsletter, in Echtzeit. Starten Sie heute mit 6000 kostenlosen E-Mails pro Monat.';
+$_MODULE['<{mailjet}prestashop>mailjet_e3e4a2ed183511046825d8937a155a8d'] = 'Aktivieren Sie Mailjet noch heute, um der Zustellbarkeit Ihrer Marketing- und Werbe-E-Mails neuen Schub zu verleihen. Segmentieren und personalisieren Sie HTML-Newsletter, erstellen Sie sie einfach im Drag-and-Drop-Verfahren oder wählen Sie aus unseren eCommerce-Vorlagen oder automatisch generierten E-Mails (verlassener Warenkorb etc.) aus, um Ihr Händlereinkommen zu verbessern. Verfolgen Sie Ihre Statistiken, darunter auch Umsätze und Einnahmen pro Newsletter, in Echtzeit. Starten Sie heute mit 6000 kostenlosen E-Mails pro Monat.';
 $_MODULE['<{mailjet}prestashop>mailjet_ff01de9408b9c15ff689f4e32fc19f99'] = 'Mailjet';
 $_MODULE['<{mailjet}prestashop>mailjet_b78a3223503896721cca1303f776159b'] = 'Title';
 $_MODULE['<{mailjet}prestashop>mailjet_bd09d588f425900508bcd88c0ab77723'] = 'Emails Sent';
