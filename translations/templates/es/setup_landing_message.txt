@@ -2,18 +2,23 @@
 
 <div class="mj-text">
 
-	<p>You are just a few clicks away from activating Prestashop’s most powerful eCommerce email add-on.</p>
-	
-	<p>Use Mailjet to engage, analyse and increase the ROI of your Prestashop client base with enhanced sending, tracking and deliverability of both your transactional and marketing emails.
-	</p>
-	
-	<p>Features include personalisation, advanced Prestashop segmentation, professional drag-and-drop newsletter creation, eCommerce marketing templates, bulk marketing campaigns, triggered marketing campaigns (e.g. abandoned cart, purchase anniversary, etc.) and real-time analytics including knowing how much revenue each of your marketing campaigns has generated for you.
-	</p>
-	
-	<p>Sign up or sign in and enhance your client base with the power of Mailjet today!
-	</p>
-
-
+    <b>Estás a pocos clics de activar el add-on de correo electrónico de ecommerce para Prestashop más potente del mercado.</b>
+    <br /><br />
+    Usa Mailjet para analizar, crear engagement y aumentar el ROI de tu base de clientes de Prestashop gracias al mejor envío, seguimiento y entregabilidad de tus emails de marketing y transaccionales.
+    <br /><br />
+    <b>Entre sus funciones se incluyen:</b> 
+    <br />
+    <ul class="ulDisc">
+        <li>personalización,</li>
+        <li>segmentación de Prestashop avanzada,</li>
+        <li>creación de newsletters profesionales mediante soltar y arrastrar,</li>
+        <li>plantillas de marketing de ecommerce,</li>
+        <li>campañas de correo masivo,</li>
+        <li>campañas de trigger marketing (p.ej. carrito abandonado, aniversario de compra, etc.)</li>
+        <li>analíticas en tiempo real, como los ingresos generados con cada una de tus campañas de marketing.</li>
+    </ul>
+    <br /><br />
+    <b>Regístrate o inicia sesión hoy mismo y mejora tu base de clientes gracias a la potencia de Mailjet.</b>
 </div>
 
 

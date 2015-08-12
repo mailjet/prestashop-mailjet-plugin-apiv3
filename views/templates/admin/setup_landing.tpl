@@ -24,9 +24,19 @@
 *}
 <div class="center_page">
     <div class="logo_mailjet_center"></div>
-    {$MJ_templates.setup_landing_message|default:''}
-
-    <div id="setup_landing_bt">
+   
+    <ul style="list-style: none; margin-top:50px;">
+        <li id="landingMsg" style="display: inline;float:left; width:450px;">    
+        {$MJ_templates.setup_landing_message|default:''}
+        </li>
+        <li id="divYouTubePlayer" style="display: inline; float:left; width:400px; margin-left:50px;">    
+           <iframe width="400" height="300" src="https://www.youtube.com/embed/192pmEakul0?rel=0&amp;controls=0&amp;showinfo=0&autoplay=0" frameborder="0" allowfullscreen></iframe>
+        </li>
+    </ul>
+     
+    <br style="clear:left;" />
+    
+    <div id="setup_landing_bt" style="margin-top:50px;">
         <a target="_blank" href="https://{$lang}.mailjet.com/signup?p=prestashop-3.0" id="setup_landing_bt_activate"
            class="default_button_style default_background_orange">
             {l s='Register' mod='mailjet'}
@@ -40,4 +50,5 @@
         </a>
         <br clear="left"/>
     </div>
+    
 </div>
