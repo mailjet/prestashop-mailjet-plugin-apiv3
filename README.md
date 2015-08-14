@@ -68,6 +68,11 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.5 =
+* Added explanation video to the plugin setup page. 
+* Updated Mailjet logo with one with higher quality. 
+* Added Spanish and Deutsch (German) translations for plugin configuration/setup page 
+
 = 3.2.4 =
 * Added new iFrame param - sp=display - to display sending policy block
 

@@ -25,12 +25,12 @@
 <div class="center_page">
     <div class="logo_mailjet_center"></div>
    
-    <ul style="list-style: none;">
-        <li id="landingMsg" style="display: inline;float:left; width:450px;">    
+    <ul id="landingMsgUl">
+        <li id="landingMsg">    
         {$MJ_templates.setup_landing_message|default:''}
         </li>
-        <li id="divYouTubePlayer" style="display: inline; float:left;width:460px;">    
-           <iframe width="460" height="350" src="https://www.youtube.com/embed/192pmEakul0?rel=0&amp;controls=0&amp;showinfo=0&autoplay=0" frameborder="0" allowfullscreen></iframe>
+        <li id="divYouTubePlayer">    
+           <iframe width="400" height="300" src="https://www.youtube.com/embed/192pmEakul0?rel=0&amp;controls=0&amp;showinfo=0&autoplay=0" frameborder="0" allowfullscreen></iframe>
         </li>
     </ul>
      
