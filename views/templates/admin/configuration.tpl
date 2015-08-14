@@ -47,9 +47,8 @@
    
 	</ul>
 </div>
-{else}
-
 {/if}
+
 <div class="bandeau_noir"></div>
 {/if}
 {if isset($MJ_errors) && count($MJ_errors)}
