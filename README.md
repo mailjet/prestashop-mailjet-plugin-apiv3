@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.4 =
+* Added links to User guide and Support at the plugin footer
+
 = 3.2.3 =
 * Localization URL fix on module setup
 
