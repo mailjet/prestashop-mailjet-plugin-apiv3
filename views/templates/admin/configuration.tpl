@@ -28,9 +28,10 @@
 
 {if !$is_landing}
 <div class="logo_mailjet_tiny"></div>
+{if $MJ_authentication}
 <div id="MJ_tab_menu">
 	<ul id="MJ_tab">
-    {if $MJ_authentication}
+  
             {foreach from=$MJ_tab_page key=MJ_key item=MJ_title}
             	{if $MJ_key == 'PRICING'}
                 <li {if $MJ_page_name == $MJ_key}class="active"{/if}>
@@ -43,11 +44,11 @@
             	{/if}
             	
             {/foreach}
-    {else}
-
-    {/if}
+   
 	</ul>
 </div>
+{/if}
+
 <div class="bandeau_noir"></div>
 {/if}
 {if isset($MJ_errors) && count($MJ_errors)}
@@ -67,8 +68,7 @@
     <div class="mj_landing">
         <div align="center">
             <br />
-            <a href="https://www.mailjet.com/support"
-               target="_blank">{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}</a>
+            {{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}|html_entity_decode}
         </div>
     </div>
 {/if}

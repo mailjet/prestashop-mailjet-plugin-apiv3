@@ -26,6 +26,7 @@
 /* */
 a { text-decoration:none; }
 ul { list-style-type:none !important; }
+ul.ulDisc { list-style-type:disc !important; }
 span.help { padding-left:20px; }
 /* */
 #main { min-width: 1040px !important; margin:auto; }
@@ -383,16 +384,16 @@ table#vsTable .titleImage {
 	margin-bottom:10px;
 }
 .logo_mailjet_tiny {
-	float:left;
-	background-image:url(../img/head_logo_tiny.png);
-	width:164px;
-    height:57px;
+	background-image:url(../img/MJSmall.png);
+	width:230px;
+	height:90px;
+        margin-bottom:10px;
 	margin-right:4px;
 }
 .logo_mailjet_center {
-	background-image:url(../img/head_logo_tiny.png);
-	width:164px;
-	height:57px;
+	background-image:url(../img/MJSmall.png);
+	width:230px;
+	height:90px;
 	margin-left:auto;
 	margin-right:auto;
 }
@@ -598,4 +599,10 @@ div.mj_triggers_parameters
 
 fieldset#triggers_options img { vertical-align:top !important; }
 
+
+
+#divYouTubePlayer { display: inline; float: left; width: 400px; margin-left: 50px; }
+#landingMsg {display: inline; float: left; width: 450px;}
+#setup_landing_bt {margin-top: 50px;}
+#landingMsgUl {list-style: none; margin-top: 50px;}
 /* ** ** ******************* ** ** */
