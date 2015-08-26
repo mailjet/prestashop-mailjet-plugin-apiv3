@@ -68,8 +68,7 @@
     <div class="mj_landing">
         <div align="center">
             <br />
-            <a href="https://www.mailjet.com/support"
-               target="_blank">{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}</a>
+            {{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}|html_entity_decode}
         </div>
     </div>
 {/if}
