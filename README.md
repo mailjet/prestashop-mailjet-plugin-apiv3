@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.7 =
+* Fixed marketing triggers cron script
+
 = 3.2.6 =
 * Added links to User guide and Support at the plugin footer
 
