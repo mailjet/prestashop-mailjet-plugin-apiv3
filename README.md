@@ -68,6 +68,10 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.6 =
+* Added links to User guide and Support at the plugin footer
+* Fixed marketing triggers cron script
+
 = 3.2.5 =
 * Added explanation video to the plugin setup page. 
 * Updated Mailjet logo with one with higher quality. 
