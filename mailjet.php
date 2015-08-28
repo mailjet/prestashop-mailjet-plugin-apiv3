@@ -173,7 +173,8 @@ class Mailjet extends Module
 	public function install()
 	{
 		//$this->account = array(); // **
-		$this->account->TOKEN = md5(rand());
+        $this->account = ($account = Tools::jsonDecode(Configuration::get('MAILJET'))) ? $account : $this->account;
+		$this->account->TOKEN = Tools::getValue('token');
 		$this->updateAccountSettings();
 		/* $segmentation = new Segmentation(); */
 
@@ -1532,7 +1533,7 @@ class Mailjet extends Module
 	 */
 	public function check_subscription()
 	{
-		$this->account['ACTIVATION'] = 1;
+		$this->account->ACTIVATION = 1;
 		$this->updateAccountSettings();
 	}
 
@@ -1553,7 +1554,7 @@ class Mailjet extends Module
 	 */
 	public function getToken()
 	{
-		return $this->account['TOKEN'];
+        return $this->account->TOKEN;
 	}
 
 	public function getAdminFullUrl()
