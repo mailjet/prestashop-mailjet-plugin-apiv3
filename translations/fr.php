@@ -185,7 +185,7 @@ $_MODULE['<{mailjet}prestashop>campaign2_2e8466726ba1fc317a1bdc18ed1f67fa'] = 'E
 $_MODULE['<{mailjet}prestashop>campaign2_e8c880b9ae64b8deb4d874244334cf0e'] = 'La date que vous avez planifiée';
 $_MODULE['<{mailjet}prestashop>campaign2_fbd8e473bc23735ee880f840584d3071'] = 'doit être plus tard que la date courante';
 $_MODULE['<{mailjet}prestashop>configuration_3cf37b9fa854ca045dba980ccf586e0a'] = 'Liste d\'erreurs :';
-$_MODULE['<{mailjet}prestashop>configuration_4eb08ad8450cf36a5528fb1349374e60'] = 'Si vous avez des questions ou rencontrez des difficultés, merci de contacter notre équipe support en cliquant ici';
+$_MODULE['<{mailjet}prestashop>configuration_4eb08ad8450cf36a5528fb1349374e60'] = 'Si vous avez des questions ou rencontrez des difficultés, merci de consulter <a href="https://www.mailjet.com/guides/prestashop-user-guide/" target="_blank"><strong>notre manuel d\'utilisation</strong></a> ou bien de contacter <a href="https://fr.mailjet.com/support/ticket" target="_blank"><strong>notre équipe support</strong></a>.';
 $_MODULE['<{mailjet}prestashop>connect_step_0_71d284a580c79e103da584922b49ff4d'] = 'Vos informations de connexion à Mailjet';
 $_MODULE['<{mailjet}prestashop>connect_step_0_0c39aa058ec1fb88c4c4a1aacc96fb3c'] = 'Veuillez saisir ci-dessous vos informations de connexion à Mailjet';
 $_MODULE['<{mailjet}prestashop>connect_step_0_a7c87ac45effd6bfbdafef12374c489b'] = 'Compte Mailjet';
@@ -198,7 +198,7 @@ $_MODULE['<{mailjet}prestashop>events_4028479791575987806c28e1c066a460'] = 'Spé
 $_MODULE['<{mailjet}prestashop>events_ac7fcc295900a4f71cd83e9d1ae8cd13'] = 'et cliquez sur la gestion d\'erreurs que vous voulez activer';
 $_MODULE['<{mailjet}prestashop>events_de8b88e1dda1f3529e20431b1253c86d'] = 'Aucun élément n\'existe pour ce type d\'évènement';
 $_MODULE['<{mailjet}prestashop>events_cb8efb79d77e156d9cf3b3dc45cca306'] = 'Corrigez les erreurs sélectionnées';
-$_MODULE['<{mailjet}prestashop>home_bb9fb8edbb5a18bfbd50be1d17ca341b'] = 'Simple d’utilisation, Mailjet optimise la déliverabilité de vos emails transactionnels et marketing, pour maximiser leur arrivée en boite de réception, et ainsi tirer le meilleur parti de votre base de clientèle. Utilisez Mailjet aujourd’hui pour profiter des outils avancés de segmentation, personnalisation, de suivi et de statistiques.';
+$_MODULE['<{mailjet}prestashop>home_bb9fb8edbb5a18bfbd50be1d17ca341b'] = 'Simple d\'utilisation, Mailjet optimise la déliverabilité de vos emails transactionnels et marketing, pour maximiser leur arrivée en boite de réception, et ainsi tirer le meilleur parti de votre base de clientèle. Utilisez Mailjet aujourd’hui pour profiter des outils avancés de segmentation, personnalisation, de suivi et de statistiques.';
 $_MODULE['<{mailjet}prestashop>home_213ca560595623138441d399df00ffc8'] = 'Activer l\'envoi de tous vos emails avec Mailjet ?';
 $_MODULE['<{mailjet}prestashop>home_7469a286259799e5b37e5db9296f00b3'] = 'OUI';
 $_MODULE['<{mailjet}prestashop>home_c2f3f489a00553e7a01d369c103c7251'] = 'NON';
