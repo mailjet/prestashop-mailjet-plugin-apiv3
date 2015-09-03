@@ -2475,7 +2475,7 @@ class Mailjet_ApiOverlay
      */
     public function createContacts($contacts, $list_id, $force = null)
     {
-        $this->_api->resetRequest();        
+        $this->_api->resetRequest();
         $this->_api->data('contactslist', $list_id, 'CSVData', 'text/plain', $contacts, 'POST', null);
         //$call_data = $this->mailjetdata->DATA('POST', 'ContactsList', $this->list_id, 'CSVData', 'text/csv', NULL, $contacts, get_app_id());
   

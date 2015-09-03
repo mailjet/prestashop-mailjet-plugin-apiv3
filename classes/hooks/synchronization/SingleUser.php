@@ -39,22 +39,25 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 	{
 		$api = $this->_getApi();
 		$update_list_id = $list_id ? $list_id : $this->_getAlreadyCreatedMasterListId();
-
-		$add_params = array(
-			'method'  	=> 'JSON',
-			'Action'  	=> 'Add',
-			'Force'  	=> true,
-			'Addresses' => array($email),
-			'ListID'  	=> $update_list_id
-		);
-
 		$api->resetRequest();
-		$response = $api->manycontacts($add_params);
-
-		if ($response && $response->Count > 0)
-			return true;
-
-		return false;
+        if(is_object($email)){
+            $customer = $email;
+            $email = $email->email;
+        }
+        $response = $api->manycontacts(array(
+            'method'  	=> 'JSON',
+            'Action'  	=> 'Add',
+            'Force'  	=> true,
+            'Addresses' => array($email),
+            'ListID'  	=> $update_list_id
+        ));
+        if(empty($response) || empty($response->Count)){
+            return false;
+        }
+        if(!empty($customer)){
+            $response = $api->updateUserP($customer);
+        }
+		return $response && $response->Count > 0 ? true : false;
 	}
 
 	/**
