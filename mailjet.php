@@ -173,7 +173,8 @@ class Mailjet extends Module
 	public function install()
 	{
 		//$this->account = array(); // **
-		$this->account->TOKEN = md5(rand());
+        $this->account = ($account = Tools::jsonDecode(Configuration::get('MAILJET'))) ? $account : $this->account;
+		$this->account->TOKEN = Tools::getValue('token');
 		$this->updateAccountSettings();
 		/* $segmentation = new Segmentation(); */
 
@@ -361,7 +362,6 @@ class Mailjet extends Module
 	public function hookActionAdminCustomersControllerSaveAfter($params)
 	{
 		$customer = $params['return'];
-
 		$initialSynchronization = new HooksSynchronizationSingleUser( MailjetTemplate::getApi() );
 
 		$newEmail = $customer->email;
@@ -481,7 +481,7 @@ class Mailjet extends Module
 		);
 
 		try {
-			$initialSynchronization->subscribe($params['newCustomer']->email);
+			$initialSynchronization->subscribe($params['newCustomer']);
 			$this->checkAutoAssignment($params['newCustomer']->id);
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
@@ -1532,7 +1532,7 @@ class Mailjet extends Module
 	 */
 	public function check_subscription()
 	{
-		$this->account['ACTIVATION'] = 1;
+		$this->account->ACTIVATION = 1;
 		$this->updateAccountSettings();
 	}
 
@@ -1553,7 +1553,7 @@ class Mailjet extends Module
 	 */
 	public function getToken()
 	{
-		return $this->account['TOKEN'];
+        return $this->account->TOKEN;
 	}
 
 	public function getAdminFullUrl()
