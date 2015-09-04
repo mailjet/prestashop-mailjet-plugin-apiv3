@@ -31,7 +31,7 @@ require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
 
 $mailjet = new Mailjet();
 
-if (Tools::getValue('token') != $mailjet->getToken())
+if (Tools::getValue('token') !== Configuration::get('SEGMENT_CUSTOMER_TOKEN'))
 	die('No hackers allowed here ! ;-)');
 
 function utf8Outtags($text)
