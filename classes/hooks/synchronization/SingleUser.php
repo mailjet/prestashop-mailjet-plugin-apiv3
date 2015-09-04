@@ -37,27 +37,39 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 	 */
 	public function subscribe($email, $list_id = null)
 	{
-		$api = $this->_getApi();
-		$update_list_id = $list_id ? $list_id : $this->_getAlreadyCreatedMasterListId();
-		$api->resetRequest();
-        if(is_object($email)){
-            $customer = $email;
-            $email = $email->email;
+        $api = $this->_getApi();
+        $update_list_id = $list_id ? $list_id : $this->_getAlreadyCreatedMasterListId();
+        $api->resetRequest();
+        if(is_string($email)){
+            $response = $api->manycontacts(array(
+                'method'  	=> 'JSON',
+                'Action'  	=> 'Add',
+                'Force'  	=> true,
+                'Addresses' => array($email),
+                'ListID'  	=> $update_list_id
+            ));
+        } elseif(is_object($email)) {
+            $response = $api->{'contact/managemanycontacts'}(array(
+                'method' => 'JSON',
+                'ContactsLists' => array(
+                    array(
+                        'ListID' => $update_list_id,
+                        'Action' => 'addnoforce'
+                    )
+                ),
+                'Contacts' => array(
+                    array(
+                        'Email' => $email->email,
+                        'Name' => $email->firstname,
+                        'Properties' => array(
+                            'firstname' => $email->firstname,
+                            'lastname' => $email->lastname
+                        )
+                    )
+                )
+            ));
         }
-        $response = $api->manycontacts(array(
-            'method'  	=> 'JSON',
-            'Action'  	=> 'Add',
-            'Force'  	=> true,
-            'Addresses' => array($email),
-            'ListID'  	=> $update_list_id
-        ));
-        if(empty($response) || empty($response->Count)){
-            return false;
-        }
-        if(!empty($customer)){
-            $response = $api->updateUserP($customer);
-        }
-		return $response && $response->Count > 0 ? true : false;
+        return $response->getResponse() && $response->getResponse()->Count > 0 ? true : false;
 	}
 
 	/**
