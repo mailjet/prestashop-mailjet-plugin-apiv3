@@ -21,7 +21,11 @@
  * @copyright 2007-2015 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*}<div class="center_page mj_home">
+*}
+<script type="text/javascript">
+	var datePickerJsFormat = "{$mj_datePickerJsFormat|escape:'javascript'|default:'yy-mm-dd'}";
+</script>
+<div class="center_page mj_home">
 	<p class="hint">
     	&nbsp; {l s='Mailjet sending all emails of your website, optimizes and automatically manages the statistical returns of errors.' mod='mailjet'}
 	</p>

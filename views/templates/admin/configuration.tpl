@@ -24,6 +24,7 @@
 *}{* Has to be initiated here cause it's defined after the postProcess *}
 <script type="text/javascript">
 	var MJ_page_name = "{$MJ_page_name|escape|default:''}";
+	var datePickerJsFormat = "{$mj_datePickerJsFormat|escape:'javascript'|default:'yy-mm-dd'}";
 </script>
 
 {if !$is_landing}

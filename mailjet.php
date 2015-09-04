@@ -362,7 +362,6 @@ class Mailjet extends Module
 	public function hookActionAdminCustomersControllerSaveAfter($params)
 	{
 		$customer = $params['return'];
-
 		$initialSynchronization = new HooksSynchronizationSingleUser( MailjetTemplate::getApi() );
 
 		$newEmail = $customer->email;
@@ -482,7 +481,7 @@ class Mailjet extends Module
 		);
 
 		try {
-			$initialSynchronization->subscribe($params['newCustomer']->email);
+			$initialSynchronization->subscribe($params['newCustomer']);
 			$this->checkAutoAssignment($params['newCustomer']->id);
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());

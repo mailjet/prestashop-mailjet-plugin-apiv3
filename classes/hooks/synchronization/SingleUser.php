@@ -37,24 +37,39 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 	 */
 	public function subscribe($email, $list_id = null)
 	{
-		$api = $this->_getApi();
-		$update_list_id = $list_id ? $list_id : $this->_getAlreadyCreatedMasterListId();
-
-		$add_params = array(
-			'method'  	=> 'JSON',
-			'Action'  	=> 'Add',
-			'Force'  	=> true,
-			'Addresses' => array($email),
-			'ListID'  	=> $update_list_id
-		);
-
-		$api->resetRequest();
-		$response = $api->manycontacts($add_params);
-
-		if ($response && $response->Count > 0)
-			return true;
-
-		return false;
+        $api = $this->_getApi();
+        $update_list_id = $list_id ? $list_id : $this->_getAlreadyCreatedMasterListId();
+        $api->resetRequest();
+        if(is_string($email)){
+            $response = $api->manycontacts(array(
+                'method'  	=> 'JSON',
+                'Action'  	=> 'Add',
+                'Force'  	=> true,
+                'Addresses' => array($email),
+                'ListID'  	=> $update_list_id
+            ));
+        } elseif(is_object($email)) {
+            $response = $api->{'contact/managemanycontacts'}(array(
+                'method' => 'JSON',
+                'ContactsLists' => array(
+                    array(
+                        'ListID' => $update_list_id,
+                        'Action' => 'addnoforce'
+                    )
+                ),
+                'Contacts' => array(
+                    array(
+                        'Email' => $email->email,
+                        'Name' => $email->firstname,
+                        'Properties' => array(
+                            'firstname' => $email->firstname,
+                            'lastname' => $email->lastname
+                        )
+                    )
+                )
+            ));
+        }
+        return $response->getResponse() && $response->getResponse()->Count > 0 ? true : false;
 	}
 
 	/**

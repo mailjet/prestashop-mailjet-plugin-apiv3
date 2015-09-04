@@ -31,9 +31,11 @@ function addLine()
 		$("#action" + (rules -1)).html('<a href="javascript:addLine();" class="add"><img src="../modules/mailjet/img/add.png" /></a> <a class="delete" href="javascript:delLine(' + (rules - 1) + ');"><img src="../modules/mailjet/img/delete.png" /></a>');
 	}
 	newline = $("#newLine").html();
-	newline = newline.replace(/#####/g,rules);
-	newline = newline.replace('<tbody>','');
-	$("#mainTable").append(newline);
+	if(typeof newline !== 'undefined'){
+		newline = newline.replace(/#####/g,rules);
+		newline = newline.replace('<tbody>','');
+		$("#mainTable").append(newline);
+	}
 	//$('tr#' + rules).slideDown(500);
 	$("table#mainTable").find('td').css('text-align', 'center');
 	rules++;
@@ -67,12 +69,14 @@ function updateSource(idbase, idrule)
 	unbindAll('value2' + idrule);
 	$("#indicSelect" + idrule).html('');
 	$("#indicSelect" + idrule).attr('class', 'grey');
-	$.post(ajaxFile, {'action' : 'getSource' ,'token' : tokenV, 'baseID' : idbase, 'ID' : idrule,'id_employee': id_employee},
-	   function(data) {
-	   	$("#sourceSelect" + idrule).html(data);
-	   	$("#sourceSelect" + idrule).attr('class', '');
-	   });
-	
+	if(typeof ajaxFile !== 'undefined'){
+		$.post(ajaxFile, {'action' : 'getSource' ,'token' : tokenV, 'baseID' : idbase, 'ID' : idrule,'id_employee': id_employee},
+			function(data) {
+				$("#sourceSelect" + idrule).html(data);
+				$("#sourceSelect" + idrule).attr('class', '');
+		});
+	}
+
 	$('input#data' + idrule + ', input#pdata' + idrule + ', input#value1' + idrule + ', input#value2' + idrule).hide();
 	$('input#data' + idrule + ', input#value1' + idrule + ', input#value2' + idrule).parents('td').addClass('grey fixed');
 }
