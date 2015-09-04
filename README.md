@@ -71,6 +71,7 @@ Happy emailing!
 = 3.2.6 =
 * Added links to User guide and Support at the plugin footer
 * Fixed marketing triggers cron script
+* On creation of a new customer, the email and properties are now synced properly to Mailjet.
 
 = 3.2.5 =
 * Added explanation video to the plugin setup page. 
