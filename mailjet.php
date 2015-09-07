@@ -121,13 +121,12 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.6';
+		$this->version = '3.3.0';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
 		// Parent constructor
 		parent::__construct();
-
 		// Backward compatibility
 		if (version_compare(_PS_VERSION_, '1.5', '<'))
 			require(_PS_MODULE_DIR_.$this->name.'/backward_compatibility/backward.php');
@@ -701,7 +700,9 @@ class Mailjet extends Module
 			&& Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_."mj_sourcecondition` VALUES
 				(1, 1, 1, 'LEFT JOIN `%1orders` o ON c.`id_customer` = o.`id_customer`\r\nLEFT JOIN `%1order_detail` od ON o.`id_order` = od.`id_order`\r\nLEFT JOIN `%1currency` cu ON cu.`id_currency` = o.`id_currency`'),
 				(2, 1, 0, 'LEFT JOIN `%1address` ad ON c.`id_customer` = ad.`id_customer` '),
-				(3, 1, 90, NULL)");
+				(3, 1, 90, NULL),
+				(4, 1, 107, 'LEFT JOIN `%1shop` s ON s.`id_shop` = c.`id_shop`')
+			");
 	}
 
 	public function fetchTemplate($path, $name)

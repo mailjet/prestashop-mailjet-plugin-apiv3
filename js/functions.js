@@ -350,14 +350,12 @@ function displayActionMessage(msg, classname)
 
 function loadFilter(idfilter)
 {
-	console.log('loadFilter('+idfilter+')'); // **
 	$.ajax({
  		url: ajaxFile,
  		type : "POST",
  		async: false,
  		data : {'idfilter' : idfilter, 'action' : 'loadFilter', 'token' : tokenV, 'id_employee': id_employee},
   		success: function(data) {
-			console.log('- return Ajax'); // **
   			loadingFilter = true;
 
 			html = '<tr id="mainTR">';
@@ -444,12 +442,13 @@ function loadFilterInfo(idfilter)
 	    $("#idfilter").val(idfilter);
 	   	$("#name").val(info["name"]);
 	   	$("#description").val(info["description"]);
-	   	if (info.date_start.substr(0,10) != "0000-00-00")
-	   	{
-			$("#date_start").val(info.date_start.substr(0,10));
-			$("#date_end").val(info.date_end.substr(0,10));
-	   	}
-	   	
+		if(typeof info.date_start !== 'undefined' && info.date_start !== null){
+			if (info.date_start.substr(0,10) != "0000-00-00"){
+				$("#date_start").val(info.date_start.substr(0,10));
+				$("#date_end").val(info.date_end.substr(0,10));
+			}
+		}
+
 	   	/**
 	   	 * Populate the group's value after  the ajax call
 	   	 * 
@@ -674,8 +673,7 @@ function sync_contacts()
   				$("#sync").show();
   				$('#syncMessageError').html(data).slideDown().delay(1000).slideUp();
   			} else {
-  				console.log(data);
-  				$("#perc_sync_value").html(100); 
+  				$("#perc_sync_value").html(100);
   				$(".perc_sync").hide(); 
   				$("#sync").show();
   				$('#syncMessage').slideDown().delay(1000).slideUp();

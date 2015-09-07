@@ -120,6 +120,7 @@ $_MODULE['<{mailjet}prestashop>segmentation_80538e300fc6edb16e9d8b120194f793'] =
 $_MODULE['<{mailjet}prestashop>segmentation_d02bbc3cb147c272b0445ac5ca7d1a36'] = 'Etat de commande';
 $_MODULE['<{mailjet}prestashop>segmentation_6d953361b8eabc1c4a06d274a76fc92d'] = 'Nombre de commandes';
 $_MODULE['<{mailjet}prestashop>segmentation_068f80c7519d0528fb08e82137a72131'] = 'Produits';
+$_MODULE['<{mailjet}prestashop>segmentation_9f82518d468b9fee614fcc92f76bb163'] = 'Boutique';
 $_MODULE['<{mailjet}prestashop>account_8498b8860bd112fc39b7b62a574817c0'] = 'Mes informations';
 $_MODULE['<{mailjet}prestashop>account_b9987a246a537f4fe86f1f2e3d10dbdb'] = 'Affichage';
 $_MODULE['<{mailjet}prestashop>account_7f090bbab1cc7f9c08bf4e54d932d3c0'] = 'Modifier';
@@ -185,7 +186,7 @@ $_MODULE['<{mailjet}prestashop>campaign2_2e8466726ba1fc317a1bdc18ed1f67fa'] = 'E
 $_MODULE['<{mailjet}prestashop>campaign2_e8c880b9ae64b8deb4d874244334cf0e'] = 'La date que vous avez planifiée';
 $_MODULE['<{mailjet}prestashop>campaign2_fbd8e473bc23735ee880f840584d3071'] = 'doit être plus tard que la date courante';
 $_MODULE['<{mailjet}prestashop>configuration_3cf37b9fa854ca045dba980ccf586e0a'] = 'Liste d\'erreurs :';
-$_MODULE['<{mailjet}prestashop>configuration_4eb08ad8450cf36a5528fb1349374e60'] = 'Si vous avez des questions ou rencontrez des difficultés, merci de consulter <a href="https://www.mailjet.com/guides/prestashop-user-guide/" target="_blank"><strong>notre manuel d\'utilisation</strong></a> ou bien de contacter <a href="https://fr.mailjet.com/support/ticket" target="_blank"><strong>notre équipe support</strong></a>.';
+$_MODULE['<{mailjet}prestashop>configuration_4eb08ad8450cf36a5528fb1349374e60'] = 'Si vous avez des questions ou rencontrez des difficultés, merci de consulter notre manuel d\'utilisation ou bien de contacter notre équipe support.';
 $_MODULE['<{mailjet}prestashop>connect_step_0_71d284a580c79e103da584922b49ff4d'] = 'Vos informations de connexion à Mailjet';
 $_MODULE['<{mailjet}prestashop>connect_step_0_0c39aa058ec1fb88c4c4a1aacc96fb3c'] = 'Veuillez saisir ci-dessous vos informations de connexion à Mailjet';
 $_MODULE['<{mailjet}prestashop>connect_step_0_a7c87ac45effd6bfbdafef12374c489b'] = 'Compte Mailjet';

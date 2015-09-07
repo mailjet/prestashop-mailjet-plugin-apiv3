@@ -143,15 +143,20 @@ class Segmentation
 
 	public function getIndicSelect($ID, $inputID, $selected = null)
 	{
-		$res = Db::getInstance()->ExecuteS('SELECT id_fieldcondition, label FROM `'._DB_PREFIX_.'mj_fieldcondition` WHERE `id_sourcecondition` = '.(int)$ID);
+		// ID = 4 when trying to segment by multi store customers
+		$query = $ID == 4 ? 'SELECT id_shop AS id_fieldcondition, name AS label FROM `'._DB_PREFIX_.'shop` WHERE active = 1 ORDER BY name' :
+			'SELECT id_fieldcondition, label FROM `'._DB_PREFIX_.'mj_fieldcondition` WHERE `id_sourcecondition` = '.(int)$ID;
+		$res = Db::getInstance()->ExecuteS($query);
 		$html = '<select name="fieldSelect[]" class="fieldSelect fixed" id="fieldSelect'.Tools::safeOutput($inputID).'">';
 		$html .= '<option value="-1">--SELECT--</option>';
 		foreach ($res as $r)
 		{
-			$html .= '<option value="'.Tools::safeOutput($r['id_fieldcondition']).'"';
+			/* reserved cases 30 to 40 for names of shops for multi-store segmentation @see ajax/ajax.php */
+			//$addId = $ID == 4 ? 29 : 0;
+				$html .= '<option value="'.Tools::safeOutput($r['id_fieldcondition']).'"';
 			if ($selected == $r['id_fieldcondition'])
 				$html .= 'selected=selected';
-			$html .= ' >'.Tools::safeOutput($this->ll($r['label'])).'</option>';
+			$html .= ' >'.Tools::safeOutput($ID == 4 ? $r['label'] : $this->ll($r['label'])).'</option>';
 		}
 		$html .= '</select>';
 		return $html;
@@ -891,20 +896,20 @@ class Segmentation
 			}
 		}
 
+
+			if($post['sourceSelect'][0] == 4){
+				$multistoreWhere = ' AND c.id_shop = ' . $post['fieldSelect'][0];
+				$field = '';
+			} else {
+				$multistoreWhere = '';
+			}
 		$select = 'SELECT DISTINCT(c.id_customer) AS "'.$this->ll(47).'", CONCAT(UPPER(LEFT(c.firstname, 1)),
 			LOWER(SUBSTRING(c.firstname FROM 2))) AS "'.$this->ll(48).'", UPPER(c.lastname) AS "'.$this->ll(49).'",
 			LOWER(c.email) AS "'.$this->ll(75).'", ad.phone AS "'.$this->ll(73).'",
 			ad.phone_mobile AS "'.$this->ll(74).'"'.$speField.' '.($label != '' ? ', '.$label : ' ').'
 			FROM '.$from.' '.$join.'
 			WHERE c.deleted = 0 AND (ad.active = 1 OR ad.active IS NULL)
-			AND (ad.deleted = 0 OR ad.deleted IS NULL)'.$field;
-
-		/*if ($post['date_start'] > 0 && $post['date_end'] > 0)
-			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) BETWEEN UNIX_TIMESTAMP("'.$post['date_start'].' 00:00:00") AND UNIX_TIMESTAMP("'.$post['date_end'].' 23:59:59")';
-		elseif ($post['date_start'] > 0)
-			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) >= UNIX_TIMESTAMP("'.$post['date_start'].' 00:00:00")';
-		elseif ($post['date_end'] > 0)
-			$select .= ' AND UNIX_TIMESTAMP(c.`date_add`) <= UNIX_TIMESTAMP("'.$post['date_end'].' 23:59:59")';*/
+			AND (ad.deleted = 0 OR ad.deleted IS NULL)'.$field.$multistoreWhere;
 
 		$select .= ' GROUP BY c.id_customer AND o.id_order, c.id_customer';
 
@@ -1246,116 +1251,117 @@ class Segmentation
 			if (file_exists($this->_path.'/translations/translation_cache_'.$lang['id_lang'].'.txt'))
 				unlink($this->_path.'/translations/translation_cache_'.$lang['id_lang'].'.txt');
 	}
-	public function cacheLang()
-	{
+
+	public function cacheLang() {
 		$this->trad = array(
-		0 => $this->l('Customers'),
-		1 => $this->l('Orders'),
-		2 => $this->l('Number of valid orders'),
-		3 => $this->l('Number of invalid orders'),
-		4 => $this->l('Number of orders (all)'),
-		5 => $this->l('Sales'),
-		6 => $this->l('Product\'s name'),
-		7 => $this->l('Category\'s name'),
-		8 => $this->l('Brand\'s name'),
-		9 => $this->l('Lost cart number'),
-		10 => $this->l('Sales'),
-		11 => $this->l('Average sales'),
-		12 => $this->l('Gender'),
-		13 => $this->l('Subscribe Date'),
-		14 => $this->l('Country'),
-		15 => $this->l('-- Select --'),
-		16 => $this->l('Week'),
-		17 => $this->l('Month'),
-		18 => $this->l('Trimester'),
-		19 => $this->l('Year'),
-		20 => $this->l('Man'),
-		21 => $this->l('Woman'),
-		22 => $this->l('No Result'),
-		23 => $this->l('Save successfully'),
-		24 => $this->l('Load successfully'),
-		25 => $this->l('Customer(s)'),
-		26 => $this->l('Export'),
-		27 => $this->l('Page'),
-		28 => $this->l('Filter removed successfully'),
-		29 => $this->l('Group successfully fill'),
-		30 => $this->l('unknown'),
-		31 => $this->l('Stat Table'),
-		32 => $this->l('Range'),
-		33 => $this->l('Number of customer'),
-		34 => $this->l('Purcent of customer'),
-		35 => $this->l('Value2'),
-		36 => $this->l('Rules'),
-		37 => $this->l('Cond'),
-		38 => $this->l('Base'),
-		39 => $this->l('Source'),
-		40 => $this->l('Indic'),
-		41 => $this->l('Data'),
-		42 => $this->l('Value1'),
-		43 => $this->l('Unknown'),
-		44 => $this->l('All'),
-		45 => $this->l('Quantity'),
-		46 => $this->l('No brand found'),
-		47 => $this->l('Customer ID'),
-		48 => $this->l('Firstname'),
-		49 => $this->l('Lastname'),
-		50 => $this->l('Period from %s to %s'),
-		51 => $this->l('Day of %s'),
-		52 => $this->l('Undefined period'),
-		53 => $this->l('Amount taxes included'),
-		54 => $this->l('Amount taxes excluded'),
-		55 => $this->l('Sales taxes included'),
-		56 => $this->l('Sales taxes excluded'),
-		57 => $this->l('Average sales taxes included'),
-		58 => $this->l('Average sales taxes excluded'),
-		59 => $this->l('Payment method used'),
-		60 => $this->l('Lost cart contains'),
-		61 => $this->l('Gift package'),
-		62 => $this->l('Recycled packaging'),
-		63 => $this->l('Last visit'),
-		64 => $this->l('Date of birth'),
-		65 => $this->l('Newsletter subscription'),
-		66 => $this->l('Newsletter optin'),
-		67 => $this->l('Yes'),
-		68 => $this->l('No'),
-		69 => $this->l('Origin'),
-		70 => $this->l('Voucher'),
-		71 => $this->l('Assets'),
-		72 => $this->l('Return product'),
-		73 => $this->l('Phone number'),
-		74 => $this->l('Phone mobile'),
-		75 => $this->l('Email'),
-		76 => $this->l('Address contains'),
-		77 => $this->l('Zipcode starts by'),
-		78 => $this->l('City'),
-		79 => $this->l('A'),
-		80 => $this->l('Action'),
-		81 => $this->l('Rule'),
-		82 => $this->l('You must specify at least one date of subscription'),
-		83 => $this->l('You must specify at least one date of last visit'),
-		84 => $this->l('You must specify at least one date of birth'),
-		85 => $this->l('You must specify a base'),
-		86 => $this->l('You must specify a source'),
-		87 => $this->l('You must specify an indicator'),
-		88 => $this->l('Order date'),
-		89 => $this->l('You must specify at least one order date'),
-		90 => $this->l('Lost carts'),
-		91 => $this->l('Date of abandoned cart'),
-		92 => $this->l('No order since'),
-		93 => $this->l('You must specify a date'),
-		94 => $this->l('Frequency orders'),
-		95 => $this->l('You must specify a number of orders'),
-		96 => $this->l('in real time'),
-		97 => $this->l('replace'),
-		98 => $this->l('add'),
-		99 => $this->l('Date of visit'),
-		100 => $this->l('You must specify at least one date of visit'),
-		101 => $this->l('Unknown rule A'),
-		102 => $this->l('Unknown rule Action'),
-		103 => $this->l('You must specify at least one date of abandoned cart'),
-		104 => $this->l('Order state'),
-		105 => $this->l('Number of orders'),
-		106 => $this->l('Products')
+			0 => $this->l('Customers'),
+			1 => $this->l('Orders'),
+			2 => $this->l('Number of valid orders'),
+			3 => $this->l('Number of invalid orders'),
+			4 => $this->l('Number of orders (all)'),
+			5 => $this->l('Sales'),
+			6 => $this->l('Product\'s name'),
+			7 => $this->l('Category\'s name'),
+			8 => $this->l('Brand\'s name'),
+			9 => $this->l('Lost cart number'),
+			10 => $this->l('Sales'),
+			11 => $this->l('Average sales'),
+			12 => $this->l('Gender'),
+			13 => $this->l('Subscribe Date'),
+			14 => $this->l('Country'),
+			15 => $this->l('-- Select --'),
+			16 => $this->l('Week'),
+			17 => $this->l('Month'),
+			18 => $this->l('Trimester'),
+			19 => $this->l('Year'),
+			20 => $this->l('Man'),
+			21 => $this->l('Woman'),
+			22 => $this->l('No Result'),
+			23 => $this->l('Save successfully'),
+			24 => $this->l('Load successfully'),
+			25 => $this->l('Customer(s)'),
+			26 => $this->l('Export'),
+			27 => $this->l('Page'),
+			28 => $this->l('Filter removed successfully'),
+			29 => $this->l('Group successfully fill'),
+			30 => $this->l('unknown'),
+			31 => $this->l('Stat Table'),
+			32 => $this->l('Range'),
+			33 => $this->l('Number of customer'),
+			34 => $this->l('Purcent of customer'),
+			35 => $this->l('Value2'),
+			36 => $this->l('Rules'),
+			37 => $this->l('Cond'),
+			38 => $this->l('Base'),
+			39 => $this->l('Source'),
+			40 => $this->l('Indic'),
+			41 => $this->l('Data'),
+			42 => $this->l('Value1'),
+			43 => $this->l('Unknown'),
+			44 => $this->l('All'),
+			45 => $this->l('Quantity'),
+			46 => $this->l('No brand found'),
+			47 => $this->l('Customer ID'),
+			48 => $this->l('Firstname'),
+			49 => $this->l('Lastname'),
+			50 => $this->l('Period from %s to %s'),
+			51 => $this->l('Day of %s'),
+			52 => $this->l('Undefined period'),
+			53 => $this->l('Amount taxes included'),
+			54 => $this->l('Amount taxes excluded'),
+			55 => $this->l('Sales taxes included'),
+			56 => $this->l('Sales taxes excluded'),
+			57 => $this->l('Average sales taxes included'),
+			58 => $this->l('Average sales taxes excluded'),
+			59 => $this->l('Payment method used'),
+			60 => $this->l('Lost cart contains'),
+			61 => $this->l('Gift package'),
+			62 => $this->l('Recycled packaging'),
+			63 => $this->l('Last visit'),
+			64 => $this->l('Date of birth'),
+			65 => $this->l('Newsletter subscription'),
+			66 => $this->l('Newsletter optin'),
+			67 => $this->l('Yes'),
+			68 => $this->l('No'),
+			69 => $this->l('Origin'),
+			70 => $this->l('Voucher'),
+			71 => $this->l('Assets'),
+			72 => $this->l('Return product'),
+			73 => $this->l('Phone number'),
+			74 => $this->l('Phone mobile'),
+			75 => $this->l('Email'),
+			76 => $this->l('Address contains'),
+			77 => $this->l('Zipcode starts by'),
+			78 => $this->l('City'),
+			79 => $this->l('A'),
+			80 => $this->l('Action'),
+			81 => $this->l('Rule'),
+			82 => $this->l('You must specify at least one date of subscription'),
+			83 => $this->l('You must specify at least one date of last visit'),
+			84 => $this->l('You must specify at least one date of birth'),
+			85 => $this->l('You must specify a base'),
+			86 => $this->l('You must specify a source'),
+			87 => $this->l('You must specify an indicator'),
+			88 => $this->l('Order date'),
+			89 => $this->l('You must specify at least one order date'),
+			90 => $this->l('Lost carts'),
+			91 => $this->l('Date of abandoned cart'),
+			92 => $this->l('No order since'),
+			93 => $this->l('You must specify a date'),
+			94 => $this->l('Frequency orders'),
+			95 => $this->l('You must specify a number of orders'),
+			96 => $this->l('in real time'),
+			97 => $this->l('replace'),
+			98 => $this->l('add'),
+			99 => $this->l('Date of visit'),
+			100 => $this->l('You must specify at least one date of visit'),
+			101 => $this->l('Unknown rule A'),
+			102 => $this->l('Unknown rule Action'),
+			103 => $this->l('You must specify at least one date of abandoned cart'),
+			104 => $this->l('Order state'),
+			105 => $this->l('Number of orders'),
+			106 => $this->l('Products'),
+			107 => $this->l('Shop'),
 		);
 	}
 
