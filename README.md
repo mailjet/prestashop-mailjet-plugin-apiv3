@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.7 =
+* Segmentation now includes filtering customers by store (for multi store shops)
+
 = 3.2.6 =
 * Added links to User guide and Support at the plugin footer
 * Fixed marketing triggers cron script
