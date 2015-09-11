@@ -71,17 +71,22 @@ $(document).ready( function() {
      $('.sourceSelect').live ('change', function() {
             id = $(this).attr('id').replace('sourceSelect', '');
             updateIndic($(this).val(), id);
-
      });
 
      $('.fieldSelect').live ('change', function() {
-            updateBinder($(this).val() ,$(this).attr('id').replace('fieldSelect', ''));
+         // turn off events for multi store customer segmentation
+         if($('.sourceSelect').val() != 4){
+             updateBinder($(this).val() ,$(this).attr('id').replace('fieldSelect', ''));
+         }
      });
 
     $('.trSelect').live('click', function() {
-            loadFilterInfo($(this).attr('id').replace('list',''));
-            loadFilter($(this).attr('id').replace('list',''));
-            $('#newfilter').show();
+        loadFilterInfo($(this).attr('id').replace('list',''));
+        loadFilter($(this).attr('id').replace('list',''));
+        $('#newfilter').show();
+        if($('.sourceSelect').val() == 4) {
+            $('.fixed[name^="value"], .fixed[name^="data"]').hide().parent().addClass('grey fixed');
+        }
     });
 
      $("#export").live("click", function(){
