@@ -121,7 +121,7 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.7';
+		$this->version = '3.2.8';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
@@ -307,6 +307,7 @@ class Mailjet extends Module
         $this->context->controller->addCss($this->_path.'/css/style.css');
         $this->context->controller->addCSS($this->_path.'/css/bo.css');
         $this->context->controller->addCSS($this->_path.'/css/bundlejs_prestashop.css');
+		$this->context->controller->addJquery();
         $this->context->controller->addJs($this->_path.'/js/jquery.timer.js');
         $this->context->controller->addJs($this->_path.'/js/bo.js');
         $this->context->controller->addJs($this->_path.'/js/events.js');
