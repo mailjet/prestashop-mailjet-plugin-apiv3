@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.8 =
+* jQuery is included explicitly now in the module
+
 = 3.2.7 =
 * Mailjet’s segmentation feature now allows multi-store owners to filter their customers by the store they belong to.
 
