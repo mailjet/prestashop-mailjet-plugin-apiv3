@@ -70,7 +70,6 @@ Happy emailing!
 
 = 3.2.8 =
 * jQuery is included explicitly now in the module
-* fixed include paths in ajax file
 
 = 3.2.7 =
 * Mailjet’s segmentation feature now allows multi-store owners to filter their customers by the store they belong to.
