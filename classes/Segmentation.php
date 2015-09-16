@@ -898,7 +898,7 @@ class Segmentation
 
 
 			if($post['sourceSelect'][0] == 4){
-				$multistoreWhere = ' AND c.id_shop = ' . $post['fieldSelect'][0];
+				$multistoreWhere = ' AND c.id_shop = ' . (int)$post['fieldSelect'][0];
 				$field = '';
 			} else {
 				$multistoreWhere = '';
