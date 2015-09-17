@@ -69,7 +69,7 @@
     <div class="mj_landing">
         <div align="center">
             <br />
-            {l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}
+			{{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}|html_entity_decode}
         </div>
     </div>
 {/if}
