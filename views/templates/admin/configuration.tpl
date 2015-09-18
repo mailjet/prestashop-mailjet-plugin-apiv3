@@ -32,7 +32,7 @@
 {if $MJ_authentication}
 <div id="MJ_tab_menu">
 	<ul id="MJ_tab">
-  
+
             {foreach from=$MJ_tab_page key=MJ_key item=MJ_title}
             	{if $MJ_key == 'PRICING'}
                 <li {if $MJ_page_name == $MJ_key}class="active"{/if}>
@@ -43,9 +43,9 @@
 	                    <a href="{$MJ_adminmodules_link|escape|default:''}&{$MJ_REQUEST_PAGE_TYPE|escape|default:''}={$MJ_key|escape|default:''}">{$MJ_title|escape|default:''}</a>
 	                </li>
             	{/if}
-            	
+
             {/foreach}
-   
+
 	</ul>
 </div>
 {/if}
@@ -69,7 +69,7 @@
     <div class="mj_landing">
         <div align="center">
             <br />
-			{{l s='If you have a question or if you have a problem, click here to contact support.' mod='mailjet'}|html_entity_decode}
+            {l s='Should you have any questions or encounter any difficulties, please consult our [1][2]User Guide[/2][/1] or contact our technical [1][3]Support Team[/3][/1]' tags=['<strong>','<a target="_blank" href="https://www.mailjet.com/guides/prestashop-user-guide">','<a target="_blank" href="https://www.mailjet.com/support/ticket">'] mod='mailjet'}
         </div>
     </div>
 {/if}
