@@ -198,13 +198,12 @@ class Mailjet extends Module
 		$this->createTriggers();
 		Configuration::updateValue('MJ_ALLEMAILS', 1);
 
-			$this->registerHook('actionAdminCustomersControllerSaveBefore');
-			$this->registerHook('actionAdminCustomersControllerSaveAfter');
-			$this->registerHook('actionAdminCustomersControllerStatusAfter');
-			$this->registerHook('actionAdminCustomersControllerDeleteBefore');
-
 		return (parent::install()
 			&& $this->loadConfiguration()
+            && $this->registerHook('actionAdminCustomersControllerSaveBefore')
+			&& $this->registerHook('actionAdminCustomersControllerSaveAfter')
+			&& $this->registerHook('actionAdminCustomersControllerStatusAfter')
+			&& $this->registerHook('actionAdminCustomersControllerDeleteBefore')
 			&& $this->registerHook('BackOfficeHeader')
 			&& $this->registerHook('adminCustomers')
 			&& $this->registerHook('header')
@@ -369,22 +368,25 @@ class Mailjet extends Module
 
 		$changedMail = false;
 
-		if ($newEmail != $oldEmail)
-			$changedMail = true;
+		if ($newEmail != $oldEmail) {
+            $changedMail = true;
+        }
 
 		try {
-			if ($changedMail)
-			{
-				$initialSynchronization->subscribe($newEmail);
+			if ($changedMail) {
+                if($customer->active == 1 && $customer->newsletter == 1) {
+                    $initialSynchronization->subscribe($newEmail);
+                }
 				$initialSynchronization->remove($oldEmail);
 			}
 
 			$this->checkAutoAssignment($customer->id);
 
-			if ($customer->active == 0)
-				$initialSynchronization->unsubscribe($newEmail);
-			else
-				$initialSynchronization->subscribe($newEmail);
+			if ($customer->active == 0 || $customer->newsletter == 0) {
+                $initialSynchronization->unsubscribe($newEmail);
+            } elseif($customer->active == 1 && $customer->newsletter == 1) {
+                $initialSynchronization->subscribe($newEmail);
+            }
 
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
@@ -407,10 +409,11 @@ class Mailjet extends Module
 		try {
 			$this->checkAutoAssignment($customer->id);
 
-			if ($customer->active == 0)
-				$initialSynchronization->unsubscribe($customer->email);
-			else
-				$initialSynchronization->subscribe($customer->email);
+            if ($customer->active == 0 || $customer->newsletter == 0) {
+                $initialSynchronization->unsubscribe($customer->email);
+            } elseif($customer->active == 1 && $customer->newsletter == 1) {
+                $initialSynchronization->subscribe($customer->email);
+            }
 
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
@@ -481,7 +484,10 @@ class Mailjet extends Module
 		);
 
 		try {
-			$initialSynchronization->subscribe($params['newCustomer']);
+
+            if($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
+                $initialSynchronization->subscribe($params['newCustomer']->email);
+            }
 			$this->checkAutoAssignment($params['newCustomer']->id);
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
@@ -500,7 +506,9 @@ class Mailjet extends Module
 		$initialSynchronization = new HooksSynchronizationSingleUser( MailjetTemplate::getApi() );
 
 		try {
-			$initialSynchronization->subscribe($params['newCustomer']->email);
+            if($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
+                $initialSynchronization->subscribe($params['newCustomer']->email);
+            }
 		} catch (Exception $e) {
 			$this->errors_list[] = $this->l($e->getMessage());
 			return false;
@@ -651,10 +659,13 @@ class Mailjet extends Module
 			);
 			$mailjetListID = $obj->_getMailjetContactListId($filterId);
 
-			if ($result)
-				$initialSynchronization->subscribe($customer->email, $mailjetListID);
-			else
-				$initialSynchronization->remove($customer->email, $mailjetListID);
+			if ($result) {
+                if($customer->active == 1 && $customer->newsletter == 1) {
+                    $initialSynchronization->subscribe($customer->email, $mailjetListID);
+                }
+            } else {
+                $initialSynchronization->remove($customer->email, $mailjetListID);
+            }
 		}
 
 		return $this;
