@@ -204,7 +204,8 @@ class Mailjet extends Module
 			&& $this->registerHook('actionAdminCustomersControllerSaveAfter')
 			&& $this->registerHook('actionAdminCustomersControllerStatusAfter')
 			&& $this->registerHook('actionAdminCustomersControllerDeleteBefore')
-			&& $this->registerHook('BackOfficeHeader')
+			&& $this->registerHook('actionObjectCustomerUpdateAfter')
+            && $this->registerHook('BackOfficeHeader')
 			&& $this->registerHook('adminCustomers')
 			&& $this->registerHook('header')
 			&& $this->registerHook('newOrder')
@@ -392,6 +393,33 @@ class Mailjet extends Module
 			$this->errors_list[] = $this->l($e->getMessage());
 		}
 	}
+
+
+    /**
+     * Hook which is triggered right after customer account is changed - either by the customer himself via Frontend
+     * or by admin via Customers listing - click on 'Newsletter' checkbox in the listing
+     * (note that the Hook for customer profile edition by Admin is different - it is hookActionAdminCustomersControllerSaveAfter)
+     * @param type $params
+     */
+    public function hookActionObjectCustomerUpdateAfter($params)
+	{
+		$customer = $params['object'];
+		$initialSynchronization = new HooksSynchronizationSingleUser( MailjetTemplate::getApi() );
+
+        try {
+			$this->checkAutoAssignment($customer->id);
+
+            if ($customer->active == 0 || $customer->newsletter == 0) {
+                $initialSynchronization->unsubscribe($customer->email);
+            } elseif($customer->active == 1 && $customer->newsletter == 1) {
+                $initialSynchronization->subscribe($customer->email);
+            }
+
+		} catch (Exception $e) {
+			$this->errors_list[] = $this->l($e->getMessage());
+		}
+	}
+
 
 	/**
 	 *
