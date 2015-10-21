@@ -68,6 +68,10 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.9 =
+* Fixed displaying of special symbols in trigger emails
+* Added checks for existing parameters in hookNewOrder()
+
 = 3.2.8 =
 * jQuery is included explicitly now in the module
 * Added correct hooks, related to customer edition and properly handling of customer subscription/unsubscription to Mailjet's master contact list
