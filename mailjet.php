@@ -210,7 +210,6 @@ class Mailjet extends Module
 			&& $this->registerHook('header')
 			&& $this->registerHook('newOrder')
 			&& $this->registerHook('createAccount')
-			/* && $this->registerHook('newOrder') // SEGMENTATION ** ** */
 			&& $this->registerHook('updateQuantity')
 			&& $this->registerHook('cart')
 			&& $this->registerHook('authentication')
