@@ -262,8 +262,13 @@ class Mailjet extends Module
 
 	public function hookNewOrder($params)
 	{
+        if(empty($params['customer']->id)){
+            return '';
+        }
 		$this->checkAutoAssignment((int)$params['customer']->id);
-
+        if(empty($params['order']->id_cart)){
+            return '';
+        }
 		$sql = 'SELECT * FROM `'._DB_PREFIX_.'mj_roi_cart`
 				WHERE id_cart = '.(int)$params['order']->id_cart;
 
