@@ -40,7 +40,7 @@ function utf8Outtags($text)
 	$utf8 = htmlentities($notags);
 	preg_match_all('/&([0-9A-Za-z]+);/', $utf8, $res);
 	foreach ($res[0] as $preg)
-		$text = str_replace(html_entity_decode($preg), $preg, $text);
+		$text = str_replace($preg, html_entity_decode($preg), $text);
 	return $text;
 }
 
