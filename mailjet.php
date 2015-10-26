@@ -121,7 +121,7 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.8';
+		$this->version = '3.2.9';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
@@ -210,7 +210,6 @@ class Mailjet extends Module
 			&& $this->registerHook('header')
 			&& $this->registerHook('newOrder')
 			&& $this->registerHook('createAccount')
-			/* && $this->registerHook('newOrder') // SEGMENTATION ** ** */
 			&& $this->registerHook('updateQuantity')
 			&& $this->registerHook('cart')
 			&& $this->registerHook('authentication')
@@ -262,8 +261,13 @@ class Mailjet extends Module
 
 	public function hookNewOrder($params)
 	{
+        if(empty($params['customer']->id)){
+            return '';
+        }
 		$this->checkAutoAssignment((int)$params['customer']->id);
-
+        if(empty($params['order']->id_cart)){
+            return '';
+        }
 		$sql = 'SELECT * FROM `'._DB_PREFIX_.'mj_roi_cart`
 				WHERE id_cart = '.(int)$params['order']->id_cart;
 
