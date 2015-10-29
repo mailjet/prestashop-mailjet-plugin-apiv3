@@ -127,9 +127,9 @@ if (Tools::getValue('action') == 'getBinder')
 			die(Tools::jsonEncode($bind));
 			/*break;*/
 		case 21: /* origin	*/
-			$sql = 'SELECT DISTINCT(conn.http_referer) AS url FROM '._DB_PREFIX_.'connections conn 
+			$sql = 'SELECT DISTINCT(conn.http_referer) AS url FROM '._DB_PREFIX_.'connections conn
 					LEFT JOIN '._DB_PREFIX_.'guest g on g.id_guest = conn.id_guest
-					LEFT JOIN '._DB_PREFIX_.'customer c ON c.id_customer = g.id_customer 
+					LEFT JOIN '._DB_PREFIX_.'customer c ON c.id_customer = g.id_customer
 					WHERE LENGTH(conn.http_referer) > 0 AND c.id_customer IS NOT NULL';
 			$res = Db::getInstance()->executeS($sql);
 
@@ -149,8 +149,8 @@ if (Tools::getValue('action') == 'getBinder')
 			die(Tools::jsonEncode($bind));
 			/*break;*/
 		case 27: /* city */
-			$sql = 'SELECT DISTINCT(TRIM(a.city)) AS city FROM '._DB_PREFIX_.'address a 
-					LEFT JOIN '._DB_PREFIX_.'customer c ON c.id_customer = a.id_customer 
+			$sql = 'SELECT DISTINCT(TRIM(a.city)) AS city FROM '._DB_PREFIX_.'address a
+					LEFT JOIN '._DB_PREFIX_.'customer c ON c.id_customer = a.id_customer
 					WHERE c.deleted = 0 AND a.active = 1 AND a.deleted = 0 AND a.city IS NOT NULL';
 			$res = Db::getInstance()->executeS($sql);
 
@@ -278,11 +278,8 @@ if (Tools::getValue('action') == 'addGroup')
 
 	foreach ($rows as $row)
 	{
-		$values = array(
-			'id_customer'	=>	pSQL($row[$obj->ll(47)]),
-			'id_group'		=>	(int)Tools::getValue('idgroup')
-		);
-		Db::getInstance()->insert(_DB_PREFIX_.'customer_group', $values);
+        Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_.'customer_group` (`id_customer`, `id_group`)
+            VALUES ("'.pSQL($row[$obj->ll(47)]).'", "'.((int)Tools::getValue('idgroup')).'")');
 	}
 
 	die(true);
