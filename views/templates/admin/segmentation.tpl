@@ -47,6 +47,8 @@
 {$mj_datepickerPersonnalized|escape|default:''}
 {$MJ_templates.SEGMENTATION|escape|default:''}
 
+
+
 <div class="center_page">
 
     {if !empty($mj_hint_fieldset.0) || !empty($mj_hint_fieldset.1) || !empty($mj_hint_fieldset.2) }
@@ -82,7 +84,14 @@
 					<td>{$filter.description|escape|default:''}</td>
 					<td>{if ($filter.assignment_auto)}{if ($filter.replace_customer)}{$mj_trads[97]|escape|default:'Replace'}{else}{$mj_trads[98]|escape|default:'Add'}{/if}{else}--{/if}</td>
 					<td>{if ($filter.assignment_auto)}{$mj_trads[96]|escape|default:'in real time'}{else}--{/if}</td>
-					<td>--</td>
+					<td>
+                                            {if $mj_groups}
+                                            {foreach from=$mj_groups item=group}
+                                            {if ($filter.id_group == $group.id_group)}
+                                                {$group.name|escape|default:'?'}
+                                            {/if}
+                                            {/foreach}{/if}
+                                        </td>
 					<td><a href="javascript:deleteFilter({$filter.id_filter|escape|default:'0'});"><img src="../modules/mailjet/img/delete.png" /></a></td>
 				</tr>
 			{/foreach}

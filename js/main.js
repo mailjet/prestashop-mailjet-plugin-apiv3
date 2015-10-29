@@ -58,7 +58,7 @@ $(document).ready( function() {
     $('input#newgrp').bind('keyup', function(){
             if ($(this).val())
             {
-                    $('select#groupUser').val('');
+                   // $('select#groupUser').val('');
             }
     });
 
