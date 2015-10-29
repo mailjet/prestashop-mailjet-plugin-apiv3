@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.10 =
+* Segmentation fix related with Group association
+
 = 3.2.9 =
 * Fixed displaying of special symbols in trigger emails
 * Added checks for existing parameters in hookNewOrder()
