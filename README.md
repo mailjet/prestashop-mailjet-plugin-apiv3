@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.11 =
+* Fix related with trigger emails
+
 = 3.2.10 =
 * Segmentation fix related with Group association
 

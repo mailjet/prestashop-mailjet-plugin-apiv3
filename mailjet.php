@@ -121,7 +121,7 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.10';
+		$this->version = '3.2.11';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
@@ -868,9 +868,21 @@ class Mailjet extends Module
 					$this->triggers['trigger'][$sel]['discountType'] = (int)Tools::getValue('MJ_triggers_trigger_'.$sel.'_discountType');
 				}
 				$languages = Language::getLanguages();
+                $shop_name = $this->context->shop->name;
+        		$shop_url = 'http://'.$this->context->shop->domain;
+                $shop_logo = $shop_url._PS_IMG_.Configuration::get('PS_LOGO').'?'.Configuration::get('PS_IMG_UPDATE_TIME');
+
 				foreach ($languages as $l) {
 					$this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_subject_'.$l['id_lang']);
 					$this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = Tools::getValue('MJ_triggers_trigger_'.$sel.'_mail_'.$l['id_lang']);
+
+                    // replace {shop_name}, {shop_url}, {shop_logo}
+                    $this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = str_replace('{shop_name}', $shop_name, $this->triggers['trigger'][$sel]['subject'][$l['id_lang']]);
+                    $this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = str_replace('{shop_url}', $shop_url, $this->triggers['trigger'][$sel]['subject'][$l['id_lang']]);
+                    $this->triggers['trigger'][$sel]['subject'][$l['id_lang']] = str_replace('{shop_logo}', $shop_logo, $this->triggers['trigger'][$sel]['subject'][$l['id_lang']]);
+                    $this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = str_replace('{shop_name}', $shop_name, $this->triggers['trigger'][$sel]['mail'][$l['id_lang']]);
+                    $this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = str_replace('{shop_url}', $shop_url, $this->triggers['trigger'][$sel]['mail'][$l['id_lang']]);
+                    $this->triggers['trigger'][$sel]['mail'][$l['id_lang']] = str_replace('{shop_logo}', $shop_logo, $this->triggers['trigger'][$sel]['mail'][$l['id_lang']]);
 				}
 			}
 			$this->updateTriggers();
