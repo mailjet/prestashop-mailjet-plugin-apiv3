@@ -92,7 +92,7 @@ if ($mailjet->triggers['active'])
 	$sql = array();
 	$sql_target = array();
 	$sql[1] = '
-			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname, 
+			SELECT cu.id_customer, '.(version_compare(_PS_VERSION_, '1.5', '>=')?'`cu`.id_lang,':'').' cu.email, cu.firstname, cu.lastname,
 				`tr`.type, `tr`.id_trigger, `ca`.id_cart, `ca`.id_shop, `ca_ldu`.last_date_upd
 			FROM `'._DB_PREFIX_.'customer` `cu`
 			LEFT JOIN (
@@ -294,6 +294,10 @@ if ($mailjet->triggers['active'])
 					$subject = str_replace('{'.$key.'}', $value, $subject);
 					$content = str_replace('{'.$key.'}', $value, $content);
 				}
+
+                $content = str_replace('{shop_name}', $shop_name, $content);
+				$content = str_replace('{shop_url}', $shop_url, $content);
+				$content = str_replace('{shop_logo}', $shop_logo, $content);
 
 				$content = utf8Outtags($content);
 
