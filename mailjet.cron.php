@@ -295,9 +295,9 @@ if ($mailjet->triggers['active'])
 					$content = str_replace('{'.$key.'}', $value, $content);
 				}
 
-                $content = str_replace('{shop_name}', $shop_name, $content);
-				$content = str_replace('{shop_url}', $shop_url, $content);
-				$content = str_replace('{shop_logo}', $shop_logo, $content);
+                $tags_search = array('{shop_name}', '{shop_url}', '{shop_logo}');
+                $tags_replace = array($shop_name, $shop_url, $shop_logo);
+                $content = str_replace($tags_search, $tags_replace, $content);
 
 				$content = utf8Outtags($content);
 
