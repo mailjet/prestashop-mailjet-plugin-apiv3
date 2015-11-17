@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.12 =
+* ES translations
+
 = 3.2.11 =
 * Fix related with trigger emails
 
