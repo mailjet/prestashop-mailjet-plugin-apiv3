@@ -2,7 +2,7 @@
 <module>
 	<name>mailjet</name>
 	<displayName><![CDATA[Mailjet]]></displayName>
-	<version><![CDATA[3.2.12]]></version>
+	<version><![CDATA[3.2.13]]></version>
 	<description><![CDATA[Activate Mailjet today to give your marketing and transactional emails a deliverability boost.  Segment, personalize and easily create drag-and-drop HTML newsletters or choose from our eCommerce templates or native triggered emails (abandoned cart, etc.) to increase your merchant revenue.  Look at stats in real time including sales and revenue per newsletter.  Get started today with 6000 free emails per month. ]]></description>
 	<author><![CDATA[PrestaShop]]></author>
 	<tab><![CDATA[advertising_marketing]]></tab>
