@@ -18,6 +18,40 @@
 			<FAQ>FAQ</FAQ>
 			<PRICING>UPGRADE</PRICING>
 		</iso>
+		<iso code="de">
+			<SETUP_LANDING>Setup Landing</SETUP_LANDING>
+			<SETUP_STEP_0>Setup step 0</SETUP_STEP_0>
+			<SETUP_STEP_1>Setup step 1</SETUP_STEP_1>
+			<LOGIN>Login</LOGIN>
+			<HOME>Home</HOME>
+			<SEGMENTATION>Segmentieren</SEGMENTATION>
+			<CAMPAIGN>Kampagnen</CAMPAIGN>
+			<EVENTS>Kontakt Management</EVENTS>
+			<TRIGGERS>Transaktionale E-Mails</TRIGGERS>
+			<ROI>ROI</ROI>
+			<CONTACTS>Kontaktliste</CONTACTS>
+			<STATS>Statistik</STATS>
+			<ACCOUNT>Mein Benutzerkonto</ACCOUNT>
+			<FAQ>FAQ</FAQ>
+			<PRICING>UPGRADE</PRICING>
+		</iso>
+		<iso code="es">
+			<SETUP_LANDING>Setup Landing</SETUP_LANDING>
+			<SETUP_STEP_0>Setup step 0</SETUP_STEP_0>
+			<SETUP_STEP_1>Setup step 1</SETUP_STEP_1>
+			<LOGIN>Login</LOGIN>
+			<HOME>Inicio</HOME>
+			<SEGMENTATION>Segmentación</SEGMENTATION>
+			<CAMPAIGN>Campañas</CAMPAIGN>
+			<EVENTS>Gestión de contactos</EVENTS>
+			<TRIGGERS>Correos electrónicos transaccionales</TRIGGERS>
+			<ROI>ROI</ROI>
+			<CONTACTS>Listas de contactos</CONTACTS>
+			<STATS>Estadísticas</STATS>
+			<ACCOUNT>Mi cuenta</ACCOUNT>
+			<FAQ>FAQ</FAQ>
+			<PRICING>Actualizar</PRICING>
+		</iso>
 		<iso code="fr">
 			<SETUP_LANDING>Présentation de l'installation</SETUP_LANDING>
 			<SETUP_STEP_0>Etape 1 de l'installation</SETUP_STEP_0>

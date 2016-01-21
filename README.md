@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.14 =
+* Plugin translated in German
+
 = 3.2.13 =
 * Fix on "Cateroy name" filter in Prestashop segmentation
 * ES translation fixes
