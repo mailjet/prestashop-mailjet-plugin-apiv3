@@ -319,19 +319,26 @@ class Mailjet extends Module
         $this->context->controller->addJs($this->_path.'/js/main.js');
         $this->context->controller->addJs($this->_path.'/js/bundlejs_prestashop.js');
 
+        $api = MailjetTemplate::getApi();
+        $infos = $api->getUser();
+		$mjSenders = $api->getSenders(null, $infos);
+        $currentSender = Configuration::get('PS_SHOP_EMAIL');
+
 		$this->context->smarty->assign(
-				array(
-						'MJ_base_dir' => $this->module_access['uri'],
-						'MJ_local_path' => $this->module_access['dir'],
-						'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE,
-						'MJ_ADMINMODULES_TOKEN' => Tools::getAdminTokenLite('AdminModules'),
-						'MJ_available_pages' => $smarty_page,
-						'MJ_tab_page' => $this->mj_pages->getPages(MailJetPages::REQUIRE_PAGE),
-						'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
-						'MJ_allemails_active' => Configuration::get('MJ_ALLEMAILS'),
-						'MJ_TOKEN' => $this->account->TOKEN,
-						'nobug' => $nobug
-				)
+            array(
+                'MJ_base_dir' => $this->module_access['uri'],
+                'MJ_local_path' => $this->module_access['dir'],
+                'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE,
+                'MJ_ADMINMODULES_TOKEN' => Tools::getAdminTokenLite('AdminModules'),
+                'MJ_available_pages' => $smarty_page,
+                'MJ_tab_page' => $this->mj_pages->getPages(MailJetPages::REQUIRE_PAGE),
+                'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
+                'MJ_allemails_active' => Configuration::get('MJ_ALLEMAILS'),
+                'MJ_TOKEN' => $this->account->TOKEN,
+                'nobug' => $nobug,
+                'mjSenders' => $mjSenders,
+                'currentSender' => $currentSender
+            )
 		);
 
 		if ($this->isAccountSet())
@@ -784,10 +791,19 @@ class Mailjet extends Module
             $triggers = ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'), true)) ? $triggers : $this->triggers;
             Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
 
-			if (Tools::getValue('MJ_allemails_active')) {
+			if (Tools::getValue('MJ_allemails_active') == '1') {
+                // Set PS SHOP EMAIL to be selected Mailjet Sender address
+                $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+                $account['EMAIL'] = Tools::getValue('MJ_senders');
+                Configuration::updateValue('MAILJET', Tools::jsonEncode($account));
+                Configuration::updateValue('PS_SHOP_EMAIL', Tools::getValue('MJ_senders'));
+
+                $this->context->smarty->assign(array(
+                    'currentSender' => Tools::getValue('MJ_senders')
+                ));
+
                 $this->activateAllEmailMailjet();
                 $triggers['active'] = 1;
-
             } else {
                 Configuration::updateValue('PS_MAIL_METHOD', 1);
                 /*
@@ -887,6 +903,22 @@ class Mailjet extends Module
 			}
 			$this->updateTriggers();
 			$modif = true;
+
+            if(Tools::getValue('MJ_triggers_active') == '1') {
+                // Set PS SHOP EMAIL to be selected Mailjet Sender address
+                $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+                $account['EMAIL'] = Tools::getValue('MJ_senders');
+                Configuration::updateValue('MAILJET', Tools::jsonEncode($account));
+                Configuration::updateValue('PS_SHOP_EMAIL', Tools::getValue('MJ_senders'));
+
+                $this->context->smarty->assign(array(
+                    'currentSender' => Tools::getValue('MJ_senders')
+                ));
+
+            } else {
+
+            }
+
 		}
 
         if (Tools::isSubmit('MJ_triggers_import_submit')) {
@@ -1250,6 +1282,11 @@ class Mailjet extends Module
                 ? Configuration::get('SEGMENT_CUSTOMER_TOKEN') : Tools::getValue('token'));
 		$iso = $this->context->language->iso_code;
 
+        $api = MailjetTemplate::getApi();
+        $infos = $api->getUser();
+		$mjSenders = $api->getSenders(null, $infos);
+        $currentSender = Configuration::get('PS_SHOP_EMAIL');
+
 		// Assign
 		$this->context->smarty->assign(array(
 			'tinymce_new' => version_compare(_PS_VERSION_, '1.4.0.0'),
@@ -1262,6 +1299,8 @@ class Mailjet extends Module
 			'sign' => $sign,
 			'triggers' => $triggers,
 			'languages' => $languages,
+			'mjSenders' => $mjSenders,
+			'currentSender' => $currentSender,
 			'sel_lang' => $sel_lang,
 			'cron' => $cron
 		));

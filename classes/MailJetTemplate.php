@@ -36,6 +36,7 @@ class MailjetTemplate
     private $_defaultLang = 'en';
     private $_lang;
     private $_locale;
+    private $_mj_website = "https://app.mailjet.com";
 
 	public function getLang(){
 		return $this->_lang;
@@ -160,7 +161,7 @@ class MailjetTemplate
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$token = Tools::getAdminTokenLite('AdminModules');
 		$sign_up_call_back = urlencode($ps_shop_domain.'/modules/mailjet/callback_signup.php?internaltoken='.$token);
-		$url = 'https://app.mailjet.com/reseller/signup?r=prestashop&cb={'.$sign_up_call_back.'}&show_menu=none&sp=display&locale='.$this->_locale;
+		$url = $this->_mj_website . '/reseller/signup?r=Prestashop-3.0&cb={'.$sign_up_call_back.'}&show_menu=none&sp=display&locale='.$this->_locale;
 
 		$this->iframes_url[$name] = $url;
 	}
@@ -169,7 +170,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-		$url = 'https://app.mailjet.com/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&sp=display&f=am&locale='.$this->_locale;
+		$url = $this->_mj_website . '/campaigns?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&sp=display&f=am&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -178,9 +179,9 @@ class MailjetTemplate
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
 		if ($token)
-			$url = 'https://app.mailjet.com/reseller/pricing?t='.$token.'&r=prestashop&cb='.$cb.'&show_menu=none&sp=display&locale='.$this->_locale;
+			$url = $this->_mj_website . '/reseller/pricing?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&sp=display&locale='.$this->_locale;
 		else
-			$url = 'https://app.mailjet.com/reseller/pricing?r=prestashop&show_menu=none&sp=display&locale='.$this->_locale;
+			$url = $this->_mj_website . '/reseller/pricing?r=Prestashop-3.0&show_menu=none&sp=display&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -188,7 +189,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-		$url = 'https://app.mailjet.com/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.$this->_locale;
+		$url = $this->_mj_website . '/stats?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&f=am&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 
@@ -196,7 +197,7 @@ class MailjetTemplate
 	{
 		$ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
 		$cb = $ps_shop_domain.'/modules/mailjet/callback_campaign.php';
-		$url = 'https://app.mailjet.com/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&sp=display&f=am&locale='.$this->_locale;
+		$url = $this->_mj_website . '/contacts?t='.$token.'&r=Prestashop-3.0&cb='.$cb.'&show_menu=none&sp=display&f=am&locale='.$this->_locale;
 		$this->iframes_url[$name] = $url;
 	}
 

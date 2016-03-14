@@ -25,16 +25,76 @@
 <script type="text/javascript">
 	var datePickerJsFormat = "{$mj_datePickerJsFormat|escape:'javascript'|default:'yy-mm-dd'}";
 </script>
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+    $(function() {      
+        var senders = [];
+        {foreach from=$mjSenders key=key item=value}
+            {if $value->Status == 'Active'}
+                senders[{$key}] = "{$value->Email->Email|escape:'javascript'|default:' - '}";
+            {/if}
+        {/foreach}
+
+        var sendersClean = [];
+        $.each(senders, function(key, sender) {
+            if (typeof sender !== 'undefined') {
+                sendersClean.push(sender);
+            }
+        });
+
+        $("#MJ_senders").autocomplete({
+            source: sendersClean
+        });
+        
+        $('#MJ_set_allemails').on('click', function(){
+            if ($("#MJ_senders").is(":visible")) { 
+                if ($.inArray($("#MJ_senders").val(), sendersClean) == -1) {
+                    $("#MJ_senders").addClass('alertbox');
+                    alert('{l s='Add a valid sender email address' mod='mailjet'}');
+                    return false;
+                }
+                $("#MJ_senders").removeClass('alertbox');
+            }
+        });
+                    
+        
+    });
+</script>
+  
 <div class="center_page mj_home">
-	<p class="hint">
-    	&nbsp; {l s='Mailjet sending all emails of your website, optimizes and automatically manages the statistical returns of errors.' mod='mailjet'}
-	</p>
+    <p class="hint">
+        &nbsp; {l s='Mailjet sending all emails of your website, optimizes and automatically manages the statistical returns of errors.' mod='mailjet'}
+    </p>
+        
     <form action="{$MJ_adminmodules_link|escape|default:''}" id="home_form" method="POST">
 	<p class="warn">
-		&nbsp; {l s='Activate the sending of all email by Mailjet ?' mod='mailjet'} &nbsp; &nbsp;
-			&nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_1" value=1 {if $MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_1">{l s='YES' mod='mailjet'}</label>
-			&nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_0" value=0 {if !$MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_0">{l s='NO' mod='mailjet'}</label>
-            &nbsp; &nbsp; <input type="submit" value=" {l s='Modify' mod='mailjet'} " name="MJ_set_allemails" class="button" />
+            &nbsp; {l s='Activate the sending of all email by Mailjet ?' mod='mailjet'} &nbsp; &nbsp;
+            &nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_1" value=1 onClick="jQuery('#mj_senders_list').slideDown()" {if $MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_1">{l s='YES' mod='mailjet'}</label>
+            &nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_0" value=0 onClick="jQuery('#mj_senders_list').slideUp()" {if !$MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_0">{l s='NO' mod='mailjet'}</label>
+            &nbsp; &nbsp; <input type="submit" value=" {l s='Modify' mod='mailjet'} " name="MJ_set_allemails" id="MJ_set_allemails" class="button" />
+            
+            <fieldset id="mj_senders_list" style="width:300px; {if !$MJ_allemails_active} display:none;{/if}" >
+            <legend>{l s='Sender address' mod='mailjet'}</legend>
+                <div class="ui-widget">
+                    <input name="MJ_senders" id="MJ_senders" value="{$currentSender}">
+                </div>
+            </fieldset>
+        
+           {* <fieldset id="mj_senders_list" {if !$MJ_allemails_active}style="display:none;"{/if}>
+                <legend>{l s='Sender addresses' mod='mailjet'}</legend>
+                <select name="MJ_senders" id="MJ_senders">
+                    {foreach $mjSenders as $sender} {$sender->Email->Email}
+                        {if $sender->Status == 'Active'}
+                            <option value="{$sender->Email->Email|escape}" {if $currentSender == $sender->Email->Email}selected{/if}>{$sender->Email->Email|escape}</option>
+                        {/if}
+                    {/foreach}
+                </select>
+            </fieldset>*}
+
+            <br /><br />
 	</p>
     </form>
     {if isset($AllMailsActiveMessage)}
