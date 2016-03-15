@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.2.15 =
+* Add a sender address for transactional emails
+
 = 3.2.14 =
 * Plugin translated in German
 
