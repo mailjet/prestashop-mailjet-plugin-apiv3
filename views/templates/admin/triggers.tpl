@@ -138,6 +138,10 @@
                 sendersClean.push(sender);
             }
         });
+        // check if current sender address is one of the API account validated senders
+        if ($.inArray(currentSender, sendersClean) == -1) {
+            currentSender = "";
+        }
         
         $("#MJ_senders").autocomplete({
             source: sendersClean,
@@ -167,6 +171,8 @@
         
         if  ($("#MJ_senders").val() == '' && currentSender == '' && sendersClean.length == 1) {
             $("#MJ_senders").val(sendersClean[0]);
+        } else {
+            $("#MJ_senders").val(currentSender);
         }
         
     });
@@ -189,7 +195,7 @@
             <fieldset id="mj_senders_list" class="warn"  style="width:300px; {if !$MJ_allemails_active || !$triggers.active} display:none;{/if} " >
             <legend>{l s='Sender address' mod='mailjet'}</legend>
                 <div class="ui-widget" style="padding-left:10px;">
-                    <input name="MJ_senders" id="MJ_senders" value="{$currentSender}">
+                    <input name="MJ_senders" id="MJ_senders" style="width:200px;">
                 </div>
                 <br />  
             </fieldset>
