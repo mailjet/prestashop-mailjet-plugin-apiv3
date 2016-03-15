@@ -147,8 +147,8 @@
 <form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
 	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
-        <input type="text" readonly value="{$cron|escape}" size=135" />
-    </div>
+            <input type="text" readonly value="{$cron|escape}" size=135" />
+        </div>
 	<fieldset class="hint">
             <legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
             <div>
@@ -156,13 +156,15 @@
                 <input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options, #triggers_import_export, #mj_senders_list').slideUp()" {if !$MJ_allemails_active || !$triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
             </div> 
                 
-            <fieldset id="mj_senders_list"  style="width:300px; {if !$MJ_allemails_active || !$triggers.active} display:none;{/if} " >
+            <br />
+            <fieldset id="mj_senders_list" class="warn"  style="width:300px; {if !$MJ_allemails_active || !$triggers.active} display:none;{/if} " >
             <legend>{l s='Sender address' mod='mailjet'}</legend>
-                <div class="ui-widget">
+                <div class="ui-widget" style="padding-left:10px;">
                     <input name="MJ_senders" id="MJ_senders" value="{$currentSender}">
                 </div>
+                <br />  
             </fieldset>
-                
+            <br />   
             <input type="submit" name="MJ_set_triggers" id="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button"  {if !$MJ_allemails_active}disabled{/if} style="{if !$MJ_allemails_active}display:none;{/if}" />
             <br />
 
@@ -173,20 +175,6 @@
                 </p>
             {/if}
             <br />
-        
-           
-
-           {* <fieldset id="mj_senders_list" {if !$MJ_allemails_active || !$triggers.active}style="display:none;"{/if}>
-                <legend>{l s='Sender addresses' mod='mailjet'}</legend>
-                <select name="MJ_senders" id="MJ_senders">
-                    {foreach $mjSenders as $sender} {$sender->Email->Email}
-                        {if $sender->Status == 'Active'}
-                            <option value="{$sender->Email->Email|escape}" {if $currentSender == $sender->Email->Email}selected{/if}>{$sender->Email->Email|escape}</option>
-                        {/if}
-                    {/foreach}
-                </select>
-            </fieldset>*}
-            
         </fieldset>
     <br />
     <fieldset id="triggers_options" {if $MJ_allemails_active && !$triggers.active}style="display:none;"{/if}>

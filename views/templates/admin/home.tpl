@@ -70,32 +70,19 @@
     </p>
         
     <form action="{$MJ_adminmodules_link|escape|default:''}" id="home_form" method="POST">
-	<p class="warn">
+	<div class="warn">
             &nbsp; {l s='Activate the sending of all email by Mailjet ?' mod='mailjet'} &nbsp; &nbsp;
             &nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_1" value=1 onClick="jQuery('#mj_senders_list').slideDown()" {if $MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_1">{l s='YES' mod='mailjet'}</label>
             &nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_0" value=0 onClick="jQuery('#mj_senders_list').slideUp()" {if !$MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_0">{l s='NO' mod='mailjet'}</label>
             &nbsp; &nbsp; <input type="submit" value=" {l s='Modify' mod='mailjet'} " name="MJ_set_allemails" id="MJ_set_allemails" class="button" />
             
-            <fieldset id="mj_senders_list" style="width:300px; {if !$MJ_allemails_active} display:none;{/if}" >
+            <fieldset id="mj_senders_list" class="hint"  style="width:300px; {if !$MJ_allemails_active} display:none;{/if}" >
             <legend>{l s='Sender address' mod='mailjet'}</legend>
-                <div class="ui-widget">
+            <div class="ui-widget">
                     <input name="MJ_senders" id="MJ_senders" value="{$currentSender}">
                 </div>
             </fieldset>
-        
-           {* <fieldset id="mj_senders_list" {if !$MJ_allemails_active}style="display:none;"{/if}>
-                <legend>{l s='Sender addresses' mod='mailjet'}</legend>
-                <select name="MJ_senders" id="MJ_senders">
-                    {foreach $mjSenders as $sender} {$sender->Email->Email}
-                        {if $sender->Status == 'Active'}
-                            <option value="{$sender->Email->Email|escape}" {if $currentSender == $sender->Email->Email}selected{/if}>{$sender->Email->Email|escape}</option>
-                        {/if}
-                    {/foreach}
-                </select>
-            </fieldset>*}
-
-            <br /><br />
-	</p>
+	</div>
     </form>
     {if isset($AllMailsActiveMessage)}
     	{if $AllMailsActiveMessage == 1}
