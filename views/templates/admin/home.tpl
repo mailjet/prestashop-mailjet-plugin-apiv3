@@ -29,6 +29,20 @@
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<style>
+  .ui-autocomplete {
+    max-height: 300px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  * html .ui-autocomplete {
+    height: 300px;
+  }
+</style>
 <script>
     $(function() {      
         var senders = [];
@@ -38,15 +52,26 @@
             {/if}
         {/foreach}
 
+        var currentSender = "{$currentSender}";
         var sendersClean = [];
         $.each(senders, function(key, sender) {
             if (typeof sender !== 'undefined') {
                 sendersClean.push(sender);
             }
         });
-
+        
         $("#MJ_senders").autocomplete({
-            source: sendersClean
+            source: sendersClean,
+            minLength: 0,
+            minChars: 0,
+            max: 5,
+            autoFill: true,
+            mustMatch: true,
+            matchContains: false,
+            scrollHeight: 300,
+        }).on('focus', function(event) {
+            var self = this;
+            $(self).autocomplete("search", "");
         });
         
         $('#MJ_set_allemails').on('click', function(){
@@ -59,7 +84,11 @@
                 $("#MJ_senders").removeClass('alertbox');
             }
         });
-                    
+                
+ 
+        if  ($("#MJ_senders").val() == '' && currentSender == '' && sendersClean.length == 1) {
+            $("#MJ_senders").val(sendersClean[0]);
+        }
         
     });
 </script>
