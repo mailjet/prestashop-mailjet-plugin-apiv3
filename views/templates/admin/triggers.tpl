@@ -90,6 +90,7 @@
             $('#importLabel').text(initialImportLabelText);
             $('#importLabel').fadeIn(500);
         });
+
     });
     
     function validateFile() {
@@ -102,31 +103,113 @@
     }
 
 
-
-
-
 </script>
+
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<style>
+  .ui-autocomplete {
+    max-height: 300px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  * html .ui-autocomplete {
+    height: 300px;
+  }
+</style>
+<script>
+    $(function() {      
+        var senders = [];
+        {foreach from=$mjSenders key=key item=value}
+            {if $value->Status == 'Active'}
+                senders[{$key}] = "{$value->Email->Email|escape:'javascript'|default:' - '}";
+            {/if}
+        {/foreach}
+
+        var currentSender = "{$currentSender}";
+        var sendersClean = [];
+        $.each(senders, function(key, sender) {
+            if (typeof sender !== 'undefined') {
+                sendersClean.push(sender);
+            }
+        });
+        // check if current sender address is one of the API account validated senders
+        if ($.inArray(currentSender, sendersClean) == -1) {
+            currentSender = "";
+        }
+        
+        $("#MJ_senders").autocomplete({
+            source: sendersClean,
+            minLength: 0,
+            minChars: 0,
+            max: 5,
+            autoFill: true,
+            mustMatch: true,
+            matchContains: false,
+            scrollHeight: 300,
+        }).on('focus', function(event) {
+            var self = this;
+            $(self).autocomplete("search", "");
+        });
+        
+        
+        $('#MJ_set_triggers').on('click', function(){
+            if ($("#MJ_senders").is(":visible")) {
+                if ($.inArray($("#MJ_senders").val(), sendersClean) == -1) {
+                    $("#MJ_senders").addClass('alertbox');
+                    alert('{l s='Add a valid sender email address' mod='mailjet'}');
+                    return false;
+                }
+                $("#MJ_senders").removeClass('alertbox');
+            }
+        });
+        
+        if  ($("#MJ_senders").val() == '' && currentSender == '' && sendersClean.length == 1) {
+            $("#MJ_senders").val(sendersClean[0]);
+        } else {
+            $("#MJ_senders").val(currentSender);
+        }
+        
+    });
+</script>
+  
+ 
 <form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
 	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
-        <input type="text" readonly value="{$cron|escape}" size=135" />
-    </div>
+            <input type="text" readonly value="{$cron|escape}" size=135" />
+        </div>
 	<fieldset class="hint">
-		<legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
-        <div>
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options, #triggers_import_export').slideDown()" {if $MJ_allemails_active && $triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
-			<input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options, #triggers_import_export').slideUp()" {if !$MJ_allemails_active || !$triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
-		</div>
-        <input type="submit" name="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button"  {if !$MJ_allemails_active}disabled{/if} style="{if !$MJ_allemails_active}display:none;{/if}" />
-	<br />
-      
-        {if !$MJ_allemails_active}
+            <legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
+            <div>
+                <input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options, #triggers_import_export, #mj_senders_list').slideDown()" {if $MJ_allemails_active && $triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
+                <input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options, #triggers_import_export, #mj_senders_list').slideUp()" {if !$MJ_allemails_active || !$triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
+            </div> 
+                
             <br />
-            <p class="warn">
-                {l s="Because you have selected to not send your transactional email via Mailjet on the plug-in Homepage, this means the triggered email module can't be activated either. To activate triggered emails, please go to the plug-in homepage and select 'Yes' to have Mailjet send all of your email. This will then allow you to select 'Yes' to activate the triggered emails module." mod='mailjet'}
-            </p>
-        {/if}
+            <fieldset id="mj_senders_list" class="warn"  style="width:300px; {if !$MJ_allemails_active || !$triggers.active} display:none;{/if} " >
+            <legend>{l s='Sender address' mod='mailjet'}</legend>
+                <div class="ui-widget" style="padding-left:10px;">
+                    <input name="MJ_senders" id="MJ_senders" style="width:200px;">
+                </div>
+                <br />  
+            </fieldset>
+            <br />   
+            <input type="submit" name="MJ_set_triggers" id="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button"  {if !$MJ_allemails_active}disabled{/if} style="{if !$MJ_allemails_active}display:none;{/if}" />
+            <br />
 
+            {if !$MJ_allemails_active}
+                <br />
+                <p class="warn">
+                    {l s="Because you have selected to not send your transactional email via Mailjet on the plug-in Homepage, this means the triggered email module can't be activated either. To activate triggered emails, please go to the plug-in homepage and select 'Yes' to have Mailjet send all of your email. This will then allow you to select 'Yes' to activate the triggered emails module." mod='mailjet'}
+                </p>
+            {/if}
+            <br />
         </fieldset>
     <br />
     <fieldset id="triggers_options" {if $MJ_allemails_active && !$triggers.active}style="display:none;"{/if}>
