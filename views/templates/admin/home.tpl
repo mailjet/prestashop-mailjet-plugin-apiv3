@@ -83,7 +83,7 @@
             if ($("#MJ_senders").is(":visible")) { 
                 if ($.inArray($("#MJ_senders").val(), sendersClean) == -1) {
                     $("#MJ_senders").addClass('alertbox');
-                    alert('{l s='Add a valid sender email address' mod='mailjet'}');
+                    alert('{l s='Could you please add a valid sender address?' mod='mailjet'}');
                     return false;
                 }
                 $("#MJ_senders").removeClass('alertbox');
@@ -113,7 +113,7 @@
             &nbsp; &nbsp; <input type="submit" value=" {l s='Modify' mod='mailjet'} " name="MJ_set_allemails" id="MJ_set_allemails" class="button" />
             
             <fieldset id="mj_senders_list" class="hint"  style="width:300px; {if !$MJ_allemails_active} display:none;{/if}" >
-            <legend>{l s='Sender address' mod='mailjet'}</legend>
+            <legend>{l s='SENDER ADDRESS for transactional emails' mod='mailjet'}</legend>
             <div class="ui-widget">
                     <input name="MJ_senders" id="MJ_senders" style="width:200px;">
                 </div>
