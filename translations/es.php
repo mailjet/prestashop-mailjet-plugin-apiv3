@@ -204,7 +204,7 @@ $_MODULE['<{mailjet}prestashop>events_4028479791575987806c28e1c066a460'] = 'Spec
 $_MODULE['<{mailjet}prestashop>events_ac7fcc295900a4f71cd83e9d1ae8cd13'] = 'and click on the Events you wish to activate';
 $_MODULE['<{mailjet}prestashop>events_de8b88e1dda1f3529e20431b1253c86d'] = 'No elements exist within this event type';
 $_MODULE['<{mailjet}prestashop>events_cb8efb79d77e156d9cf3b3dc45cca306'] = 'Fix the selected errors';
-$_MODULE['<{mailjet}prestashop>home_25464036382b4724386b8603c2401b4a'] = 'Could you please add a valid sender address?';
+$_MODULE['<{mailjet}prestashop>home_25464036382b4724386b8603c2401b4a'] = 'Por favor, incluye una dirección de remitente válida';
 $_MODULE['<{mailjet}prestashop>home_bb9fb8edbb5a18bfbd50be1d17ca341b'] = 'Use Mailjet to avoid the spam folder and get advanced tracking and statistics for all of your PrestaShop transactional and marketing emails.';
 $_MODULE['<{mailjet}prestashop>home_213ca560595623138441d399df00ffc8'] = 'Use Mailjet to send all of your email? ';
 $_MODULE['<{mailjet}prestashop>home_7469a286259799e5b37e5db9296f00b3'] = 'YES';
@@ -283,7 +283,7 @@ $_MODULE['<{mailjet}prestashop>setup_landing_e22ac25b066b201473de7aa700ef5d92'] 
 $_MODULE['<{mailjet}prestashop>triggers_8ee3d37c1c5b6df6aaaaeebf4492a824'] = '(Útil cuando se actualiza el add-on de Mailjet)';
 $_MODULE['<{mailjet}prestashop>triggers_ed3b8edbbc9a2254b11858df381b137e'] = '(ADVERTENCIA - este sobrescribe sus plantillas de correos electrónicos automaticos)';
 $_MODULE['<{mailjet}prestashop>triggers_0bbfdaaac8fcab975f50b694938d7231'] = 'Añadir un archivo válido para importar plantillas de correos electrónicos automaticos';
-$_MODULE['<{mailjet}prestashop>triggers_25464036382b4724386b8603c2401b4a'] = 'Could you please add a valid sender address?';
+$_MODULE['<{mailjet}prestashop>triggers_25464036382b4724386b8603c2401b4a'] = 'Por favor, incluye una dirección de remitente válida';
 $_MODULE['<{mailjet}prestashop>triggers_0a4d24f43b4565be7c8c5571905815da'] = 'Para activar las cadenas tienes que configurar esta tarea cron';
 $_MODULE['<{mailjet}prestashop>triggers_917edff2566c2c5ccabf8bbd5ab12c16'] = '¿Deseas activar correos electrónicos transaccionales ?';
 $_MODULE['<{mailjet}prestashop>triggers_7469a286259799e5b37e5db9296f00b3'] = 'Sí';
