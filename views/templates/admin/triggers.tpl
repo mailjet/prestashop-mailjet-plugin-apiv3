@@ -161,12 +161,17 @@
         $('#MJ_set_triggers').on('click', function(){
             if ($("#MJ_senders").is(":visible")) {
                 if ($.inArray($("#MJ_senders").val(), sendersClean) == -1) {
-                    $("#MJ_senders").addClass('alertbox');
+                    $("#MJ_senders").css('background-color', 'red');
                     alert('{l s='Could you please add a valid sender address?' mod='mailjet'}');
                     return false;
                 }
-                $("#MJ_senders").removeClass('alertbox');
+                $("#MJ_senders").css('background-color', '#FFFFFF');
             }
+        });
+        
+                 
+        $('#MJ_senders').on('focus', function(){
+            $("#MJ_senders").css('background-color', '#FFFFFF');
         });
         
         if  ($("#MJ_senders").val() == '' && currentSender == '' && sendersClean.length == 1) {
@@ -181,7 +186,7 @@
  
 <form action="{$smarty.server.REQUEST_URI|escape|default:''}" method="POST">
 <div id="mj_triggers_page" class="center_page">
-	<div class="warn">&nbsp; {l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
+	<div class="warn">{l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
             <input type="text" readonly value="{$cron|escape}" size=135" />
         </div>
 	<fieldset class="hint">
@@ -192,13 +197,12 @@
             </div> 
                 
             <br />
-            <fieldset id="mj_senders_list" class="warn"  style="width:300px; {if !$MJ_allemails_active || !$triggers.active} display:none;{/if} " >
-            <legend>{l s='SENDER ADDRESS for transactional emails' mod='mailjet'}</legend>
-                <div class="ui-widget" style="padding-left:10px;">
-                    <input name="MJ_senders" id="MJ_senders" style="width:200px;">
+            <div  id="mj_senders_list" style="color: #9e6014; width:300px; {if !$MJ_allemails_active || !$triggers.active} display:none;{/if} ">
+                {l s='SENDER ADDRESS for transactional emails' mod='mailjet'}                
+                <div class="ui-widget" style="padding-left:0px;">
+                    <input name="MJ_senders" id="MJ_senders" style="width:300px; border: 1px solid #9e6014 !important;">
                 </div>
-                <br />  
-            </fieldset>
+            </div>
             <br />   
             <input type="submit" name="MJ_set_triggers" id="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value=' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button"  {if !$MJ_allemails_active}disabled{/if} style="{if !$MJ_allemails_active}display:none;{/if}" />
             <br />

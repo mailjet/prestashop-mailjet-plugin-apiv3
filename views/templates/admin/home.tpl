@@ -82,14 +82,17 @@
         $('#MJ_set_allemails').on('click', function(){
             if ($("#MJ_senders").is(":visible")) { 
                 if ($.inArray($("#MJ_senders").val(), sendersClean) == -1) {
-                    $("#MJ_senders").addClass('alertbox');
+                    $("#MJ_senders").css('background-color', 'red');
                     alert('{l s='Could you please add a valid sender address?' mod='mailjet'}');
                     return false;
                 }
-                $("#MJ_senders").removeClass('alertbox');
+                $("#MJ_senders").css('background-color', '#FFFFFF');
             }
         });
                 
+        $('#MJ_senders').on('focus', function(){
+            $("#MJ_senders").css('background-color', '#FFFFFF');
+        });
  
         if  ($("#MJ_senders").val() == '' && currentSender == '' && sendersClean.length == 1) {
             $("#MJ_senders").val(sendersClean[0]);
@@ -102,22 +105,22 @@
   
 <div class="center_page mj_home">
     <p class="hint">
-        &nbsp; {l s='Mailjet sending all emails of your website, optimizes and automatically manages the statistical returns of errors.' mod='mailjet'}
+        {l s='Mailjet sending all emails of your website, optimizes and automatically manages the statistical returns of errors.' mod='mailjet'}
     </p>
         
     <form action="{$MJ_adminmodules_link|escape|default:''}" id="home_form" method="POST">
 	<div class="warn">
-            &nbsp; {l s='Activate the sending of all email by Mailjet ?' mod='mailjet'} &nbsp; &nbsp;
+            {l s='Activate the sending of all email by Mailjet ?' mod='mailjet'} &nbsp; &nbsp;
             &nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_1" value=1 onClick="jQuery('#mj_senders_list').slideDown()" {if $MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_1">{l s='YES' mod='mailjet'}</label>
             &nbsp; <input type="radio" name="MJ_allemails_active" id="MJ_allemails_active_0" value=0 onClick="jQuery('#mj_senders_list').slideUp()" {if !$MJ_allemails_active}checked{/if} /> <label class="t" for="MJ_allemails_active_0">{l s='NO' mod='mailjet'}</label>
             &nbsp; &nbsp; <input type="submit" value=" {l s='Modify' mod='mailjet'} " name="MJ_set_allemails" id="MJ_set_allemails" class="button" />
             
-            <fieldset id="mj_senders_list" class="hint"  style="width:300px; {if !$MJ_allemails_active} display:none;{/if}" >
-            <legend>{l s='SENDER ADDRESS for transactional emails' mod='mailjet'}</legend>
-            <div class="ui-widget">
-                    <input name="MJ_senders" id="MJ_senders" style="width:200px;">
+            <div  id="mj_senders_list" style="color: #9e6014; width:300px; margin-bottom:10px;{if !$MJ_allemails_active} display:none;{/if} ">
+                {l s='SENDER ADDRESS for transactional emails' mod='mailjet'} 
+                <div class="ui-widget">
+                    <input name="MJ_senders" id="MJ_senders" style="width:300px; border: 1px solid #9e6014 !important;">
                 </div>
-            </fieldset>
+            </div>            
 	</div>
     </form>
     {if isset($AllMailsActiveMessage)}

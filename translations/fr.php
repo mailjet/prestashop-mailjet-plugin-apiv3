@@ -199,7 +199,7 @@ $_MODULE['<{mailjet}prestashop>events_4028479791575987806c28e1c066a460'] = 'Spé
 $_MODULE['<{mailjet}prestashop>events_ac7fcc295900a4f71cd83e9d1ae8cd13'] = 'et cliquez sur la gestion d\'erreurs que vous voulez activer';
 $_MODULE['<{mailjet}prestashop>events_de8b88e1dda1f3529e20431b1253c86d'] = 'Aucun élément n\'existe pour ce type d\'évènement';
 $_MODULE['<{mailjet}prestashop>events_cb8efb79d77e156d9cf3b3dc45cca306'] = 'Corrigez les erreurs sélectionnées';
-$_MODULE['<{mailjet}prestashop>home_25464036382b4724386b8603c2401b4a'] = 'Could you please add a valid sender address?';
+$_MODULE['<{mailjet}prestashop>home_25464036382b4724386b8603c2401b4a'] = 'Merci d\'ajouter une adresse d\'envoi valide';
 $_MODULE['<{mailjet}prestashop>home_bb9fb8edbb5a18bfbd50be1d17ca341b'] = 'Simple d\'utilisation, Mailjet optimise la déliverabilité de vos emails transactionnels et marketing, pour maximiser leur arrivée en boite de réception, et ainsi tirer le meilleur parti de votre base de clientèle. Utilisez Mailjet aujourd’hui pour profiter des outils avancés de segmentation, personnalisation, de suivi et de statistiques.';
 $_MODULE['<{mailjet}prestashop>home_213ca560595623138441d399df00ffc8'] = 'Activer l\'envoi de tous vos emails avec Mailjet ?';
 $_MODULE['<{mailjet}prestashop>home_7469a286259799e5b37e5db9296f00b3'] = 'OUI';
@@ -278,7 +278,7 @@ $_MODULE['<{mailjet}prestashop>setup_landing_e22ac25b066b201473de7aa700ef5d92'] 
 $_MODULE['<{mailjet}prestashop>triggers_8ee3d37c1c5b6df6aaaaeebf4492a824'] = '(très utile lorsque vous mettez à jour votre module Mailjet)';
 $_MODULE['<{mailjet}prestashop>triggers_ed3b8edbbc9a2254b11858df381b137e'] = '(Attention : cet import va remplacer vos modèles d\'emails automatiques actuels)';
 $_MODULE['<{mailjet}prestashop>triggers_0bbfdaaac8fcab975f50b694938d7231'] = 'Importer un ficher valide';
-$_MODULE['<{mailjet}prestashop>triggers_25464036382b4724386b8603c2401b4a'] = 'Could you please add a valid sender address?';
+$_MODULE['<{mailjet}prestashop>triggers_25464036382b4724386b8603c2401b4a'] = 'Merci d\'ajouter une adresse d\'envoi valide';
 $_MODULE['<{mailjet}prestashop>triggers_0a4d24f43b4565be7c8c5571905815da'] = 'Pour activer les déclencheurs, vous devez mettre en place le CRON suivant';
 $_MODULE['<{mailjet}prestashop>triggers_917edff2566c2c5ccabf8bbd5ab12c16'] = 'Voulez-vous activer les emails transactionnels eCommerce ?';
 $_MODULE['<{mailjet}prestashop>triggers_7469a286259799e5b37e5db9296f00b3'] = 'OUI';

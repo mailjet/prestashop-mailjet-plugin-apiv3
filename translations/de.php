@@ -199,7 +199,7 @@ $_MODULE['<{mailjet}prestashop>events_4028479791575987806c28e1c066a460'] = 'Spez
 $_MODULE['<{mailjet}prestashop>events_ac7fcc295900a4f71cd83e9d1ae8cd13'] = 'und klicken Sie auf die Events, die Sie aktivieren wollen';
 $_MODULE['<{mailjet}prestashop>events_de8b88e1dda1f3529e20431b1253c86d'] = 'Keine Elemente existieren mit dieser Eventart';
 $_MODULE['<{mailjet}prestashop>events_cb8efb79d77e156d9cf3b3dc45cca306'] = 'Reparieren Sie die ausgewählten Fehlermeldungen';
-$_MODULE['<{mailjet}prestashop>home_25464036382b4724386b8603c2401b4a'] = 'Could you please add a valid sender address?';
+$_MODULE['<{mailjet}prestashop>home_25464036382b4724386b8603c2401b4a'] = 'Können Sie bitte eine gültige Abender-Adresse hinzufügen?';
 $_MODULE['<{mailjet}prestashop>home_bb9fb8edbb5a18bfbd50be1d17ca341b'] = 'Mailjet sendet alle E-Mails Ihrer Webseite, optimiert und verwaltet automatisch die statistischen Antworten von Fehlern.';
 $_MODULE['<{mailjet}prestashop>home_213ca560595623138441d399df00ffc8'] = 'Das senden aller E-Mails durch Mailjet aktivieren?';
 $_MODULE['<{mailjet}prestashop>home_7469a286259799e5b37e5db9296f00b3'] = 'JA';
@@ -278,7 +278,7 @@ $_MODULE['<{mailjet}prestashop>setup_landing_e22ac25b066b201473de7aa700ef5d92'] 
 $_MODULE['<{mailjet}prestashop>triggers_8ee3d37c1c5b6df6aaaaeebf4492a824'] = '(Nützlich, wenn Sie Mailjet aufwerten)';
 $_MODULE['<{mailjet}prestashop>triggers_ed3b8edbbc9a2254b11858df381b137e'] = '(WARNUNG - Überschreibung Ihrer derzeitigen Auslöservorlagen)';
 $_MODULE['<{mailjet}prestashop>triggers_0bbfdaaac8fcab975f50b694938d7231'] = 'Fügen Sie valide Dateien zu Ihren Auslöservorlagen von';
-$_MODULE['<{mailjet}prestashop>triggers_25464036382b4724386b8603c2401b4a'] = 'Could you please add a valid sender address?';
+$_MODULE['<{mailjet}prestashop>triggers_25464036382b4724386b8603c2401b4a'] = 'Können Sie bitte eine gültige Abender-Adresse hinzufügen?';
 $_MODULE['<{mailjet}prestashop>triggers_0a4d24f43b4565be7c8c5571905815da'] = 'Um die Auslöser zu aktivieren müssen Sie diesen CRON aufsetzen';
 $_MODULE['<{mailjet}prestashop>triggers_917edff2566c2c5ccabf8bbd5ab12c16'] = 'Wollen Sie die transaktionelle E-Commerce-E-Mails aktivieren?';
 $_MODULE['<{mailjet}prestashop>triggers_7469a286259799e5b37e5db9296f00b3'] = 'JA';
