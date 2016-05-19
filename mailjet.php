@@ -822,18 +822,21 @@ class Mailjet extends Module
 		if (Tools::isSubmit('MJ_submitCampaign')) $this->page_name = 'NEWSLETTER';
 		if (Tools::isSubmit('MJ_submitCampaign2')) $this->page_name = 'CAMPAIGN3';
 		// Activation root file Creation
-		if (Tools::isSubmit('submitCreateRootFile'))
-		{
+		if (Tools::isSubmit('submitCreateRootFile')) {
 			$api = MailjetTemplate::getApi();
-			$domains = $api->getTrustDomains();
-			foreach ($domains->domains as $domain)
-			{
-				if (($domain->domain == Configuration::get('PS_SHOP_DOMAIN')) || ($domain->domain == Configuration::get('PS_SHOP_DOMAIN_SSL')))
-				{
-					$fp = fopen(_PS_ROOT_DIR_.$domain->file_name, 'w');
-					fclose($fp);
-				}
-			}
+            $infos = $api->getUser();
+            $sendersFromApi = $api->getSenders(null, $infos);
+
+            if ($sendersFromApi) {
+                foreach ($sendersFromApi as $sender) {
+                    if (isset($sender->DNS)) {
+                        if ($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN') || $sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN_SSL')) {
+                            $fp = fopen(_PS_ROOT_DIR_.'/'.$sender->Filename, 'w');
+                            fclose($fp);
+                        }
+                    }
+                }
+            }
 		}
 		// Account settings : details
 		if (Tools::isSubmit('MJ_set_account_details'))
@@ -1161,30 +1164,34 @@ class Mailjet extends Module
 		$is_senders = 0;
 		$is_domains = 0;
 		$domains = array();
-
-		$domains = array();
+		$domainsCurrent = array();
 		$senders = array();
-		if ($sendersFromApi)
-		{
-			foreach ($sendersFromApi as $sender)
-			{
-				if (strpos($sender->Email->Email, '*') !== false)
-					$domains[] = $sender;
-				else
-					$senders[] = $sender;
+		if ($sendersFromApi) {
+
+			foreach ($sendersFromApi as $sender) {
+
+                $mainDomain = implode('.', array_slice(explode('.', Configuration::get('PS_SHOP_DOMAIN')), -2));
+
+                if (strpos($sender->Email->Email, '*') !== false) {
+                    $domains[] = $sender;
+                } else {
+                    $senders[] = $sender;
+                }
 
 				$is_senders = 1;
-
-				if (isset($sender->DNS))
-				{
-					if (($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN')) || ($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN_SSL')))
-					{
-						$available_domain = 1;
-						if (file_exists(_PS_ROOT_DIR_.$sender->Filename))
-							$root_file = 1;
+				if (isset($sender->DNS)) {
+					if (Configuration::get('PS_SHOP_DOMAIN') == $sender->DNS->Domain
+                        || Configuration::get('PS_SHOP_DOMAIN_SSL') == $sender->DNS->Domain
+                    ) {
+                        $available_domain = 1;
+                        $domainsCurrent[] = $sender;
+                        if (!empty($sender->Filename) && file_exists(_PS_ROOT_DIR_.'/'.$sender->Filename)) {
+                            $root_file = 1;
+                        }
 					}
-					if (isset($sender->DNS->Domain))
-						$is_domains = 1;
+					if (isset($sender->DNS->Domain)) {
+                        $is_domains = 1;
+                    }
 				}
 			}
 		}
@@ -1211,6 +1218,7 @@ class Mailjet extends Module
 			'is_domains' => $is_domains,
 			'root_file' => $root_file,
 			'available_domain' => $available_domain,
+            'domainsCurrent' => $domainsCurrent,
 		));
 	}
 

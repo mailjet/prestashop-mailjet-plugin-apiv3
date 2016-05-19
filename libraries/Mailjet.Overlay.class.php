@@ -197,9 +197,9 @@ class Mailjet_ApiOverlay
      * @var		array $_errors
      */
     private $_errors = NULL;
-    
+
     /**
-     * 
+     *
      * @var array
      */
     protected $_contactLists = array();
@@ -219,7 +219,7 @@ class Mailjet_ApiOverlay
     public function __construct($apiKey = FALSE, $secretKey = FALSE)
     {
         $this->_api = new Mailjet_Api($apiKey, $secretKey);
-        
+
         set_error_handler('Mailjet_ApiOverlay::phpErrorHandler');
         if ($apiKey && $secretKey)
             $this->createErrorsArray();
@@ -242,9 +242,9 @@ class Mailjet_ApiOverlay
 
         return self::$_instance;
     }
-    
+
     /**
-     * 
+     *
      * @return Api
      */
     public function getApi()
@@ -862,7 +862,7 @@ class Mailjet_ApiOverlay
         if (!is_null($cache))
             $params['cache'] = $cache;
 
-        $response = $this->_api->userDomainList($params);
+        $response = $this->_api->dns($params);
         if ($response !== FALSE)
             return ($response);
         else
@@ -964,33 +964,33 @@ class Mailjet_ApiOverlay
 //             return ($response);
 //         else
 //             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
-        
-        
+
+
 
         	$paramsProfile = array(
         		'method'	 	=> 'GET',
         	);
-        	
+
         	$this->_api->resetRequest();
         	$this->_api->user($paramsProfile);
-        	
+
         	$responesProfile = $this->_api->getResponse();
-        
+
         	if ($responesProfile->Count > 0) {
 
         		$this->_api->resetRequest();
         		$this->_api->myprofile($paramsProfile);
-        		 
+
         		$responesMyProfile = $this->_api->getResponse();
-        	
+
         		if ($responesMyProfile->Count > 0) {
         			$responesProfileArray = (array) $responesProfile->Data[0];
         			unset($responesProfileArray['ID']);
         			return (object) array_merge($responesProfileArray, (array) $responesMyProfile->Data[0]);
         		}
         	}
-      
-        
+
+
         return false;
     }
 
@@ -1073,25 +1073,25 @@ class Mailjet_ApiOverlay
      */
     public function createSender($email)
     {
-  
+
     	if (strpos($email,'@') === false) {
     		$email = '*@'.$email;
     	}
-    	
+
         $params = array(
             'method'	=> 'JSON',
             'Email'		=> $email
         );
-        
+
         $this->_api->resetRequest();
         $this->_api->sender($params);
-         
+
         $responesProfile = $this->_api->getResponse();
 
         if ($responesProfile->Count > 0) {
         	return $responesProfile->Data[0];
         }
-        
+
         return false;
 
         $response = $this->_api->sender($params);
@@ -1337,7 +1337,7 @@ class Mailjet_ApiOverlay
             'method'	=> 'PUT',
         	'ID'		=> $user->ID,
         );
-        
+
         if (!is_null($address_city))
             $params['AddressStreet'] = $address_city;
         if (!is_null($address_country))
@@ -1415,16 +1415,16 @@ class Mailjet_ApiOverlay
 	    			'method'	 	=> 'GET',
 	    			'limit'			=> 0,
 	    			'style'			=> 'full',
-	    	);	
+	    	);
 
-	    	 
+
 	    	$this->_api->resetRequest();
 	    	$this->_api->newsletter($paramsProfile);
-	    	 
+
 	    	$responesProfile = $this->_api->getResponse();
 
 	    	$camp = false;
-	    	
+
 	    	if (!id) {
 	    		if ($responesProfile->Count > 0) {
 	    			$camp = $responesProfile->Data;
@@ -1432,7 +1432,7 @@ class Mailjet_ApiOverlay
 	    	} else {
 	    		if ($responesProfile->Count > 0) {
 	    			foreach ($responesProfile->Data as $campaign) {
-	    		
+
 	    				if ($campaign->ID == $id) {
 	    					$camp = $campaign;
 	    				}
@@ -1440,12 +1440,12 @@ class Mailjet_ApiOverlay
 	    		}
 	    	}
 
-	    	
+
 	    	return $camp;
-    	
-    	
-    	
-    	
+
+
+
+
 //         $params = array(
 //             'method'	=> 'GET'
 //         );
@@ -1739,29 +1739,29 @@ class Mailjet_ApiOverlay
 
     	$this->_api->resetRequest();
     	$this->_api->data('newsletter', $id, 'HTML', 'text/html', null, 'GET', 'LAST');
-	
+
     	$respones = $this->_api->getResponse();
 
     	return $respones;
-    	
-    	
+
+
         $call_newsletter_html = $this->_dataApi->DATA('GET', 'NewsLetter', $campaign->NewsLetterID, 'HTML', 'text/html', 'LAST', NULL, null);
-		
+
 		if(!isset($call_newsletter_html->ErrorInfo))
 			$contents = $call_newsletter_html;
-		
-		
+
+
     	$this->_api->setVersion('DATA')->newsletter($params);
 		$appId = NULL;//get_app_id();
     	$call_newsletter_html = $this->mailjetdata->DATA('GET', 'NewsLetter', $newsletterID, 'HTML', 'text/html', 'LAST', NULL, $appId);
-    	 
-    	 
+
+
     	$respones = $this->_api->getResponse();
-    	
+
     	echo '<pre>';
     	print_r($respones); die;
-    	
-    	
+
+
         $params = array(
             'method'	=> 'GET',
             'id'		=> $id
@@ -1937,12 +1937,12 @@ class Mailjet_ApiOverlay
     {
     	$this->_api->resetRequest();
     	$this->_api->data('newsletter', $id, 'HTML', 'text/html', $html, 'POST', null);
-	
+
     	$respones = $this->_api->getResponse();
-        
+
     	return $respones;
-        
-        
+
+
         if (!is_null($text))
             $params['text'] = $text;
 
@@ -1987,25 +1987,25 @@ class Mailjet_ApiOverlay
      */
     public function getCampaignStatistics($id = null, $cache = null)
     {
-    	
+
     	$paramsProfile = array(
     			'method'	 	=> 'GET',
     			'ID'			=> $id,
     			'style'			=> 'full',
     	);
-    	
-    	 
+
+
     	$this->_api->resetRequest();
     	$this->_api->campaignstatistics($paramsProfile);
-    	 
+
     	$responesProfile = $this->_api->getResponse();
 
     	if ($responesProfile->Count === 1) {
     		return $responesProfile->Data[0];
     	}
-    	
+
     	return isset($responesProfile->Data) ? $responesProfile->Data : false;
-    	
+
         $params = array(
             'method'	=> 'GET',
             'id'		=> $id
@@ -2478,11 +2478,11 @@ class Mailjet_ApiOverlay
         $this->_api->resetRequest();
         $this->_api->data('contactslist', $list_id, 'CSVData', 'text/plain', $contacts, 'POST', null);
         //$call_data = $this->mailjetdata->DATA('POST', 'ContactsList', $this->list_id, 'CSVData', 'text/csv', NULL, $contacts, get_app_id());
-  
+
         $responesProfile = $this->_api->getResponse();
-        
+
         return Tools::jsonDecode($responesProfile);
-        
+
         if (!is_null($force))
             $params['force'] = $force;
 
@@ -2492,25 +2492,25 @@ class Mailjet_ApiOverlay
         else
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
-    
-    
-    
+
+
+
     /**
      * setContactMetaData()
-     * First checks if certain contact meta data field is already created, 
+     * First checks if certain contact meta data field is already created,
      * and if not - creates it in order to be populated by the followed createContacts call
      * @return boolean
      */
     public function setContactMetaData($params = array())
     {
-            
+
         try {
             /*
             * Add contact properties like First Name and Last Name
             */
             $resContactMetaData = $this->getContactMetaData();
 
-           
+
             if(isset($resContactMetaData->Data) && count($resContactMetaData->Data) > 0) {
                 foreach($resContactMetaData->Data as $metaData) {
                     foreach ($params as $paramsMetaData) {
@@ -2521,12 +2521,12 @@ class Mailjet_ApiOverlay
                     }
                 }
             }
-            
+
             foreach ($params as $paramsMetaData) {
                 $flagName = $paramsMetaData['Name']."NameExists";
                 if(!${$flagName}) {
-                    $resContactMetaData = $this->createContactMetaData($paramsMetaData); 
-                }           
+                    $resContactMetaData = $this->createContactMetaData($paramsMetaData);
+                }
             }
 
             return true;
@@ -2535,12 +2535,12 @@ class Mailjet_ApiOverlay
             MailJetLog::write(MailJetLog::$file, 'Exception : '.$ex->getMessage());
             throw new Mailjet_ApiException($ex->getMessage());
         }
-        
+
         return false;
     }
-    
+
     /**
-     * 
+     *
      * @param type $contactEmail
      * @param type $params
      * @return type
@@ -2549,46 +2549,46 @@ class Mailjet_ApiOverlay
     public function createContactData($contactEmail, $params = array())
     {
         $contactData = $this->getContactByEmail($contactEmail);
-      
+
         $paramsRequest = array(
             'method' => 'JSON',  // JSON
             'ID' => $contactData->Data[0]->ID,
             'Data' => $params,
     	);
-         
-        $this->_api->resetRequest();        
+
+        $this->_api->resetRequest();
         $this->_api->contactdata($paramsRequest);
-            
+
         $response = $this->_api->getResponse();
         if ($response !== FALSE) {
             return ($response);
-        
-        
+
+
         }
-        else { 
+        else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
-    
+
     public function deleteContactData($contactEmail)
     {
         $paramsRequest = array(
             'method' => 'DELETE',
             'ID' => $contactEmail
     	);
-            
-        $this->_api->resetRequest();        
+
+        $this->_api->resetRequest();
         $this->_api->contactdata($paramsRequest);
-            
+
         $response = $this->_api->getResponse();
-        if ($response !== FALSE) { 
+        if ($response !== FALSE) {
             return ($response);
         }
-        else { 
+        else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
-    
+
     public function getContactByEmail($contactEmail)
     {
         $paramsRequest = array(
@@ -2596,41 +2596,41 @@ class Mailjet_ApiOverlay
             'ID' => $contactEmail,
             'Email' => $contactEmail,
         );
-        
-        $this->_api->resetRequest();    
-        
+
+        $this->_api->resetRequest();
+
         $this->_api->contact($paramsRequest);
-        
-        $response = $this->_api->getResponse(); 
-        
-        if ($response !== FALSE) { 
+
+        $response = $this->_api->getResponse();
+
+        if ($response !== FALSE) {
             return ($response);
         }
         else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
-    
+
     public function getContactMetaData()
     {
         $paramsRequest = array(
             'method' => 'GET',
         );
-            
-        $this->_api->resetRequest();        
+
+        $this->_api->resetRequest();
         $this->_api->contactmetadata($paramsRequest);
-           
+
         $response = $this->_api->getResponse();
-            
+
         if ($response !== FALSE) {
             return ($response);
         }
-        else { 
+        else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
-    
-    
+
+
     public function createContactMetaData($params = array())
     {
         $paramsRequest = array(
@@ -2639,20 +2639,20 @@ class Mailjet_ApiOverlay
             'Name' => $params['Name'],
             'NameSpace' => $params['NameSpace'],
     	);
-           
-        $this->_api->resetRequest();        
+
+        $this->_api->resetRequest();
         $this->_api->contactmetadata($paramsRequest);
-            
+
         $response = $this->_api->getResponse();
         if ($response !== FALSE) {
             return ($response);
         }
-        else { 
+        else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
-    
-    
+
+
     public function batchJobContacts($listID, $dataID, $status = 'addforce')
     {
 
@@ -2665,18 +2665,18 @@ class Mailjet_ApiOverlay
     			'Method' => $status, // = 'addforce,remove,addnoforse'
     			'APIKeyALT'	=> $this->_api->getAPIKey()
     	);
-    	
-    	
+
+
     	$this->_api->resetRequest();
     	$this->_api->batchjob($paramsProfile);
-    	
+
     	$responesProfile = $this->_api->getResponse();
-    	 
+
     	if ($responesProfile->Count > 0) {
-    		 
+
     		return $responesProfile->Data;
     	}
-    	 
+
     	return false;
     }
 
@@ -2719,25 +2719,25 @@ class Mailjet_ApiOverlay
     	if (!empty($this->_contactLists)) {
     		return $this->_contactLists;
     	}
-    	
+
     	$paramsProfile = array(
     		'method'	 	=> 'GET',
     		'limit'			=> 0
     	);
-    	 
+
     	$this->_api->resetRequest();
     	$this->_api->contactslist($paramsProfile);
-    	 
+
     	$responesProfile = $this->_api->getResponse();
-    	
+
     	if ($responesProfile->Count > 0) {
     		$this->_contactLists = $responesProfile->Data;
     		return $responesProfile->Data;
     	}
-    	
+
     	return false;
-    	
-    	
+
+
         $params = array(
             'method'	=> 'GET'
         );
@@ -2812,7 +2812,7 @@ class Mailjet_ApiOverlay
     			'countrecords' => 1,
     			'recurse' => 1
     	);
-    	 
+
 
     	$this->_api->resetRequest();
 
@@ -2826,20 +2826,20 @@ class Mailjet_ApiOverlay
     	else {
     		return FALSE;
     	}
-    	
-    	
-    	
+
+
+
     	$this->_api->data('contactslist', $id, 'CSVData', 'text/plain', null, 'GET', null);
     	//$this->_api->data('contacts', $id, 'HTML', 'text/html', null, 'GET', 'LAST');
-    	
+
     	$respones = $this->_api->getResponse();
-    	
+
     	return $respones;
-    	
-    	
-    	
-    	
-    	
+
+
+
+
+
         $params = array(
             'method'	=> 'GET',
             'id'		=> $id
@@ -2916,7 +2916,7 @@ class Mailjet_ApiOverlay
         else
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
-    
+
 
     /**
      * LIST : Create a new Contacts list
@@ -2933,17 +2933,17 @@ class Mailjet_ApiOverlay
 
     	$this->_api->resetRequest();
     	$this->_api->contactslist($parameters);
-    	
+
     	$responesProfile = $this->_api->getResponse();
 
     	if ($responesProfile->Count > 0) {
-    		 
+
     		return $responesProfile->Data[0];
     	}
-    	 
+
     	return false;
-    	
-    	
+
+
         try {
             $response = $this->createContactsList($parameters->label, $parameters->name);
         } catch (Mailjet_ApiException $e) {

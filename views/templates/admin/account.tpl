@@ -88,7 +88,7 @@
 		<br />
 		<fieldset id="mj_account_deliverability">
 			<legend>{l s='DKIM/SPF for better deliverability' mod='mailjet'}</legend>
-            {foreach $domains as $domain}
+            {foreach $domainsCurrent as $domain}
             	<div>
 	            	<b>Domain @{$domain->DNS->Domain|escape}</b> <i>( {if $domain->Status=='Active'}{l s='enabled' mod='mailjet'}{else}{l s='pending' mod='mailjet'}{/if} )</i><br />
                     <p>
@@ -117,29 +117,24 @@
             <legend>{l s='Sender addresses' mod='mailjet'}</legend>
             <div id="mj_account_senders">
 	            <p><b>{l s='Individual addresses' mod='mailjet'}</b></p>
-	            {if $is_senders}
+	            {if $sender}
 	            	<ul>
 		            {foreach $sender as $address}
-                   
-		            		<li style="{if $address->Status=='Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->Email->Email|escape} {if $address->Status!='Active'}({l s='pending' mod='mailjet'}){/if}</li>
-						
-	    	        {/foreach}
+                                <li style="{if $address->Status == 'Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->Email->Email|escape} {if $address->Status != 'Active'}({l s='pending' mod='mailjet'}){/if}</li>
+                            {/foreach}
 	                </ul>
 				{else}
 	            	- {l s='No inidivdual address...' mod='mailjet'}<br />
 	            {/if}
 	            <br />
 				<p><b>{l s='Activated domains' mod='mailjet'}</b></p>
-	            {if $domains || $is_domains}
+	            {if $domains}
 	            	<ul>
 		            {foreach $domains as $address}
-		            	{if $address->Status=='Active'}
-	            			<li style="{if $address->Status=='Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->DNS->Domain|escape} {if $address->Status!='Active'}({l s='pending' mod='mailjet'}){/if}</li>
-	    	        	{/if}
-	    	        {/foreach}
-	
+                                <li style="{if $address->Status == 'Active'}color:#000;font-weight:bold;{else}color:#808080;font-style:italic;{/if}">- {$address->DNS->Domain|escape} {if $address->Status != 'Active'}({l s='pending' mod='mailjet'}){/if}</li>
+                            {/foreach}
 	                </ul>
-				{else}
+                    {else}
 	            	- {l s='No domain activated...' mod='mailjet'}<br />
 	            {/if}
 			    <a href="javascript:;" onClick="$('#mj_account_senders_mod').show();$('#mj_account_senders').hide();" class="savebutton button">{l s='Modify' mod='mailjet'}</a>
