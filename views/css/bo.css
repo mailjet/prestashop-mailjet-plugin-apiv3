@@ -378,20 +378,20 @@ table#vsTable .titleImage {
 
 /* Mailjet style */
 .bandeau_noir {
-	background:url(../views/img/bg_head_halo.jpg) bottom center repeat;
+	background:url(../img/bg_head_halo.jpg) bottom center repeat;
 	height:50px;
 	border-top: 1px solid #fff;
 	margin-bottom:10px;
 }
 .logo_mailjet_tiny {
-	background-image:url(../views/img/MJSmall.png);
+	background-image:url(../img/MJSmall.png);
 	width:230px;
 	height:90px;
         margin-bottom:10px;
 	margin-right:4px;
 }
 .logo_mailjet_center {
-	background-image:url(../views/img/MJSmall.png);
+	background-image:url(../img/MJSmall.png);
 	width:230px;
 	height:90px;
 	margin-left:auto;
@@ -462,7 +462,7 @@ span.clearspan
 	top:20px;
 	width:10px;
 	height:10px;
-	background:url(../views/img/cross.png) 0 0 no-repeat;
+	background:url(../img/cross.png) 0 0 no-repeat;
 	text-indent:-9999px;
 }
 .savebutton

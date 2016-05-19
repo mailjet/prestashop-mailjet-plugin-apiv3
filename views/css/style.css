@@ -142,7 +142,7 @@ padding: 2px 4px;
 border-radius: 3px;
 -moz-border-radius: 3px;
 -webkit-border-radius: 3px;
-    background: transparent url(../vews/img/sprites-button.png) repeat-x scroll left top !ie;
+    background: transparent url(../img/sprites-button.png) repeat-x scroll left top !ie;
     padding:2px 0 !ie;
 
 } 
@@ -307,7 +307,7 @@ p.condition input,
 
 
 p.noResult {
-background: url("../veiws/img/no-result.png") no-repeat scroll 10px 50% #FFEBE8;
+background: url("../img/no-result.png") no-repeat scroll 10px 50% #FFEBE8;
 border: 1px solid #CC0000;
 font-size: 12px;
 font-weight: bold;
@@ -315,7 +315,7 @@ padding: 10px 35px;
 }
 
 p.result {
-background: url("../veiws/img/accept.png") no-repeat scroll 1% 50% #b7e2a7;
+background: url("../img/accept.png") no-repeat scroll 1% 50% #b7e2a7;
 border: 1px solid #85c10c;
 font-size: 12px;
 font-weight: bold;
