@@ -1073,11 +1073,49 @@ class Mailjet_ApiOverlay
      */
     public function createSender($email)
     {
-
     	if (strpos($email,'@') === false) {
     		$email = '*@'.$email;
     	}
 
+        // Reactivate already Deleted sender
+        $params = array(
+    		'method' => 'GET',
+    		'status' => 'Deleted',
+            'style'	=> 'full',
+            'limit' => 0
+    	);
+    	$this->_api->resetRequest();
+    	$this->_api->sender($params);
+    	$responesSender = $this->_api->getResponse();
+    	if ($responesSender->Count > 0) {
+    		$existingSenders = $responesSender->Data;
+    	}
+
+        if ($existingSenders) {
+            foreach ($existingSenders as $sender) {
+
+                $mainDomain = implode('.', array_slice(explode('.', Configuration::get('PS_SHOP_DOMAIN')), -2));
+
+                if ($sender->Email->Email == $email) {
+                    $fp = fopen(_PS_ROOT_DIR_.'/'.$sender->Filename, 'w');
+                    fclose($fp);
+                    $response = $this->_api->{'sender/' . $sender->ID .'/validate'}(array(
+                        'method' => 'JSON'
+                    ));
+
+                    if ($response !== FALSE) {
+                        return ($response);
+                    }
+                    else {
+                        throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+                    }
+
+                }
+            }
+        }
+
+
+        // Actual creation of the new sender
         $params = array(
             'method'	=> 'JSON',
             'Email'		=> $email
