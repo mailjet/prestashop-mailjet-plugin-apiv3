@@ -18,7 +18,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}<!-- Mailjet : Triggers -->
@@ -210,7 +210,7 @@
             {if !$MJ_allemails_active}
                 <br />
                 <p class="warn">
-                    {l s="Because you have selected to not send your transactional email via Mailjet on the plug-in Homepage, this means the triggered email module can't be activated either. To activate triggered emails, please go to the plug-in homepage and select 'Yes' to have Mailjet send all of your email. This will then allow you to select 'Yes' to activate the triggered emails module." mod='mailjet'}
+                    {l s='Because you have selected to not send your transactional email via Mailjet on the plug-in Homepage, this means the triggered email module can\'t be activated either. To activate triggered emails, please go to the plug-in homepage and select "Yes" to have Mailjet send all of your email. This will then allow you to select "Yes" to activate the triggered emails module.' mod='mailjet'}
                 </p>
             {/if}
             <br />

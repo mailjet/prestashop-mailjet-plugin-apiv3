@@ -18,7 +18,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 *}
@@ -92,12 +92,12 @@
                                             {/if}
                                             {/foreach}{/if}
                                         </td>
-					<td><a href="javascript:deleteFilter({$filter.id_filter|escape|default:'0'});"><img src="../modules/mailjet/img/delete.png" /></a></td>
+					<td><a href="javascript:deleteFilter({$filter.id_filter|escape|default:'0'});"><img src="../modules/mailjet/views/img/delete.png" /></a></td>
 				</tr>
 			{/foreach}
 			</table>
 			<br />
-			<button id="newfilter" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />{l s='Create a New Segment' mod='mailjet'}</button>
+			<button id="newfilter" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />{l s='Create a New Segment' mod='mailjet'}</button>
 			<br />
 			<div class="div_new_filter">
 				<h2>{l s='Add a Segment' mod='mailjet'}</h2>
@@ -154,17 +154,17 @@
 				<br />
 				<p class="result" id="syncMessage" style="display: none;">Mailjet list - Update successfully</p>
 				<p class="noResult" id="syncMessageError" style="display: none;">Mailjet list - Error occured</p>
-				<button id="save" class="my_button right"><img src="../modules/mailjet/img/save.png" /> {l s='Save' mod='mailjet'}</button>
-				<button id="view" class="my_button right"><img src="../modules/mailjet/img/table.png" /> {l s='View' mod='mailjet'}</button>
-				<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />{l s='Export' mod='mailjet'}</button>
-				<button id="sync" class="my_button right"><img src="../modules/mailjet/img/sync.png" />{l s='Create / Update Mailjet list' mod='mailjet'}</button>
+				<button id="save" class="my_button right"><img src="../modules/mailjet/views/img/save.png" /> {l s='Save' mod='mailjet'}</button>
+				<button id="view" class="my_button right"><img src="../modules/mailjet/views/img/table.png" /> {l s='View' mod='mailjet'}</button>
+				<button id="export" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />{l s='Export' mod='mailjet'}</button>
+				<button id="sync" class="my_button right"><img src="../modules/mailjet/views/img/sync.png" />{l s='Create / Update Mailjet list' mod='mailjet'}</button>
 				<div class="perc_sync">Synchronisation : <span id="perc_sync_value">0</span>%</div>
 
 				<table id="newLine" style="display:none;">
 					<tr id="#####">
 						<td id="action#####">
-							<a href="javascript:addLine();" class="add"><img src="../modules/mailjet/img/add.png" /></a>
-							<a href="javascript:delLine(#####);" class="delete"><img src="../modules/mailjet/img/delete.png" /></a>
+							<a href="javascript:addLine();" class="add"><img src="../modules/mailjet/views/img/add.png" /></a>
+							<a href="javascript:delLine(#####);" class="delete"><img src="../modules/mailjet/views/img/delete.png" /></a>
 						</td>
 						<td id="id#####">#####</td>
 						<td class="filter-table-cond">
@@ -196,7 +196,7 @@
 					</tr>
 				</table>
 			</div>
-			<div id="load" style="display:none;"><center><img src="../modules/mailjet/img/load.gif" ></center></div>
+			<div id="load" style="display:none;"><center><img src="../modules/mailjet/views/img/load.gif" ></center></div>
 			<div id="result"></div>
 
 			<div class="blocAction">
@@ -254,9 +254,9 @@
 				<div class="rowAction" id="attrib">
 					<label>{l s='Assign group selection' mod='mailjet'}</label>
 					<span class="displayInlineBlock width200 verticalAlignTop">
-						<button class="my_button" id="groupAttrib" ><img src="../modules/mailjet/img/table.png" />
+						<button class="my_button" id="groupAttrib" ><img src="../modules/mailjet/views/img/table.png" />
 							{l s='Assign now' mod='mailjet'}</button>
-						<img src="{$mj__PS_BASE_URI__|default:'/'}modules/mailjet/img/load.gif" id="wait" style="display:none;" />
+						<img src="{$mj__PS_BASE_URI__|default:'/'}modules/mailjet/views/img/load.gif" id="wait" style="display:none;" />
 					</span>
 					<span class="help">{l s='Customers will be assigned to the group after the click on the button'
 						mod='mailjet'}.</span>

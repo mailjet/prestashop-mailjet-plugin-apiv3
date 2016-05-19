@@ -7,7 +7,7 @@
  *
  * @author		David Coullet
  * @author		Mailjet Dev team
- * @copyright	Copyright (c) 2012-2013, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
+ * @copyright	Copyright (c) 2012-2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
  * @file
  */
 
@@ -489,7 +489,7 @@ class mailjetdata
             $uri .= '?akid='.intval($akid);
         if (in_array(strtoupper($MimeType), array('MULTIPART/FORM-DATA', 'APPLICATION/X-WWW-FORM-URLENCODED')))
             $RawData = array('data' => $RawData);
-            
+
         return ($this->sendRequest($Method, $uri, $MimeType, $RawData));
     }
 
@@ -525,7 +525,7 @@ class mailjetdata
         curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array("Content-Type: ".$MimeType));
         curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, $Method);
         curl_setopt($this->_curl_handle, CURLOPT_USERAGENT, 'prestashop-3.0');
-    	
+
         switch ($Method) {
             case 'GET' :
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPGET, TRUE);
@@ -539,8 +539,8 @@ class mailjetdata
 
             case 'PUT':
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $RawData);
-            break;            
-            
+            break;
+
             case 'JSON':
             	$RawData = Tools::jsonEncode($RawData);
             	curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
@@ -552,7 +552,7 @@ class mailjetdata
 				);
             break;
         }
-        
+
         $buffer = curl_exec($this->_curl_handle);
 
         $this->_info = curl_getinfo($this->_curl_handle);
@@ -560,11 +560,11 @@ class mailjetdata
         $this->_buffer = $buffer;
         $this->_method = $Method;
         $this->_debug = FALSE;
-        
+
         // If an error is encountered, return an array
         if($this->_info['http_code'] >= 300)
         	$buffer = Tools::jsonDecode($buffer);
-        	
+
         return $buffer;
     }
 

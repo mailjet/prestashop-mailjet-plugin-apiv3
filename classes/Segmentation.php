@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -47,13 +47,13 @@ class Segmentation
 		$this->name = 'segmentation';
 		$this->tab = 'administration';
 		$this->_path = _PS_MODULE_DIR_.'mailjet';
-        
+
 		$this->displayName = $this->l('Segment Module');
 		$this->description = $this->l('Module for Customer Segmentation');
 		$this->page = 10;
 	}
- 
-    
+
+
 	public function initContent()
 	{
 		Configuration::updateValue('SEGMENT_CUSTOMER_TOKEN', Tools::getValue('token'));
@@ -87,7 +87,7 @@ class Segmentation
 			'mj_filter_list' => Db::getInstance()->ExecuteS('SELECT * FROM `'._DB_PREFIX_.'mj_filter`'),
 			'mj_base_select' => Db::getInstance()->ExecuteS('SELECT id_basecondition, label FROM `'._DB_PREFIX_.'mj_basecondition`')
 		));
-		
+
 		return '';
 	}
 
@@ -926,19 +926,19 @@ class Segmentation
 	private function _formatDate($date){
         if(empty($date)) {
             return '';
-            
+
         }
         if (@DateTime::createFromFormat('Y-m-d', $date) !== FALSE) {
             // it's a date
             return date('Y-m-d',strtotime($date));
         } else return $date;
-		
+
 	}
 
 	public function getSubCategories($id_category)
 	{
 		$sql = 'SELECT id_category
-				FROM '._DB_PREFIX_.'category 
+				FROM '._DB_PREFIX_.'category
 				WHERE id_parent = '.(int)$id_category;
 
 		$rows = (array)Db::getInstance()->executeS($sql);
@@ -1014,7 +1014,7 @@ class Segmentation
 		}
 		else
 		{
-			Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_.'mj_filter` (`name`, `description`, `date_start`, `date_end`, `id_group`, `assignment_auto`, `replace_customer`) 
+			Db::getInstance()->Execute('INSERT INTO `'._DB_PREFIX_.'mj_filter` (`name`, `description`, `date_start`, `date_end`, `id_group`, `assignment_auto`, `replace_customer`)
 						VALUES ("'.pSQL($post['name']).'", "'.pSQL($post['description']).'", NULL, NULL, "'.(int)$post['idgroup'].'", '.(int)(bool)$auto_assign.', '.(int)(bool)$replace_customer.')');
 			$id_filter = Db::getInstance()->getValue('SELECT MAX(id_filter) FROM `'._DB_PREFIX_.'mj_filter`');
 		}
@@ -1055,7 +1055,7 @@ class Segmentation
 		$post['group_name'] = $group_name;
 		return Tools::jsonEncode($post);
 		/* ** ** */
-		
+
 		// return '{"id" : '.$id_filter.',"name" : "'.pSQL($post['name']).'", "description" : "'.pSQL($post['description']).'", "replace_customer" : "'.$replace_customer_text.'", "auto_assign" : "'.$auto_assign_text.'", "group_name" : "'.$group_name.'"}';
 	}
 
@@ -1194,8 +1194,8 @@ class Segmentation
 
 	public function getIdLangByIdEmployee($id_employee)
 	{
-		$sql = 'SELECT id_lang 
-				FROM '._DB_PREFIX_.'employee 
+		$sql = 'SELECT id_lang
+				FROM '._DB_PREFIX_.'employee
 				WHERE id_employee = '.(int)$id_employee;
 
 		return (int)DB::getInstance()->getValue($sql);
@@ -1367,8 +1367,8 @@ class Segmentation
 
 	public function belongsToGroup($id_group, $id_customer)
 	{
-		$sql = 'SELECT COUNT(*) 
-				FROM '._DB_PREFIX_.'customer_group 
+		$sql = 'SELECT COUNT(*)
+				FROM '._DB_PREFIX_.'customer_group
 				WHERE id_group = '.(int)$id_group.' AND id_customer = '.(int)$id_customer;
 
 		return (bool)DB::getInstance()->getValue($sql);
@@ -1379,15 +1379,15 @@ class Segmentation
 		if (!$id_lang)
 			$id_lang = (int)Context::getContext()->cookie->id_lang;
 
-		$sql = 'SELECT name 
-				FROM '._DB_PREFIX_.'group_lang 
+		$sql = 'SELECT name
+				FROM '._DB_PREFIX_.'group_lang
 				WHERE id_group = '.(int)$id_group.' AND id_lang = '.(int)$id_lang;
 
 		return DB::getInstance()->getValue($sql);
 	}
 
 	/**
-	 * 
+	 *
 	 * @author atanas
 	 * @param int $filterId
 	 * @return int

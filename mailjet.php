@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2015 PrestaShop
+ * 2007-2016 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -121,7 +121,7 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.15';
+		$this->version = '3.3.0';
 		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
 		$this->tab = 'advertising_marketing';
 
@@ -308,16 +308,16 @@ class Mailjet extends Module
 			$nobug = $value;
 		}
 
-        $this->context->controller->addCss($this->_path.'/css/style.css');
-        $this->context->controller->addCSS($this->_path.'/css/bo.css');
-        $this->context->controller->addCSS($this->_path.'/css/bundlejs_prestashop.css');
+        $this->context->controller->addCss($this->_path.'/views/css/style.css');
+        $this->context->controller->addCSS($this->_path.'/views/css/bo.css');
+        $this->context->controller->addCSS($this->_path.'/views/css/bundlejs_prestashop.css');
 		$this->context->controller->addJquery();
-        $this->context->controller->addJs($this->_path.'/js/jquery.timer.js');
-        $this->context->controller->addJs($this->_path.'/js/bo.js');
-        $this->context->controller->addJs($this->_path.'/js/events.js');
-        $this->context->controller->addJs($this->_path.'/js/functions.js');
-        $this->context->controller->addJs($this->_path.'/js/main.js');
-        $this->context->controller->addJs($this->_path.'/js/bundlejs_prestashop.js');
+        $this->context->controller->addJs($this->_path.'/views/js/jquery.timer.js');
+        $this->context->controller->addJs($this->_path.'/views/js/bo.js');
+        $this->context->controller->addJs($this->_path.'/views/js/events.js');
+        $this->context->controller->addJs($this->_path.'/views/js/functions.js');
+        $this->context->controller->addJs($this->_path.'/views/js/main.js');
+        $this->context->controller->addJs($this->_path.'/views/js/bundlejs_prestashop.js');
 
         $api = MailjetTemplate::getApi();
         $infos = $api->getUser();
@@ -987,7 +987,8 @@ class Mailjet extends Module
         $connected = FALSE;
 
         for ($i = 0; $i < count($configs); ++$i) {
-
+            $errno = null;
+            $errstr = null;
             $soc = @fSockOpen($configs [$i] [0].$host, $configs [$i] [1], $errno, $errstr, 5);
 
             if ($soc) {
@@ -1169,8 +1170,6 @@ class Mailjet extends Module
 		if ($sendersFromApi) {
 
 			foreach ($sendersFromApi as $sender) {
-
-                $mainDomain = implode('.', array_slice(explode('.', Configuration::get('PS_SHOP_DOMAIN')), -2));
 
                 if (strpos($sender->Email->Email, '*') !== false) {
                     $domains[] = $sender;
@@ -1492,7 +1491,7 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
 
-            $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+            //$account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
             Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
 
@@ -1680,7 +1679,8 @@ class Mailjet extends Module
 			$from_name = Configuration::get('PS_SHOP_NAME');
 
             $mj_mail_server_port = Configuration::get('PS_MAIL_SMTP_PORT');
-            switch (Configuration::get('PS_MAIL_SMTP_ENCRYPTION')) :
+
+            switch (Configuration::get('PS_MAIL_SMTP_ENCRYPTION')) {
                 case 'tls':
                     $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_TLS;
                     break;
@@ -1689,8 +1689,8 @@ class Mailjet extends Module
                     break;
                 default:
                     $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_OFF;
-                    break;
-            endswitch;
+            }
+
             $connection = new Swift_Connection_SMTP(
 					Configuration::get('PS_MAIL_SERVER'),
 					$mj_mail_server_port,

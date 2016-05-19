@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -56,7 +56,7 @@ if ($data->next_step_url)
 		$mj_data = new Mailjet_Api($mj->getAccountSettingsKey('API_KEY'), $mj->getAccountSettingsKey('SECRET_KEY'));
         $campaignId = (int)$data->campaign_id;
 		$html = $mj_data->data('newsletter', $campaignId, 'HTML', 'text/html', null, 'GET', 'LAST')->getResponse();
-		
+
 		/* On enregistre la campagne en BDD et on génère un token */
 		$sql = 'SELECT * FROM '._DB_PREFIX_.'mj_campaign WHERE campaign_id = '.$campaignId;
 		$res_campaign = Db::getInstance()->GetRow($sql);
@@ -98,10 +98,10 @@ if ($data->next_step_url)
 				$html = str_replace($link_without_token, $link_with_token, $html);
 			}
 		}
-				
+
 		$res = $mj_data->data('newsletter', $campaignId, 'HTML', 'text/html', $html, 'PUT', 'LAST')->getResponse();
 	}
-	
+
 	$response = array(
 		'code'				=> 1,
 		'continue'			=> true,

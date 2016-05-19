@@ -18,52 +18,51 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 * @author PrestaShop SA <contact@prestashop.com>
-* @copyright  2007-2015 PrestaShop SA
+* @copyright  2007-2016 PrestaShop SA
 * @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 * International Registered Trademark & Property of PrestaShop SA
 */
 
-div.plugproduct
-{
-	position:absolute;
-	min-width:200px;
-	max-height:200px;
-	font-size:13px;
-	overflow:auto;
+(function($, undifened) {
+
+	/**
+	 * Check if the customer finished his setup under the iframe
+	 */
+	function checkMerchantSetupState()
+	{
+		$.ajax({
+			type : 'POST',
+			url : _PS_MJ_MODULE_DIR_ + 'ajax.php',
+			data :	{'method': 'checkMerchantSetupState', 'token': MJ_TOKEN, 'admin_token': MJ_ADMINMODULES_TOKEN},
+			dataType: 'json',
+			success: function(json)
+			{
+				if (json && json.result)
+					window.location.href = json.url;
+			},
+			error: function(xhr, ajaxOptions, thrownError)
+			{
+				// console.log(xhr)
+			}
+		});
+	}
 	
-	margin-top:5px;
-	margin-left:5px;
-}
-div.plugproduct ul
-{
-	border:1px solid #666;
- 	list-style:none;
-    margin:0;
-}
-div.plugproduct ul li {
-	cursor: pointer;
-	padding:3px;
-}
-div.plugproduct ul li.pair
-{
-	background-color:#DDDDDD;
-}
-div.plugproduct ul li.impair
-{
-	background-color:white;
-}
-div.plugproduct ul li:hover
-{
-	background-color:#C0C0C0;
-}
-div.info
-{
-	background-color: #EAE2A7;
-    border: 1px solid #F4F0D2;
-    border-radius: 8px 8px 8px 8px;
-    min-height: 20px;
-    min-width: 98px;
-    padding-left: 4px;
-    padding-top: 3px;
-    position: absolute;
-}
+	
+	$(document).ready(function() {
+	
+		switch(MJ_page_name)
+		{
+			case MJ_SETUP_STEP_1:
+				var timer = $.timer(checkMerchantSetupState);
+				timer.set({time: 10000, autostart: true});
+			break;
+	
+			case MJ_LOGIN:
+				$('#MJ_auth_link').click(function() {
+					$('#MJ_auth_form').submit();
+					return false;
+				});
+			break;
+		}
+	});
+})(jQuery);

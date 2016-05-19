@@ -19,31 +19,31 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
 
 /**
- * 
+ *
  * @author atanas
  */
 class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbstract
 {
 	/**
-	 * 
+	 *
 	 * @var array
 	 */
 	private $_mailjetContacts = array();
 
 	/**
-	 * 
+	 *
 	 * @var int
 	 */
 	private $_limitPerRequest = 2;
 
 	/**
-	 * 
+	 *
 	 * @param array $contacts
 	 * @param string $filterId
 	 * @param string $fiterName
@@ -59,9 +59,9 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	}
 
 	/**
-	 * 
+	 *
 	 * @param int $filterId
-	 * @param string $newName	 
+	 * @param string $newName
 	 * @return bool
 	 */
 	public function updateName($mailjetListId, $prestashopFilterId, $newName)
@@ -89,7 +89,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	}
 
 	/**
-	 * 
+	 *
 	 * @param int $mailjetListId
 	 */
 	public function deleteList($mailjetListId)
@@ -112,16 +112,16 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	}
 
 	/**
-	 * 
+	 *
 	 * @param array $contacts
 	 * @param string $filterId
 	 * @param string $fiterName
 	 * @return mixed
 	 */
 	private function _create($res_contacts, $filterId, $fiterName)
-	{        
+	{
         $segmentationObject = new Segmentation();
-            
+
 		// ** ** Détection du bon Index
 		$mail_index = 'Email';
 		if ($res_contacts)
@@ -134,7 +134,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                     $firstNameIndex = $k;
                 } else if ($k == $segmentationObject->ll(49)) {
                     $lastNameIndex = $k;
-                }  
+                }
             }
 
 		}
@@ -166,13 +166,13 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 if (!empty($rc[$mail_index])) {
                     $contactsToCsv[] = array($rc[$mail_index], $rc[$firstNameIndex], $rc[$lastNameIndex]);
                 }
-               
+
             }
-           
+
 			# Call
 			try {
-                
-                 
+
+
                 $headers = array("email","firstname","lastname");
                 $string_contacts = '';
                 $string_contacts .= implode(",", $headers) ."\n";
@@ -185,17 +185,17 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                  */
                 $this->_getApiOverlay()->setContactMetaData(
                     array(
-                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'), 
+                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
                         array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
                     )
                 );
-                
+
 				$res = $this->_getApiOverlay()->createContacts($string_contacts, $newListId);
-                
+
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
 
-               
+
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($newListId, $res->ID);
 
 				if ($batchJobResponse == false)
@@ -204,7 +204,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 				$contacts_done += $val;
 
 				Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor(($contacts_done * 100) / $total_contacts));
-                
+
 				$response = 'OK';
 			} catch (Exception $e) {
 				$response = 'Try again later';
@@ -215,7 +215,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	}
 
 	/**
-	 * 
+	 *
 	 * @param array $contacts
 	 * @param int $existingListId
 	 * @return string
@@ -223,12 +223,12 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	private function _update($contacts, $existingListId)
 	{
         $segmentationObject = new Segmentation();
-        
+
 		// ** ** Détection du bon Index
 		$mail_index = 'Email';
 		if ($contacts)
 		{
-			$contact_ids = array_keys($contacts[0]); 
+			$contact_ids = array_keys($contacts[0]);
 			foreach ($contact_ids as $k) {
                 if (preg_match('/(mail)/', $k))  {
                     $mail_index = $k;
@@ -236,10 +236,10 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                     $firstNameIndex = $k;
                 } else if ($k == $segmentationObject->ll(49)) {
                     $lastNameIndex = $k;
-                }  
+                }
             }
 		}
-        
+
 		$prestashopContacts = array();
         $contactsToCsv = array();
 		foreach ($contacts as $contact) {
@@ -267,7 +267,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 		}
 
 		$response = 'Pending';
- 
+
 		try {
 			if (!empty($contacstToAdd))
 			{
@@ -276,11 +276,11 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                  */
                 $this->_getApiOverlay()->setContactMetaData(
                     array(
-                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'), 
+                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
                         array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
                     )
                 );
-                
+
                 $headers = array("email","firstname","lastname");
                 $contstToAddCsv = '';
                 $contstToAddCsv .= implode(",", $headers) ."\n";
@@ -289,16 +289,16 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 }
 
 				$res = $this->_getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
-                
+
 				if (!isset($res->ID))
 					throw new HooksSynchronizationException('Create contacts problem');
 
-                 
+
 				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
 
 				if ($batchJobResponse == false)
 					throw new HooksSynchronizationException('Batchjob problem');
-                  
+
 			}
 
 			if (!empty($contacstToRemove))
@@ -325,7 +325,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	}
 
 	/**
-	 * 
+	 *
 	 * @param string $filterId
 	 * @param string $fiterName
 	 * @return int
@@ -354,7 +354,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	}
 
 	/**
-	 * 
+	 *
 	 * @param string $filterId
 	 * @param string $fiterName
 	 * @return number
@@ -378,7 +378,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 	}
 
 	/**
-	 * 
+	 *
 	 * @param int $mailjetListId
 	 */
 	private function _gatherCurrentContacts($mailjetListId, $offset = 0)

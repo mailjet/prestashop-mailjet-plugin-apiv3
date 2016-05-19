@@ -7,7 +7,7 @@
  *
  * @author		David Coullet
  * @author		Mailjet Dev team
- * @copyright	Copyright (c) 2012-2013, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
+ * @copyright	Copyright (c) 2012-2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
  * @file
  */
 
@@ -30,7 +30,7 @@
 class Mailjet_Api
 {
 	private $env = '.';
-	
+
     /**
      * Mailjet API Key
      * You can edit directly and add here your Mailjet infos
@@ -229,9 +229,9 @@ class Mailjet_Api
 
         return self::$_instance;
     }
-    
+
     /**
-     * 
+     *
      * @param unknown_type $version
      */
     public function data($method, $id, $type = 'HTML', $contType = 'text:html', $params = array(), $request = 'GET', $lastID = null)
@@ -241,14 +241,14 @@ class Mailjet_Api
     		$this->_debugMethod = $method;
     		$this->_debugRequest = $request;
     	}
-    	
-    	$this->_debugCallUrl = $this->_apiUrl = $url = (($this->_secure) ? 'https' : 'http').'://api'.$this->env.'mailjet.com/v3/DATA/' . $method .'/'.$id.'/' .$type 
+
+    	$this->_debugCallUrl = $this->_apiUrl = $url = (($this->_secure) ? 'https' : 'http').'://api'.$this->env.'mailjet.com/v3/DATA/' . $method .'/'.$id.'/' .$type
     	. '/' . $contType;
 
 
     	if(is_null($this->_curl_handle))
     		$this->_curl_handle = curl_init();
-    	
+
     	curl_setopt($this->_curl_handle, CURLOPT_URL, $url);
     	curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, 1);
     	curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array("Content-Type: ".$contType));
@@ -256,11 +256,11 @@ class Mailjet_Api
     	curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
     	curl_setopt($this->_curl_handle, CURLOPT_USERAGENT, 'prestashop-3.0');
     	curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey.':'.$this->_secretKey);
-    	
+
     	if ($lastID) {
     		$this->_debugCallUrl = $this->_apiUrl = $this->_apiUrl . '/' . $lastID;
     	}
-    	
+
     	switch ($request) {
             case 'GET' :
                 curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -294,7 +294,7 @@ class Mailjet_Api
                     curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "PUT");
                 else
                     curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
-                 
+
                 $this->_request_post = $params;
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($this->_request_post));
                 curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
@@ -305,23 +305,23 @@ class Mailjet_Api
                 break;
         }
     	curl_setopt($this->_curl_handle, CURLOPT_URL, $this->_apiUrl);
-    	
+
     	$buffer = curl_exec($this->_curl_handle);
-		
+
     	if ($this->_debug > 2)
     		var_dump($buffer);
-    	
+
     	$this->_response_code 	= curl_getinfo($this->_curl_handle,CURLINFO_HTTP_CODE);
     	$this->_response 		= $buffer;
-    	
+
     	if ($this->_debug > 0) {
     		$this->debug();
     	}
-    
+
 		// echo '<pre>';
 		// var_dump($this->_response);
 		// echo '</pre>';
-  
+
     	return ($this->_response_code == 200) ? $this : FALSE;
 
     }
@@ -529,7 +529,7 @@ class Mailjet_Api
     {
         return ($this->_cache_path);
     }
-    
+
     public function resetRequest()
     {
     	$this->_apiUrl = (($this->_secure) ? 'https' : 'http').'://api'.$this->env.'mailjet.com/v3/'.$this->_version;
@@ -651,7 +651,7 @@ class Mailjet_Api
                 $this->_output = $value;
         }
         $query_string['output'] = 'output='.urlencode($this->_output);
-        
+
         if (isset($params['ID']) && $params['ID']) {
         	$id = $params['ID'];
         	unset($params['ID']);
@@ -684,12 +684,12 @@ class Mailjet_Api
     private function sendRequest($method = FALSE,$params=array(),$request="GET", $url = false)
     {
     	$is_json_put = (isset($params['ID']) && !empty($params['ID']));
-    	
+
         if ($this->_debug != 0) {
             $this->_debugMethod = $method;
             $this->_debugRequest = $request;
         }
-        
+
         if ($url == false) {
         	$url = $this->requestUrlBuilder($method, $params, $request);
         }
@@ -704,7 +704,7 @@ class Mailjet_Api
         curl_setopt($this->_curl_handle, CURLOPT_TIMEOUT, 10); //timeout in seconds
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey.':'.$this->_secretKey);
         curl_setopt($this->_curl_handle, CURLOPT_USERAGENT, 'prestashop-3.0');
-    	
+
         switch ($request) {
             case 'GET' :
                 curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -719,7 +719,7 @@ class Mailjet_Api
                 else{
                     curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, 'JSON');
                 }
-                
+
                 curl_setopt($this->_curl_handle, CURLOPT_POST, count($params));
                 if( isset($params['Action']) && isset($params['ListID']) ){
                     curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($params));
@@ -728,7 +728,7 @@ class Mailjet_Api
                 else{
                     curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, http_build_query($params, '', '&'));
                 }
-                
+
                 $this->_request_post = $params;
                 break;
             case 'PUT':
@@ -751,7 +751,7 @@ class Mailjet_Api
             		curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "PUT");
             	else
             		curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
-            	 
+
             	$this->_request_post = $params;
             	curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, Tools::jsonEncode($this->_request_post));
             	curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
@@ -772,7 +772,7 @@ class Mailjet_Api
 
         return ($this->_response_code == 200) ? TRUE : FALSE;
     }
-    
+
 
 
     /**
@@ -848,7 +848,7 @@ class Mailjet_Api
         $this->_debugErrorHtml .= '<tr><th>Method</th><td>'.Tools::safeOutput($this->_debugMethod).'</td></tr>';
         $this->_debugErrorHtml .= '<tr><th>Request type</th><td>'.Tools::safeOutput($this->_debugRequest).'</td></tr>';
         $this->_debugErrorHtml .= '<tr><th>Get Arguments</th><td>';
-        
+
         $args = array();
         if(isset($call_url['query']))
             $args = explode("&",$call_url['query']);

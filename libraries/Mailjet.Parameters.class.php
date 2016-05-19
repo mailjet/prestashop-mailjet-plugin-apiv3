@@ -6,7 +6,7 @@
  * http://www.mailjet.com/ Mailjet SAS Website
  *
  * @author		David Coullet at Mailjet Dev team
- * @copyright	Copyright (c) 2013, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
+ * @copyright	Copyright (c) 2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
  * @file
  */
 

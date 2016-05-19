@@ -18,7 +18,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -28,7 +28,7 @@ function addLine()
 	
 	if ((rules - 1) > 0)
 	{
-		$("#action" + (rules -1)).html('<a href="javascript:addLine();" class="add"><img src="../modules/mailjet/img/add.png" /></a> <a class="delete" href="javascript:delLine(' + (rules - 1) + ');"><img src="../modules/mailjet/img/delete.png" /></a>');
+		$("#action" + (rules -1)).html('<a href="javascript:addLine();" class="add"><img src="../modules/mailjet/views/img/add.png" /></a> <a class="delete" href="javascript:delLine(' + (rules - 1) + ');"><img src="../modules/mailjet/views/img/delete.png" /></a>');
 	}
 	newline = $("#newLine").html();
 	if(typeof newline !== 'undefined'){
@@ -321,7 +321,7 @@ function saveFilter()
 	   data = jQuery.parseJSON(data);
 	    $("#list").show();
 		$(".no_filter_string").hide();
-	   $("#list").append('<tr id="list'+data.id+'" class="trSelect"><td>'+data.id+'</td><td>'+data.name+'</td><td>'+data.description+'</td><td>'+data.replace_customer+'</td><td>'+data.auto_assign+'</td><td>'+data.group_name+'</td><td><a href="javascript:deleteFilter('+data.id+');"><img src="../modules/mailjet/img/delete.png" /></a></td></tr>');
+	   $("#list").append('<tr id="list'+data.id+'" class="trSelect"><td>'+data.id+'</td><td>'+data.name+'</td><td>'+data.description+'</td><td>'+data.replace_customer+'</td><td>'+data.auto_assign+'</td><td>'+data.group_name+'</td><td><a href="javascript:deleteFilter('+data.id+');"><img src="../modules/mailjet/views/img/delete.png" /></a></td></tr>');
 	   $("#idfilter").val(data.id);
 	   $(".div_new_filter").hide();
 	   $("#action").val('getQuery');
@@ -376,8 +376,8 @@ function loadFilter(idfilter)
 				line = data[i-1];
 				html += '<tr id="'+i+'">';
 					html += '<td id="action'+i+'">';
-						html += '<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/img/add.png" /></a>';
-						html += '<a class="delete" href="javascript:delLine('+i+');"><img src="../modules/mailjet/img/delete.png" /></a>';
+						html += '<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/views/img/add.png" /></a>';
+						html += '<a class="delete" href="javascript:delLine('+i+');"><img src="../modules/mailjet/views/img/delete.png" /></a>';
 					html += '</td>';
 					html += '<td id="id'+i+'">'+i+'</td>';
 					html += '<td><select name="rule_a[]" class="cond">';
@@ -553,7 +553,7 @@ function attribGroup()
 			   }
 			   data = jQuery.parseJSON(data);
 			   $("#list").show();
-			   $("#list").append('<tr id="list'+data.id+'" class="trSelect"><td>'+data.id+'</td><td>'+data.name+'</td><td>'+data.description+'</td><td>'+data.replace_customer+'</td><td>'+data.auto_assign+'</td><td>'+data.group_name+'</td><td><a href="javascript:deleteFilter('+data.id+');"><img src="../modules/mailjet/img/delete.png" /></a></td></tr>');
+			   $("#list").append('<tr id="list'+data.id+'" class="trSelect"><td>'+data.id+'</td><td>'+data.name+'</td><td>'+data.description+'</td><td>'+data.replace_customer+'</td><td>'+data.auto_assign+'</td><td>'+data.group_name+'</td><td><a href="javascript:deleteFilter('+data.id+');"><img src="../modules/mailjet/views/img/delete.png" /></a></td></tr>');
 			   $("#idfilter").val(data.id);
 			   $("#action").val('getQuery');
 			   displayListMessage(trad[23], "result");
@@ -602,8 +602,8 @@ function clearRules(ruleid)
 		id = i - 1;
 		$("#" + i).attr('id', id)
 		$("#action" + i).attr('id', "action" + id);
-		//$("#action" + id).html('<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/img/add.png" /></a><a class="delete" href="javascript:delLine(' + id + ');"><img src="../modules/mailjet/img/delete.png" /></a>');
-		$("#action" + id).html('<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/img/add.png" /></a><a class="delete" href="javascript:delLine(' + id + ');"><img src="../modules/mailjet/img/delete.png" /></a>');
+		//$("#action" + id).html('<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/views/img/add.png" /></a><a class="delete" href="javascript:delLine(' + id + ');"><img src="../modules/mailjet/views/img/delete.png" /></a>');
+		$("#action" + id).html('<a class="add" href="javascript:addLine();"><img src="../modules/mailjet/views/img/add.png" /></a><a class="delete" href="javascript:delLine(' + id + ');"><img src="../modules/mailjet/views/img/delete.png" /></a>');
 		$("#id" + i).attr('id', "id" + id);
 		$("#id" + id).html(id);
 		$("#sourceSelect" + i).attr('id', "sourceSelect" + id);

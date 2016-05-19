@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
@@ -67,14 +67,14 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         if (count($allUsers) === 0) {
             throw new HooksSynchronizationException('You don\'t have any users in the database.');
         }
- 
+
         $segmentationObject = new Segmentation();
-        
+
         $contstToAddCsv = array();
         foreach ($allUsers as $userInfo) {
             $contstToAddCsv[] = array($userInfo['email'], $userInfo['firstname'], $userInfo['lastname']);
         }
-       
+
         /*
         * Sets related contact meta data like firstname, lastname, etc...
         */
@@ -88,8 +88,8 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         $contstToAddCsvString .= implode(",", $headers) ."\n";
         foreach ($contstToAddCsv as $contact) {
             $contstToAddCsvString .= implode(",", $contact) ."\n";
-        } 
-        
+        }
+
         $apiResponse = $apiOverlay->createContacts($contstToAddCsvString, $newlyCreatedListId);
 
         if (!isset($apiResponse->ID)) {
@@ -114,10 +114,10 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
     private function _getAllActiveCustomers()
     {
         return $this->getDbInstance()->executeS('
-			SELECT * 
-			FROM '._DB_PREFIX_.'customer 
-			WHERE active = 1 
-			AND newsletter = 1 
+			SELECT *
+			FROM '._DB_PREFIX_.'customer
+			WHERE active = 1
+			AND newsletter = 1
 			AND deleted = 0
 		');
     }
