@@ -122,7 +122,7 @@ class Mailjet extends Module
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
 		$this->version = '3.3.0';
-		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
+		$this->module_key = 'a5a406893178d66f7b17a4689623bd4b';
 		$this->tab = 'advertising_marketing';
 
 		// Parent constructor
