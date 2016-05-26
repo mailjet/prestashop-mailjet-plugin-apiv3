@@ -29,26 +29,29 @@ if (!defined('_PS_VERSION_'))
 	exit;
 
 /* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
 
-include_once(_PS_MODULE_DIR_.'mailjet/classes/Segmentation.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/Segmentation.php');
 
-include_once(_PS_SWIFT_DIR_.'Swift.php');
-include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
+if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
+    require_once(_PS_CORE_DIR_.'/tools/swift/swift_required.php');
+} else {
+    require_once(_PS_SWIFT_DIR_.'Swift.php');
+    require_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
+}
 /* include_once(_PS_SWIFT_DIR_.'Swift/Connection/NativeMail.php'); */
 /* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
 
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
 
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
-
-include_once(_PS_MODULE_DIR_.'mailjet/ModuleTabRedirect.php');
+require_once(_PS_MODULE_DIR_.'mailjet/ModuleTabRedirect.php');
 
 class Mailjet extends Module
 {
@@ -1674,6 +1677,11 @@ class Mailjet extends Module
 	{
 		try
 		{
+            // PS 1.6.1.5+ uses a new version of SWIFT mailer
+            if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
+                return self::sendMail1615($subject, $message, $to);
+            }
+
 			$account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
             $from = $account['EMAIL'];
 			$from_name = Configuration::get('PS_SHOP_NAME');
@@ -1718,6 +1726,58 @@ class Mailjet extends Module
 			return false;
 		}
 	}
+
+
+
+    public static function sendMail1615($subject, $message, $to)
+    {
+        try {
+
+            $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+            $from = $account['EMAIL'];
+            $from_name = Configuration::get('PS_SHOP_NAME');
+
+            $transport = Swift_SmtpTransport::newInstance(
+                Configuration::get('PS_MAIL_SERVER'),
+                Configuration::get('PS_MAIL_SMTP_PORT'),
+                Configuration::get('PS_MAIL_SMTP_ENCRYPTION'))
+                    ->setUsername($account['API_KEY'])
+                    ->setPassword($account['SECRET_KEY']);
+
+            /*
+            You could alternatively use a different transport such as Sendmail or Mail:
+
+            // Sendmail
+            $transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
+
+            // Mail
+            $transport = Swift_MailTransport::newInstance();
+            */
+
+            // Create the Mailer using your created Transport
+            $mailer = Swift_Mailer::newInstance($transport);
+
+            // Create a message
+            $message = Swift_Message::newInstance('['.$from_name.'] '.$subject)
+                ->setFrom([$from => $from_name])
+                ->setTo([$to])
+                ->setBody($message, 'text/html');
+
+           // $message->addPart($message, 'text/plain', 'utf-8');
+            //$message->addPart($message, 'text/html', 'utf-8');
+
+            // Send the message
+            if ($mailer->send($message)) {
+                $result = true;
+            }
+
+        } catch (Swift_SwiftException $e) {
+            $result = $e->getMessage();
+        }
+
+        return $result;
+    }
+
 
 	/**
 	 * @return string
