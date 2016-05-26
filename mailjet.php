@@ -1,6 +1,6 @@
 <?php
 /**
- * 2007-2015 PrestaShop
+ * 2007-2016 PrestaShop
  *
  * NOTICE OF LICENSE
  *
@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -29,26 +29,29 @@ if (!defined('_PS_VERSION_'))
 	exit;
 
 /* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetPages.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
 
-include_once(_PS_MODULE_DIR_.'mailjet/classes/Segmentation.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/Segmentation.php');
 
-include_once(_PS_SWIFT_DIR_.'Swift.php');
-include_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
+if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
+    require_once(_PS_CORE_DIR_.'/tools/swift/swift_required.php');
+} else {
+    require_once(_PS_SWIFT_DIR_.'Swift.php');
+    require_once(_PS_SWIFT_DIR_.'Swift/Connection/SMTP.php');
+}
 /* include_once(_PS_SWIFT_DIR_.'Swift/Connection/NativeMail.php'); */
 /* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
 
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
+require_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
 
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Initial.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SingleUser.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
-
-include_once(_PS_MODULE_DIR_.'mailjet/ModuleTabRedirect.php');
+require_once(_PS_MODULE_DIR_.'mailjet/ModuleTabRedirect.php');
 
 class Mailjet extends Module
 {
@@ -121,8 +124,8 @@ class Mailjet extends Module
 		$this->displayName = 'Mailjet';
 		$this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events (blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
 		$this->author = 'PrestaShop';
-		$this->version = '3.2.15';
-		$this->module_key = '59cce32ad9a4b86c46e41ac95f298076';
+		$this->version = '3.3.0';
+		$this->module_key = 'a5a406893178d66f7b17a4689623bd4b';
 		$this->tab = 'advertising_marketing';
 
 		// Parent constructor
@@ -308,16 +311,16 @@ class Mailjet extends Module
 			$nobug = $value;
 		}
 
-        $this->context->controller->addCss($this->_path.'/css/style.css');
-        $this->context->controller->addCSS($this->_path.'/css/bo.css');
-        $this->context->controller->addCSS($this->_path.'/css/bundlejs_prestashop.css');
+        $this->context->controller->addCss($this->_path.'/views/css/style.css');
+        $this->context->controller->addCSS($this->_path.'/views/css/bo.css');
+        $this->context->controller->addCSS($this->_path.'/views/css/bundlejs_prestashop.css');
 		$this->context->controller->addJquery();
-        $this->context->controller->addJs($this->_path.'/js/jquery.timer.js');
-        $this->context->controller->addJs($this->_path.'/js/bo.js');
-        $this->context->controller->addJs($this->_path.'/js/events.js');
-        $this->context->controller->addJs($this->_path.'/js/functions.js');
-        $this->context->controller->addJs($this->_path.'/js/main.js');
-        $this->context->controller->addJs($this->_path.'/js/bundlejs_prestashop.js');
+        $this->context->controller->addJs($this->_path.'/views/js/jquery.timer.js');
+        $this->context->controller->addJs($this->_path.'/views/js/bo.js');
+        $this->context->controller->addJs($this->_path.'/views/js/events.js');
+        $this->context->controller->addJs($this->_path.'/views/js/functions.js');
+        $this->context->controller->addJs($this->_path.'/views/js/main.js');
+        $this->context->controller->addJs($this->_path.'/views/js/bundlejs_prestashop.js');
 
         $api = MailjetTemplate::getApi();
         $infos = $api->getUser();
@@ -822,18 +825,21 @@ class Mailjet extends Module
 		if (Tools::isSubmit('MJ_submitCampaign')) $this->page_name = 'NEWSLETTER';
 		if (Tools::isSubmit('MJ_submitCampaign2')) $this->page_name = 'CAMPAIGN3';
 		// Activation root file Creation
-		if (Tools::isSubmit('submitCreateRootFile'))
-		{
+		if (Tools::isSubmit('submitCreateRootFile')) {
 			$api = MailjetTemplate::getApi();
-			$domains = $api->getTrustDomains();
-			foreach ($domains->domains as $domain)
-			{
-				if (($domain->domain == Configuration::get('PS_SHOP_DOMAIN')) || ($domain->domain == Configuration::get('PS_SHOP_DOMAIN_SSL')))
-				{
-					$fp = fopen(_PS_ROOT_DIR_.$domain->file_name, 'w');
-					fclose($fp);
-				}
-			}
+            $infos = $api->getUser();
+            $sendersFromApi = $api->getSenders(null, $infos);
+
+            if ($sendersFromApi) {
+                foreach ($sendersFromApi as $sender) {
+                    if (isset($sender->DNS)) {
+                        if ($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN') || $sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN_SSL')) {
+                            $fp = fopen(_PS_ROOT_DIR_.'/'.$sender->Filename, 'w');
+                            fclose($fp);
+                        }
+                    }
+                }
+            }
 		}
 		// Account settings : details
 		if (Tools::isSubmit('MJ_set_account_details'))
@@ -984,7 +990,8 @@ class Mailjet extends Module
         $connected = FALSE;
 
         for ($i = 0; $i < count($configs); ++$i) {
-
+            $errno = null;
+            $errstr = null;
             $soc = @fSockOpen($configs [$i] [0].$host, $configs [$i] [1], $errno, $errstr, 5);
 
             if ($soc) {
@@ -1161,30 +1168,32 @@ class Mailjet extends Module
 		$is_senders = 0;
 		$is_domains = 0;
 		$domains = array();
-
-		$domains = array();
+		$domainsCurrent = array();
 		$senders = array();
-		if ($sendersFromApi)
-		{
-			foreach ($sendersFromApi as $sender)
-			{
-				if (strpos($sender->Email->Email, '*') !== false)
-					$domains[] = $sender;
-				else
-					$senders[] = $sender;
+		if ($sendersFromApi) {
+
+			foreach ($sendersFromApi as $sender) {
+
+                if (strpos($sender->Email->Email, '*') !== false) {
+                    $domains[] = $sender;
+                } else {
+                    $senders[] = $sender;
+                }
 
 				$is_senders = 1;
-
-				if (isset($sender->DNS))
-				{
-					if (($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN')) || ($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN_SSL')))
-					{
-						$available_domain = 1;
-						if (file_exists(_PS_ROOT_DIR_.$sender->Filename))
-							$root_file = 1;
+				if (isset($sender->DNS)) {
+					if (Configuration::get('PS_SHOP_DOMAIN') == $sender->DNS->Domain
+                        || Configuration::get('PS_SHOP_DOMAIN_SSL') == $sender->DNS->Domain
+                    ) {
+                        $available_domain = 1;
+                        $domainsCurrent[] = $sender;
+                        if (!empty($sender->Filename) && file_exists(_PS_ROOT_DIR_.'/'.$sender->Filename)) {
+                            $root_file = 1;
+                        }
 					}
-					if (isset($sender->DNS->Domain))
-						$is_domains = 1;
+					if (isset($sender->DNS->Domain)) {
+                        $is_domains = 1;
+                    }
 				}
 			}
 		}
@@ -1211,6 +1220,7 @@ class Mailjet extends Module
 			'is_domains' => $is_domains,
 			'root_file' => $root_file,
 			'available_domain' => $available_domain,
+            'domainsCurrent' => $domainsCurrent,
 		));
 	}
 
@@ -1484,7 +1494,7 @@ class Mailjet extends Module
 			Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
 			Configuration::updateValue('PS_MAIL_METHOD', 2);
 
-            $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+            //$account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
             Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
 
@@ -1667,12 +1677,18 @@ class Mailjet extends Module
 	{
 		try
 		{
+            // PS 1.6.1.5+ uses a new version of SWIFT mailer
+            if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
+                return self::sendMail1615($subject, $message, $to);
+            }
+
 			$account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
             $from = $account['EMAIL'];
 			$from_name = Configuration::get('PS_SHOP_NAME');
 
             $mj_mail_server_port = Configuration::get('PS_MAIL_SMTP_PORT');
-            switch (Configuration::get('PS_MAIL_SMTP_ENCRYPTION')) :
+
+            switch (Configuration::get('PS_MAIL_SMTP_ENCRYPTION')) {
                 case 'tls':
                     $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_TLS;
                     break;
@@ -1681,8 +1697,8 @@ class Mailjet extends Module
                     break;
                 default:
                     $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_OFF;
-                    break;
-            endswitch;
+            }
+
             $connection = new Swift_Connection_SMTP(
 					Configuration::get('PS_MAIL_SERVER'),
 					$mj_mail_server_port,
@@ -1710,6 +1726,58 @@ class Mailjet extends Module
 			return false;
 		}
 	}
+
+
+
+    public static function sendMail1615($subject, $message, $to)
+    {
+        try {
+
+            $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+            $from = $account['EMAIL'];
+            $from_name = Configuration::get('PS_SHOP_NAME');
+
+            $transport = Swift_SmtpTransport::newInstance(
+                Configuration::get('PS_MAIL_SERVER'),
+                Configuration::get('PS_MAIL_SMTP_PORT'),
+                Configuration::get('PS_MAIL_SMTP_ENCRYPTION'))
+                    ->setUsername($account['API_KEY'])
+                    ->setPassword($account['SECRET_KEY']);
+
+            /*
+            You could alternatively use a different transport such as Sendmail or Mail:
+
+            // Sendmail
+            $transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
+
+            // Mail
+            $transport = Swift_MailTransport::newInstance();
+            */
+
+            // Create the Mailer using your created Transport
+            $mailer = Swift_Mailer::newInstance($transport);
+
+            // Create a message
+            $message = Swift_Message::newInstance('['.$from_name.'] '.$subject)
+                ->setFrom([$from => $from_name])
+                ->setTo([$to])
+                ->setBody($message, 'text/html');
+
+           // $message->addPart($message, 'text/plain', 'utf-8');
+            //$message->addPart($message, 'text/html', 'utf-8');
+
+            // Send the message
+            if ($mailer->send($message)) {
+                $result = true;
+            }
+
+        } catch (Swift_SwiftException $e) {
+            $result = $e->getMessage();
+        }
+
+        return $result;
+    }
+
 
 	/**
 	 * @return string

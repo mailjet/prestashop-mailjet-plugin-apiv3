@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -311,7 +311,7 @@ if (Tools::getValue('action') == 'getQuery')
 			$header = array_keys($req[0]);
 
 			$content .= '
-					<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.Tools::safeOutput($obj->trad[26]).'</button>
+					<button id="export" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />'.Tools::safeOutput($obj->trad[26]).'</button>
 					<div class="right" id="seg_pagination">
 						<a href="javascript:next(1, '.$nb.')"><<</a>
 						<a href="javascript:next('.(Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1).', '.$nb.')"><</a>
@@ -345,7 +345,7 @@ if (Tools::getValue('action') == 'getQuery')
 
 			$content .= '
 					</table>
-					<button id="export" class="my_button right"><img src="../modules/mailjet/img/page_excel.png" />'.Tools::safeOutput($obj->trad[26]).'</button>
+					<button id="export" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />'.Tools::safeOutput($obj->trad[26]).'</button>
 					<div class="right" id="seg_pagination">
 						<a href="javascript:next(1, '.$nb.')"><<</a>
 						<a href="javascript:next('.(Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1).', '.$nb.')"><</a>

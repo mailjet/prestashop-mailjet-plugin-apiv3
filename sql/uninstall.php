@@ -19,7 +19,7 @@
  * needs please refer to http://www.prestashop.com for more information.
  *
  * @author    PrestaShop SA <contact@prestashop.com>
- * @copyright 2007-2015 PrestaShop SA
+ * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
 */
@@ -33,7 +33,7 @@ $sql = array();
 	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_roi_cart`';
 
 	/* ** ** SEGMENTATION ** ** */
-	
+
 	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_filter`';
 	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_condition`';
 	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_basecondition`';

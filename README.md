@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.3.0 =
+* Improvement of the account settings
+
 = 3.2.15 =
 * Add a sender address for transactional emails
 
