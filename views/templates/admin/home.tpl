@@ -83,7 +83,7 @@
             if ($("#MJ_senders").is(":visible")) {
                 if ($.inArray($("#MJ_senders").val(), sendersClean) == -1) {
                     $("#MJ_senders").css('background-color', 'red');
-                    alert('{l s='Could you please add a valid sender address?' mod='mailjet'}');
+                    alert("{l s='Could you please add a valid sender address?' mod='mailjet'}");
                     return false;
                 }
                 $("#MJ_senders").css('background-color', '#FFFFFF');

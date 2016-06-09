@@ -27,8 +27,9 @@
 {if $tinymce_new}
     <script type="text/javascript">
         var iso = '{$tinymce_iso|escape:'htmlall':'UTF-8'|default:'en'}';
-                var pathCSS = '{$tinymce_pathCSS|escape:'htmlall':'UTF-8'|default:''}';
-                var ad = '{$tinymce_ad|escape:'htmlall':'UTF-8'|default:''}';    </script>
+        var pathCSS = '{$tinymce_pathCSS|escape:'htmlall':'UTF-8'|default:''}';
+        var ad = '{$tinymce_ad|escape:'htmlall':'UTF-8'|default:''}';    
+    </script>
     <script type="text/javascript" src="{$tinymce_pathBase|escape:'htmlall':'UTF-8'|default:'/'}js/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript" src="{$tinymce_pathBase|escape:'htmlall':'UTF-8'|default:'/'}js/tinymce.inc.js"></script>
     <script language="javascript" type="text/javascript">
@@ -36,64 +37,64 @@
 {else}
     <script type="text/javascript" src="{$tinymce_pathBase|escape:'htmlall':'UTF-8'|default:'/'}js/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript">
-                tinyMCE.init({
-                mode : "textareas",
-                        theme : "advanced",
-                        plugins : "safari,pagebreak,style,layer,table,advimage,advlink,inlinepopups,media,searchreplace,contextmenu,paste,directionality,fullscreen",
-                        theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect",
-                        theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,,|,forecolor,backcolor",
-                        theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,media,|,ltr,rtl,|,fullscreen",
-                        theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,pagebreak",
-                        theme_advanced_toolbar_location : "top",
-                        theme_advanced_toolbar_align : "left",
-                        theme_advanced_statusbar_location : "bottom",
-                        theme_advanced_resizing : false,
-                        content_css : "{$tinymce_pathBase|escape:'htmlall':'UTF-8'}themes/{$tinymce_theme|escape:'htmlall':'UTF-8'|default:'default-bootstrap'}/css/global.css",
-                        document_base_url : "{$tinymce_pathBase|escape:'htmlall':'UTF-8'|default:'/'}",
-                        width: "600",
-                        height: "auto",
-                        font_size_style_values : "8pt, 10pt, 12pt, 14pt, 18pt, 24pt, 36pt",
-                        template_external_list_url : "lists/template_list.js",
-                        external_link_list_url : "lists/link_list.js",
-                        external_image_list_url : "lists/image_list.js",
-                        media_external_list_url : "lists/media_list.js",
-                        elements : "nourlconvert",
-                        entity_encoding: "raw",
-                        convert_urls : false,
-                        language : "{$tinymce_iso|escape:'htmlall':'UTF-8'|default:'en'}"
-                });
-                id_language = Number({$tinymce_id_language|escape:'htmlall':'UTF-8'|default:'en'});    </script>
+        tinyMCE.init({
+            mode : "textareas",
+            theme : "advanced",
+            plugins : "safari,pagebreak,style,layer,table,advimage,advlink,inlinepopups,media,searchreplace,contextmenu,paste,directionality,fullscreen",
+            theme_advanced_buttons1 : "newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,styleselect,formatselect,fontselect,fontsizeselect",
+            theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,,|,forecolor,backcolor",
+            theme_advanced_buttons3 : "tablecontrols,|,hr,removeformat,visualaid,|,sub,sup,|,charmap,media,|,ltr,rtl,|,fullscreen",
+            theme_advanced_buttons4 : "insertlayer,moveforward,movebackward,absolute,|,styleprops,|,cite,abbr,acronym,del,ins,attribs,|,pagebreak",
+            theme_advanced_toolbar_location : "top",
+            theme_advanced_toolbar_align : "left",
+            theme_advanced_statusbar_location : "bottom",
+            theme_advanced_resizing : false,
+            content_css : "{$tinymce_pathBase|escape:'htmlall':'UTF-8'}themes/{$tinymce_theme|escape:'htmlall':'UTF-8'|default:'default-bootstrap'}/css/global.css",
+            document_base_url : "{$tinymce_pathBase|escape:'htmlall':'UTF-8'|default:'/'}",
+            width: "600",
+            height: "auto",
+            font_size_style_values : "8pt, 10pt, 12pt, 14pt, 18pt, 24pt, 36pt",
+            template_external_list_url : "lists/template_list.js",
+            external_link_list_url : "lists/link_list.js",
+            external_image_list_url : "lists/image_list.js",
+            media_external_list_url : "lists/media_list.js",
+            elements : "nourlconvert",
+            entity_encoding: "raw",
+            convert_urls : false,
+            language : "{$tinymce_iso|escape:'htmlall':'UTF-8'|default:'en'}"
+        });
+        id_language = Number({$tinymce_id_language|escape:'htmlall':'UTF-8'|default:'en'});    </script>
 {/if}
 <script type="text/javascript">
-            $(document).ready(function () {
-    $('#exportLabel, #importLabel').css('cursor', 'pointer');
-            var initialExportLabelText = $('#exportLabel').text();
-            var initialImportLabelText = $('#importLabel').text();
-            $('#exportLabel, #MJ_triggers_export_submit').mouseover(function() {
-    $('#exportLabel').text("{l s='(Useful when upgrading Mailjet add-on)' mod='mailjet'}");
+    $(document).ready(function () {
+        $('#exportLabel, #importLabel').css('cursor', 'pointer');
+        var initialExportLabelText = $('#exportLabel').text();
+        var initialImportLabelText = $('#importLabel').text();
+        $('#exportLabel, #MJ_triggers_export_submit').mouseover(function() {
+            $('#exportLabel').text("{l s='(Useful when upgrading Mailjet add-on)' mod='mailjet'}");
             $('#exportLabel').fadeIn(500);
-    });
-            $('#exportLabel, #MJ_triggers_export_submit').mouseout(function() {
-    $('#exportLabel').text(initialExportLabelText);
+        });
+        $('#exportLabel, #MJ_triggers_export_submit').mouseout(function() {
+            $('#exportLabel').text(initialExportLabelText);
             $('#exportLabel').fadeIn(500);
-    });
-            $('#importLabel, #MJ_triggers_import_submit').mouseover(function() {
-    $('#importLabel').text("{l s='(WARNING - this overwrites your current trigger templates)' mod='mailjet'}");
+        });
+        $('#importLabel, #MJ_triggers_import_submit').mouseover(function() {
+            $('#importLabel').text("{l s='(WARNING - this overwrites your current trigger templates)' mod='mailjet'}");
             $('#importLabel').fadeIn(500);
-    });
-            $('#importLabel, #MJ_triggers_import_submit').mouseout(function() {
-    $('#importLabel').text(initialImportLabelText);
+        });
+        $('#importLabel, #MJ_triggers_import_submit').mouseout(function() {
+            $('#importLabel').text(initialImportLabelText);
             $('#importLabel').fadeIn(500);
+        });
     });
-    });
-            function validateFile() {
-            var ext = $('#MJ_triggers_import_file').val().split('.').pop().toLowerCase();
-                    if ($.inArray(ext, ['txt']) == - 1) {
-            alert('{l s='Add a valid file to import trigger templates from' mod='mailjet'}');
-                    return false;
-            }
-            return true;
-            }
+    function validateFile() {
+        var ext = $('#MJ_triggers_import_file').val().split('.').pop().toLowerCase();
+        if ($.inArray(ext, ['txt']) == - 1) {
+            alert("{l s='Add a valid file to import trigger templates from' mod='mailjet'}");
+            return false;
+        }
+        return true;
+    }
 
 
 </script>
@@ -116,59 +117,59 @@
     }
 </style>
 <script>
-            $(function() {
-            var senders = [];
-    {foreach from=$mjSenders key=key item=value}
-        {if $value->Status == 'Active'}
-            senders[{$key|escape:'javascript':'UTF-8'}] = "{$value->Email->Email|escape:'javascript':'UTF-8'|default:' - '}";
-        {/if}
-    {/foreach}
+    $(function() {
+        var senders = [];
+        {foreach from=$mjSenders key=key item=value}
+            {if $value->Status == 'Active'}
+                senders[{$key|escape:'javascript':'UTF-8'}] = "{$value->Email->Email|escape:'javascript':'UTF-8'|default:' - '}";
+            {/if}
+        {/foreach}
 
-            var currentSender = "{$currentSender|escape:'javascript':'UTF-8'}";
-                    var sendersClean = [];
-                    $.each(senders, function(key, sender) {
-                    if (typeof sender !== 'undefined') {
-                    sendersClean.push(sender);
-                    }
-                    });
-                    // check if current sender address is one of the API account validated senders
-                    if ($.inArray(currentSender, sendersClean) == - 1) {
+        var currentSender = "{$currentSender|escape:'javascript':'UTF-8'}";
+        var sendersClean = [];
+        $.each(senders, function(key, sender) {
+            if (typeof sender !== 'undefined') {
+                sendersClean.push(sender);
+            }
+        });
+        // check if current sender address is one of the API account validated senders
+        if ($.inArray(currentSender, sendersClean) == - 1) {
             currentSender = "";
-            }
+        }
 
-            $("#MJ_senders").autocomplete({
+        $("#MJ_senders").autocomplete({
             source: sendersClean,
-                    minLength: 0,
-                    minChars: 0,
-                    max: 5,
-                    autoFill: true,
-                    mustMatch: true,
-                    matchContains: false,
-                    scrollHeight: 300,
-            }).on('focus', function(event) {
+            minLength: 0,
+            minChars: 0,
+            max: 5,
+            autoFill: true,
+            mustMatch: true,
+            matchContains: false,
+            scrollHeight: 300,
+        }).on('focus', function(event) {
             var self = this;
-                    $(self).autocomplete("search", "");
-            });
-                    $('#MJ_set_triggers').on('click', function(){
+            $(self).autocomplete("search", "");
+        });
+        $('#MJ_set_triggers').on('click', function() {
             if ($("#MJ_senders").is(":visible")) {
-            if ($.inArray($("#MJ_senders").val(), sendersClean) == - 1) {
-            $("#MJ_senders").css('background-color', 'red');
-                    alert('{l s='Could you please add a valid sender address?' mod='mailjet'}');
+                if ($.inArray($("#MJ_senders").val(), sendersClean) == - 1) {
+                    $("#MJ_senders").css('background-color', 'red');
+                    alert("{l s='Could you please add a valid sender address?' mod='mailjet'}");
                     return false;
+                }
+                $("#MJ_senders").css('background-color', '#FFFFFF');
             }
+        });
+        $('#MJ_senders').on('focus', function() {
             $("#MJ_senders").css('background-color', '#FFFFFF');
-    }
-            });
-                    $('#MJ_senders').on('focus', function(){
-            $("#MJ_senders").css('background-color', '#FFFFFF');
-            });
-                    if ($("#MJ_senders").val() == '' && currentSender == '' && sendersClean.length == 1) {
+        });
+        if ($("#MJ_senders").val() == '' && currentSender == '' && sendersClean.length == 1) {
             $("#MJ_senders").val(sendersClean[0]);
-            } else {
+        } else {
             $("#MJ_senders").val(currentSender);
-            }
-
-            });</script>
+        }
+    });
+</script>
 
 
 <form action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'|default:''}" method="POST">
