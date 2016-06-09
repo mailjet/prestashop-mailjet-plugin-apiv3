@@ -22,152 +22,157 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
 // Retro 1.3, 'class_exists' cause problem with autoload...
-if (version_compare(_PS_VERSION_, '1.4', '<'))
-{
-	// Not exist for 1.3
-	class Shop extends ObjectModel
-	{
-		public function __construct()
-		{
-		}
+if (version_compare(_PS_VERSION_, '1.4', '<')) {
 
+    // Not exist for 1.3
+    class Shop extends ObjectModel
+    {
 
-		public static function getShops()
-		{
-			return array(
-				array('id_shop' => 1, 'name' => 'Default shop')
-			);
-		}
+        public function __construct()
+        {
 
-		public static function getCurrentShop()
-		{
-				return 1;
-		}
-	}
+        }
+
+        public static function getShops()
+        {
+            return array(
+                array('id_shop' => 1, 'name' => 'Default shop')
+            );
+        }
+
+        public static function getCurrentShop()
+        {
+            return 1;
+        }
+
+    }
+
 }
 
 // Not exist for 1.3 and 1.4
 class Context
 {
-	/**
-	 * @var Context
-	 */
-	protected static $instance;
 
-	/**
-	 * @var Cart
-	 */
-	public $cart;
+    /**
+     * @var Context
+     */
+    protected static $instance;
 
-	/**
-	 * @var Customer
-	 */
-	public $customer;
+    /**
+     * @var Cart
+     */
+    public $cart;
 
-	/**
-	 * @var Cookie
-	 */
-	public $cookie;
+    /**
+     * @var Customer
+     */
+    public $customer;
 
-	/**
-	 * @var Link
-	 */
-	public $link;
+    /**
+     * @var Cookie
+     */
+    public $cookie;
 
-	/**
-	 * @var Country
-	 */
-	public $country;
+    /**
+     * @var Link
+     */
+    public $link;
 
-	/**
-	 * @var Employee
-	 */
-	public $employee;
+    /**
+     * @var Country
+     */
+    public $country;
 
-	/**
-	 * @var Controller
-	 */
-	public $controller;
+    /**
+     * @var Employee
+     */
+    public $employee;
 
-	/**
-	 * @var Language
-	 */
-	public $language;
+    /**
+     * @var Controller
+     */
+    public $controller;
 
-	/**
-	 * @var Currency
-	 */
-	public $currency;
+    /**
+     * @var Language
+     */
+    public $language;
 
-	/**
-	 * @var AdminTab
-	 */
-	public $tab;
+    /**
+     * @var Currency
+     */
+    public $currency;
 
-	/**
-	 * @var Shop
-	 */
-	public $shop;
+    /**
+     * @var AdminTab
+     */
+    public $tab;
 
-	/**
-	 * @var Smarty
-	 */
-	public $smarty;
+    /**
+     * @var Shop
+     */
+    public $shop;
 
-	public function __construct()
-	{
-		global $cookie, $cart, $smarty, $link;
+    /**
+     * @var Smarty
+     */
+    public $smarty;
 
-		$this->tab = null;
+    public function __construct()
+    {
+        global $cookie, $cart, $smarty, $link;
 
-		$this->cookie = $cookie;
-		$this->cart = $cart;
-		$this->smarty = $smarty;
-		$this->link = $link;
+        $this->tab = null;
 
-		$this->controller = new ControllerBackwardModule();
-		$this->currency = new Currency((int)$cookie->id_currency);
-		$this->language = new Language((int)$cookie->id_lang);
-		$this->country = new Country((int)$cookie->id_country);
-		$this->shop = new ShopBackwardModule();
-		$this->customer = new Customer((int)$cookie->id_customer);
-		$this->employee = new Employee((int)$cookie->id_employee);
-	}
+        $this->cookie = $cookie;
+        $this->cart = $cart;
+        $this->smarty = $smarty;
+        $this->link = $link;
 
-	/**
-	 * Get a singleton context
-	 *
-	 * @return Context
-	 */
-	public static function getContext()
-	{
-		if (!isset(self::$instance))
-			self::$instance = new Context();
-		return self::$instance;
-	}
+        $this->controller = new ControllerBackwardModule();
+        $this->currency = new Currency((int) $cookie->id_currency);
+        $this->language = new Language((int) $cookie->id_lang);
+        $this->country = new Country((int) $cookie->id_country);
+        $this->shop = new ShopBackwardModule();
+        $this->customer = new Customer((int) $cookie->id_customer);
+        $this->employee = new Employee((int) $cookie->id_employee);
+    }
 
-	/**
-	 * Clone current context
-	 *
-	 * @return Context
-	 */
-	public function cloneContext()
-	{
-		return clone($this);
-	}
+    /**
+     * Get a singleton context
+     *
+     * @return Context
+     */
+    public static function getContext()
+    {
+        if (!isset(self::$instance))
+            self::$instance = new Context();
+        return self::$instance;
+    }
 
-	/**
-	 * @return int Shop context type (Shop::CONTEXT_ALL, etc.)
-	 */
-	public static function shop()
-	{
-		if (!self::$instance->shop->getContextType())
-			return ShopBackwardModule::CONTEXT_ALL;
-		return self::$instance->shop->getContextType();
-	}
+    /**
+     * Clone current context
+     *
+     * @return Context
+     */
+    public function cloneContext()
+    {
+        return clone($this);
+    }
+
+    /**
+     * @return int Shop context type (Shop::CONTEXT_ALL, etc.)
+     */
+    public static function shop()
+    {
+        if (!self::$instance->shop->getContextType())
+            return ShopBackwardModule::CONTEXT_ALL;
+        return self::$instance->shop->getContextType();
+    }
+
 }
 
 /**
@@ -175,14 +180,16 @@ class Context
  */
 class ShopBackwardModule extends Shop
 {
-	const CONTEXT_ALL = 1;
 
-	public $id = 1;
+    const CONTEXT_ALL = 1;
 
-	public function getContextType()
-	{
-		return ShopBackwardModule::CONTEXT_ALL;
-	}
+    public $id = 1;
+
+    public function getContextType()
+    {
+        return ShopBackwardModule::CONTEXT_ALL;
+    }
+
 }
 
 /**
@@ -191,22 +198,24 @@ class ShopBackwardModule extends Shop
  */
 class ControllerBackwardModule
 {
-	/**
-	 * @param $js_uri
-	 * @return void
-	 */
-	public function addJS($js_uri)
-	{
-		Tools::addJS($js_uri);
-	}
 
-	/**
-	 * @param $css_uri
-	 * @param string $css_media_type
-	 * @return void
-	 */
-	public function addCSS($css_uri, $css_media_type = 'all')
-	{
-		Tools::addCSS($css_uri, $css_media_type);
-	}
+    /**
+     * @param $js_uri
+     * @return void
+     */
+    public function addJS($js_uri)
+    {
+        Tools::addJS($js_uri);
+    }
+
+    /**
+     * @param $css_uri
+     * @param string $css_media_type
+     * @return void
+     */
+    public function addCSS($css_uri, $css_media_type = 'all')
+    {
+        Tools::addCSS($css_uri, $css_media_type);
+    }
+
 }

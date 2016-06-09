@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2015 PrestaShop
  *
@@ -22,18 +23,18 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
-
+ */
 /* Default Mails contents for triggers */
 /* KEYWORDS : {shop_url} {shop_name} {firstname} {lastname} {email} */
 
-/* *** english ************************ */
+/* * ** english ************************ */
 
 $subject = array();
 $mail = array();
 
-for ($i = 1; $i <= 9; $i++)
-	$subject[$i]['en'] = 'Message to {firstname} {lastname} !';
+for ($i = 1; $i <= 9; $i++) {
+    $subject[$i]['en'] = 'Message to {firstname} {lastname} !';
+}
 
 $mail[1]['en'] = '
 	Dear {firstname} {lastname},<br />
@@ -80,10 +81,11 @@ $mail[9]['en'] = '
 	<a href="{shop_url}">click here</a> !
 	';
 
-/* *** français ************************ */
+/* * ** français ************************ */
 
-for ($i = 1; $i <= 9; $i++)
-	$subject[$i]['fr'] = 'Message pour {firstname} {lastname} !';
+for ($i = 1; $i <= 9; $i++) {
+    $subject[$i]['fr'] = 'Message pour {firstname} {lastname} !';
+}
 
 $mail[1]['fr'] = '
 	Cher {firstname} {lastname},<br />

@@ -22,47 +22,46 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
-include_once(realpath(dirname(__FILE__).'/../../../').'/config/config.inc.php');
-include_once(_PS_ROOT_DIR_.'/init.php');
+include_once(realpath(dirname(__FILE__) . '/../../../') . '/config/config.inc.php');
+include_once(_PS_ROOT_DIR_ . '/init.php');
 
 $response = false;
 /* $token_ok = Tools::getAdminTokenLite('AdminModules'); */
 $token_ok = Tools::getAdminToken('AdminModules');
 
-if (!Tools::getValue('token') && Tools::getValue('token') != $token_ok)
-	die('hack attempt');
-
-if (Tools::getValue('idfilter') == 0 && Tools::getValue('action') == 'getQuery')
-	die('You have to save the list first.');
-
-include_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
-/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTemplate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/synchronization/Segment.php');
-
-if (Tools::getValue('action') == 'getQuery')
-{
-	Configuration::updateValue('MJ_PERCENTAGE_SYNC', 0);
-	$obj = new Segmentation();
-
-	$res_contacts = Db::getInstance()->executeS($obj->getQuery($_POST, true, false));
-
-	$api = MailjetTemplate::getApi();
-
-	$synchronization = new HooksSynchronizationSegment(
-		MailjetTemplate::getApi()
-	);
-
-	$response = $synchronization->sychronize($res_contacts, Tools::getValue('idfilter'), Tools::getValue('name'));
+if (!Tools::getValue('token') && Tools::getValue('token') != $token_ok) {
+    die('hack attempt');
 }
-else if (Tools::getValue('action') == 'getPercentage')
-	$response = Configuration::get('MJ_PERCENTAGE_SYNC');
 
-if ($response === false)
-	$response = 'Error';
+if (Tools::getValue('idfilter') == 0 && Tools::getValue('action') == 'getQuery') {
+    die('You have to save the list first.');
+}
+
+include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetTemplate.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php');
+
+if (Tools::getValue('action') == 'getQuery') {
+    Configuration::updateValue('MJ_PERCENTAGE_SYNC', 0);
+    $obj = new Segmentation();
+
+    $res_contacts = Db::getInstance()->executeS($obj->getQuery($_POST, true, false));
+
+    $api = MailjetTemplate::getApi();
+
+    $synchronization = new HooksSynchronizationSegment(MailjetTemplate::getApi());
+
+    $response = $synchronization->sychronize($res_contacts, Tools::getValue('idfilter'), Tools::getValue('name'));
+} elseif (Tools::getValue('action') == 'getPercentage') {
+    $response = Configuration::get('MJ_PERCENTAGE_SYNC');
+}
+
+if ($response === false) {
+    $response = 'Error';
+}
 
 echo $response;
-?>

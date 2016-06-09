@@ -22,33 +22,30 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
-
-/**
- *
- * @author atanas
  */
+
 class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronizationAbstract
 {
-	/**
-	 *
-	 * @param string $email
-	 * @return boolean
-	 */
-	public function subscribe($email, $list_id = null)
-	{
-        $api = $this->_getApi();
-        $update_list_id = $list_id ? $list_id : $this->_getAlreadyCreatedMasterListId();
+
+    /**
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function subscribe($email, $list_id = null)
+    {
+        $api = $this->getApi();
+        $update_list_id = $list_id ? $list_id : $this->getAlreadyCreatedMasterListId();
         $api->resetRequest();
-        if(is_string($email)){
+        if (is_string($email)) {
             $response = $api->manycontacts(array(
-                'method'  	=> 'JSON',
-                'Action'  	=> 'Add',
-                'Force'  	=> true,
+                'method' => 'JSON',
+                'Action' => 'Add',
+                'Force' => true,
                 'Addresses' => array($email),
-                'ListID'  	=> $update_list_id
+                'ListID' => $update_list_id
             ));
-        } elseif(is_object($email)) {
+        } elseif (is_object($email)) {
             $response = $api->{'contact/managemanycontacts'}(array(
                 'method' => 'JSON',
                 'ContactsLists' => array(
@@ -70,104 +67,97 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             ));
         }
         return $response->getResponse() && $response->getResponse()->Count > 0 ? true : false;
-	}
+    }
 
-	/**
-	 *
-	 * @param string $email
-	 * @return boolean
-	 */
-	public function unsubscribe($email, $list_id = null)
-	{
-		$api = $this->_getApi();
+    /**
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function unsubscribe($email, $list_id = null)
+    {
+        $api = $this->getApi();
 
-		if ($list_id)
-		{
-			$add_params = array(
-				'method'  	=> 'JSON',
-				'Action'  	=> 'Unsubscribe',
-				'Force'  	=> true,
-				'Addresses' => array($email),
-				'ListID'  	=> $list_id
-			);
+        if ($list_id) {
+            $add_params = array(
+                'method' => 'JSON',
+                'Action' => 'Unsubscribe',
+                'Force' => true,
+                'Addresses' => array($email),
+                'ListID' => $list_id
+            );
 
-			$api->resetRequest();
-			$response = $api->manycontacts($add_params);
-		}
-		else
-		{
-			$apiOverlay = $this->_getApiOverlay();
+            $api->resetRequest();
+            $response = $api->manycontacts($add_params);
+        } else {
+            $apiOverlay = $this->getApiOverlay();
 
-			$lists = $apiOverlay->getContactsLists();
+            $lists = $apiOverlay->getContactsLists();
 
-			foreach ($lists as $list)
-			{
-				$add_params = array(
-					'method'  	=> 'JSON',
-					'Action'  	=> 'Unsubscribe',
-					'Force'  	=> true,
-					'Addresses' => array($email),
-					'ListID'  	=> $list->ID
-				);
+            foreach ($lists as $list) {
+                $add_params = array(
+                    'method' => 'JSON',
+                    'Action' => 'Unsubscribe',
+                    'Force' => true,
+                    'Addresses' => array($email),
+                    'ListID' => $list->ID
+                );
 
-				$api->resetRequest();
-				$response = $api->manycontacts($add_params);
-			}
-		}
+                $api->resetRequest();
+                $response = $api->manycontacts($add_params);
+            }
+        }
 
-		if ($response && $response->Count > 0)
-			return true;
+        if ($response && $response->Count > 0) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 *
-	 * @param string $email
-	 * @return boolean
-	 */
-	public function remove($email, $list_id = null)
-	{
-		$api = $this->_getApi();
+    /**
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function remove($email, $list_id = null)
+    {
+        $api = $this->getApi();
 
-		if ($list_id)
-		{
-			$add_params = array(
-				'method'  	=> 'JSON',
-				'Action'  	=> 'Remove',
-				'Force'  	=> true,
-				'Addresses' => array($email),
-				'ListID'  	=> $list_id
-			);
+        if ($list_id) {
+            $add_params = array(
+                'method' => 'JSON',
+                'Action' => 'Remove',
+                'Force' => true,
+                'Addresses' => array($email),
+                'ListID' => $list_id
+            );
 
-			$api->resetRequest();
-			$response = $api->manycontacts($add_params);
-		}
-		else
-		{
-			$apiOverlay = $this->_getApiOverlay();
+            $api->resetRequest();
+            $response = $api->manycontacts($add_params);
+        } else {
+            $apiOverlay = $this->getApiOverlay();
 
-			$lists = $apiOverlay->getContactsLists();
+            $lists = $apiOverlay->getContactsLists();
 
-			foreach ($lists as $list)
-			{
-				$add_params = array(
-					'method'  	=> 'JSON',
-					'Action'  	=> 'Remove',
-					'Force'  	=> true,
-					'Addresses' => array($email),
-					'ListID'  	=> $list->ID
-				);
+            foreach ($lists as $list) {
+                $add_params = array(
+                    'method' => 'JSON',
+                    'Action' => 'Remove',
+                    'Force' => true,
+                    'Addresses' => array($email),
+                    'ListID' => $list->ID
+                );
 
-				$api->resetRequest();
-				$response = $api->manycontacts($add_params);
-			}
-		}
+                $api->resetRequest();
+                $response = $api->manycontacts($add_params);
+            }
+        }
 
-		if ($response && $response->Count > 0)
-			return true;
+        if ($response && $response->Count > 0) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }
-?>

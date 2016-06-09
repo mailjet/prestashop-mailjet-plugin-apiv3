@@ -24,12 +24,9 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-/**
- *
- * @author atanas
- */
 class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbstract
 {
+
     /**
      *
      * @throws Exception
@@ -37,23 +34,23 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      */
     public function synchronize()
     {
-        if ($masterListId = $this->_getAlreadyCreatedMasterListId())
-        {
-            $segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
+        if ($masterListId = $this->getAlreadyCreatedMasterListId()) {
+            $segmentSynch = new HooksSynchronizationSegment($this->getApiOverlay());
             $segmentSynch->deleteList($masterListId);
         }
 
-        $apiOverlay = $this->_getApiOverlay();
+        $apiOverlay = $this->getApiOverlay();
 
         $params = array(
-            'method' 	=> 'JSON',
-            'Name' 		=> self::LIST_NAME
+            'method' => 'JSON',
+            'Name' => self::LIST_NAME
         );
 
         $newMailjetList = $apiOverlay->createContactsListP($params);
 
-        if (!$newMailjetList || !isset($newMailjetList->ID))
+        if (!$newMailjetList || !isset($newMailjetList->ID)) {
             throw new HooksSynchronizationException('There is a problem with the list\'s creation.');
+        }
 
         $newlyCreatedListId = $newMailjetList->ID;
 
@@ -62,7 +59,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         }
         // increase the memory limit because the database could contain too many customers
         ini_set('memory_limit', '1028M');
-        $allUsers = $this->_getAllActiveCustomers();
+        $allUsers = $this->getAllActiveCustomers();
 
         if (count($allUsers) === 0) {
             throw new HooksSynchronizationException('You don\'t have any users in the database.');
@@ -76,24 +73,24 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         }
 
         /*
-        * Sets related contact meta data like firstname, lastname, etc...
-        */
-        $this->_getApiOverlay()->setContactMetaData(array(
+         * Sets related contact meta data like firstname, lastname, etc...
+         */
+        $this->getApiOverlay()->setContactMetaData(array(
             array('Datatype' => 'str', 'Name' => $segmentationObject->ll(48), 'NameSpace' => 'static'),
             array('Datatype' => 'str', 'Name' => $segmentationObject->ll(49), 'NameSpace' => 'static')
         ));
 
-        $headers = array("email","firstname","lastname");
+        $headers = array("email", "firstname", "lastname");
         $contstToAddCsvString = '';
-        $contstToAddCsvString .= implode(",", $headers) ."\n";
+        $contstToAddCsvString .= implode(",", $headers) . "\n";
         foreach ($contstToAddCsv as $contact) {
-            $contstToAddCsvString .= implode(",", $contact) ."\n";
+            $contstToAddCsvString .= implode(",", $contact) . "\n";
         }
 
         $apiResponse = $apiOverlay->createContacts($contstToAddCsvString, $newlyCreatedListId);
 
         if (!isset($apiResponse->ID)) {
-            $segmentSynch = new HooksSynchronizationSegment($this->_getApiOverlay());
+            $segmentSynch = new HooksSynchronizationSegment($this->getApiOverlay());
             $segmentSynch->deleteList($newlyCreatedListId);
             throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
         }
@@ -111,17 +108,14 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      *
      * @return array
      */
-    private function _getAllActiveCustomers()
+    private function getAllActiveCustomers()
     {
         return $this->getDbInstance()->executeS('
 			SELECT *
-			FROM '._DB_PREFIX_.'customer
+			FROM ' . _DB_PREFIX_ . 'customer
 			WHERE active = 1
 			AND newsletter = 1
 			AND deleted = 0
 		');
     }
-
 }
-
-?>

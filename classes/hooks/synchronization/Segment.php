@@ -22,390 +22,382 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
-
-/**
- *
- * @author atanas
  */
+
 class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbstract
 {
-	/**
-	 *
-	 * @var array
-	 */
-	private $_mailjetContacts = array();
 
-	/**
-	 *
-	 * @var int
-	 */
-	private $_limitPerRequest = 2;
+    /**
+     *
+     * @var array
+     */
+    private $mailjetContacts = array();
 
-	/**
-	 *
-	 * @param array $contacts
-	 * @param string $filterId
-	 * @param string $fiterName
-	 */
-	public function sychronize($contacts, $filterId, $fiterName)
-	{
-		$existingListId = $this->_getExistingMailjetListId($filterId);
+    /**
+     *
+     * @var int
+     */
+    private $limitPerRequest = 2;
 
-		if ($existingListId)
-			return $this->_update($contacts, $existingListId);
+    /**
+     *
+     * @param array $contacts
+     * @param string $filterId
+     * @param string $fiterName
+     */
+    public function sychronize($contacts, $filterId, $fiterName)
+    {
+        $existingListId = $this->getExistingMailjetListId($filterId);
 
-		return $this->_create($contacts, $filterId, $fiterName);
-	}
+        if ($existingListId) {
+            return $this->update($contacts, $existingListId);
+        }
 
-	/**
-	 *
-	 * @param int $filterId
-	 * @param string $newName
-	 * @return bool
-	 */
-	public function updateName($mailjetListId, $prestashopFilterId, $newName)
-	{
-		if ($mailjetListId)
-		{
+        return $this->create($contacts, $filterId, $fiterName);
+    }
 
-			$params = array(
-				'ID'		=> $mailjetListId,
-				'method' 	=> 'JSON',
-				'Name' 		=> $prestashopFilterId.'idf'.preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($newName))
-			);
+    /**
+     *
+     * @param int $filterId
+     * @param string $newName
+     * @return bool
+     */
+    public function updateName($mailjetListId, $prestashopFilterId, $newName)
+    {
+        if ($mailjetListId) {
 
-			/* # Api call */
-			$oldList = $this->_getApiOverlay()->createContactsListP($params);
+            $params = array(
+                'ID' => $mailjetListId,
+                'method' => 'JSON',
+                'Name' => $prestashopFilterId . 'idf' . preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($newName))
+            );
 
-			if ($oldList)
-			{
-				/* $listId = $oldList->ID; */
-				return true;
-			}
-		}
+            /* # Api call */
+            $oldList = $this->getApiOverlay()->createContactsListP($params);
 
-		return false;
-	}
+            if ($oldList) {
+                /* $listId = $oldList->ID; */
+                return true;
+            }
+        }
 
-	/**
-	 *
-	 * @param int $mailjetListId
-	 */
-	public function deleteList($mailjetListId)
-	{
-		if ($mailjetListId)
-		{
-			$params = array(
-				'ID'		=> $mailjetListId,
-				'method' 	=> 'DELETE'
-			);
+        return false;
+    }
 
-			/* # Api call */
-			/* $oldList = */
-				$this->_getApiOverlay()->createContactsListP($params);
+    /**
+     *
+     * @param int $mailjetListId
+     */
+    public function deleteList($mailjetListId)
+    {
+        if ($mailjetListId) {
+            $params = array(
+                'ID' => $mailjetListId,
+                'method' => 'DELETE'
+            );
 
-			return true;
-		}
+            /* # Api call */
+            /* $oldList = */
+            $this->getApiOverlay()->createContactsListP($params);
 
-		return false;
-	}
+            return true;
+        }
 
-	/**
-	 *
-	 * @param array $contacts
-	 * @param string $filterId
-	 * @param string $fiterName
-	 * @return mixed
-	 */
-	private function _create($res_contacts, $filterId, $fiterName)
-	{
+        return false;
+    }
+
+    /**
+     *
+     * @param array $contacts
+     * @param string $filterId
+     * @param string $fiterName
+     * @return mixed
+     */
+    private function create($res_contacts, $filterId, $fiterName)
+    {
         $segmentationObject = new Segmentation();
 
-		// ** ** Détection du bon Index
-		$mail_index = 'Email';
-		if ($res_contacts)
-		{
-			$contact_ids = array_keys($res_contacts[0]);
-			foreach ($contact_ids as $k) {
-                if (preg_match('/(mail)/', $k))  {
+        // ** ** Détection du bon Index
+        $mail_index = 'Email';
+        if ($res_contacts) {
+            $contact_ids = array_keys($res_contacts[0]);
+            foreach ($contact_ids as $k) {
+                if (preg_match('/(mail)/', $k)) {
                     $mail_index = $k;
-                } else if ($k == $segmentationObject->ll(48)) {
+                } elseif ($k == $segmentationObject->ll(48)) {
                     $firstNameIndex = $k;
-                } else if ($k == $segmentationObject->ll(49)) {
+                } elseif ($k == $segmentationObject->ll(49)) {
                     $lastNameIndex = $k;
                 }
             }
+        }
+        // ** **
 
-		}
-		// ** **
+        $newListId = $this->createNewMailjetList($filterId, $fiterName);
 
-		$newListId = $this->_createNewMailjetList($filterId, $fiterName);
+        if (!$newListId) {
+            return false;
+        }
 
-		if (!$newListId)
-			return false;
+        $total_contacts = count($res_contacts);
+        if ($total_contacts === 0) {
+            $response = 'No Result';
+        }
 
-		$total_contacts = count($res_contacts);
-		if ($total_contacts === 0)
-			$response = 'No Result';
+        $contacts_done = 0;
 
-		$contacts_done = 0;
+        // On va maintenant ajouter les contacts par 50 à la liste
+        while (!empty($res_contacts)) {
+            $reste_contacts = count($res_contacts);
 
-		// On va maintenant ajouter les contacts par 50 à la liste
-		while (!empty($res_contacts))
-		{
-			$reste_contacts = count($res_contacts);
-
-			$val = 50;
-			if ($reste_contacts < $val) $val = $reste_contacts;
+            $val = 50;
+            if ($reste_contacts < $val) {
+                $val = $reste_contacts;
+            }
 
             $contactsToCsv = array();
-			for ($ic = 1; $ic <= 50; $ic++)
-			{
-				$rc = array_pop($res_contacts);
+            for ($ic = 1; $ic <= 50; $ic++) {
+                $rc = array_pop($res_contacts);
                 if (!empty($rc[$mail_index])) {
                     $contactsToCsv[] = array($rc[$mail_index], $rc[$firstNameIndex], $rc[$lastNameIndex]);
                 }
-
             }
 
-			# Call
-			try {
+            # Call
+            try {
 
-
-                $headers = array("email","firstname","lastname");
+                $headers = array("email", "firstname", "lastname");
                 $string_contacts = '';
-                $string_contacts .= implode(",", $headers) ."\n";
+                $string_contacts .= implode(",", $headers) . "\n";
                 foreach ($contactsToCsv as $contact) {
-                    $string_contacts .= implode(",", $contact) ."\n";
+                    $string_contacts .= implode(",", $contact) . "\n";
                 }
 
                 /*
                  * Sets related contact meta data like firstname, lastname, etc...
                  */
-                $this->_getApiOverlay()->setContactMetaData(
+                $this->getApiOverlay()->setContactMetaData(
                     array(
                         array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
                         array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
                     )
                 );
 
-				$res = $this->_getApiOverlay()->createContacts($string_contacts, $newListId);
+                $res = $this->getApiOverlay()->createContacts($string_contacts, $newListId);
 
-				if (!isset($res->ID))
-					throw new HooksSynchronizationException('Create contacts problem');
+                if (!isset($res->ID)) {
+                    throw new HooksSynchronizationException('Create contacts problem');
+                }
 
 
-				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($newListId, $res->ID);
+                $batchJobResponse = $this->getApiOverlay()->batchJobContacts($newListId, $res->ID);
 
-				if ($batchJobResponse == false)
-					throw new HooksSynchronizationException('Batchjob problem');
+                if ($batchJobResponse == false) {
+                    throw new HooksSynchronizationException('Batchjob problem');
+                }
 
-				$contacts_done += $val;
+                $contacts_done += $val;
 
-				Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor(($contacts_done * 100) / $total_contacts));
+                Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor(($contacts_done * 100) / $total_contacts));
 
-				$response = 'OK';
-			} catch (Exception $e) {
-				$response = 'Try again later';
-			}
-		}
+                $response = 'OK';
+            } catch (Exception $e) {
+                $response = 'Try again later';
+            }
+        }
 
-		return $response;
-	}
+        return $response;
+    }
 
-	/**
-	 *
-	 * @param array $contacts
-	 * @param int $existingListId
-	 * @return string
-	 */
-	private function _update($contacts, $existingListId)
-	{
+    /**
+     *
+     * @param array $contacts
+     * @param int $existingListId
+     * @return string
+     */
+    private function update($contacts, $existingListId)
+    {
         $segmentationObject = new Segmentation();
 
-		// ** ** Détection du bon Index
-		$mail_index = 'Email';
-		if ($contacts)
-		{
-			$contact_ids = array_keys($contacts[0]);
-			foreach ($contact_ids as $k) {
-                if (preg_match('/(mail)/', $k))  {
+        // ** ** Détection du bon Index
+        $mail_index = 'Email';
+        if ($contacts) {
+            $contact_ids = array_keys($contacts[0]);
+            foreach ($contact_ids as $k) {
+                if (preg_match('/(mail)/', $k)) {
                     $mail_index = $k;
-                } else if ($k == $segmentationObject->ll(48)) {
+                } elseif ($k == $segmentationObject->ll(48)) {
                     $firstNameIndex = $k;
-                } else if ($k == $segmentationObject->ll(49)) {
+                } elseif ($k == $segmentationObject->ll(49)) {
                     $lastNameIndex = $k;
                 }
             }
-		}
+        }
 
-		$prestashopContacts = array();
+        $prestashopContacts = array();
         $contactsToCsv = array();
-		foreach ($contacts as $contact) {
+        foreach ($contacts as $contact) {
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
                 $contactsToCsv[$contact[$mail_index]] = array($contact[$mail_index], $contact[$firstNameIndex], $contact[$lastNameIndex]);
             }
         }
 
-		$this->_gatherCurrentContacts($existingListId);
+        $this->gatherCurrentContacts($existingListId);
 
-		$contacstToAdd = array();
-		$contacstToRemove = array();
+        $contacstToAdd = array();
+        $contacstToRemove = array();
 
-		foreach ($prestashopContacts as $email)
-		{
-			if (!in_array($email, $this->_mailjetContacts))
-				$contacstToAdd[] = $contactsToCsv[$email];
-		}
+        foreach ($prestashopContacts as $email) {
+            if (!in_array($email, $this->mailjetContacts)) {
+                $contacstToAdd[] = $contactsToCsv[$email];
+            }
+        }
 
-		foreach ($this->_mailjetContacts as $email)
-		{
-			if (!in_array($email, $prestashopContacts))
-				$contacstToRemove[] = $email;
-		}
+        foreach ($this->mailjetContacts as $email) {
+            if (!in_array($email, $prestashopContacts)) {
+                $contacstToRemove[] = $email;
+            }
+        }
 
-		$response = 'Pending';
+        $response = 'Pending';
 
-		try {
-			if (!empty($contacstToAdd))
-			{
+        try {
+            if (!empty($contacstToAdd)) {
                 /*
                  * Sets related contact meta data like firstname, lastname, etc...
                  */
-                $this->_getApiOverlay()->setContactMetaData(
+                $this->getApiOverlay()->setContactMetaData(
                     array(
                         array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
                         array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
                     )
                 );
 
-                $headers = array("email","firstname","lastname");
+                $headers = array("email", "firstname", "lastname");
                 $contstToAddCsv = '';
-                $contstToAddCsv .= implode(",", $headers) ."\n";
+                $contstToAddCsv .= implode(",", $headers) . "\n";
                 foreach ($contactsToCsv as $contact) {
-                    $contstToAddCsv .= implode(",", $contact) ."\n";
+                    $contstToAddCsv .= implode(",", $contact) . "\n";
                 }
 
-				$res = $this->_getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
+                $res = $this->getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
 
-				if (!isset($res->ID))
-					throw new HooksSynchronizationException('Create contacts problem');
+                if (!isset($res->ID)) {
+                    throw new HooksSynchronizationException('Create contacts problem');
+                }
 
+                $batchJobResponse = $this->getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
 
-				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
+                if ($batchJobResponse == false) {
+                    throw new HooksSynchronizationException('Batchjob problem');
+                }
+            }
 
-				if ($batchJobResponse == false)
-					throw new HooksSynchronizationException('Batchjob problem');
+            if (!empty($contacstToRemove)) {
+                $contstToRemoveCsv = implode(' ', $contacstToRemove);
 
-			}
+                $res = $this->getApiOverlay()->createContacts($contstToRemoveCsv, $existingListId);
 
-			if (!empty($contacstToRemove))
-			{
-				$contstToRemoveCsv = implode(' ', $contacstToRemove);
+                if (!isset($res->ID)) {
+                    throw new HooksSynchronizationException('Create contacts problem');
+                }
 
-				$res = $this->_getApiOverlay()->createContacts($contstToRemoveCsv, $existingListId);
+                $batchJobResponse = $this->getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'remove');
 
-				if (!isset($res->ID))
-					throw new HooksSynchronizationException('Create contacts problem');
+                if ($batchJobResponse == false) {
+                    throw new HooksSynchronizationException('Batchjob problem');
+                }
+            }
 
-				$batchJobResponse = $this->_getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'remove');
+            $response = 'OK';
+        } catch (Exception $e) {
+            $response = $e;
+        }
 
-				if ($batchJobResponse == false)
-					throw new HooksSynchronizationException('Batchjob problem');
-			}
+        return $response;
+    }
 
-			$response = 'OK';
-		} catch (Exception $e) {
-			$response = $e;
-		}
+    /**
+     *
+     * @param string $filterId
+     * @param string $fiterName
+     * @return int
+     */
+    private function getExistingMailjetListId($filterId)
+    {
+        $lists = $this->getApiOverlay()->getContactsLists();
 
-		return $response;
-	}
+        $listId = 0;
 
-	/**
-	 *
-	 * @param string $filterId
-	 * @param string $fiterName
-	 * @return int
-	 */
-	private function _getExistingMailjetListId($filterId)
-	{
-		$lists = $this->_getApiOverlay()->getContactsLists();
+        if ($lists !== false) {
+            foreach ($lists as $l) {
+                $n = explode('idf', $l->Name);
 
-		$listId = 0;
+                if ((string) $n[0] == (string) $filterId) {
+                    $listId = (int) $l->ID;
+                    break;
+                }
+            }
+        }
 
-		if ($lists !== false)
-		{
-			foreach ($lists as $l)
-			{
-				$n = explode('idf', $l->Name);
+        return $listId;
+    }
 
-				if ((string)$n[0] == (string)$filterId)
-				{
-					$listId = (int)$l->ID;
-					break;
-				}
-			}
-		}
+    /**
+     *
+     * @param string $filterId
+     * @param string $fiterName
+     * @return number
+     */
+    private function createNewMailjetList($filterId, $fiterName)
+    {
+        $listId = 0;
 
-		return $listId;
-	}
+        $params = array(
+            'method' => 'JSON',
+            'Name' => $filterId . 'idf' . preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($fiterName))
+        );
 
-	/**
-	 *
-	 * @param string $filterId
-	 * @param string $fiterName
-	 * @return number
-	 */
-	private function _createNewMailjetList($filterId, $fiterName)
-	{
-		$listId = 0;
+        /* # Api call */
+        $newList = $this->getApiOverlay()->createContactsListP($params);
 
-		$params = array(
-			'method' 	=> 'JSON',
-			'Name' 		=> $filterId.'idf'.preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($fiterName))
-		);
+        if ($newList) {
+            $listId = $newList->ID;
+        }
 
-		/* # Api call */
-		$newList = $this->_getApiOverlay()->createContactsListP($params);
+        return $listId;
+    }
 
-		if ($newList)
-			$listId = $newList->ID;
+    /**
+     *
+     * @param int $mailjetListId
+     */
+    private function gatherCurrentContacts($mailjetListId, $offset = 0)
+    {
+        $params = array(
+            'method' => 'GET',
+            'ContactsList' => $mailjetListId,
+            'style' => 'full',
+            'CountRecords' => 1,
+            'offset' => $offset,
+            'limit' => $this->limitPerRequest,
+        );
 
-		return $listId;
-	}
+        $this->getApi()->resetRequest();
+        $response = $this->getApi()->listrecipient($params)->getResponse();
 
-	/**
-	 *
-	 * @param int $mailjetListId
-	 */
-	private function _gatherCurrentContacts($mailjetListId, $offset = 0)
-	{
-		$params = array(
-			'method'			=> 'GET',
-			'ContactsList'		=> $mailjetListId,
-			'style'				=> 'full',
-			'CountRecords'		=> 1,
-			'offset'			=> $offset,
-			'limit'				=> $this->_limitPerRequest,
-		);
+        $totalCount = $response->Total;
+        $current = $response->Count;
 
-		$this->_getApi()->resetRequest();
-		$response = $this->_getApi()->listrecipient($params)->getResponse();
+        foreach ($response->Data as $contact) {
+            $this->mailjetContacts[] = $contact->Contact->Email->Email;
+        }
 
-		$totalCount = $response->Total;
-		$current 	= $response->Count;
+        Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor((($offset + $current) * 90) / $totalCount));
 
-		foreach ($response->Data as $contact)
-			$this->_mailjetContacts[] = $contact->Contact->Email->Email;
-
-		Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor((($offset + $current) * 90) / $totalCount));
-
-		if ($offset + $current < $totalCount)
-			$this->_gatherCurrentContacts($mailjetListId, $offset + $this->_limitPerRequest);
-	}
-
+        if ($offset + $current < $totalCount) {
+            $this->gatherCurrentContacts($mailjetListId, $offset + $this->limitPerRequest);
+        }
+    }
 }
-?>

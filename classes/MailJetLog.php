@@ -22,65 +22,65 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
 class MailJetLog
 {
-	public static $file;
+    public static $file;
+    public static $handle;
 
-	public static $handle;
+    /**
+     * Init default value
+     * @static
+     */
+    public static function init()
+    {
+        MailJetLog::$file = dirname(__FILE__) . '/../logs/ajax.log';
+    }
 
-	/**
-	 * Init default value
-	 * @static
-	 */
-	public static function init()
-	{
-		MailJetLog::$file = dirname(__FILE__).'/../logs/ajax.log';
-	}
+    private static function lockWrite($handle, $msg)
+    {
+        if ($handle && flock($handle, LOCK_EX)) {
+            fwrite($handle, $msg . "\r\n");
+            flock($handle, LOCK_UN);
+            return true;
+        }
+        return false;
+    }
 
-	private static function lockWrite($handle, $msg)
-	{
-		if ($handle && flock($handle, LOCK_EX))
-		{
-			fwrite($handle, $msg."\r\n");
-			flock($handle, LOCK_UN);
-			return true;
-		}
-		return false;
-	}
+    public static function write($file, $message, $mode = 'a+', $close = false)
+    {
+        $date = date('d/m/Y G:i:s');
+        $exist = false;
+        if (file_exists($file)) {
+            $exist = true;
+        }
 
-	public static function write($file, $message, $mode = 'a+', $close = false)
-	{
-		$date = date('d/m/Y G:i:s');
-		$exist = false;
-		if (file_exists($file))
-			$exist = true;
+        self::setHandle($file, $mode);
 
-		self::setHandle($file, $mode);
+        if (!$exist) {
+            chmod($file, 0666);
+        }
 
-		if (!$exist)
-			chmod($file, 0666);
+        if (self::$handle && self::lockWrite(self::$handle, '[' . $date . '] ' . $message)) {
+            if ($close) {
+                fclose(self::$handle);
+            }
+            return true;
+        }
+        return false;
+    }
 
-		if (self::$handle && self::lockWrite(self::$handle, '['.$date.'] '.$message))
-		{
-			if ($close)
-				fclose(self::$handle);
-			return true;
-		}
-		return false;
-	}
-
-	private static function setHandle($file, $mode)
-	{
-		if ($file == self::$file && !self::$handle)
-			self::$handle = fopen($file, $mode);
-		else if ($file != self::$file)
-		{
-			if (self::$handle)
-				fclose(self::$handle);
-			self::$file = $file;
-			self::$handle = fopen($file, $mode);
-		}
-	}
+    private static function setHandle($file, $mode)
+    {
+        if ($file == self::$file && !self::$handle) {
+            self::$handle = fopen($file, $mode);
+        } elseif ($file != self::$file) {
+            if (self::$handle) {
+                fclose(self::$handle);
+            }
+            self::$file = $file;
+            self::$handle = fopen($file, $mode);
+        }
+    }
 }

@@ -1,27 +1,26 @@
 <div class="mj-setup">
 
-<div class="mj-text">
+    <div class="mj-text">
 
-    <b>Sie sind nur wenige Klicks davon entfernt, Prestashops mächtigstes Add-on für eCommerce-E-Mails zu aktivieren.</b>
-    <br /><br />
-    Benutzen Sie Mailjet, um ihre Kundenbasis fester an sich zu binden, sie zu analysieren, ihren ROI zu erhöhen und die Versendung, Verfolgung und Zustellbarkeit Ihrer Werbe- und Marketing-E-Mails zu verbessern.
-    <br /><br />
-    <b>Zu den Funktionen gehören:</b> 
-    <br />
-    <ul class="ulDisc">
-        <li>Personalisierung</li>
-        <li>erweiterte Prestashop-Segmentierung</li>
-        <li>professionelle Newsletter-Erstellung per Drag and Drop</li>
-        <li>eCommerce-Marketingvorlagen</li>
-        <li>Massenmarketingkampagnen</li>
-        <li>automatisch generierte Marketingkampagnen (z.B. verlassener Warenkorb, Kundenjubiläum etc.)</li>
-        <li>Echtzeitanalyse, einschließlich Informationen darüber, welche Ihrer Marketingkampagnen welche Einnahmen generiert hat.</li>
-    </ul>
-    <br /><br />
-    <b>Registrieren Sie sich oder melden Sie sich an und verbessern Sie Ihre Kundenbasis noch heute mit Mailjet!</b>
-</div>
+        <b>Sie sind nur wenige Klicks davon entfernt, Prestashops mächtigstes Add-on für eCommerce-E-Mails zu aktivieren.</b>
+        <br /><br />
+        Benutzen Sie Mailjet, um ihre Kundenbasis fester an sich zu binden, sie zu analysieren, ihren ROI zu erhöhen und die Versendung, Verfolgung und Zustellbarkeit Ihrer Werbe- und Marketing-E-Mails zu verbessern.
+        <br /><br />
+        <b>Zu den Funktionen gehören:</b> 
+        <br />
+        <ul class="ulDisc">
+            <li>Personalisierung</li>
+            <li>erweiterte Prestashop-Segmentierung</li>
+            <li>professionelle Newsletter-Erstellung per Drag and Drop</li>
+            <li>eCommerce-Marketingvorlagen</li>
+            <li>Massenmarketingkampagnen</li>
+            <li>automatisch generierte Marketingkampagnen (z.B. verlassener Warenkorb, Kundenjubiläum etc.)</li>
+            <li>Echtzeitanalyse, einschließlich Informationen darüber, welche Ihrer Marketingkampagnen welche Einnahmen generiert hat.</li>
+        </ul>
+        <br /><br />
+        <b>Registrieren Sie sich oder melden Sie sich an und verbessern Sie Ihre Kundenbasis noch heute mit Mailjet!</b>
+    </div>
 
 
-<div class="mj-video">
-	
+    <div class="mj-video"></div>
 </div>

@@ -22,20 +22,21 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
-if (version_compare(_PS_VERSION_, '1.5', '<'))
-	include_once(_PS_ROOT_DIR_.'/classes/AdminTab.php');
+if (version_compare(_PS_VERSION_, '1.5', '<')) {
+    include_once(_PS_ROOT_DIR_ . '/classes/AdminTab.php');
+}
 
 class ModuleTabRedirect extends AdminTab
 {
-	public function __construct()
-	{
-		$token = Tools::getAdminTokenLite('AdminModules');
+    public function __construct()
+    {
+        $token = Tools::getAdminTokenLite('AdminModules');
 
-		//$url = Dispatcher::getInstance()->createUrl('AdminModules', 1, array('token'=>$token), false);
-		$url = 'index.php?controller=AdminModules&tab=AdminModules&token='.$token;
+        //$url = Dispatcher::getInstance()->createUrl('AdminModules', 1, array('token'=>$token), false);
+        $url = 'index.php?controller=AdminModules&tab=AdminModules&token=' . $token;
 
-		Tools::redirectAdmin($url.'&configure=mailjet');
-	}
+        Tools::redirectAdmin($url . '&configure=mailjet');
+    }
 }

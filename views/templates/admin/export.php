@@ -22,41 +22,42 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
-include_once(realpath(dirname(__FILE__).'/../../../../../').'/config/config.inc.php');
-include_once(_PS_ROOT_DIR_.'/init.php');
+include_once(realpath(dirname(__FILE__) . '/../../../../../') . '/config/config.inc.php');
+include_once(_PS_ROOT_DIR_ . '/init.php');
 header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="customersegmentation'.time().'.csv');
+header('Content-Disposition: attachment; filename="customersegmentation' . time() . '.csv');
 $token_ok = Tools::getAdminToken('AdminModules');
 
-if (!Tools::getValue('token') && Tools::getValue('token') != $token_ok)
-	die('hack attempt');
+if (!Tools::getValue('token') && Tools::getValue('token') != $token_ok) {
+    die('hack attempt');
+}
 
-include_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
 
 $obj = new Segmentation();
 
 $sql = Db::getInstance()->executeS($obj->getQuery($_POST, true, false));
 
-if (empty($sql))
-	die(utf8_decode($obj->trad[22]));
+if (empty($sql)) {
+    die(utf8_decode($obj->trad[22]));
+}
 
 $header = array_keys($sql[0]);
 $csv = '';
 
-foreach ($header as $h)
-	$csv .= '"'.preg_replace('/(\r|\n)/', '', utf8_decode($h)).'";';
+foreach ($header as $h) {
+    $csv .= '"' . preg_replace('/(\r|\n)/', '', utf8_decode($h)) . '";';
+}
 
 $csv .= "\n";
 
-foreach ($sql as $s)
-{
-	foreach ($s as $field)
-		$csv .= '"'.utf8_decode($field).'";';
-	$csv .= "\n";
+foreach ($sql as $s) {
+    foreach ($s as $field) {
+        $csv .= '"' . utf8_decode($field) . '";';
+    }
+    $csv .= "\n";
 }
 
 echo $csv;
-
-?>

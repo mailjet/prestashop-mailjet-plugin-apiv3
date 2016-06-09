@@ -22,9 +22,9 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
-include_once(dirname(__FILE__).'/Exception.php');
+include_once(dirname(__FILE__) . '/Exception.php');
 
 /**
  *
@@ -34,86 +34,82 @@ include_once(dirname(__FILE__).'/Exception.php');
 abstract class HooksSynchronizationSynchronizationAbstract
 {
 
-	/**
-	 *
-	 * @var string
-	 */
-	const LIST_NAME = 'PrestaShop Customers Master List';
+    /**
+     *
+     * @var string
+     */
+    const LIST_NAME = 'PrestaShop Customers Master List';
 
-	/**
-	 *
-	 * @var int
-	 */
-	protected $_masterListId;
+    /**
+     *
+     * @var int
+     */
+    protected $masterListId;
 
-	/**
-	 *
-	 * @var ApiOverlay
-	 */
-	protected $_apiOverlay;
+    /**
+     *
+     * @var ApiOverlay
+     */
+    protected $apiOverlay;
 
-	/**
-	 *
-	 * @param Mailjet_ApiOverlay $apiOverlay
-	 */
-	public function __construct(Mailjet_ApiOverlay $apiOverlay)
-	{
-		$this->_apiOverlay = $apiOverlay;
-	}
+    /**
+     *
+     * @param Mailjet_ApiOverlay $apiOverlay
+     */
+    public function __construct(Mailjet_ApiOverlay $apiOverlay)
+    {
+        $this->apiOverlay = $apiOverlay;
+    }
 
-	/**
-	 *
-	 * @return Mailjet_ApiOverlay
-	 */
-	protected function _getApiOverlay()
-	{
-		return $this->_apiOverlay;
-	}
+    /**
+     *
+     * @return Mailjet_ApiOverlay
+     */
+    protected function getApiOverlay()
+    {
+        return $this->apiOverlay;
+    }
 
-	/**
-	 *
-	 * @return Api
-	 */
-	protected function _getApi()
-	{
-		return $this->_getApiOverlay()->getApi();
-	}
+    /**
+     *
+     * @return Api
+     */
+    protected function getApi()
+    {
+        return $this->getApiOverlay()->getApi();
+    }
 
-	/**
-	 *
-	 * @throws Exception
-	 * @return Db
-	 */
-	public function getDbInstance()
-	{
-		if (!Db::getInstance())
-			throw new Exception('Db instance is not provided.');
+    /**
+     *
+     * @throws Exception
+     * @return Db
+     */
+    public function getDbInstance()
+    {
+        if (!Db::getInstance()) {
+            throw new Exception('Db instance is not provided.');
+        }
 
-		return Db::getInstance();
-	}
+        return Db::getInstance();
+    }
 
-	/**
-	 *
-	 * @return number|boolean
-	 */
-	protected function _getAlreadyCreatedMasterListId()
-	{
-		if (!$this->_masterListId)
-		{
-			$lists = $this->_getApiOverlay()->getContactsLists();
+    /**
+     *
+     * @return number|boolean
+     */
+    protected function getAlreadyCreatedMasterListId()
+    {
+        if (!$this->masterListId) {
+            $lists = $this->getApiOverlay()->getContactsLists();
 
-			if ($lists !== false)
-			{
-				foreach ($lists as $list)
-				{
-					if ($list->Name === self::LIST_NAME)
-						$this->_masterListId = (int)$list->ID;
-				}
-			}
-		}
-		return $this->_masterListId;
-	}
-
+            if ($lists !== false) {
+                foreach ($lists as $list) {
+                    if ($list->Name === self::LIST_NAME) {
+                        $this->masterListId = (int) $list->ID;
+                    }
+                }
+            }
+        }
+        return $this->masterListId;
+    }
 }
-
-?>

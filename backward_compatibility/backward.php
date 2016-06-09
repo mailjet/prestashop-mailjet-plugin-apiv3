@@ -22,23 +22,23 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
+
 /**
  * Backward function compatibility
  * Need to be called for each module in 1.4
  */
-
 // Get out if the context is already defined
 if (!in_array('Context', get_declared_classes()))
-	require_once(dirname(__FILE__).'/Context.php');
+    require_once(dirname(__FILE__) . '/Context.php');
 
 // Get out if the Display (BWDisplay to avoid any conflict)) is already defined
 if (!in_array('BWDisplay', get_declared_classes()))
-	require_once(dirname(__FILE__).'/Display.php');
+    require_once(dirname(__FILE__) . '/Display.php');
 
 // If not under an object we don't have to set the context
 if (!isset($this) || isset($this->context))
-	return;
+    return;
 
 $this->context = Context::getContext();
 $this->smarty = $this->context->smarty;
