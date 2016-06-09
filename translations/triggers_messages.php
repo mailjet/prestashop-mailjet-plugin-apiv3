@@ -44,7 +44,8 @@ $mail[1]['en'] = '
 	';
 $mail[2]['en'] = '
 	Dear {firstname} {lastname},<br />
-	It seems there was an issue with your payment on your last order on our website and your purchase did not complete ...<br />
+	It seems there was an issue with your payment on your last order on our website and your purchase
+    did not complete ...<br />
 	Please <a href="{shop_url}">click here</a> to order again!
 	';
 $mail[3]['en'] = '
@@ -89,14 +90,16 @@ for ($i = 1; $i <= 9; $i++) {
 
 $mail[1]['fr'] = '
 	Cher {firstname} {lastname},<br />
-	Il y a quelques temps, vous avez rempli un caddie avec un produit mais n\'&ecirc;tes pas all&eacute; jusqu\'au bout de
+	Il y a quelques temps, vous avez rempli un caddie avec un produit mais n\'&ecirc;tes pas all&eacute;
+    jusqu\'au bout de
 	votre commande...<br />
 	<a href="{shop_url}">Cliquez ici</a> pour terminer votre commande !
 	';
 $mail[2]['fr'] = '
 	Cher {firstname} {lastname},<br />
 	Vous avez eu un souci de paiement lors de votre derni&egrave;re commande sur notre site...<br />
-	Le probl&egrave;me est s&ucirc;rement r&eacute;gl&eacute; depuis.  <a href="{shop_url}">Cliquez ici</a> pour repasser commande !
+	Le probl&egrave;me est s&ucirc;rement r&eacute;gl&eacute; depuis.  <a href="{shop_url}">
+    Cliquez ici</a> pour repasser commande !
 	';
 $mail[3]['fr'] = '
 	Cher {firstname} {lastname},<br />

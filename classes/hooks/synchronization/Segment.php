@@ -69,7 +69,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
             $params = array(
                 'ID' => $mailjetListId,
                 'method' => 'JSON',
-                'Name' => $prestashopFilterId . 'idf' . preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($newName))
+                'Name' => $prestashopFilterId . 'idf' .
+                    preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($newName))
             );
 
             /* # Api call */
@@ -239,7 +240,11 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         foreach ($contacts as $contact) {
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
-                $contactsToCsv[$contact[$mail_index]] = array($contact[$mail_index], $contact[$firstNameIndex], $contact[$lastNameIndex]);
+                $contactsToCsv[$contact[$mail_index]] = array(
+                    $contact[$mail_index],
+                    $contact[$firstNameIndex],
+                    $contact[$lastNameIndex]
+                );
             }
         }
 

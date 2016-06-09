@@ -43,7 +43,8 @@ class MailJetEvents extends ObjectModel
         'table' => 'mj_events',
         'primary' => 'id_mj_events',
         'multilang' => false,
-        'multilang_shop' => false);
+        'multilang_shop' => false
+    );
 
     /**
      * Set default value to be able to use the install / uninstall method
@@ -51,8 +52,12 @@ class MailJetEvents extends ObjectModel
      * @param string $event
      * @param bool $time
      */
-    public function __construct($event = MailJetEvents::DEFAULT_EVENT, $post_vars = array(), $time = false, $id_events = false)
-    {
+    public function __construct(
+        $event = MailJetEvents::DEFAULT_EVENT,
+        $post_vars = array(),
+        $time = false,
+        $id_events = false
+    ) {
         if (!$time) {
             $time = time();
         }
@@ -93,7 +98,8 @@ class MailJetEvents extends ObjectModel
                     // Will set GET / POST Data if exist
                     foreach ($event->key as $key) {
                         if (isset($this->post_vars[(string) $key])) {
-                            $scheme[(string) $key] = array('value' => $this->post_vars[(string) $key], 'type' => (string) $key['type']);
+                            $scheme[(string) $key] =
+                                array('value' => $this->post_vars[(string) $key], 'type' => (string) $key['type']);
                         }
                     }
                     //...$log = 'Scheme found';
@@ -155,7 +161,8 @@ class MailJetEvents extends ObjectModel
             unset($select[$key]);
         }
 
-        $query = 'SELECT `' . $this->identifier . '`, `' . implode('`,`', array_map('bqSQL', $select)) . '` FROM `' . _DB_PREFIX_ . $this->table . '` e ';
+        $query = 'SELECT `' . $this->identifier . '`, `' .
+            implode('`,`', array_map('bqSQL', $select)) . '` FROM `' . _DB_PREFIX_ . $this->table . '` e ';
         if ($this->params['event']['value'] && $this->params['event']['value'] != MailJetEvents::ALL_EVENTS_KEYS) {
             $query .= 'WHERE e.`event` = "' . pSQL($this->params['event']['value']) . '"';
         }

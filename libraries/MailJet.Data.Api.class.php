@@ -422,7 +422,19 @@ class mailjetdata
             $request['Debug'] = FALSE;
         }
 
-        return ($this->DATA($request['Method'], $request['SourceType'], $request['SourceID'], $request['ResourceType'], $request['MimeType'], $request['ID'], $request['RawData'], $request['akid'], $request['Debug']));
+        return (
+            $this->DATA(
+                $request['Method'],
+                $request['SourceType'],
+                $request['SourceID'],
+                $request['ResourceType'],
+                $request['MimeType'],
+                $request['ID'],
+                $request['RawData'],
+                $request['akid'],
+                $request['Debug']
+            )
+        );
     }
 
     /**
@@ -452,7 +464,17 @@ class mailjetdata
      * @return mixed JSON string or Data content
      * @todo Add MailjetDataType::AllowedRType verification
      */
-    public function DATA($Method, $SourceType, $SourceID, $ResourceType, $MimeType, $ID = NULL, $RawData = NULL, $akid = NULL, $Debug = FALSE)
+    public function DATA(
+        $Method,
+        $SourceType,
+        $SourceID,
+        $ResourceType,
+        $MimeType,
+        $ID = NULL,
+        $RawData = NULL,
+        $akid = NULL,
+        $Debug = FALSE
+    )
     {
         $this->_debug_access = '';
         if (!$this->fetchAllTypes()) {
@@ -487,7 +509,8 @@ class mailjetdata
                     }
                     $this->_debug_access = preg_replace('/,$/', '.', $this->_debug_access, 1);
                     if ($uriAccess[$index] == MailjetDataType::MimeType) {
-                        $this->_debug_access .= ' You can use "getMimeType()" to retrieve the complete list of Mime-Types available.';
+                        $this->_debug_access .=
+                            ' You can use "getMimeType()" to retrieve the complete list of Mime-Types available.';
                     }
                 } elseif (is_null($uriAccess[$index]))
                     $args[$index] = intval($args[$index]);
@@ -627,7 +650,8 @@ class mailjetdata
             204 => 'OK - No Content : The Delete request was successful.',
             304 => 'OK - Not Modified : The PUT request didn’t affect any record.',
             400 => 'KO - Bad Request : Please check the parameters.',
-            401 => 'KO - Unauthorized : A problem occurred with the apiKey/secretKey. You may be not authorized to access the API or your apiKey may have expired.',
+            401 => 'KO - Unauthorized : A problem occurred with the apiKey/secretKey. '
+                . 'You may be not authorized to access the API or your apiKey may have expired.',
             403 => 'KO - Forbidden : You are not authorized to call that function.',
             404 => 'KO - Not Found : The resource with the specified ID does not exist.',
             405 => 'KO - Method not allowed : Attempt to put/post multiple resources in 1 request.',

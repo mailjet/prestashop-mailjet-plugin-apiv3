@@ -33,7 +33,9 @@ if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN')) {
     exit();
 }
 
-$token_ok = Tools::getAdminToken('AdminModules' . (int) Tab::getIdFromClassName('AdminModules') . (int) Tools::getValue('id_employee'));
+$token_ok = Tools::getAdminToken(
+    'AdminModules' . (int) Tab::getIdFromClassName('AdminModules') . (int) Tools::getValue('id_employee')
+);
 
 if (Tools::getValue('token') != $token_ok) {
     die('hack attempt');
@@ -277,7 +279,9 @@ if (Tools::getValue('action') == 'addGroup') {
 
     if (Tools::getValue('mode') == 'rep') {
         foreach ($rows as $row) {
-            Db::getInstance()->Execute('DELETE FROM ' . _DB_PREFIX_ . 'customer_group WHERE id_customer = ' . (int) $row[$obj->ll(47)]);
+            Db::getInstance()->Execute(
+                'DELETE FROM ' . _DB_PREFIX_ . 'customer_group WHERE id_customer = ' . (int) $row[$obj->ll(47)]
+            );
         }
     }
     foreach ($rows as $row) {
@@ -309,30 +313,34 @@ if (Tools::getValue('action') == 'getQuery') {
         $page = 0;
     }
 
-    $req = Db::getInstance()->executeS($obj->getQuery($_POST, true, array('start' => ($page * $obj->page), 'length' => $obj->page)));
+    $req = Db::getInstance()->executeS(
+        $obj->getQuery($_POST, true, array('start' => ($page * $obj->page), 'length' => $obj->page))
+    );
     $content = '<h2>' . Tools::safeOutput($obj->trad[25]) . '</h2>';
     if ($req) {
         $header = array_keys($req[0]);
 
         $content .= '
-					<button id="export" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />' . Tools::safeOutput($obj->trad[26]) . '</button>
-					<div class="right" id="seg_pagination">
-						<a href="javascript:next(1, ' . $nb . ')"><<</a>
-						<a href="javascript:next(' . (Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1) . ', ' . $nb . ')"><</a>
-						' . Tools::safeOutput($obj->trad[27]) . ' <b>' . (Tools::getvalue('page') ? Tools::getvalue('page') : 1) . '</b> / ' . $nb . '
-						<a href="javascript:next(' . (Tools::getvalue('page') ? Tools::getvalue('page') + 1 : 2) . ', ' . $nb . ')">></a>
-						<a href="javascript:next(' . $nb . ',' . $nb . ')">>></a>
-						<font size="3">' . $nb1 . ' ' . Tools::safeOutput($obj->trad[25]) . '</font>
-					</div>
-					<br />';
+            <button id="export" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />' .
+            Tools::safeOutput($obj->trad[26]) . '</button>
+            <div class="right" id="seg_pagination">
+                <a href="javascript:next(1, ' . $nb . ')"><<</a>
+                <a href="javascript:next(' .
+                (Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1) . ', ' . $nb . ')"><</a>
+                ' . Tools::safeOutput($obj->trad[27]) . ' <b>' .
+                    (Tools::getvalue('page') ? Tools::getvalue('page') : 1) . '</b> / ' . $nb . '
+                <a href="javascript:next(' .
+                    (Tools::getvalue('page') ? Tools::getvalue('page') + 1 : 2) . ', ' . $nb . ')">></a>
+                <a href="javascript:next(' . $nb . ',' . $nb . ')">>></a>
+                <font size="3">' . $nb1 . ' ' . Tools::safeOutput($obj->trad[25]) . '</font>
+            </div>
+            <br />';
 
-        $content .= '<table cellspacing="0" cellpadding="0" class="table space">
-					<tr>';
+        $content .= '<table cellspacing="0" cellpadding="0" class="table space"><tr>';
         foreach ($header as $h) {
             $content .= '<th>' . Tools::safeOutput($h) . '</th>';
         }
-        $content .= '
-					</tr>';
+        $content .= '</tr>';
         foreach ($req as $s) {
             $content .= '
 					<tr>';
@@ -349,18 +357,25 @@ if (Tools::getValue('action') == 'getQuery') {
 
         $content .= '
             </table>
-            <button id="export" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />' . Tools::safeOutput($obj->trad[26]) . '</button>
+            <button id="export" class="my_button right"><img src="../modules/mailjet/views/img/page_excel.png" />' .
+            Tools::safeOutput($obj->trad[26]) . '</button>
             <div class="right" id="seg_pagination">
                 <a href="javascript:next(1, ' . $nb . ')"><<</a>
-                <a href="javascript:next(' . (Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1) . ', ' . $nb . ')"><</a>
-                ' . Tools::safeOutput($obj->trad[27]) . ' <b>' . (Tools::getvalue('page') ? Tools::getvalue('page') : 1) . '</b> / ' . $nb . '
-                <a href="javascript:next(' . (Tools::getvalue('page') ? Tools::getvalue('page') + 1 : 2) . ', ' . $nb . ')">></a>
+                <a href="javascript:next(' .
+                (Tools::getvalue('page') ? Tools::getvalue('page') - 1 : 1) . ', ' . $nb . ')"><</a>' .
+                Tools::safeOutput($obj->trad[27]) . ' <b>' .
+                (Tools::getvalue('page') ? Tools::getvalue('page') : 1) . '</b> / ' . $nb . '
+                <a href="javascript:next(' .
+                (Tools::getvalue('page') ? Tools::getvalue('page') + 1 : 2) . ', ' . $nb . ')">></a>
                 <a href="javascript:next(' . $nb . ',' . $nb . ')">>></a>
                 <font size="3">' . $nb1 . ' ' . Tools::safeOutput($obj->trad[25]) . '</font>
             </div>
             <div class="clear">&nbsp;</div>';
 
-        if (checkTable(Tools::getValue('fieldSelect')) && ($fs = Tools::getValue('fieldSelect')) && $obj->fieldIsPrintable($fs[0])) {
+        if (checkTable(Tools::getValue('fieldSelect'))
+            && ($fs = Tools::getValue('fieldSelect'))
+            && $obj->fieldIsPrintable($fs[0])
+        ) {
             $stat = array();
             $nbcustomer = Db::getInstance()->getValue('SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'customer`');
             $req = Db::getInstance()->executeS($reqsql);
@@ -380,9 +395,23 @@ if (Tools::getValue('action') == 'getQuery') {
                     }
 
                     if ($op) {
-                        $stat[$op . ' ' . $val1] = getNumberCustomer($req, $val1, $val2, $op, $obj->getFieldLabel($_POST['fieldSelect'][$i]), $range);
+                        $stat[$op . ' ' . $val1] = getNumberCustomer(
+                            $req,
+                            $val1,
+                            $val2,
+                            $op,
+                            $obj->getFieldLabel($_POST['fieldSelect'][$i]),
+                            $range
+                        );
                     } else {
-                        $stat[$val1 . ' - ' . $val2] = getNumberCustomer($req, $val1, $val2, $op, $obj->getFieldLabel($_POST['fieldSelect'][$i]), $range);
+                        $stat[$val1 . ' - ' . $val2] = getNumberCustomer(
+                            $req,
+                            $val1,
+                            $val2,
+                            $op,
+                            $obj->getFieldLabel($_POST['fieldSelect'][$i]),
+                            $range
+                        );
                     }
                 }
             }

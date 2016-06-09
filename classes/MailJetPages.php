@@ -124,7 +124,10 @@ class MailJetPages
      */
     public function getCurrentPageName()/* $account_status) */
     {
-        $page_type = (($page_type = Tools::getValue(MailJetPages::REQUEST_PAGE_TYPE)) && $this->isAvailablePage($page_type)) ? $page_type : $this->default_page;
+        $page_type =
+            (($page_type = Tools::getValue(MailJetPages::REQUEST_PAGE_TYPE)) && $this->isAvailablePage($page_type))
+            ? $page_type
+            : $this->default_page;
 
         return Tools::strtoupper($page_type);
     }

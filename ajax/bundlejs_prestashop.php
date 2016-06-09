@@ -43,9 +43,11 @@ if (Tools::getValue('action') == 'product') {
                 $name = str_replace("'", '&#146;', $product['name']);
                 $name = str_replace('"', '\"', $name);
                 if (($i % 2) == 0) {
-                    $return .= '<li id="' . Tools::safeOutput($product['id_product']) . '" class="pair">' . Tools::safeOutput($name) . '</li>';
+                    $return .= '<li id="' . Tools::safeOutput($product['id_product']) .
+                        '" class="pair">' . Tools::safeOutput($name) . '</li>';
                 } else {
-                    $return .= '<li id="' . Tools::safeOutput($product['id_product']) . '" class="impair">' . Tools::safeOutput($name) . '</li>';
+                    $return .= '<li id="' . Tools::safeOutput($product['id_product']) .
+                        '" class="impair">' . Tools::safeOutput($name) . '</li>';
                 }
                 $i++;
             }
@@ -79,9 +81,11 @@ if (Tools::getValue('action') == 'category') {
                 $name = str_replace("'", '&#146;', $product['name']);
                 $name = str_replace('"', '\"', $name);
                 if (($i % 2) == 0) {
-                    $return .= '<li id="' . Tools::safeOutput($product['id_category']) . '" class="pair">' . Tools::safeOutput($name) . '</li>';
+                    $return .= '<li id="' . Tools::safeOutput($product['id_category']) .
+                        '" class="pair">' . Tools::safeOutput($name) . '</li>';
                 } else {
-                    $return .= '<li id="' . Tools::safeOutput($product['id_category']) . '" class="impair">' . Tools::safeOutput($name) . '</li>';
+                    $return .= '<li id="' . Tools::safeOutput($product['id_category']) .
+                        '" class="impair">' . Tools::safeOutput($name) . '</li>';
                 }
                 $i++;
             }
@@ -92,8 +96,10 @@ if (Tools::getValue('action') == 'category') {
 }
 if (Tools::getValue('action') == 'manufacturer') {
     if (Tools::getValue('name') != '') {
-        $manufacturers = Db::getInstance()->executeS('SELECT `id_manufacturer`, `name` FROM `' . _DB_PREFIX_ . 'manufacturer`
-														 WHERE `name` LIKE "%' . pSQL(Tools::getValue('name')) . '%" ');
+        $manufacturers = Db::getInstance()->executeS(
+            'SELECT `id_manufacturer`, `name` FROM `' . _DB_PREFIX_ . 'manufacturer`
+            WHERE `name` LIKE "%' . pSQL(Tools::getValue('name')) . '%" '
+        );
         if ($manufacturers) {
             $i = 0;
             $return = '<ul id="plugproduct' . Tools::safeOutput(Tools::getValue('id')) . '">';
@@ -101,9 +107,11 @@ if (Tools::getValue('action') == 'manufacturer') {
                 $name = str_replace("'", '&#146;', $manufacturer['name']);
                 $name = str_replace('"', '\"', $name);
                 if (($i % 2) == 0) {
-                    $return .= '<li id="' . Tools::safeOutput($manufacturer['id_manufacturer']) . '" class="pair">' . Tools::safeOutput($name) . '</li>';
+                    $return .= '<li id="' . Tools::safeOutput($manufacturer['id_manufacturer']) .
+                        '" class="pair">' . Tools::safeOutput($name) . '</li>';
                 } else {
-                    $return .= '<li id="' . Tools::safeOutput($manufacturer['id_manufacturer']) . '" class="impair">' . Tools::safeOutput($name) . '</li>';
+                    $return .= '<li id="' . Tools::safeOutput($manufacturer['id_manufacturer']) .
+                        '" class="impair">' . Tools::safeOutput($name) . '</li>';
                 }
                 $i++;
             }
