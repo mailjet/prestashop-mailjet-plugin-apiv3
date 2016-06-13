@@ -22,12 +22,12 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
 $sql = array();
 
-	$sql[] = '
-			CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_events` (
+$sql[] = '
+			CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_events` (
 				`id_mj_events` int(11) NOT NULL AUTO_INCREMENT,
 				`event` varchar(64) NOT NULL,
 				`time` varchar(32) NOT NULL,
@@ -49,7 +49,7 @@ $sql = array();
 				PRIMARY KEY (`id_mj_events`)
 			);';
 
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_trigger` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_trigger` (
 				`id_trigger` int(11) NOT NULL AUTO_INCREMENT,
 				`id_customer` int(11) NOT NULL,
 				`id_target` int(11) NOT NULL,
@@ -58,7 +58,7 @@ $sql = array();
 				PRIMARY KEY (`id_trigger`)
 				);';
 
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_campaign` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_campaign` (
 			  `id_campaign_presta` int(8) NOT NULL AUTO_INCREMENT,
 			  `campaign_id` int(10) NOT NULL,
 			  `token_presta` varchar(64) NOT NULL,
@@ -68,7 +68,7 @@ $sql = array();
 			  `delivered` int(8) NOT NULL,
 			  PRIMARY KEY (`id_campaign_presta`));';
 
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_roi` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_roi` (
 			  `campaign_id` int(10) NOT NULL,
 			  `id_order` int(10) NOT NULL,
 			  `total_paid` double NOT NULL,
@@ -76,22 +76,22 @@ $sql = array();
 			  KEY `campaign_id` (`campaign_id`,`id_order`)
 			);';
 
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_roi_cart` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_roi_cart` (
 			  `id_cart` int(11) NOT NULL,
 			  `token_presta` varchar(64) NOT NULL,
 			  PRIMARY KEY (`id_cart`)
 			);';
 
 
-	/* ** ** SEGMENTATION ** ** */
+/* * * ** SEGMENTATION ** ** */
 
-	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_filter`';
-	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_condition`';
-	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_basecondition`';
-	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_sourcecondition`';
-	$sql[] = 'DROP TABLE IF EXISTS `'._DB_PREFIX_.'mj_fieldcondition`';
+$sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_filter`';
+$sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_condition`';
+$sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_basecondition`';
+$sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_sourcecondition`';
+$sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_fieldcondition`';
 
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_filter` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_filter` (
 					id_filter INTEGER NOT NULL AUTO_INCREMENT,
 					name VARCHAR(250) NOT NULL,
 					description VARCHAR(250),
@@ -102,7 +102,7 @@ $sql = array();
 					date_end TIMESTAMP,
 					PRIMARY KEY (id_filter)
 					);';
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_condition` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_condition` (
 					id_condition INTEGER NOT NULL AUTO_INCREMENT,
 					id_filter INTEGER NOT NULL,
 					id_basecondition INTEGER NOT NULL,
@@ -116,20 +116,20 @@ $sql = array();
 					value2 VARCHAR(250),
 					PRIMARY KEY (id_condition)
 					);';
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_basecondition` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_basecondition` (
 					id_basecondition INTEGER NOT NULL AUTO_INCREMENT,
 					label INTEGER,
 					tablename VARCHAR(250),
 					PRIMARY KEY (id_basecondition)
 					);';
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_sourcecondition` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_sourcecondition` (
 					id_sourcecondition INTEGER NOT NULL AUTO_INCREMENT,
 					id_basecondition INTEGER NOT NULL,
 					label INTEGER,
 					jointable VARCHAR(250),
 					PRIMARY KEY (id_sourcecondition)
 					);';
-	$sql[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'mj_fieldcondition` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_fieldcondition` (
 					id_fieldcondition INTEGER NOT NULL AUTO_INCREMENT,
 					id_sourcecondition INTEGER NOT NULL,
 					label INTEGER,
@@ -139,5 +139,3 @@ $sql = array();
 					binder VARCHAR(250),
 					PRIMARY KEY (id_fieldcondition)
 					);';
-
-?>

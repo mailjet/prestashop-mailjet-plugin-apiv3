@@ -25,40 +25,40 @@
 
 div.plugproduct
 {
-	position:absolute;
-	min-width:200px;
-	max-height:200px;
-	font-size:13px;
-	overflow:auto;
-	
-	margin-top:5px;
-	margin-left:5px;
+    position:absolute;
+    min-width:200px;
+    max-height:200px;
+    font-size:13px;
+    overflow:auto;
+
+    margin-top:5px;
+    margin-left:5px;
 }
 div.plugproduct ul
 {
-	border:1px solid #666;
- 	list-style:none;
+    border:1px solid #666;
+    list-style:none;
     margin:0;
 }
 div.plugproduct ul li {
-	cursor: pointer;
-	padding:3px;
+    cursor: pointer;
+    padding:3px;
 }
 div.plugproduct ul li.pair
 {
-	background-color:#DDDDDD;
+    background-color:#DDDDDD;
 }
 div.plugproduct ul li.impair
 {
-	background-color:white;
+    background-color:white;
 }
 div.plugproduct ul li:hover
 {
-	background-color:#C0C0C0;
+    background-color:#C0C0C0;
 }
 div.info
 {
-	background-color: #EAE2A7;
+    background-color: #EAE2A7;
     border: 1px solid #F4F0D2;
     border-radius: 8px 8px 8px 8px;
     min-height: 20px;

@@ -70,6 +70,7 @@ Happy emailing!
 
 = 3.3.0 =
 * Improvement of the account settings
+* Integration optimisations including minor security fixes, structure enhancements and standard updates
 
 = 3.2.15 =
 * Add a sender address for transactional emails

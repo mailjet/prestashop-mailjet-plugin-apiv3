@@ -9,9 +9,7 @@
  * @copyright	Copyright (c) 2012-2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
  * @file
  */
-
 // ---------------------------------------------------------------------
-
 
 /**
  * Mailjet Public API Exception Class
@@ -37,6 +35,7 @@
  */
 class Mailjet_ApiException extends Exception
 {
+
     /**
      * Mailjet HTTP Code
      * Can be obtain by $e->getCode()
@@ -75,10 +74,10 @@ class Mailjet_ApiException extends Exception
         }
         $this->http_code = $code;
 
-        if (isset($message))
+        if (isset($message)) {
             $this->error_message = $message;
+        }
 
         parent::__construct($this->error_message, $this->http_code);
     }
-
 }

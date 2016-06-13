@@ -9,7 +9,6 @@
  * @copyright	Copyright (c) 2012-2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
  * @file
  */
-
 // ---------------------------------------------------------------------
 
 /**
@@ -63,10 +62,12 @@ class Mailjet_OrderBy
     public static function sort(&$array, $args)
     {
         if (is_array($array)) {
-            if (!is_array($args))
+            if (!is_array($args)) {
                 $args = explode(' ', $args);
-            if (count($args) == 1)
+            }
+            if (count($args) == 1) {
                 self::$_args[1] = 'ASC';
+            }
             self::$_args = array_map('trim', $args);
             usort($array, array('Mailjet_OrderBy', 'compare'));
         }
@@ -82,13 +83,13 @@ class Mailjet_OrderBy
      */
     public static function compare($a, $b)
     {
-        $name	= self::$_args[0];
-        $order	= self::$_args[1];
+        $name = self::$_args[0];
+        $order = self::$_args[1];
 
-        if ($order == 'DESC')
+        if ($order == 'DESC') {
             return ($a->$name < $b->$name);
-        else
+        } else {
             return ($a->$name > $b->$name);
+        }
     }
-
 }

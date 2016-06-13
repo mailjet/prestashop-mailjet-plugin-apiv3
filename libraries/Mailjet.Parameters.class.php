@@ -9,9 +9,7 @@
  * @copyright	Copyright (c) 2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
  * @file
  */
-
 // ---------------------------------------------------------------------
-
 
 /**
  * Mailjet Public API Parameters class
@@ -55,6 +53,7 @@
  */
 class Mailjet_Parameters
 {
+
     /**
      * Parameters array
      *
@@ -78,9 +77,11 @@ class Mailjet_Parameters
      */
     function __construct(array $params = null)
     {
-        if (!is_null($params))
-            foreach ($params as $key => $value)
-                $this->data[$key] = $value;
+        if (!is_null($params)) {
+            foreach ($params as $key => $value) {
+            $this->data[$key] = $value;
+            }
+        }
     }
 
     /**
@@ -116,11 +117,9 @@ class Mailjet_Parameters
      */
     public function __call($key, $value)
     {
-        if ((strpos($key, 'set_', 0) !== 0)
-            || (($key = substr($key, 4)) == FALSE)
-            || (sizeof($value) == 0))
-
+        if ((strpos($key, 'set_', 0) !== 0) || (($key = substr($key, 4)) == FALSE) || (sizeof($value) == 0)) {
             return (null);
+        }
         $this->data[$key] = $value[0];
 
         return ($this);
@@ -140,8 +139,9 @@ class Mailjet_Parameters
      */
     public function __get($key)
     {
-        if (array_key_exists($key, $this->data))
+        if (array_key_exists($key, $this->data)) {
             return $this->data[$key];
+        }
 
         return (null);
     }

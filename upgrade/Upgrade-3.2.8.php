@@ -22,18 +22,19 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
-if (!defined('_PS_VERSION_')){
+if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_3_2_8($object) {
+function upgrade_module_3_2_8($object)
+{
     // Process Module upgrade to 3.2.8
     if ($object) {
-    return Db::getInstance()->execute(
-        'INSERT INTO `'._DB_PREFIX_.'mj_sourcecondition` VALUES (4, 1, 107, \'LEFT JOIN `%1shop` s ON s.`id_shop` = c.`id_shop`\')');
+        return Db::getInstance()->execute(
+            'INSERT INTO `' . _DB_PREFIX_ . 'mj_sourcecondition` '
+            . 'VALUES (4, 1, 107, \'LEFT JOIN `%1shop` s ON s.`id_shop` = c.`id_shop`\')'
+        );
     }
 }
-
-?>

@@ -22,17 +22,18 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
 spl_autoload_register('autoload');
 
-function autoload($className){
-    $classesDir = _PS_MODULE_DIR_.'mailjet/classes/';
-    foreach(array_keys(iterator_to_array(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir)),true)) as $filePath)
-    {
+function autoload($className)
+{
+    $classesDir = _PS_MODULE_DIR_ . 'mailjet/classes/';
+    $classesDirArr=iterator_to_array(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir)), true);
+    foreach (array_keys($classesDirArr) as $filePath) {
         $fileChunks = explode(DIRECTORY_SEPARATOR, $filePath);
         $fileArr = pathinfo(array_pop($fileChunks));
-        if ($className === $fileArr['filename']){
+        if ($className === $fileArr['filename']) {
             include $filePath;
         }
     }

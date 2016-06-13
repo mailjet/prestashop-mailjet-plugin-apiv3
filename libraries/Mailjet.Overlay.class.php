@@ -50,14 +50,12 @@
  * http://www.mailjet.com/Terms-of-use.htm
  *
  */
-
 // ---------------------------------------------------------------------
 
 require_once 'Mailjet.Api.class.php';
 require_once 'MailJet.Data.Api.class.php';
 require_once 'Mailjet.Exception.class.php';
 require_once 'Mailjet.Parameters.class.php';
-
 
 /**
  * Mailjet Public API Overlay Class
@@ -221,8 +219,9 @@ class Mailjet_ApiOverlay
         $this->_api = new Mailjet_Api($apiKey, $secretKey);
 
         set_error_handler('Mailjet_ApiOverlay::phpErrorHandler');
-        if ($apiKey && $secretKey)
+        if ($apiKey && $secretKey) {
             $this->createErrorsArray();
+        }
     }
 
     /**
@@ -237,8 +236,9 @@ class Mailjet_ApiOverlay
      */
     public static function getInstance()
     {
-        if (!(self::$_instance instanceof self))
+        if (!(self::$_instance instanceof self)) {
             self::$_instance = new self();
+        }
 
         return self::$_instance;
     }
@@ -249,7 +249,7 @@ class Mailjet_ApiOverlay
      */
     public function getApi()
     {
-    	return $this->_api;
+        return $this->_api;
     }
 
     /**
@@ -262,8 +262,9 @@ class Mailjet_ApiOverlay
      */
     public function __destruct()
     {
-        if(!is_null($this->_api))
+        if (!is_null($this->_api)) {
             unset($this->_api);
+        }
     }
 
     /**
@@ -275,11 +276,12 @@ class Mailjet_ApiOverlay
      */
     private function createErrorsArray()
     {
-    	return;
+        return;
         $response = $this->getAPIStatus();
         $this->_errors = array();
-        foreach ($response->status as $error)
-            $this->_errors[$error->code] = '['.$error->code.'] '.$error->status.' : '.$error->description;
+        foreach ($response->status as $error) {
+            $this->_errors[$error->code] = '[' . $error->code . '] ' . $error->status . ' : ' . $error->description;
+        }
     }
 
     /**
@@ -354,7 +356,7 @@ class Mailjet_ApiOverlay
     public function setOutput($output)
     {
         if (in_array($output, array(self::PHP, self::JSON, self::XML,
-                            self::SERIALIZE, self::HTML, self::CSV))) {
+                    self::SERIALIZE, self::HTML, self::CSV))) {
             $this->_api->setOutput($output);
 
             return (TRUE);
@@ -473,16 +475,17 @@ class Mailjet_ApiOverlay
                 || strpos($ErrMessage, 'must be an instance of Mailjet\integer, integer')
                 || strpos($ErrMessage, 'must be an instance of Mailjet\float, double')
                 || strpos($ErrMessage, 'must be an instance of Mailjet\boolean, boolean')
-                || strpos($ErrMessage, 'must be an instance of Mailjet\resource, resource')) {
-                    return (TRUE);
-                }
-            throw new Mailjet_ApiException(0, '[DataType] '.str_replace('Mailjet\\', '', $ErrMessage));
+                || strpos($ErrMessage, 'must be an instance of Mailjet\resource, resource')
+            ) {
+                return (TRUE);
+            }
+            throw new Mailjet_ApiException(0, '[DataType] ' . str_replace('Mailjet\\', '', $ErrMessage));
 
             return (FALSE);
         }
     }
 
-    /***************************** API *****************************/
+    /*     * *************************** API **************************** */
 
     /**
      * API : Create a new Sub-Account with new API keys
@@ -498,17 +501,19 @@ class Mailjet_ApiOverlay
     public function createSubAccount(string $name, string $custom_status = null)
     {
         $params = array(
-            'method'	=> 'POST',
-            'name'		=> $name
+            'method' => 'POST',
+            'name' => $name
         );
-        if (!is_null($custom_status))
+        if (!is_null($custom_status)) {
             $params['custom_status'] = $custom_status;
+        }
 
         $response = $this->_api->apiKeyadd($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -546,27 +551,38 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function createToken(array $allowed_access, string $type = null, string $default_page = null, string $lang = null, string $timezone = null)
+    public function createToken(
+        array $allowed_access,
+        string $type = null,
+        string $default_page = null,
+        string $lang = null,
+        string $timezone = null
+    )
     {
         $params = array(
-            'method'			=> 'POST',
-            'allowed_access'	=> $allowed_access,
-            'apikey'			=> $this->_api->getAPIKey()
+            'method' => 'POST',
+            'allowed_access' => $allowed_access,
+            'apikey' => $this->_api->getAPIKey()
         );
-        if (!is_null($type))
+        if (!is_null($type)) {
             $params['type'] = $type;
-        if (!is_null($default_page))
+        }
+        if (!is_null($default_page)) {
             $params['default_page'] = $default_page;
-        if (!is_null($lang))
+        }
+        if (!is_null($lang)) {
             $params['lang'] = $lang;
-        if (!is_null($timezone))
+        }
+        if (!is_null($timezone)) {
             $params['timezone'] = $timezone;
+        }
 
         $response = $this->_api->apiKeyauthenticate($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -582,7 +598,13 @@ class Mailjet_ApiOverlay
     public function createTokenP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->createToken($parameters->allowed_access, $parameters->type, $parameters->default_page, $parameters->lang, $parameters->timezone);
+            $response = $this->createToken(
+                $parameters->allowed_access,
+                $parameters->type,
+                $parameters->default_page,
+                $parameters->lang,
+                $parameters->timezone
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -605,29 +627,43 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getSubAccounts(boolean $active = null, string $custom_status = null, string $name = null, boolean $type = null, string $api_key = null, integer $cache = null)
+    public function getSubAccounts(
+        boolean $active = null,
+        string $custom_status = null,
+        string $name = null,
+        boolean $type = null,
+        string $api_key = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($active))
+        if (!is_null($active)) {
             $params['active'] = $active;
-        if (!is_null($custom_status))
+        }
+        if (!is_null($custom_status)) {
             $params['custom_status'] = $custom_status;
-        if (!is_null($name))
+        }
+        if (!is_null($name)) {
             $params['name'] = $name;
-        if (!is_null($type))
+        }
+        if (!is_null($type)) {
             $params['type'] = $type;
-        if (!is_null($api_key))
+        }
+        if (!is_null($api_key)) {
             $params['api_key'] = $api_key;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->apiKeylist($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -643,7 +679,14 @@ class Mailjet_ApiOverlay
     public function getSubAccountsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getSubAccounts($parameters->active, $parameters->custom_status, $parameters->name,$parameters->type, $parameters->api_key, $parameters->cache);
+            $response = $this->getSubAccounts(
+                $parameters->active,
+                $parameters->custom_status,
+                $parameters->name,
+                $parameters->type,
+                $parameters->api_key,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -665,17 +708,19 @@ class Mailjet_ApiOverlay
     public function getSubAccountSecret(string $api_key, integer $cache = null)
     {
         $params = array(
-            'method'	=> 'GET',
-            'apikey'	=> $api_key
+            'method' => 'GET',
+            'apikey' => $api_key
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->apiKeysecret($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -712,16 +757,16 @@ class Mailjet_ApiOverlay
     public function updateSubAccountSecret(string $api_key)
     {
         $params = array(
-            'method'	=> 'GET',
-            'apikey'	=> $api_key
-
+            'method' => 'GET',
+            'apikey' => $api_key
         );
 
         $response = $this->_api->apiKeysecretchange($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -760,19 +805,22 @@ class Mailjet_ApiOverlay
     public function updateSubAccount(string $api_key, string $custom_status = null, string $name = null)
     {
         $params = array(
-            'method'	=> 'POST',
-            'apikey'	=> $api_key
+            'method' => 'POST',
+            'apikey' => $api_key
         );
-        if (!is_null($custom_status))
+        if (!is_null($custom_status)) {
             $params['custom_status'] = $custom_status;
-        if (!is_null($name))
+        }
+        if (!is_null($name)) {
             $params['name'] = $name;
+        }
 
         $response = $this->_api->apiKeyupdate($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -796,7 +844,7 @@ class Mailjet_ApiOverlay
         return $response;
     }
 
-    /***************************** USER *****************************/
+    /*     * *************************** USER **************************** */
 
     /**
      * USER : Add a new trust Domain to your sender addresses
@@ -811,15 +859,16 @@ class Mailjet_ApiOverlay
     public function createDomain(string $domain)
     {
         $params = array(
-            'method'	=> 'POST',
-            'domain'	=> $domain
+            'method' => 'POST',
+            'domain' => $domain
         );
 
         $response = $this->_api->userDomainadd($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -857,16 +906,18 @@ class Mailjet_ApiOverlay
     public function getTrustDomains(integer $cache = null)
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->dns($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -905,19 +956,22 @@ class Mailjet_ApiOverlay
     public function getDomainStatus(string $domain, boolean $force_check = null, integer $cache = null)
     {
         $params = array(
-            'method'	=> 'POST',
-            'domain'	=> $domain
+            'method' => 'POST',
+            'domain' => $domain
         );
-        if (!is_null($force_check))
+        if (!is_null($force_check)) {
             $params['force_check'] = $force_check;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->userDomainStatus($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -958,7 +1012,6 @@ class Mailjet_ApiOverlay
 //         );
 //         if (!is_null($cache))
 //             $params['cache'] = $cache;
-
 //         $response = $this->_api->userInfos($params);
 //         if ($response !== FALSE)
 //             return ($response);
@@ -967,28 +1020,28 @@ class Mailjet_ApiOverlay
 
 
 
-        	$paramsProfile = array(
-        		'method'	 	=> 'GET',
-        	);
+        $paramsProfile = array(
+            'method' => 'GET',
+        );
 
-        	$this->_api->resetRequest();
-        	$this->_api->user($paramsProfile);
+        $this->_api->resetRequest();
+        $this->_api->user($paramsProfile);
 
-        	$responesProfile = $this->_api->getResponse();
+        $responesProfile = $this->_api->getResponse();
 
-        	if ($responesProfile->Count > 0) {
+        if ($responesProfile->Count > 0) {
 
-        		$this->_api->resetRequest();
-        		$this->_api->myprofile($paramsProfile);
+            $this->_api->resetRequest();
+            $this->_api->myprofile($paramsProfile);
 
-        		$responesMyProfile = $this->_api->getResponse();
+            $responesMyProfile = $this->_api->getResponse();
 
-        		if ($responesMyProfile->Count > 0) {
-        			$responesProfileArray = (array) $responesProfile->Data[0];
-        			unset($responesProfileArray['ID']);
-        			return (object) array_merge($responesProfileArray, (array) $responesMyProfile->Data[0]);
-        		}
-        	}
+            if ($responesMyProfile->Count > 0) {
+                $responesProfileArray = (array) $responesProfile->Data[0];
+                unset($responesProfileArray['ID']);
+                return (object) array_merge($responesProfileArray, (array) $responesMyProfile->Data[0]);
+            }
+        }
 
 
         return false;
@@ -1028,16 +1081,18 @@ class Mailjet_ApiOverlay
     public function getUserPlan($cache = null)
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->userAccountInfos($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1073,23 +1128,23 @@ class Mailjet_ApiOverlay
      */
     public function createSender($email)
     {
-    	if (strpos($email,'@') === false) {
-    		$email = '*@'.$email;
-    	}
+        if (strpos($email, '@') === false) {
+            $email = '*@' . $email;
+        }
 
         // Reactivate already Deleted sender
         $params = array(
-    		'method' => 'GET',
-    		'status' => 'Deleted',
-            'style'	=> 'full',
+            'method' => 'GET',
+            'status' => 'Deleted',
+            'style' => 'full',
             'limit' => 0
-    	);
-    	$this->_api->resetRequest();
-    	$this->_api->sender($params);
-    	$responesSender = $this->_api->getResponse();
-    	if ($responesSender->Count > 0) {
-    		$existingSenders = $responesSender->Data;
-    	}
+        );
+        $this->_api->resetRequest();
+        $this->_api->sender($params);
+        $responesSender = $this->_api->getResponse();
+        if ($responesSender->Count > 0) {
+            $existingSenders = $responesSender->Data;
+        }
 
         if ($existingSenders) {
             foreach ($existingSenders as $sender) {
@@ -1097,19 +1152,20 @@ class Mailjet_ApiOverlay
                 $mainDomain = implode('.', array_slice(explode('.', Configuration::get('PS_SHOP_DOMAIN')), -2));
 
                 if ($sender->Email->Email == $email) {
-                    $fp = fopen(_PS_ROOT_DIR_.'/'.$sender->Filename, 'w');
+                    $fp = fopen(_PS_ROOT_DIR_ . '/' . $sender->Filename, 'w');
                     fclose($fp);
-                    $response = $this->_api->{'sender/' . $sender->ID .'/validate'}(array(
+                    $response = $this->_api->{'sender/' . $sender->ID . '/validate'}(array(
                         'method' => 'JSON'
                     ));
 
                     if ($response !== FALSE) {
                         return ($response);
+                    } else {
+                        throw new Mailjet_ApiException(
+                            $this->_api->getHTTPCode(),
+                            $this->_errors[$this->_api->getHTTPCode()]
+                        );
                     }
-                    else {
-                        throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
-                    }
-
                 }
             }
         }
@@ -1117,8 +1173,8 @@ class Mailjet_ApiOverlay
 
         // Actual creation of the new sender
         $params = array(
-            'method'	=> 'JSON',
-            'Email'		=> $email
+            'method' => 'JSON',
+            'Email' => $email
         );
 
         $this->_api->resetRequest();
@@ -1127,16 +1183,17 @@ class Mailjet_ApiOverlay
         $responesProfile = $this->_api->getResponse();
 
         if ($responesProfile->Count > 0) {
-        	return $responesProfile->Data[0];
+            return $responesProfile->Data[0];
         }
 
         return false;
 
         $response = $this->_api->sender($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1173,18 +1230,18 @@ class Mailjet_ApiOverlay
     public function getSenders($cache = null, $user = null)
     {
 
-    	$params = array(
-    		'method' => 'GET',
-    		'style'	=> 'full',
+        $params = array(
+            'method' => 'GET',
+            'style' => 'full',
             'limit' => 0
-    	);
-    	$this->_api->resetRequest();
-    	$this->_api->sender($params);
-    	$responesSender = $this->_api->getResponse();
-    	if ($responesSender->Count > 0) {
-    		return $responesSender->Data;
-    	}
-    	return false;
+        );
+        $this->_api->resetRequest();
+        $this->_api->sender($params);
+        $responesSender = $this->_api->getResponse();
+        if ($responesSender->Count > 0) {
+            return $responesSender->Data;
+        }
+        return false;
     }
 
     /**
@@ -1221,17 +1278,19 @@ class Mailjet_ApiOverlay
     public function getSenderStatus($email, $cache = null)
     {
         $params = array(
-            'method'	=> 'POST',
-            'email'		=> $email
+            'method' => 'POST',
+            'email' => $email
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->userSenderStatus($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1268,16 +1327,18 @@ class Mailjet_ApiOverlay
     public function getTracking($cache = null)
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->userTrackingCheck($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1315,16 +1376,17 @@ class Mailjet_ApiOverlay
     public function updateTracking($click, $open)
     {
         $params = array(
-            'method'	=> 'POST',
-            'click'		=> $click,
-            'open'		=> $open
+            'method' => 'POST',
+            'click' => $click,
+            'open' => $open
         );
 
         $response = $this->_api->userTrackingUpdate($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1366,32 +1428,47 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function updateUser($address_city = null, $address_country = null, $address_postal_code = null,
-                                $address_street = null, $company_name = null, $contact_email = null,
-                                $firstname = null, $lastname = null, $locale = null)
+    public function updateUser(
+        $address_city = null,
+        $address_country = null,
+        $address_postal_code = null,
+        $address_street = null,
+        $company_name = null,
+        $contact_email = null,
+        $firstname = null,
+        $lastname = null,
+        $locale = null
+    )
     {
-    	$user = $this->getUser();
+        $user = $this->getUser();
         $params = array(
-            'method'	=> 'PUT',
-        	'ID'		=> $user->ID,
+            'method' => 'PUT',
+            'ID' => $user->ID,
         );
 
-        if (!is_null($address_city))
+        if (!is_null($address_city)) {
             $params['AddressStreet'] = $address_city;
-        if (!is_null($address_country))
+        }
+        if (!is_null($address_country)) {
             $params['AddressCountry'] = $address_country;
-        if (!is_null($address_postal_code))
+        }
+        if (!is_null($address_postal_code)) {
             $params['AddressPostalCode'] = $address_postal_code;
-        if (!is_null($address_street))
+        }
+        if (!is_null($address_street)) {
             $params['AddressStreet'] = $address_street;
-        if (!is_null($company_name))
+        }
+        if (!is_null($company_name)) {
             $params['CompanyName'] = $company_name;
+        }
 //         if (!is_null($contact_email))
 //             $params['contact_email'] = $contact_email;
-        if (!is_null($firstname))
+        if (!is_null($firstname)) {
             $params['Firstname'] = $firstname;
-        if (!is_null($lastname))
+        }
+        if (!is_null($lastname)) {
             $params['Lastname'] = $lastname;
+        }
 //         if (!is_null($locale))
 //             $params['locale'] = $locale;
 
@@ -1399,10 +1476,11 @@ class Mailjet_ApiOverlay
         $this->_api->myprofile($params);
         $response = $this->_api->getResponse();
 
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1418,9 +1496,17 @@ class Mailjet_ApiOverlay
     public function updateUserP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->updateUser($parameters->address_city, $parameters->address_country, $parameters->address_postal_code,
-                                $parameters->address_street, $parameters->company_name, $parameters->contact_email,
-                                $parameters->firstname, $parameters->lastname, $parameters->locale);
+            $response = $this->updateUser(
+                $parameters->address_city,
+                $parameters->address_country,
+                $parameters->address_postal_code,
+                $parameters->address_street,
+                $parameters->company_name,
+                $parameters->contact_email,
+                $parameters->firstname,
+                $parameters->lastname,
+                $parameters->locale
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -1428,7 +1514,7 @@ class Mailjet_ApiOverlay
         return $response;
     }
 
-    /**************************** MESSAGE ****************************/
+    /*     * ************************** MESSAGE *************************** */
 
     /**
      * MESSAGE : Get your campaigns
@@ -1445,41 +1531,46 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getCampaigns($id = null, $start = null, $limit = null,
-                                    $status = null, $orderby = null, $cache = null)
+    public function getCampaigns(
+        $id = null,
+        $start = null,
+        $limit = null,
+        $status = null,
+        $orderby = null,
+        $cache = null
+    )
     {
 
-	    	$paramsProfile = array(
-	    			'method'	 	=> 'GET',
-	    			'limit'			=> 0,
-	    			'style'			=> 'full',
-	    	);
+        $paramsProfile = array(
+            'method' => 'GET',
+            'limit' => 0,
+            'style' => 'full',
+        );
 
 
-	    	$this->_api->resetRequest();
-	    	$this->_api->newsletter($paramsProfile);
+        $this->_api->resetRequest();
+        $this->_api->newsletter($paramsProfile);
 
-	    	$responesProfile = $this->_api->getResponse();
+        $responesProfile = $this->_api->getResponse();
 
-	    	$camp = false;
+        $camp = false;
 
-	    	if (!id) {
-	    		if ($responesProfile->Count > 0) {
-	    			$camp = $responesProfile->Data;
-	    		}
-	    	} else {
-	    		if ($responesProfile->Count > 0) {
-	    			foreach ($responesProfile->Data as $campaign) {
+        if (!id) {
+            if ($responesProfile->Count > 0) {
+                $camp = $responesProfile->Data;
+            }
+        } else {
+            if ($responesProfile->Count > 0) {
+                foreach ($responesProfile->Data as $campaign) {
+                    if ($campaign->ID == $id) {
+                        $camp = $campaign;
+                    }
+                }
+            }
+        }
 
-	    				if ($campaign->ID == $id) {
-	    					$camp = $campaign;
-	    				}
-	    			}
-	    		}
-	    	}
 
-
-	    	return $camp;
+        return $camp;
 
 
 
@@ -1499,7 +1590,6 @@ class Mailjet_ApiOverlay
 //             $params['orderby'] = $orderby;
 //         if (!is_null($cache))
 //             $params['cache'] = $cache;
-
 //         $response = $this->_api->messageCampaigns($params);
 //         if ($response !== FALSE)
 //             return ($response);
@@ -1520,8 +1610,14 @@ class Mailjet_ApiOverlay
     public function getCampaignsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getCampaigns($parameters->id, $parameters->start, $parameters->limit,
-                                   $parameters->status, $parameters->orderby, $parameters->cache);
+            $response = $this->getCampaigns(
+                $parameters->id,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->status,
+                $parameters->orderby,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -1543,27 +1639,31 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getSubscribers($id, $start = null, $limit = null,
-                                    $status = null, $cache = null)
+    public function getSubscribers($id, $start = null, $limit = null, $status = null, $cache = null)
     {
         $params = array(
-            'method'	=> 'GET',
-            'id'		=> $id
+            'method' => 'GET',
+            'id' => $id
         );
-        if (!is_null($start))
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($status))
+        }
+        if (!is_null($status)) {
             $params['status'] = $status;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->messageContacts($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1579,8 +1679,13 @@ class Mailjet_ApiOverlay
     public function getSubscribersP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getSubscribers($parameters->id, $parameters->start, $parameters->limit,
-                                   $parameters->status, $parameters->cache);
+            $response = $this->getSubscribers(
+                $parameters->id,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->status,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -1611,46 +1716,69 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function createCampaign(string $lang, string $from, string $from_name = null, string $subject,
-                                    string $edition_mode = null, string $edition_type = null,
-                                    integer $list_id = null, string $callback = null, string $footer = null,
-                                    string $permalink = null, integer $template_id = null, string $token = null,
-                                    string $reply_to = null, string $title = null)
+    public function createCampaign(
+        string $lang,
+        string $from,
+        string $from_name = null,
+        string $subject,
+        string $edition_mode = null,
+        string $edition_type = null,
+        integer $list_id = null,
+        string $callback = null,
+        string $footer = null,
+        string $permalink = null,
+        integer $template_id = null,
+        string $token = null,
+        string $reply_to = null,
+        string $title = null
+    )
     {
         $params = array(
-            'method'	=> 'POST',
-            'lang'		=> $lang,
-            'from'		=> $from,
-            'subject'	=> $subject
+            'method' => 'POST',
+            'lang' => $lang,
+            'from' => $from,
+            'subject' => $subject
         );
-        if (!is_null($from_name))
+        if (!is_null($from_name)) {
             $params['from_name'] = $from_name;
-        if (!is_null($edition_mode))
+        }
+        if (!is_null($edition_mode)) {
             $params['edition_mode'] = $edition_mode;
-        if (!is_null($edition_type))
+        }
+        if (!is_null($edition_type)) {
             $params['edition_type'] = $edition_type;
-        if (!is_null($list_id))
+        }
+        if (!is_null($list_id)) {
             $params['list_id'] = $list_id;
-        if (!is_null($callback))
+        }
+        if (!is_null($callback)) {
             $params['callback'] = $callback;
-        if (!is_null($footer))
+        }
+        if (!is_null($footer)) {
             $params['footer'] = $footer;
-        if (!is_null($permalink))
+        }
+        if (!is_null($permalink)) {
             $params['permalink'] = $permalink;
-        if (!is_null($template_id))
+        }
+        if (!is_null($template_id)) {
             $params['template_id'] = $template_id;
-        if (!is_null($token))
+        }
+        if (!is_null($token)) {
             $params['token'] = $token;
-        if (!is_null($reply_to))
+        }
+        if (!is_null($reply_to)) {
             $params['reply_to'] = $reply_to;
-        if (!is_null($title))
+        }
+        if (!is_null($title)) {
             $params['title'] = $title;
+        }
 
         $response = $this->_api->messageCreateCampaign($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1666,11 +1794,22 @@ class Mailjet_ApiOverlay
     public function createCampaignP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->createCampaign($parameters->lang, $parameters->from, $parameters->from_name, $parameters->subject,
-                                    $parameters->edition_mode, $parameters->edition_type,
-                                    $parameters->list_id, $parameters->callback, $parameters->footer,
-                                    $parameters->permalink, $parameters->template_id, $parameters->token,
-                                    $parameters->reply_to, $parameters->title);
+            $response = $this->createCampaign(
+                $parameters->lang,
+                $parameters->from,
+                $parameters->from_name,
+                $parameters->subject,
+                $parameters->edition_mode,
+                $parameters->edition_type,
+                $parameters->list_id,
+                $parameters->callback,
+                $parameters->footer,
+                $parameters->permalink,
+                $parameters->template_id,
+                $parameters->token,
+                $parameters->reply_to,
+                $parameters->title
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -1699,42 +1838,65 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function createCampaignFrom(integer $id, string $lang = null, string $from = null, string $from_name = null, string $subject = null,
-                                    integer $list_id = null, string $callback = null, string $footer = null, string $permalink = null,
-                                    integer $template_id = null, string $reply_to = null, string $title = null)
+    public function createCampaignFrom(
+        integer $id,
+        string $lang = null,
+        string $from = null,
+        string $from_name = null,
+        string $subject = null,
+        integer $list_id = null,
+        string $callback = null,
+        string $footer = null,
+        string $permalink = null,
+        integer $template_id = null,
+        string $reply_to = null,
+        string $title = null
+    )
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id
+            'method' => 'POST',
+            'id' => $id
         );
-        if (!is_null($lang))
+        if (!is_null($lang)) {
             $params['lang'] = $lang;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_name))
+        }
+        if (!is_null($from_name)) {
             $params['from_name'] = $from_name;
-        if (!is_null($subject))
+        }
+        if (!is_null($subject)) {
             $params['subject'] = $subject;
-        if (!is_null($list_id))
+        }
+        if (!is_null($list_id)) {
             $params['list_id'] = $list_id;
-        if (!is_null($callback))
+        }
+        if (!is_null($callback)) {
             $params['callback'] = $callback;
-        if (!is_null($footer))
+        }
+        if (!is_null($footer)) {
             $params['footer'] = $footer;
-        if (!is_null($permalink))
+        }
+        if (!is_null($permalink)) {
             $params['permalink'] = $permalink;
-        if (!is_null($template_id))
+        }
+        if (!is_null($template_id)) {
             $params['template_id'] = $template_id;
-        if (!is_null($reply_to))
+        }
+        if (!is_null($reply_to)) {
             $params['reply_to'] = $reply_to;
-        if (!is_null($title))
+        }
+        if (!is_null($title)) {
             $params['title'] = $title;
+        }
 
         $response = $this->_api->messageDuplicateCampaign($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1750,9 +1912,20 @@ class Mailjet_ApiOverlay
     public function createCampaignFromP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->createCampaignFrom($parameters->id, $parameters->lang, $parameters->from, $parameters->from_name, $parameters->subject,
-                                    $parameters->list_id, $parameters->callback, $parameters->footer, $parameters->permalink,
-                                    $parameters->template_id, $parameters->reply_to, $parameters->title);
+            $response = $this->createCampaignFrom(
+                $parameters->id,
+                $parameters->lang,
+                $parameters->from,
+                $parameters->from_name,
+                $parameters->subject,
+                $parameters->list_id,
+                $parameters->callback,
+                $parameters->footer,
+                $parameters->permalink,
+                $parameters->template_id,
+                $parameters->reply_to,
+                $parameters->title
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -1773,45 +1946,53 @@ class Mailjet_ApiOverlay
      */
     public function getCampaignHTML($id, $cache = null)
     {
-    	$campaign = $this->getCampaigns($id);
+        $campaign = $this->getCampaigns($id);
 
-    	$this->_api->resetRequest();
-    	$this->_api->data('newsletter', $id, 'HTML', 'text/html', null, 'GET', 'LAST');
+        $this->_api->resetRequest();
+        $this->_api->data('newsletter', $id, 'HTML', 'text/html', null, 'GET', 'LAST');
 
-    	$respones = $this->_api->getResponse();
+        $respones = $this->_api->getResponse();
 
-    	return $respones;
-
-
-        $call_newsletter_html = $this->_dataApi->DATA('GET', 'NewsLetter', $campaign->NewsLetterID, 'HTML', 'text/html', 'LAST', NULL, null);
-
-		if(!isset($call_newsletter_html->ErrorInfo))
-			$contents = $call_newsletter_html;
+        return $respones;
 
 
-    	$this->_api->setVersion('DATA')->newsletter($params);
-		$appId = NULL;//get_app_id();
-    	$call_newsletter_html = $this->mailjetdata->DATA('GET', 'NewsLetter', $newsletterID, 'HTML', 'text/html', 'LAST', NULL, $appId);
+        $call_newsletter_html = $this->_dataApi->DATA(
+            'GET', 'NewsLetter', $campaign->NewsLetterID, 'HTML', 'text/html', 'LAST', NULL, null
+        );
+
+        if (!isset($call_newsletter_html->ErrorInfo)) {
+            $contents = $call_newsletter_html;
+        }
 
 
-    	$respones = $this->_api->getResponse();
+        $this->_api->setVersion('DATA')->newsletter($params);
+        $appId = NULL; //get_app_id();
+        $call_newsletter_html = $this->mailjetdata->DATA(
+            'GET', 'NewsLetter', $newsletterID, 'HTML', 'text/html', 'LAST', NULL, $appId
+        );
 
-    	echo '<pre>';
-    	print_r($respones); die;
+
+        $respones = $this->_api->getResponse();
+
+        echo '<pre>';
+        print_r($respones);
+        die;
 
 
         $params = array(
-            'method'	=> 'GET',
-            'id'		=> $id
+            'method' => 'GET',
+            'id' => $id
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->messageHtmlCampaign($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1854,40 +2035,59 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getMessages(string $custom_campaign = null, string $from = null, string $from_name = null,
-                                string $to_email = null, integer $mj_campaign_id = null,
-                                $sent_after = null, $sent_before = null,
-                                integer $start = null, integer $limit = null, integer $cache = null)
+    public function getMessages(
+        string $custom_campaign = null,
+        string $from = null,
+        string $from_name = null,
+        string $to_email = null,
+        integer $mj_campaign_id = null,
+        $sent_after = null,
+        $sent_before = null,
+        integer $start = null,
+        integer $limit = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($custom_campaign))
+        if (!is_null($custom_campaign)) {
             $params['custom_campaign'] = $custom_campaign;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from_email'] = $from;
-        if (!is_null($from_name))
+        }
+        if (!is_null($from_name)) {
             $params['from_name'] = $from_name;
-        if (!is_null($to_email))
+        }
+        if (!is_null($to_email)) {
             $params['to_email'] = $to_email;
-        if (!is_null($mj_campaign_id))
+        }
+        if (!is_null($mj_campaign_id)) {
             $params['mj_campaign_id'] = $mj_campaign_id;
-        if (!is_null($sent_after))
+        }
+        if (!is_null($sent_after)) {
             $params['sent_after'] = $sent_after;
-        if (!is_null($sent_before))
+        }
+        if (!is_null($sent_before)) {
             $params['sent_before'] = $sent_before;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->messageList($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1903,10 +2103,18 @@ class Mailjet_ApiOverlay
     public function getMessagesP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getMessages($parameters->custom_campaign, $parameters->from, $parameters->from_name,
-                                $parameters->to_email, $parameters->mj_campaign_id,
-                                $parameters->sent_after, $parameters->sent_before,
-                                $parameters->start, $parameters->limit, $parameters->cache);
+            $response = $this->getMessages(
+                $parameters->custom_campaign,
+                $parameters->from,
+                $parameters->from_name,
+                $parameters->to_email,
+                $parameters->mj_campaign_id,
+                $parameters->sent_after,
+                $parameters->sent_before,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -1927,15 +2135,16 @@ class Mailjet_ApiOverlay
     public function sendCampaign(integer $id)
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id
+            'method' => 'POST',
+            'id' => $id
         );
 
         $response = $this->_api->messageSendCampaign($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -1973,22 +2182,24 @@ class Mailjet_ApiOverlay
      */
     public function updateCampaignHTML($id, $html, $text = null)
     {
-    	$this->_api->resetRequest();
-    	$this->_api->data('newsletter', $id, 'HTML', 'text/html', $html, 'POST', null);
+        $this->_api->resetRequest();
+        $this->_api->data('newsletter', $id, 'HTML', 'text/html', $html, 'POST', null);
 
-    	$respones = $this->_api->getResponse();
+        $respones = $this->_api->getResponse();
 
-    	return $respones;
+        return $respones;
 
 
-        if (!is_null($text))
+        if (!is_null($text)) {
             $params['text'] = $text;
+        }
 
         $response = $this->_api->messageSetHtmlCampaign($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2026,36 +2237,38 @@ class Mailjet_ApiOverlay
     public function getCampaignStatistics($id = null, $cache = null)
     {
 
-    	$paramsProfile = array(
-    			'method'	 	=> 'GET',
-    			'ID'			=> $id,
-    			'style'			=> 'full',
-    	);
+        $paramsProfile = array(
+            'method' => 'GET',
+            'ID' => $id,
+            'style' => 'full',
+        );
 
 
-    	$this->_api->resetRequest();
-    	$this->_api->campaignstatistics($paramsProfile);
+        $this->_api->resetRequest();
+        $this->_api->campaignstatistics($paramsProfile);
 
-    	$responesProfile = $this->_api->getResponse();
+        $responesProfile = $this->_api->getResponse();
 
-    	if ($responesProfile->Count === 1) {
-    		return $responesProfile->Data[0];
-    	}
+        if ($responesProfile->Count === 1) {
+            return $responesProfile->Data[0];
+        }
 
-    	return isset($responesProfile->Data) ? $responesProfile->Data : false;
+        return isset($responesProfile->Data) ? $responesProfile->Data : false;
 
         $params = array(
-            'method'	=> 'GET',
-            'id'		=> $id
+            'method' => 'GET',
+            'id' => $id
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->messageStatistics($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2093,16 +2306,17 @@ class Mailjet_ApiOverlay
     public function testCampaign($id, $email)
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id,
-            'email'		=> $email
+            'method' => 'POST',
+            'id' => $id,
+            'email' => $email
         );
 
         $response = $this->_api->messageTestcampaign($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2139,16 +2353,18 @@ class Mailjet_ApiOverlay
     public function getTemplateCategories($cache = null)
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->messageTplCategories($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2188,22 +2404,27 @@ class Mailjet_ApiOverlay
     public function getTemplates($category = null, $custom = null, $locale = null, $cache = null)
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($category))
+        if (!is_null($category)) {
             $params['category'] = $category;
-        if (!is_null($custom))
+        }
+        if (!is_null($custom)) {
             $params['custom'] = $custom;
-        if (!is_null($locale))
+        }
+        if (!is_null($locale)) {
             $params['locale'] = $locale;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->messageTplModels($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2219,7 +2440,9 @@ class Mailjet_ApiOverlay
     public function getTemplatesP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getTemplates($parameters->category, $parameters->custom, $parameters->locale, $parameters->cache);
+            $response = $this->getTemplates(
+                $parameters->category, $parameters->custom, $parameters->locale, $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -2250,47 +2473,73 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function updateCampaign(integer $id, string $status = null, string $lang = null, string $from = null, string $from_name = null, string $subject = null,
-                                    integer $list_id = null, string $callback = null, string $footer = null, string $permalink = null,
-                                    integer $template_id = null, string $reply_to = null, string $title = null,
-                                    $sending_date = null)
+    public function updateCampaign(
+        integer $id,
+        string $status = null,
+        string $lang = null,
+        string $from = null,
+        string $from_name = null,
+        string $subject = null,
+        integer $list_id = null,
+        string $callback = null,
+        string $footer = null,
+        string $permalink = null,
+        integer $template_id = null,
+        string $reply_to = null,
+        string $title = null,
+        $sending_date = null
+    )
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id
+            'method' => 'POST',
+            'id' => $id
         );
-        if (!is_null($status))
+        if (!is_null($status)) {
             $params['status'] = $status;
-        if (!is_null($lang))
+        }
+        if (!is_null($lang)) {
             $params['lang'] = $lang;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_name))
+        }
+        if (!is_null($from_name)) {
             $params['from_name'] = $from_name;
-        if (!is_null($subject))
+        }
+        if (!is_null($subject)) {
             $params['subject'] = $subject;
-        if (!is_null($list_id))
+        }
+        if (!is_null($list_id)) {
             $params['list_id'] = $list_id;
-        if (!is_null($callback))
+        }
+        if (!is_null($callback)) {
             $params['callback'] = $callback;
-        if (!is_null($footer))
+        }
+        if (!is_null($footer)) {
             $params['footer'] = $footer;
-        if (!is_null($permalink))
+        }
+        if (!is_null($permalink)) {
             $params['permalink'] = $permalink;
-        if (!is_null($template_id))
+        }
+        if (!is_null($template_id)) {
             $params['template_id'] = $template_id;
-        if (!is_null($reply_to))
+        }
+        if (!is_null($reply_to)) {
             $params['reply_to'] = $reply_to;
-        if (!is_null($title))
+        }
+        if (!is_null($title)) {
             $params['title'] = $title;
-        if (!is_null($sending_date))
+        }
+        if (!is_null($sending_date)) {
             $params['sending_date'] = $sending_date;
+        }
 
         $response = $this->_api->messageUpdateCampaign($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2306,10 +2555,22 @@ class Mailjet_ApiOverlay
     public function updateCampaignP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->updateCampaign($parameters->id, $parameters->status, $parameters->lang, $parameters->from, $parameters->from_name, $parameters->subject,
-                                    $parameters->list_id, $parameters->callback, $parameters->footer, $parameters->permalink,
-                                    $parameters->template_id, $parameters->reply_to, $title,
-                                    $parameters->sending_date);
+            $response = $this->updateCampaign(
+                $parameters->id,
+                $parameters->status,
+                $parameters->lang,
+                $parameters->from,
+                $parameters->from_name,
+                $parameters->subject,
+                $parameters->list_id,
+                $parameters->callback,
+                $parameters->footer,
+                $parameters->permalink,
+                $parameters->template_id,
+                $parameters->reply_to,
+                $title,
+                $parameters->sending_date
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -2317,7 +2578,7 @@ class Mailjet_ApiOverlay
         return $response;
     }
 
-    /**************************** CONTACTS ****************************/
+    /*     * ************************** CONTACTS *************************** */
 
     /**
      * CONTACTS : Get general informations about a specific contact
@@ -2333,17 +2594,19 @@ class Mailjet_ApiOverlay
     public function getContactInformations($contact, $cache = null)
     {
         $params = array(
-            'method'	=> 'GET',
-            'contact'	=> $contact
+            'method' => 'GET',
+            'contact' => $contact
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->contactInfos($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2384,43 +2647,59 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getContacts(integer $mj_contact_id = null, integer $start = null, integer $limit = null,
-                                string $status = null, boolean $blocked = null, boolean $unsub = null, $last_activity = null,
-                                integer $cache = null)
+    public function getContacts(
+        integer $mj_contact_id = null,
+        integer $start = null,
+        integer $limit = null,
+        string $status = null,
+        boolean $blocked = null,
+        boolean $unsub = null,
+        $last_activity = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($mj_contact_id))
+        if (!is_null($mj_contact_id)) {
             $params['mj_contact_id'] = $mj_contact_id;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($status))
+        }
+        if (!is_null($status)) {
             $params['status'] = $status;
-        if (!is_null($blocked))
+        }
+        if (!is_null($blocked)) {
             $params['blocked'] = $blocked;
-        if (!is_null($unsub))
+        }
+        if (!is_null($unsub)) {
             $params['unsub'] = $unsub;
-        if (!is_null($last_activity))
+        }
+        if (!is_null($last_activity)) {
             $params['last_activity'] = $last_activity;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
-        if (in_array(array('start', 'limit', 'last_activity'), array_keys($params))
-            && count($params) == 4) {
+        if (in_array(array('start', 'limit', 'last_activity'), array_keys($params)) && count($params) == 4) {
             $response = $this->_api->contactOpeners($params);
-            if ($response !== FALSE)
+            if ($response !== FALSE) {
                 return ($response);
-            else
+            } else {
                 throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            }
         } else {
             $response = $this->_api->contactList($params);
-            if ($response !== FALSE)
+            if ($response !== FALSE) {
                 return ($response);
-            else
+            } else {
                 throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+            }
         }
     }
 
@@ -2437,9 +2716,16 @@ class Mailjet_ApiOverlay
     public function getContactsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getContacts($parameters->mj_contact_id, $parameters->start, $parameters->limit,
-                                $parameters->status, $parameters->blocked, $parameters->unsub, $parameters->last_activity,
-                                $parameters->cache);
+            $response = $this->getContacts(
+                $parameters->mj_contact_id,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->status,
+                $parameters->blocked,
+                $parameters->unsub,
+                $parameters->last_activity,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -2447,7 +2733,7 @@ class Mailjet_ApiOverlay
         return $response;
     }
 
-    /************************* CONTACTS LIST **************************/
+    /*     * *********************** CONTACTS LIST ************************* */
 
     /**
      * LIST : Create a contact in a list
@@ -2464,18 +2750,20 @@ class Mailjet_ApiOverlay
     public function createContact(string $contact, integer $list_id, boolean $force = null)
     {
         $params = array(
-            'method'	=> 'POST',
-            'contact'	=> $contact,
-            'id'		=> $list_id
+            'method' => 'POST',
+            'contact' => $contact,
+            'id' => $list_id
         );
-        if (!is_null($force))
+        if (!is_null($force)) {
             $params['force'] = $force;
+        }
 
         $response = $this->_api->listsAddContact($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2521,17 +2809,17 @@ class Mailjet_ApiOverlay
 
         return Tools::jsonDecode($responesProfile);
 
-        if (!is_null($force))
+        if (!is_null($force)) {
             $params['force'] = $force;
+        }
 
         $response = $this->_api->listsAddManyContacts($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
-
-
 
     /**
      * setContactMetaData()
@@ -2544,16 +2832,16 @@ class Mailjet_ApiOverlay
 
         try {
             /*
-            * Add contact properties like First Name and Last Name
-            */
+             * Add contact properties like First Name and Last Name
+             */
             $resContactMetaData = $this->getContactMetaData();
 
 
-            if(isset($resContactMetaData->Data) && count($resContactMetaData->Data) > 0) {
-                foreach($resContactMetaData->Data as $metaData) {
+            if (isset($resContactMetaData->Data) && count($resContactMetaData->Data) > 0) {
+                foreach ($resContactMetaData->Data as $metaData) {
                     foreach ($params as $paramsMetaData) {
-                        if(isset($metaData->Name) && $metaData->Name = $paramsMetaData['Name']) {
-                            $flagName = $paramsMetaData['Name']."NameExists";
+                        if (isset($metaData->Name) && $metaData->Name = $paramsMetaData['Name']) {
+                            $flagName = $paramsMetaData['Name'] . "NameExists";
                             ${$flagName} = true;
                         }
                     }
@@ -2561,16 +2849,15 @@ class Mailjet_ApiOverlay
             }
 
             foreach ($params as $paramsMetaData) {
-                $flagName = $paramsMetaData['Name']."NameExists";
-                if(!${$flagName}) {
+                $flagName = $paramsMetaData['Name'] . "NameExists";
+                if (!${$flagName}) {
                     $resContactMetaData = $this->createContactMetaData($paramsMetaData);
                 }
             }
 
             return true;
-
         } catch (Exception $ex) {
-            MailJetLog::write(MailJetLog::$file, 'Exception : '.$ex->getMessage());
+            MailJetLog::write(MailJetLog::$file, 'Exception : ' . $ex->getMessage());
             throw new Mailjet_ApiException($ex->getMessage());
         }
 
@@ -2589,10 +2876,10 @@ class Mailjet_ApiOverlay
         $contactData = $this->getContactByEmail($contactEmail);
 
         $paramsRequest = array(
-            'method' => 'JSON',  // JSON
+            'method' => 'JSON', // JSON
             'ID' => $contactData->Data[0]->ID,
             'Data' => $params,
-    	);
+        );
 
         $this->_api->resetRequest();
         $this->_api->contactdata($paramsRequest);
@@ -2600,10 +2887,7 @@ class Mailjet_ApiOverlay
         $response = $this->_api->getResponse();
         if ($response !== FALSE) {
             return ($response);
-
-
-        }
-        else {
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
@@ -2613,7 +2897,7 @@ class Mailjet_ApiOverlay
         $paramsRequest = array(
             'method' => 'DELETE',
             'ID' => $contactEmail
-    	);
+        );
 
         $this->_api->resetRequest();
         $this->_api->contactdata($paramsRequest);
@@ -2621,8 +2905,7 @@ class Mailjet_ApiOverlay
         $response = $this->_api->getResponse();
         if ($response !== FALSE) {
             return ($response);
-        }
-        else {
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
@@ -2643,8 +2926,7 @@ class Mailjet_ApiOverlay
 
         if ($response !== FALSE) {
             return ($response);
-        }
-        else {
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
@@ -2662,21 +2944,19 @@ class Mailjet_ApiOverlay
 
         if ($response !== FALSE) {
             return ($response);
-        }
-        else {
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
 
-
     public function createContactMetaData($params = array())
     {
         $paramsRequest = array(
-            'method' => 'JSON',  // JSON
+            'method' => 'JSON', // JSON
             'Datatype' => $params['Datatype'],
             'Name' => $params['Name'],
             'NameSpace' => $params['NameSpace'],
-    	);
+        );
 
         $this->_api->resetRequest();
         $this->_api->contactmetadata($paramsRequest);
@@ -2684,38 +2964,35 @@ class Mailjet_ApiOverlay
         $response = $this->_api->getResponse();
         if ($response !== FALSE) {
             return ($response);
-        }
-        else {
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
 
-
     public function batchJobContacts($listID, $dataID, $status = 'addforce')
     {
 
-    	$paramsProfile = array(
-    			'method' => 'JSON',  // JSON
-    			'JobType' => 'Contact list import csv',
-    			'DataID' => $dataID,
-    			'Status' => 'Upload',
-    			'RefId' => $listID,
-    			'Method' => $status, // = 'addforce,remove,addnoforse'
-    			'APIKeyALT'	=> $this->_api->getAPIKey()
-    	);
+        $paramsProfile = array(
+            'method' => 'JSON', // JSON
+            'JobType' => 'Contact list import csv',
+            'DataID' => $dataID,
+            'Status' => 'Upload',
+            'RefId' => $listID,
+            'Method' => $status, // = 'addforce,remove,addnoforse'
+            'APIKeyALT' => $this->_api->getAPIKey()
+        );
 
 
-    	$this->_api->resetRequest();
-    	$this->_api->batchjob($paramsProfile);
+        $this->_api->resetRequest();
+        $this->_api->batchjob($paramsProfile);
 
-    	$responesProfile = $this->_api->getResponse();
+        $responesProfile = $this->_api->getResponse();
 
-    	if ($responesProfile->Count > 0) {
+        if ($responesProfile->Count > 0) {
+            return $responesProfile->Data;
+        }
 
-    		return $responesProfile->Data;
-    	}
-
-    	return false;
+        return false;
     }
 
     /**
@@ -2754,45 +3031,50 @@ class Mailjet_ApiOverlay
      */
     public function getContactsLists($start = null, $limit = null, $orderby = null, $cache = null)
     {
-    	if (!empty($this->_contactLists)) {
-    		return $this->_contactLists;
-    	}
+        if (!empty($this->_contactLists)) {
+            return $this->_contactLists;
+        }
 
-    	$paramsProfile = array(
-    		'method'	 	=> 'GET',
-    		'limit'			=> 0
-    	);
+        $paramsProfile = array(
+            'method' => 'GET',
+            'limit' => 0
+        );
 
-    	$this->_api->resetRequest();
-    	$this->_api->contactslist($paramsProfile);
+        $this->_api->resetRequest();
+        $this->_api->contactslist($paramsProfile);
 
-    	$responesProfile = $this->_api->getResponse();
+        $responesProfile = $this->_api->getResponse();
 
-    	if ($responesProfile->Count > 0) {
-    		$this->_contactLists = $responesProfile->Data;
-    		return $responesProfile->Data;
-    	}
+        if ($responesProfile->Count > 0) {
+            $this->_contactLists = $responesProfile->Data;
+            return $responesProfile->Data;
+        }
 
-    	return false;
+        return false;
 
 
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($start))
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($orderby))
+        }
+        if (!is_null($orderby)) {
             $params['order_by'] = $orderby;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->listsAll($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2808,7 +3090,9 @@ class Mailjet_ApiOverlay
     public function getContactsListsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getContactsLists($parameters->start, $parameters->limit, $parameters->orderby, $parameters->cache);
+            $response = $this->getContactsLists(
+                $parameters->start, $parameters->limit, $parameters->orderby, $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -2834,76 +3118,92 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getContactsFromList($id, $start = null, $limit = null, $orderby = null,
-                                        $status = null, $blocked = null, $unsub = null,
-                                        $last_activity = null, $cache = null)
+    public function getContactsFromList(
+        $id,
+        $start = null,
+        $limit = null,
+        $orderby = null,
+        $status = null,
+        $blocked = null,
+        $unsub = null,
+        $last_activity = null,
+        $cache = null
+    )
     {
 
-    	$params = array(
-    			'method' => 'GET',
-    			'ContactsList'    => $id,
-    			'style' => 'full',
-    			'limit'   => 0,
-    			'offset' => 0,
-    			'Status'  => ($status && $status !== 'all') ? $status : 'all',
-    			'Unsub' => 'false',
-    			'countrecords' => 1,
-    			'recurse' => 1
-    	);
+        $params = array(
+            'method' => 'GET',
+            'ContactsList' => $id,
+            'style' => 'full',
+            'limit' => 0,
+            'offset' => 0,
+            'Status' => ($status && $status !== 'all') ? $status : 'all',
+            'Unsub' => 'false',
+            'countrecords' => 1,
+            'recurse' => 1
+        );
 
 
-    	$this->_api->resetRequest();
+        $this->_api->resetRequest();
 
-    	$se = $this->_api->listrecipient($params);
+        $se = $this->_api->listrecipient($params);
 
-    	$response = $this->_api->getResponse();
+        $response = $this->_api->getResponse();
 
-    	if ($response && $response->Count > 0) {
-    		return $response;
-    	}
-    	else {
-    		return FALSE;
-    	}
-
+        if ($response && $response->Count > 0) {
+            return $response;
+        } else {
+            return FALSE;
+        }
 
 
-    	$this->_api->data('contactslist', $id, 'CSVData', 'text/plain', null, 'GET', null);
-    	//$this->_api->data('contacts', $id, 'HTML', 'text/html', null, 'GET', 'LAST');
 
-    	$respones = $this->_api->getResponse();
+        $this->_api->data('contactslist', $id, 'CSVData', 'text/plain', null, 'GET', null);
+        //$this->_api->data('contacts', $id, 'HTML', 'text/html', null, 'GET', 'LAST');
 
-    	return $respones;
+        $respones = $this->_api->getResponse();
+
+        return $respones;
 
 
 
 
 
         $params = array(
-            'method'	=> 'GET',
-            'id'		=> $id
+            'method' => 'GET',
+            'id' => $id
         );
-        if (!is_null($start))
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($orderby))
+        }
+        if (!is_null($orderby)) {
             $params['orderby'] = $orderby;
-        if (!is_null($status))
+        }
+        if (!is_null($status)) {
             $params['status'] = $status;
-        if (!is_null($blocked))
+        }
+        if (!is_null($blocked)) {
             $params['blocked'] = $blocked;
-        if (!is_null($unsub))
+        }
+        if (!is_null($unsub)) {
             $params['unsub'] = $unsub;
-        if (!is_null($last_activity))
+        }
+        if (!is_null($last_activity)) {
             $params['last_activity'] = $last_activity;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->listsContacts($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -2919,9 +3219,17 @@ class Mailjet_ApiOverlay
     public function getContactsFromListP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getContactsFromList($parameters->id, $parameters->start, $parameters->limit, $parameters->orderby,
-                                        $parameters->status, $parameters->blocked, $parameters->unsub, $parameters->last_activity,
-                                        $parameters->cache);
+            $response = $this->getContactsFromList(
+                $parameters->id,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->orderby,
+                $parameters->status,
+                $parameters->blocked,
+                $parameters->unsub,
+                $parameters->last_activity,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -2943,18 +3251,18 @@ class Mailjet_ApiOverlay
     public function createContactsList(string $label, string $name)
     {
         $params = array(
-            'method'	=> 'POST',
-            'label'		=> $label,
-            'name'		=> $name
+            'method' => 'POST',
+            'label' => $label,
+            'name' => $name
         );
 
         $response = $this->_api->listsCreate($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
-
 
     /**
      * LIST : Create a new Contacts list
@@ -2969,17 +3277,16 @@ class Mailjet_ApiOverlay
     public function createContactsListP($parameters)
     {
 
-    	$this->_api->resetRequest();
-    	$this->_api->contactslist($parameters);
+        $this->_api->resetRequest();
+        $this->_api->contactslist($parameters);
 
-    	$responesProfile = $this->_api->getResponse();
+        $responesProfile = $this->_api->getResponse();
 
-    	if ($responesProfile->Count > 0) {
+        if ($responesProfile->Count > 0) {
+            return $responesProfile->Data[0];
+        }
 
-    		return $responesProfile->Data[0];
-    	}
-
-    	return false;
+        return false;
 
 
         try {
@@ -3004,15 +3311,16 @@ class Mailjet_ApiOverlay
     public function deleteContactsList($id)
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id
+            'method' => 'POST',
+            'id' => $id
         );
 
         $response = $this->_api->listsDelete($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3050,17 +3358,19 @@ class Mailjet_ApiOverlay
     public function getContactsListEmail(integer $id, integer $cache = null)
     {
         $params = array(
-            'method'	=> 'GET',
-            'id'		=> $id
+            'method' => 'GET',
+            'id' => $id
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->listsEmail($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3098,16 +3408,17 @@ class Mailjet_ApiOverlay
     public function deleteContact($contact, $id)
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id,
-            'contact'	=> $contact
+            'method' => 'POST',
+            'id' => $id,
+            'contact' => $contact
         );
 
         $response = $this->_api->listsRemoveContact($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3145,16 +3456,17 @@ class Mailjet_ApiOverlay
     public function deleteContacts($contacts, $id)
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id,
-            'contacts'	=> $contacts
+            'method' => 'POST',
+            'id' => $id,
+            'contacts' => $contacts
         );
 
         $response = $this->_api->listsRemoveManyContacts($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3192,17 +3504,19 @@ class Mailjet_ApiOverlay
     public function getContactsListStatistics($id, $cache = null)
     {
         $params = array(
-            'method'	=> 'GET',
-            'id'		=> $id
+            'method' => 'GET',
+            'id' => $id
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->listsStatistics($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3240,16 +3554,17 @@ class Mailjet_ApiOverlay
     public function unsubscribeContact($contact, $id)
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id,
-            'contact'	=> $contact
+            'method' => 'POST',
+            'id' => $id,
+            'contact' => $contact
         );
 
         $response = $this->_api->listsUnsubContact($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3288,19 +3603,22 @@ class Mailjet_ApiOverlay
     public function updateContactsList($id, $label = null, $name = null)
     {
         $params = array(
-            'method'	=> 'POST',
-            'id'		=> $id
+            'method' => 'POST',
+            'id' => $id
         );
-        if (!is_null($label))
+        if (!is_null($label)) {
             $params['label'] = $label;
-        if (!is_null($name))
+        }
+        if (!is_null($name)) {
             $params['name'] = $name;
+        }
 
         $response = $this->_api->listsUpdate($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3324,7 +3642,7 @@ class Mailjet_ApiOverlay
         return $response;
     }
 
-    /***************************** REPORT *****************************/
+    /*     * *************************** REPORT **************************** */
 
     /**
      * REPORT : Get your (tracked and clicked) links
@@ -3345,39 +3663,59 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getClickedEmails(integer $campaign_id = null, string $from = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, string $order = null, string $order_by = null,
-                                    $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getClickedEmails(
+        integer $campaign_id = null,
+        string $from = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        string $order = null,
+        string $order_by = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($order))
+        }
+        if (!is_null($order)) {
             $params['order'] = $order;
-        if (!is_null($order_by))
+        }
+        if (!is_null($order_by)) {
             $params['order_by'] = $order_by;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportClick($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3393,9 +3731,18 @@ class Mailjet_ApiOverlay
     public function getClickedEmailsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getClickedEmails($parameters->campaign_id, $parameters->from, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->order, $parameters->order_by,
-                                    $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getClickedEmails(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->order,
+                $parameters->order_by,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3421,36 +3768,55 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getDomains(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getDomains(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportDomain($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3466,8 +3832,17 @@ class Mailjet_ApiOverlay
     public function getDomainsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getDomains($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getDomains(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3493,36 +3868,55 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getBouncedEmails(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getBouncedEmails(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportEmailBounce($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3538,8 +3932,17 @@ class Mailjet_ApiOverlay
     public function getBouncedEmailsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getBouncedEmails($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                      $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getBouncedEmails(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3565,36 +3968,55 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getEmailClients(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getEmailClients(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportEmailClients($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3610,8 +4032,17 @@ class Mailjet_ApiOverlay
     public function getEmailClientsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getEmailClients($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getEmailClients(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3633,17 +4064,19 @@ class Mailjet_ApiOverlay
     public function getEmailInformations(integer $campaign_id, integer $cache = null)
     {
         $params = array(
-            'method'		=> 'GET',
-            'campaign_id'	=> $campaign_id
+            'method' => 'GET',
+            'campaign_id' => $campaign_id
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportEmailInfos($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3686,38 +4119,59 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getSentEmails(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, string $status = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getSentEmails(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        string $status = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($status))
+        }
+        if (!is_null($status)) {
             $params['status'] = $status;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportEmailSent($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3733,8 +4187,18 @@ class Mailjet_ApiOverlay
     public function getSentEmailsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getSentEmails($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->status, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getSentEmails(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->status,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3762,41 +4226,63 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getEmailStatistics(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    string $to_email = null, integer $to_id = null, integer $start = null, integer $limit = null,
-                                    $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getEmailStatistics(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        string $to_email = null,
+        integer $to_id = null,
+        integer $start = null,
+        integer $limit = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($to_email))
+        }
+        if (!is_null($to_email)) {
             $params['to_email'] = $to_email;
-        if (!is_null($to_id))
+        }
+        if (!is_null($to_id)) {
             $params['to_id'] = $to_id;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportEmailStatistics($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3812,9 +4298,19 @@ class Mailjet_ApiOverlay
     public function getEmailStatisticsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getEmailStatistics($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->to_email, $parameters->to_id, $parameters->start, $parameters->limit,
-                                    $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getEmailStatistics(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->to_email,
+                $parameters->to_id,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3840,36 +4336,55 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getGeographicDatas(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getGeographicDatas(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportGeoIp($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3885,8 +4400,17 @@ class Mailjet_ApiOverlay
     public function getGeographicDatasP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getGeographicDatas($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getGeographicDatas(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3912,36 +4436,55 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getOpenedEmails(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getOpenedEmails(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportOpen($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -3957,8 +4500,17 @@ class Mailjet_ApiOverlay
     public function getOpenedEmailsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getOpenedEmails($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getOpenedEmails(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -3984,36 +4536,55 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getOpenedEmailsStatistics(integer $campaign_id = null, string $from = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getOpenedEmailsStatistics(
+        integer $campaign_id = null,
+        string $from = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportOpenedStatistics($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -4029,8 +4600,17 @@ class Mailjet_ApiOverlay
     public function getOpenedEmailsStatisticsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getOpenedEmailsStatistics($parameters->campaign_id, $parameters->from, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->ts_from, $parameters->ts_to, $parameters->cache);
+            $response = $this->getOpenedEmailsStatistics(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -4058,41 +4638,63 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function getUserAgents(integer $campaign_id = null,
-                                    string $from = null, integer $from_id = null, string $from_domain = null, integer $from_type = null,
-                                    integer $start = null, integer $limit = null, string $status = null, $ts_from = null, $ts_to = null, integer $cache = null)
+    public function getUserAgents(
+        integer $campaign_id = null,
+        string $from = null,
+        integer $from_id = null,
+        string $from_domain = null,
+        integer $from_type = null,
+        integer $start = null,
+        integer $limit = null,
+        string $status = null,
+        $ts_from = null,
+        $ts_to = null,
+        integer $cache = null
+    )
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($campaign_id))
+        if (!is_null($campaign_id)) {
             $params['campaign_id'] = $campaign_id;
-        if (!is_null($from))
+        }
+        if (!is_null($from)) {
             $params['from'] = $from;
-        if (!is_null($from_id))
+        }
+        if (!is_null($from_id)) {
             $params['from_id'] = $from_id;
-        if (!is_null($from_domain))
+        }
+        if (!is_null($from_domain)) {
             $params['from_domain'] = $from_domain;
-        if (!is_null($from_type))
+        }
+        if (!is_null($from_type)) {
             $params['from_type'] = $from_type;
-        if (!is_null($start))
+        }
+        if (!is_null($start)) {
             $params['start'] = $start;
-        if (!is_null($limit))
+        }
+        if (!is_null($limit)) {
             $params['limit'] = $limit;
-        if (!is_null($status))
+        }
+        if (!is_null($status)) {
             $params['status'] = $status;
-        if (!is_null($ts_from))
+        }
+        if (!is_null($ts_from)) {
             $params['ts_from'] = $ts_from;
-        if (!is_null($ts_to))
+        }
+        if (!is_null($ts_to)) {
             $params['ts_to'] = $ts_to;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = $cache;
+        }
 
         $response = $this->_api->reportUserAgents($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -4108,10 +4710,19 @@ class Mailjet_ApiOverlay
     public function getUserAgentsP(Mailjet_Parameters $parameters)
     {
         try {
-            $response = $this->getUserAgents($parameters->campaign_id,
-                                    $parameters->from, $parameters->from_id, $parameters->from_domain, $parameters->from_type,
-                                    $parameters->start, $parameters->limit, $parameters->status, $parameters->ts_from, $parameters->ts_to,
-                                    $parameters->cache);
+            $response = $this->getUserAgents(
+                $parameters->campaign_id,
+                $parameters->from,
+                $parameters->from_id,
+                $parameters->from_domain,
+                $parameters->from_type,
+                $parameters->start,
+                $parameters->limit,
+                $parameters->status,
+                $parameters->ts_from,
+                $parameters->ts_to,
+                $parameters->cache
+            );
         } catch (Mailjet_ApiException $e) {
             throw $e;
         }
@@ -4119,7 +4730,7 @@ class Mailjet_ApiOverlay
         return $response;
     }
 
-    /**************************** HELP *****************************/
+    /*     * ************************** HELP **************************** */
 
     /**
      * HELP : Get all categories of methods available and documented in our API
@@ -4134,16 +4745,18 @@ class Mailjet_ApiOverlay
     public function getAPICategories($cache = 600)
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = intval($cache);
+        }
 
         $response = $this->_api->helpCategories($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -4160,17 +4773,19 @@ class Mailjet_ApiOverlay
     public function getAPICategory(string $name, $cache = 600)
     {
         $params = array(
-            'method'	=> 'GET',
-            'name'		=> $name
+            'method' => 'GET',
+            'name' => $name
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = intval($cache);
+        }
 
         $response = $this->_api->helpCategory($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -4187,17 +4802,19 @@ class Mailjet_ApiOverlay
     public function getAPIMethod(string $name, $cache = 600)
     {
         $params = array(
-            'method'	=> 'GET',
-            'name'		=> $name
+            'method' => 'GET',
+            'name' => $name
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = intval($cache);
+        }
 
         $response = $this->_api->helpMethod($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -4214,17 +4831,19 @@ class Mailjet_ApiOverlay
     public function getAPIMethods(string $category, $cache = 600)
     {
         $params = array(
-            'method'	=> 'GET',
-            'category'	=> $category
+            'method' => 'GET',
+            'category' => $category
         );
-        if (!is_null($cache))
+        if (!is_null($cache)) {
             $params['cache'] = intval($cache);
+        }
 
         $response = $this->_api->helpMethods($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
 
     /**
@@ -4241,18 +4860,20 @@ class Mailjet_ApiOverlay
     public function getAPIStatus(integer $code = null, $cache = 600)
     {
         $params = array(
-            'method'	=> 'GET'
+            'method' => 'GET'
         );
-        if (!is_null($code))
+        if (!is_null($code)) {
             $params['code'] = $code;
-        if (!is_null($cache))
+        }
+        if (!is_null($cache)) {
             $params['cache'] = intval($cache);
+        }
 
         $response = $this->_api->helpStatus($params);
-        if ($response !== FALSE)
+        if ($response !== FALSE) {
             return ($response);
-        else
+        } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
     }
-
 }

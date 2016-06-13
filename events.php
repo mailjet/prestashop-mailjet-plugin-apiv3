@@ -22,98 +22,91 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
-include_once(realpath(dirname(__FILE__).'/../../').'/config/config.inc.php');
+include_once(realpath(dirname(__FILE__) . '/../../') . '/config/config.inc.php');
 
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetLog.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetTranslate.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/MailJetEvents.php');
-include_once(_PS_MODULE_DIR_.'mailjet/classes/hooks/Events.php');
-include_once(_PS_ROOT_DIR_.'/init.php');
-require_once(_PS_MODULE_DIR_.'mailjet/mailjet.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetLog.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetTranslate.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetEvents.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php');
+include_once(_PS_ROOT_DIR_ . '/init.php');
+require_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
 
 $mj = new Mailjet();
 
-if ($mj->getEventsHash() !== Tools::getValue('h'))
-{
-	header('HTTP/1.1 401 Unauthorized');
-	return;
+if ($mj->getEventsHash() !== Tools::getValue('h')) {
+    header('HTTP/1.1 401 Unauthorized');
+    return;
 }
 
 # Catch Event
 $post = trim(Tools::file_get_contents('php://input'));
 
 # No Event sent
-if (empty($post))
-{
-	header('HTTP/1.1 421 No event');
-	/* => do action */
-	return;
+if (empty($post)) {
+    header('HTTP/1.1 421 No event');
+    /* => do action */
+    return;
 }
 
 # Decode Trigger Informations
 $t = Tools::jsonDecode($post, true);
 
 # No Informations sent with the Event
-if (!is_array($t) || !isset($t['event']))
-{
-	header('HTTP/1.1 422 Not ok');
-	/* => do action */
-	return;
+if (!is_array($t) || !isset($t['event'])) {
+    header('HTTP/1.1 422 Not ok');
+    /* => do action */
+    return;
 }
 
 $events = new MailJetEvents($t['event'], $t);
 
 /*
- *	Event handler
- *	- please check https://www.mailjet.com/docs/event_tracking for further informations.
+ * 	Event handler
+ * 	- please check https://www.mailjet.com/docs/event_tracking for further informations.
  */
-switch ($t['event'])
-{
-	case 'open':
-		/* => do action */
-		/* If an error occurs, tell Mailjet to retry later: header('HTTP/1.1 400 Error'); */
-		/* If it works, tell Mailjet it's OK */
-		header('HTTP/1.1 200 Ok');
-		break;
+switch ($t['event']) {
+    case 'open':
+        /* => do action */
+        /* If an error occurs, tell Mailjet to retry later: header('HTTP/1.1 400 Error'); */
+        /* If it works, tell Mailjet it's OK */
+        header('HTTP/1.1 200 Ok');
+        break;
 
-	case 'click':
-		/* => do action */
-		break;
+    case 'click':
+        /* => do action */
+        break;
 
-	case 'bounce':
-		/* => do action */
-		$events->add();
-		break;
+    case 'bounce':
+        /* => do action */
+        $events->add();
+        break;
 
-	case 'spam':
-		/* => do action */
-		$events->add();
-		break;
+    case 'spam':
+        /* => do action */
+        $events->add();
+        break;
 
-	case 'blocked':
-		/* => do action */
-		$events->add();
-		break;
+    case 'blocked':
+        /* => do action */
+        $events->add();
+        break;
 
-	case 'unsub':
-		/* => do action */
-		$hooks_events = new HooksEvents();
-		$hooks_events->unsubscribe($t);
-		break;
+    case 'unsub':
+        /* => do action */
+        $hooks_events = new HooksEvents();
+        $hooks_events->unsubscribe($t);
+        break;
 
-	case 'typofix':
-		/* => do action */
-		$events->add();
-		break;
+    case 'typofix':
+        /* => do action */
+        $events->add();
+        break;
 
-	/* # No handler */
-	default:
-		header('HTTP/1.1 423 No handler');
-		/* => do action */
-		break;
+    /* # No handler */
+    default:
+        header('HTTP/1.1 423 No handler');
+        /* => do action */
+        break;
 }
-
-
-?>

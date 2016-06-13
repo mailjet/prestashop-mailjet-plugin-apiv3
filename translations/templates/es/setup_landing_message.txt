@@ -1,27 +1,27 @@
 <div class="mj-setup">
 
-<div class="mj-text">
+    <div class="mj-text">
 
-    <b>Estás a pocos clics de activar el add-on de correo electrónico de ecommerce para Prestashop más potente del mercado.</b>
-    <br /><br />
-    Usa Mailjet para analizar, crear engagement y aumentar el ROI de tu base de clientes de Prestashop gracias al mejor envío, seguimiento y entregabilidad de tus emails de marketing y transaccionales.
-    <br /><br />
-    <b>Entre sus funciones se incluyen:</b> 
-    <br />
-    <ul class="ulDisc">
-        <li>personalización,</li>
-        <li>segmentación de Prestashop avanzada,</li>
-        <li>creación de newsletters profesionales mediante soltar y arrastrar,</li>
-        <li>plantillas de marketing de ecommerce,</li>
-        <li>campañas de correo masivo,</li>
-        <li>campañas de trigger marketing (p.ej. carrito abandonado, aniversario de compra, etc.)</li>
-        <li>analíticas en tiempo real, como los ingresos generados con cada una de tus campañas de marketing.</li>
-    </ul>
-    <br /><br />
-    <b>Regístrate o inicia sesión hoy mismo y mejora tu base de clientes gracias a la potencia de Mailjet.</b>
-</div>
+        <b>Estás a pocos clics de activar el add-on de correo electrónico de ecommerce para Prestashop más potente del mercado.</b>
+        <br /><br />
+        Usa Mailjet para analizar, crear engagement y aumentar el ROI de tu base de clientes de Prestashop gracias al mejor envío, seguimiento y entregabilidad de tus emails de marketing y transaccionales.
+        <br /><br />
+        <b>Entre sus funciones se incluyen:</b> 
+        <br />
+        <ul class="ulDisc">
+            <li>personalización,</li>
+            <li>segmentación de Prestashop avanzada,</li>
+            <li>creación de newsletters profesionales mediante soltar y arrastrar,</li>
+            <li>plantillas de marketing de ecommerce,</li>
+            <li>campañas de correo masivo,</li>
+            <li>campañas de trigger marketing (p.ej. carrito abandonado, aniversario de compra, etc.)</li>
+            <li>analíticas en tiempo real, como los ingresos generados con cada una de tus campañas de marketing.</li>
+        </ul>
+        <br /><br />
+        <b>Regístrate o inicia sesión hoy mismo y mejora tu base de clientes gracias a la potencia de Mailjet.</b>
+    </div>
 
 
-<div class="mj-video">
-	
+    <div class="mj-video"></div>
+
 </div>

@@ -10,7 +10,6 @@
  * @copyright	Copyright (c) 2012-2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
  * @file
  */
-
 // ---------------------------------------------------------------------
 
 /**
@@ -25,14 +24,15 @@
  */
 class MailjetDataType
 {
-    const SourceType	= 2;
-    const MimeType	= 3;
-    const MaxSizeMType	= 10;
-    const ResourceType	= 11;
-    const AllowedRType	= 9;
+
+    const SourceType = 2;
+    const MimeType = 3;
+    const MaxSizeMType = 10;
+    const ResourceType = 11;
+    const AllowedRType = 9;
+
     //list_type NNN : a list of resource types for source type NNN.
 }
-
 
 /**
  * Mailjet Public DATA API Main Class
@@ -49,6 +49,7 @@ class MailjetDataType
  */
 class mailjetdata
 {
+
     /**
      * Mailjet API Key
      * You can edit directly and add here your Mailjet infos
@@ -76,11 +77,10 @@ class mailjetdata
      * @access	private
      * @var		integer $_cache
      */
-    private $_cache = 0;//600;
-
+    private $_cache = 0; //600;
 // ---------------------------------------------------------------------
 
-   /**
+    /**
      * Mailjet API Instance
      *
      * @access	private
@@ -88,24 +88,24 @@ class mailjetdata
      */
     private $_api = NULL;
 
-   /**
+    /**
      * DATA Types
      *
      * @access	private
      * @var		array $DataType
      */
     private $DataType = array(
-                    /* Available Source Type */
-                    MailjetDataType::SourceType		=> NULL,
-                    /* Available Mime Type */
-                    MailjetDataType::MimeType		=> NULL,
-                    /* Max Size Mime Type */
-                    MailjetDataType::MaxSizeMType	=> NULL,
-                    /* Available Resource Type */
-                    MailjetDataType::ResourceType	=> NULL,
-                    /* Allowed Resource Type */
-                    MailjetDataType::AllowedRType	=> NULL
-                    );
+        /* Available Source Type */
+        MailjetDataType::SourceType => NULL,
+        /* Available Mime Type */
+        MailjetDataType::MimeType => NULL,
+        /* Max Size Mime Type */
+        MailjetDataType::MaxSizeMType => NULL,
+        /* Available Resource Type */
+        MailjetDataType::ResourceType => NULL,
+        /* Allowed Resource Type */
+        MailjetDataType::AllowedRType => NULL
+    );
 
     /**
      * API URL
@@ -207,13 +207,15 @@ class mailjetdata
      */
     public function __construct($apiKey = NULL, $secretKey = NULL, $secure = TRUE)
     {
-        if (isset($apiKey))
+        if (isset($apiKey)) {
             $this->_apiKey = $apiKey;
-        if (isset($secretKey))
+        }
+        if (isset($secretKey)) {
             $this->_secretKey = $secretKey;
-        $this->_api_url = 'http://'.$this->_api_url.$this->_version;
-		//$this->_api = new Api($this->_apiKey, $this->_secretKey, $secure);
-		$this->_api = new Mailjet_Api($this->_apiKey, $this->_secretKey);
+        }
+        $this->_api_url = 'http://' . $this->_api_url . $this->_version;
+        //$this->_api = new Api($this->_apiKey, $this->_secretKey, $secure);
+        $this->_api = new Mailjet_Api($this->_apiKey, $this->_secretKey);
         $this->secure($secure);
     }
 
@@ -229,8 +231,9 @@ class mailjetdata
      */
     public static function getInstance()
     {
-        if (!(self::$_instance instanceof self))
+        if (!(self::$_instance instanceof self)) {
             self::$_instance = new self();
+        }
 
         return self::$_instance;
     }
@@ -245,8 +248,9 @@ class mailjetdata
      */
     public function __destruct()
     {
-        if(!is_null($this->_curl_handle))
+        if (!is_null($this->_curl_handle)) {
             curl_close($this->_curl_handle);
+        }
         $this->_curl_handle = NULL;
     }
 
@@ -305,13 +309,12 @@ class mailjetdata
     public function secure($secure = TRUE)
     {
         $protocol = 'http';
-        if ($secure)
+        if ($secure) {
             $protocol = 'https';
-        $this->_api_url = preg_replace('/http(s)?:\/\//', $protocol.'://', $this->_api_url);
+        }
+        $this->_api_url = preg_replace('/http(s)?:\/\//', $protocol . '://', $this->_api_url);
         $this->_api->secure($secure);
     }
-
-
 
     /**
      * GET/Fetch List of token in the LanguageString API Object
@@ -346,13 +349,16 @@ class mailjetdata
      */
     private function fetchAllTypes()
     {
-        if (is_null($this->_api))
+        if (is_null($this->_api)) {
             return (FALSE);
+        }
         $default_cache = $this->_api->getCache();
         $this->_api->setCache(600);
-        foreach ($this->DataType as $key => $value)
-            if (is_null($value) || empty($value))
+        foreach ($this->DataType as $key => $value) {
+            if (is_null($value) || empty($value)) {
                 $this->DataType[$key] = $this->fetchType($key);
+            }
+        }
         $this->_api->setCache($default_cache);
 
         return (TRUE);
@@ -370,8 +376,9 @@ class mailjetdata
      */
     public function getMimeType()
     {
-        if ($this->fetchAllTypes())
+        if ($this->fetchAllTypes()) {
             return ($this->DataType[MailjetDataType::MimeType]);
+        }
 
         return (FALSE);
     }
@@ -386,14 +393,14 @@ class mailjetdata
      */
     public function getRawFile($File)
     {
-        if (!is_null($File) && ($File = realpath($File)) !== FALSE)
+        if (!is_null($File) && ($File = realpath($File)) !== FALSE) {
             return (Tools::file_get_contents($File));
-            //return (curl_file_create($File));
-            //$curl_file = new CURLFile($File);
-            //return (array('data' => '@'.$File));
+        }
+        //return (curl_file_create($File));
+        //$curl_file = new CURLFile($File);
+        //return (array('data' => '@'.$File));
         return (NULL);
     }
-
 
     /**
      * Short function to check and build the full request Url
@@ -406,15 +413,28 @@ class mailjetdata
     public function sDATA($request)
     {
         $args = array('Method', 'SourceType', 'SourceID', 'ResourceType', 'MimeType', 'ID', 'RawData', 'akid');
-        foreach ($args as $arg)
-            if (!isset($request[$arg]))
+        foreach ($args as $arg) {
+            if (!isset($request[$arg])) {
                 $request[$arg] = NULL;
-        if (!isset($request['Debug']))
+            }
+        }
+        if (!isset($request['Debug'])) {
             $request['Debug'] = FALSE;
+        }
 
-        return ($this->DATA($request['Method'], $request['SourceType'], $request['SourceID'],
-                        $request['ResourceType'], $request['MimeType'], $request['ID'],
-                        $request['RawData'], $request['akid'], $request['Debug']));
+        return (
+            $this->DATA(
+                $request['Method'],
+                $request['SourceType'],
+                $request['SourceID'],
+                $request['ResourceType'],
+                $request['MimeType'],
+                $request['ID'],
+                $request['RawData'],
+                $request['akid'],
+                $request['Debug']
+            )
+        );
     }
 
     /**
@@ -444,18 +464,29 @@ class mailjetdata
      * @return mixed JSON string or Data content
      * @todo Add MailjetDataType::AllowedRType verification
      */
-    public function DATA($Method, $SourceType, $SourceID, $ResourceType, $MimeType,
-                            $ID = NULL, $RawData = NULL, $akid = NULL, $Debug = FALSE)
+    public function DATA(
+        $Method,
+        $SourceType,
+        $SourceID,
+        $ResourceType,
+        $MimeType,
+        $ID = NULL,
+        $RawData = NULL,
+        $akid = NULL,
+        $Debug = FALSE
+    )
     {
         $this->_debug_access = '';
-        if (! $this->fetchAllTypes())
+        if (!$this->fetchAllTypes()) {
             $this->_debug_access .= "Error with API";
+        }
 
         $this->_debug = $Debug;
 
         $Method = strtoupper($Method);
-        if (!in_array($Method, array('GET', 'POST', 'PUT', 'DELETE', 'JSON')))
+        if (!in_array($Method, array('GET', 'POST', 'PUT', 'DELETE', 'JSON'))) {
             $Method = 'GET';
+        }
 
         $uri = '';
         $args = array($SourceType, $SourceID, $ResourceType, $MimeType);
@@ -467,8 +498,9 @@ class mailjetdata
                     $this->_debug_access .= " Parameter $index is not valid. Expected :";
                     $count = 0;
                     foreach ($this->DataType[$uriAccess[$index]] as $k => $v) {
-                        if ($k != 0)
+                        if ($k != 0) {
                             $this->_debug_access .= " $v ,";
+                        }
                         if ($count > 10) {
                             $this->_debug_access .= '..,';
                             break;
@@ -476,19 +508,25 @@ class mailjetdata
                         $count++;
                     }
                     $this->_debug_access = preg_replace('/,$/', '.', $this->_debug_access, 1);
-                    if ($uriAccess[$index] == MailjetDataType::MimeType)
-                        $this->_debug_access .= ' You can use "getMimeType()" to retrieve the complete list of Mime-Types available.';
+                    if ($uriAccess[$index] == MailjetDataType::MimeType) {
+                        $this->_debug_access .=
+                            ' You can use "getMimeType()" to retrieve the complete list of Mime-Types available.';
+                    }
                 } elseif (is_null($uriAccess[$index]))
                     $args[$index] = intval($args[$index]);
-                if (!is_null($args[$index]) && !empty($args[$index]))
-                    $uri .= '/'.$args[$index];
+            if (!is_null($args[$index]) && !empty($args[$index])) {
+                $uri .= '/' . $args[$index];
+            }
         }
-        if (!is_null($ID))
-            $uri .= '/'.$ID;
-        if (!is_null($akid))
-            $uri .= '?akid='.intval($akid);
-        if (in_array(strtoupper($MimeType), array('MULTIPART/FORM-DATA', 'APPLICATION/X-WWW-FORM-URLENCODED')))
+        if (!is_null($ID)) {
+            $uri .= '/' . $ID;
+        }
+        if (!is_null($akid)) {
+            $uri .= '?akid=' . intval($akid);
+        }
+        if (in_array(strtoupper($MimeType), array('MULTIPART/FORM-DATA', 'APPLICATION/X-WWW-FORM-URLENCODED'))) {
             $RawData = array('data' => $RawData);
+        }
 
         return ($this->sendRequest($Method, $uri, $MimeType, $RawData));
     }
@@ -514,15 +552,16 @@ class mailjetdata
      */
     private function sendRequest($Method, $Uri, $MimeType, $RawData)
     {
-        if(is_null($this->_curl_handle))
+        if (is_null($this->_curl_handle)) {
             $this->_curl_handle = curl_init();
+        }
 
-        curl_setopt($this->_curl_handle, CURLOPT_URL, $this->_api_url.$Uri);
+        curl_setopt($this->_curl_handle, CURLOPT_URL, $this->_api_url . $Uri);
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey.':'.$this->_secretKey);
-        curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array("Content-Type: ".$MimeType));
+        curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey . ':' . $this->_secretKey);
+        curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array("Content-Type: " . $MimeType));
         curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, $Method);
         curl_setopt($this->_curl_handle, CURLOPT_USERAGENT, 'prestashop-3.0');
 
@@ -530,27 +569,27 @@ class mailjetdata
             case 'GET' :
                 curl_setopt($this->_curl_handle, CURLOPT_HTTPGET, TRUE);
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, NULL);
-            break;
+                break;
 
             case 'POST':
                 curl_setopt($this->_curl_handle, CURLOPT_POST, TRUE);
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $RawData);
-            break;
+                break;
 
             case 'PUT':
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $RawData);
-            break;
+                break;
 
             case 'JSON':
-            	$RawData = Tools::jsonEncode($RawData);
-            	curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
-				curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $RawData);
-				curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
-				curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
-				    'Content-Type: application/json',
-				    'Content-Length: ' . strlen($RawData))
-				);
-            break;
+                $RawData = Tools::jsonEncode($RawData);
+                curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $RawData);
+                curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array(
+                    'Content-Type: application/json',
+                    'Content-Length: ' . strlen($RawData))
+                );
+                break;
         }
 
         $buffer = curl_exec($this->_curl_handle);
@@ -562,8 +601,9 @@ class mailjetdata
         $this->_debug = FALSE;
 
         // If an error is encountered, return an array
-        if($this->_info['http_code'] >= 300)
-        	$buffer = Tools::jsonDecode($buffer);
+        if ($this->_info['http_code'] >= 300) {
+            $buffer = Tools::jsonDecode($buffer);
+        }
 
         return $buffer;
     }
@@ -581,8 +621,9 @@ class mailjetdata
      */
     public function getLastHTTPCode()
     {
-        if (isset($this->_info['http_code']))
+        if (isset($this->_info['http_code'])) {
             return ($this->_info['http_code']);
+        }
 
         return (0);
     }
@@ -603,13 +644,14 @@ class mailjetdata
      */
     public function getDebugInfo()
     {
-        $status_code = array (
+        $status_code = array(
             200 => 'OK - Everything went fine.',
             201 => 'OK - Created : The POST request was successfully executed.',
             204 => 'OK - No Content : The Delete request was successful.',
             304 => 'OK - Not Modified : The PUT request didn’t affect any record.',
             400 => 'KO - Bad Request : Please check the parameters.',
-            401 => 'KO - Unauthorized : A problem occurred with the apiKey/secretKey. You may be not authorized to access the API or your apiKey may have expired.',
+            401 => 'KO - Unauthorized : A problem occurred with the apiKey/secretKey. '
+                . 'You may be not authorized to access the API or your apiKey may have expired.',
             403 => 'KO - Forbidden : You are not authorized to call that function.',
             404 => 'KO - Not Found : The resource with the specified ID does not exist.',
             405 => 'KO - Method not allowed : Attempt to put/post multiple resources in 1 request.',
@@ -617,36 +659,37 @@ class mailjetdata
             503 => 'KO - Service unavailable.'
         );
 
-        if (array_key_exists($this->_info['http_code'], $status_code))
+        if (array_key_exists($this->_info['http_code'], $status_code)) {
             $http_code_text = $status_code[$this->_info['http_code']];
-        else
+        } else {
             $http_code_text = 'KO - Service unavailable.';
+        }
 
         $status_message = '';
         if ($this->_info['http_code'] >= 400) {
             $buffer = Tools::jsonDecode($this->_buffer);
             if (!is_null($buffer) && isset($buffer->StatusCode) && isset($buffer->ErrorMessage)) {
-                $status_message = $buffer->StatusCode.' - '.$buffer->ErrorMessage;
-                if (isset($buffer->ErrorInfo) && !empty($buffer->ErrorInfo))
-                    $status_message .= ' ('.$buffer->ErrorInfo.')';
+                $status_message = $buffer->StatusCode . ' - ' . $buffer->ErrorMessage;
+                if (isset($buffer->ErrorInfo) && !empty($buffer->ErrorInfo)) {
+                    $status_message .= ' (' . $buffer->ErrorInfo . ')';
                 }
+            }
         }
 
         $res = array(
-            'method'					=> $this->_method,
-            'url'						=> $this->_info['url'],
-            'duration'					=> $this->_info['total_time'] - $this->_info['pretransfer_time'],
-            'http_code'					=> $this->_info['http_code'],
-            'http_code_text'			=> $http_code_text,
-            'status_message'			=> $status_message,
-            'uri_error'					=> $this->_debug_access,
-            'content_type'				=> $this->_info['content_type'],
-            'download_content_length'	=> $this->_info['download_content_length'],
-            'upload_content_length'		=> $this->_info['upload_content_length'],
-            'buffer'					=> $this->_buffer
+            'method' => $this->_method,
+            'url' => $this->_info['url'],
+            'duration' => $this->_info['total_time'] - $this->_info['pretransfer_time'],
+            'http_code' => $this->_info['http_code'],
+            'http_code_text' => $http_code_text,
+            'status_message' => $status_message,
+            'uri_error' => $this->_debug_access,
+            'content_type' => $this->_info['content_type'],
+            'download_content_length' => $this->_info['download_content_length'],
+            'upload_content_length' => $this->_info['upload_content_length'],
+            'buffer' => $this->_buffer
         );
 
         return $res;
     }
-
 }

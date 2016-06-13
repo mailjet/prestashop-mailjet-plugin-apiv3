@@ -22,37 +22,30 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
-
-/**
- *
- * @author atanas
  */
+
 class HooksEvents
 {
-	/**
-	 *
-	 * @param array $event
-	 */
-	public function unsubscribe(array $event)
-	{
-		if (!array_key_exists('email', $event))
-			return false;
+    /**
+     *
+     * @param array $event
+     */
+    public function unsubscribe(array $event)
+    {
+        if (!array_key_exists('email', $event)) {
+            return false;
+        }
 
-		if (!$event['email'])
-			return false;
+        if (!$event['email']) {
+            return false;
+        }
 
-		$customerClass = new Customer();
-		$customer = $customerClass->getByEmail($event['email']);
+        $customerClass = new Customer();
+        $customer = $customerClass->getByEmail($event['email']);
 
-		if ($customer)
-		{
-			$customer->newsletter = 0;
-			$customer->update();
-		}
-	}
-
+        if ($customer) {
+            $customer->newsletter = 0;
+            $customer->update();
+        }
+    }
 }
-
-
-?>

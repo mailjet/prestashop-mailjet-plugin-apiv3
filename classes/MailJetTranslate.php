@@ -22,33 +22,33 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
-*/
+ */
 
 class MailJetTranslate
 {
-	public static function getTranslationsByName($name, $iso = false)
-	{
-		$file = dirname(__FILE__).'/../xml/translate.xml';
-		$translations = array();
-		$default_translation = array();
 
-		if (file_exists($file) && ($xml = simplexml_load_file($file)))
-		{
-			$iso = ($iso) ? $iso : Context::getContext()->language->iso_code;
+    public static function getTranslationsByName($name, $iso = false)
+    {
+        $file = dirname(__FILE__) . '/../xml/translate.xml';
+        $translations = array();
+        $default_translation = array();
 
-			if (isset($xml->{$name}))
-			{
-				foreach ($xml->{$name}->iso as $data)
-				{
-					if ($data['code'] == $iso)
-						$translations = (array)$data;
-					if ($iso != 'en' && $data['code'] == 'en')
-						$default_translation = (array)$data;
-				}
-			}
-		}
-		$translations += $default_translation;
-		unset($translations['@attributes']);
-		return $translations;
-	}
+        if (file_exists($file) && ($xml = simplexml_load_file($file))) {
+            $iso = ($iso) ? $iso : Context::getContext()->language->iso_code;
+
+            if (isset($xml->{$name})) {
+                foreach ($xml->{$name}->iso as $data) {
+                    if ($data['code'] == $iso) {
+                        $translations = (array) $data;
+                    }
+                    if ($iso != 'en' && $data['code'] == 'en') {
+                        $default_translation = (array) $data;
+                    }
+                }
+            }
+        }
+        $translations += $default_translation;
+        unset($translations['@attributes']);
+        return $translations;
+    }
 }
