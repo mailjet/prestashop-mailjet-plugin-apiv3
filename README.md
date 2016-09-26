@@ -9,7 +9,7 @@ Boost your ROI and increase your merchant revenue with the Mailjet v3 all-in-one
 ## Plug-in Key Info
 
 * Plug-in languages: EN FR
-* PrestaShop Compatibility: PrestaShop v1.4.0.1 - v1.6.1.5
+* PrestaShop Compatibility: PrestaShop v1.4.0.1 - v1.7.0.0
 * Mailjet Compatibility: Mailjet v3
 * Support: https://www.mailjet.com/support/ticket
 * Requires Mailjet account
@@ -67,6 +67,9 @@ Happy emailing!
 
 
 ## Changelog
+
+= 3.3.1 =
+* Added support of PrestaShop up to version 1.7.0.0
 
 = 3.3.0 =
 * Improvement of the account settings

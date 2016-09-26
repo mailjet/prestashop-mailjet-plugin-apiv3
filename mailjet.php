@@ -37,12 +37,13 @@ require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetEvents.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetLog.php');
 
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/Segmentation.php');
-
-if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
-    require_once(_PS_CORE_DIR_ . '/tools/swift/swift_required.php');
-} else {
-    require_once(_PS_SWIFT_DIR_ . 'Swift.php');
-    require_once(_PS_SWIFT_DIR_ . 'Swift/Connection/SMTP.php');
+if (version_compare(_PS_VERSION_, '1.7', '<')) {
+	if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
+		require_once(_PS_CORE_DIR_ . '/tools/swift/swift_required.php');
+	} else {
+		require_once(_PS_SWIFT_DIR_ . 'Swift.php');
+		require_once(_PS_SWIFT_DIR_ . 'Swift/Connection/SMTP.php');
+	}
 }
 /* include_once(_PS_SWIFT_DIR_.'Swift/Connection/NativeMail.php'); */
 /* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
@@ -52,7 +53,6 @@ require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Initial.ph
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php');
 
-require_once(_PS_MODULE_DIR_ . 'mailjet/ModuleTabRedirect.php');
 
 class Mailjet extends Module
 {
@@ -129,7 +129,7 @@ class Mailjet extends Module
             Get started today with 6000 free emails per month.'
         );
         $this->author = 'PrestaShop';
-        $this->version = '3.3.0';
+        $this->version = '3.3.1';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -161,7 +161,7 @@ class Mailjet extends Module
             $this->context = new StdClass();
             $this->context->smarty = $GLOBALS['smarty'];
             $this->context->cookie = $GLOBALS['cookie'];
-            // ###########################**°
+            // ###########################**
             $this->context->language = new Language($this->context->cookie->id_lang);
             $this->context->currency = new Currency($this->context->cookie->id_lang);
             $this->context->link = new Link();
@@ -197,17 +197,49 @@ class Mailjet extends Module
         }
 
         // Install Tab
-        $tab = new Tab();
-        foreach (Language::getLanguages() as $lang) {
-            $tab->name[$lang['id_lang']] = $this->l('Mailjet');
+        if (version_compare(_PS_VERSION_, '1.7', '>=')) {
+            $tabMain = new Tab();
+            $tabMain->name = array();
+            foreach (Language::getLanguages() as $lang) {
+                $tabMain->name[$lang['id_lang']] = $this->l('Mailjet');
+            }
+            if ($fr = Language::getIdByIso('fr')) {
+                $tabMain->name[$fr] = $this->l('Mailjet');
+            }
+            $tabMain->class_name = 'AdminMailjetMain';
+            $tabMain->id_parent = 0;
+            $tabMain->module = $this->name;
+            $tabMain->active = 1;
+            $tabMain->add();
+
+            $tab = new Tab();
+            $tab->class_name = 'AdminMailjet';
+            $tab->name = array();
+            foreach (Language::getLanguages() as $lang) {
+                $tab->name[$lang['id_lang']] = $this->l('Configure');
+            }
+            if ($fr = Language::getIdByIso('fr')) {
+                $tab->name[$fr] = $this->l('Configure');
+            }
+            $tab->id_parent = $tabMain->id;
+            $tab->module = $this->name;
+            $tab->active = 1;
+            $tab->add();
+        } else {
+            $tab = new Tab();
+            $tab->class_name = 'AdminMailjet';
+            $tab->name = array();
+            foreach (Language::getLanguages() as $lang) {
+                $tab->name[$lang['id_lang']] = $this->l('Mailjet');
+            }
+            if ($fr = Language::getIdByIso('fr')) {
+                $tab->name[$fr] = $this->l('Mailjet');
+            }
+            $tab->id_parent = (int) Tab::getIdFromClassName('AdminTools');
+            $tab->module = $this->name;
+            $tab->active = 1;
+            $tab->add();
         }
-        if ($fr = Language::getIdByIso('fr')) {
-            $tab->name[$fr] = $this->l('Mailjet');
-        }
-        $tab->class_name = 'ModuleTabRedirect';
-        $tab->id_parent = (int) Tab::getIdFromClassName('AdminTools');
-        $tab->module = $this->name;
-        $tab->add();
 
         $this->createTriggers();
         Configuration::updateValue('MJ_ALLEMAILS', 1);
@@ -254,8 +286,12 @@ class Mailjet extends Module
         }
 
         // Uninstall Tab
-        $tab = new Tab((int) Tab::getIdFromClassName('ModuleTabRedirect'));
+        $tab = new Tab((int) Tab::getIdFromClassName('AdminMailjet'));
         $tab->delete();
+        if (version_compare(_PS_VERSION_, '1.7', '>=')) {
+            $tabMain = new Tab((int) Tab::getIdFromClassName('AdminMailjetMain'));
+            $tabMain->delete();
+        }
 
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
@@ -1791,16 +1827,16 @@ class Mailjet extends Module
 
             switch (Configuration::get('PS_MAIL_SMTP_ENCRYPTION')) {
                 case 'tls':
-                    $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_TLS;
+                    $mj_mail_server_encryption = \Swift_Connection_SMTP::ENC_TLS;
                     break;
                 case 'ssl':
-                    $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_SSL;
+                    $mj_mail_server_encryption = \Swift_Connection_SMTP::ENC_SSL;
                     break;
                 default:
-                    $mj_mail_server_encryption = Swift_Connection_SMTP::ENC_OFF;
+                    $mj_mail_server_encryption = \Swift_Connection_SMTP::ENC_OFF;
             }
 
-            $connection = new Swift_Connection_SMTP(
+            $connection = new \Swift_Connection_SMTP(
                 Configuration::get('PS_MAIL_SERVER'),
                 $mj_mail_server_port,
                 $mj_mail_server_encryption
@@ -1808,19 +1844,19 @@ class Mailjet extends Module
             $connection->setUsername($account['API_KEY']);
             $connection->setPassword($account['SECRET_KEY']);
 
-            $swift = new Swift($connection);
+            $swift = new \Swift($connection);
 
-            $sMessage = new Swift_Message('[' . $from_name . '] ' . $subject);
+            $sMessage = new \Swift_Message('[' . $from_name . '] ' . $subject);
             //$sMessage->headers->setEncoding('Q');
-            $sMessage->attach(new Swift_Message_Part(strip_tags($message), 'text/plain', '8bit', 'utf-8'));
-            $sMessage->attach(new Swift_Message_Part($message, 'text/html', '8bit', 'utf-8'));
+            $sMessage->attach(new \Swift_Message_Part(strip_tags($message), 'text/plain', '8bit', 'utf-8'));
+            $sMessage->attach(new \Swift_Message_Part($message, 'text/html', '8bit', 'utf-8'));
 
             /* Send mail */
-            $send = $swift->send($sMessage, $to, new Swift_Address($from, $from_name));
+            $send = $swift->send($sMessage, $to, new \Swift_Address($from, $from_name));
             $swift->disconnect();
 
             return $send;
-        } catch (Swift_Exception $e) {
+        } catch (\Swift_Exception $e) {
             return false;
         }
     }
@@ -1833,7 +1869,7 @@ class Mailjet extends Module
             $from = $account['EMAIL'];
             $from_name = Configuration::get('PS_SHOP_NAME');
 
-            $transport = Swift_SmtpTransport::newInstance(
+            $transport = \Swift_SmtpTransport::newInstance(
                 Configuration::get('PS_MAIL_SERVER'),
                 Configuration::get('PS_MAIL_SMTP_PORT'),
                 Configuration::get('PS_MAIL_SMTP_ENCRYPTION')
@@ -1852,10 +1888,10 @@ class Mailjet extends Module
              */
 
             // Create the Mailer using your created Transport
-            $mailer = Swift_Mailer::newInstance($transport);
+            $mailer = \Swift_Mailer::newInstance($transport);
 
             // Create a message
-            $message = Swift_Message::newInstance('[' . $from_name . '] ' . $subject)
+            $message = \Swift_Message::newInstance('[' . $from_name . '] ' . $subject)
                 ->setFrom([$from => $from_name])
                 ->setTo([$to])
                 ->setBody($message, 'text/html');
@@ -1866,7 +1902,7 @@ class Mailjet extends Module
             if ($mailer->send($message)) {
                 $result = true;
             }
-        } catch (Swift_SwiftException $e) {
+        } catch (\Swift_SwiftException $e) {
             $result = $e->getMessage();
         }
 
