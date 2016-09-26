@@ -129,7 +129,7 @@ class Mailjet extends Module
             Get started today with 6000 free emails per month.'
         );
         $this->author = 'PrestaShop';
-        $this->version = '3.3.0';
+        $this->version = '3.3.1';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -240,7 +240,7 @@ class Mailjet extends Module
             $tab->active = 1;
             $tab->add();
         }
-        
+
         $this->createTriggers();
         Configuration::updateValue('MJ_ALLEMAILS', 1);
 
