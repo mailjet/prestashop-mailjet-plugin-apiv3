@@ -24,19 +24,23 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-if (version_compare(_PS_VERSION_, '1.5', '<')) {
-    include_once(_PS_ROOT_DIR_ . '/classes/AdminTab.php');
-}
 
-class ModuleTabRedirect extends AdminTab
+
+class AdminMailjetController extends ModuleAdminController
 {
     public function __construct()
     {
+        $this->module = 'mailjet';
+        $this->lang = true;
+        $this->context = Context::getContext();
+        $this->bootstrap = true;
+
         $token = Tools::getAdminTokenLite('AdminModules');
 
         //$url = Dispatcher::getInstance()->createUrl('AdminModules', 1, array('token'=>$token), false);
         $url = 'index.php?controller=AdminModules&tab=AdminModules&token=' . $token;
-
+        parent::__construct();
         Tools::redirectAdmin($url . '&configure=mailjet');
     }
+
 }
