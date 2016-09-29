@@ -38,12 +38,12 @@ require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetLog.php');
 
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/Segmentation.php');
 if (version_compare(_PS_VERSION_, '1.7', '<')) {
-	if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
-		require_once(_PS_CORE_DIR_ . '/tools/swift/swift_required.php');
-	} else {
-		require_once(_PS_SWIFT_DIR_ . 'Swift.php');
-		require_once(_PS_SWIFT_DIR_ . 'Swift/Connection/SMTP.php');
-	}
+    if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
+        require_once(_PS_CORE_DIR_ . '/tools/swift/swift_required.php');
+    } else {
+        require_once(_PS_SWIFT_DIR_ . 'Swift.php');
+        require_once(_PS_SWIFT_DIR_ . 'Swift/Connection/SMTP.php');
+    }
 }
 /* include_once(_PS_SWIFT_DIR_.'Swift/Connection/NativeMail.php'); */
 /* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
