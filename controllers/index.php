@@ -22,22 +22,14 @@
  * @copyright 2007-2016 PrestaShop SA
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
- */
+*/
 
-class AdminMailjetController extends ModuleAdminController
-{
-    public function __construct()
-    {
-        $this->module = 'mailjet';
-        $this->lang = true;
-        $this->context = Context::getContext();
-        $this->bootstrap = true;
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 
-        $token = Tools::getAdminTokenLite('AdminModules');
+header("Cache-Control: no-store, no-cache, must-revalidate");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 
-        //$url = Dispatcher::getInstance()->createUrl('AdminModules', 1, array('token'=>$token), false);
-        $url = 'index.php?controller=AdminModules&tab=AdminModules&token=' . $token;
-        parent::__construct();
-        Tools::redirectAdmin($url . '&configure=mailjet');
-    }
-}
+header("Location: ../");
+exit;
