@@ -548,7 +548,14 @@ div.mj_triggers_parameters
     border-radius: 3px !important;
 }
 
-.mj_errors { margin-top:10px; }
+.mj_errors {
+    margin-top:10px;
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
 .mj_landing { clear:both;width:960px;margin:0 auto; }
 
 #mj_iframe { border:0px; }
