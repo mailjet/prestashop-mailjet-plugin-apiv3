@@ -1,5 +1,5 @@
 {*
-* 2007-2015 PrestaShop
+* 2007-2017 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,7 +18,7 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 * @author    PrestaShop SA <contact@prestashop.com>
-* @copyright 2007-2016 PrestaShop SA
+* @copyright 2007-2017 PrestaShop SA
 * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 * International Registered Trademark & Property of PrestaShop SA
 *}{* Has to be initiated here cause it's defined after the postProcess *}
@@ -57,7 +57,7 @@
         {l s='Errors list:' mod='mailjet'}
         <ul class="mj_errors">
             {foreach from=$MJ_errors item=current_error}
-                <li>{$current_error|default:''}</li>
+                <li>{$current_error|escape:'quotes':'UTF-8'|default:''}</li>
                 {/foreach}
         </ul>
     </div>
