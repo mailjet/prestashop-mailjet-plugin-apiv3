@@ -68,6 +68,10 @@ Happy emailing!
 
 ## Changelog
 
+= 3.3.2 =
+* Modified the error message on configuration page 
+* Remove config.xml file as Prestashop.com upload section requires from us in order to allow our module to be uploaded.
+
 = 3.3.1 =
 * Added support of PrestaShop up to version 1.7.0.0
 
