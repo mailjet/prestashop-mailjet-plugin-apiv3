@@ -74,7 +74,7 @@
                                         <input type="checkbox" value="{$fields.id_mj_events|escape:'htmlall':'UTF-8'|default:''}" name="events[]" />
                                     </td>
                                     {foreach from=$fields item=field}
-                                        <td>{$field|escape:'htmlall':'UTF-8'|default:''}</td>
+                                        <td>{$field|escape:'quotes':'UTF-8'|default:''}</td>
                                     {/foreach}
                                 </tr>
                             {/foreach}

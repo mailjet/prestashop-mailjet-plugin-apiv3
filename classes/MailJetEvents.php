@@ -52,12 +52,8 @@ class MailJetEvents extends ObjectModel
      * @param string $event
      * @param bool $time
      */
-    public function __construct(
-        $event = MailJetEvents::DEFAULT_EVENT,
-        $post_vars = array(),
-        $time = false,
-        $id_events = false
-    ) {
+    public function __construct($event = MailJetEvents::DEFAULT_EVENT, $post_vars = array(), $time = false, $id_events = false)
+    {
         if (!$time) {
             $time = time();
         }
@@ -100,12 +96,15 @@ class MailJetEvents extends ObjectModel
                         if (isset($this->post_vars[(string) $key])) {
                             $scheme[(string) $key] =
                                 array('value' => $this->post_vars[(string) $key], 'type' => (string) $key['type']);
+                        } else {
+                            $scheme[(string) $key] = array('value' => (string) $key, 'type' => (string) $key['type']);
                         }
                     }
                     //...$log = 'Scheme found';
                 }
             }
         }
+
 
         // Not used for ajax query, then no need to log it
         /* if ($name != MailJetEvents::ALL_EVENTS_KEYS)
@@ -126,6 +125,7 @@ class MailJetEvents extends ObjectModel
         }
 
         $translations = MailJetTranslate::getTranslationsByName('events');
+
         foreach ($translations as $key => $value) {
             if (isset($this->params[$key])) {
                 $this->params[$key]['title'] = $value;
@@ -269,8 +269,11 @@ class MailJetEvents extends ObjectModel
     public function getFieldsName($default = false)
     {
         $fields = array();
-
-        foreach (($default ? $this->default_scheme : $this->params) as $key => $case) {
+        $scheme = $this->params;
+        if ($default) {
+            $scheme = $this->default_scheme;
+        }
+        foreach ($scheme as $key => $case) {
             $fields[$key] = $case['title'];
         }
         return $fields;

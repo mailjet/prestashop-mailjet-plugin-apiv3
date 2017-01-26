@@ -1206,11 +1206,11 @@ class Mailjet extends Module
             case 'EVENTS':
                 $page = ($page = Tools::getValue('page')) ? $page : 1;
 
-                $mj_event = new MailJetEvents(
-                    (!($event = Tools::getValue('event')))
-                    ? MailJetEvents::ALL_EVENTS_KEYS
-                    : $event
-                );
+                $event = MailJetEvents::ALL_EVENTS_KEYS;
+                if (Tools::getValue('event')) {
+                    $event = Tools::getValue('event');
+                }
+                $mj_event = new MailJetEvents($event);
                 $mj_event->setPage($page);
 
                 $titles = $mj_event->getFieldsName();
