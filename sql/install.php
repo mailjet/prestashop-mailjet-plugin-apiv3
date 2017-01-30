@@ -98,8 +98,8 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_filter` (
 					id_group INT(10) NOT NULL,
 					assignment_auto TINYINT(1) NOT NULL,
 					replace_customer TINYINT(1) NOT NULL,
-					date_start TIMESTAMP,
-					date_end TIMESTAMP,
+					date_start DATETIME NOT NULL DEFAULT \'1000-01-01 00:00:00\',
+					date_end DATETIME NOT NULL DEFAULT \'1000-01-01 00:00:00\',
 					PRIMARY KEY (id_filter)
 					);';
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_condition` (
