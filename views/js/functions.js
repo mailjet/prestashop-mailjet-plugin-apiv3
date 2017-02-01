@@ -100,6 +100,8 @@ function updateBinder(idrule, current, id, load)
                 $('input#value1' + current + ', input#value2' + current).val('').hide();
             }
 
+
+	if ($("select#sourceSelect" + current).val() != 4) {
             switch ($('select#fieldSelect' + current).val())
             {
                 case '1':
@@ -147,6 +149,7 @@ function updateBinder(idrule, current, id, load)
                     $('input#data' + current).parents('td').addClass('grey fixed');
                     $('input#value1' + current + ', input#value2' + current).parents('td').addClass('grey fixed');
             }
+	
 
             unbindAll('data' + current, load);
             unbindAll('value1' + current, load);
@@ -195,6 +198,13 @@ function updateBinder(idrule, current, id, load)
                 if ($.inArray($('select#fieldSelect' + current).val(), dataOn) !== -1)
                     $('input#data' + current).show();
             }
+			
+		} else {
+			$('input#data' + current).hide().parents('td').addClass('grey fixed');
+			$('input#value1' + current + ', input#value2' + current).show().parents('td').removeClass('grey fixed');
+		}
+			
+			
         }
     });
 }

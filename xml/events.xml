@@ -37,7 +37,6 @@
         <key type="string">original_address</key>
         <key type="int">new_address</key>
     </event>
-
     <event name="keys_list">
         <key type="string">email</key>
         <key type="int">mj_contact_id</key>

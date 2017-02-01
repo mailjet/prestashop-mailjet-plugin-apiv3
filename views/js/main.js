@@ -75,18 +75,18 @@ $(document).ready(function () {
 
     $('.fieldSelect').live('change', function () {
         // turn off events for multi store customer segmentation
-        if ($('.sourceSelect').val() != 4) {
+        //if ($('.sourceSelect').val() != 4) {
             updateBinder($(this).val(), $(this).attr('id').replace('fieldSelect', ''));
-        }
+        //}
     });
 
     $('.trSelect').live('click', function () {
         loadFilterInfo($(this).attr('id').replace('list', ''));
         loadFilter($(this).attr('id').replace('list', ''));
         $('#newfilter').show();
-        if ($('.sourceSelect').val() == 4) {
-            $('.fixed[name^="value"], .fixed[name^="data"]').hide().parent().addClass('grey fixed');
-        }
+        //if ($('.sourceSelect').val() == 4) {
+        //    $('.fixed[name^="value"], .fixed[name^="data"]').hide().parent().addClass('grey fixed');
+        //}
     });
 
     $("#export").live("click", function () {
