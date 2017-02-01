@@ -68,6 +68,10 @@ Happy emailing!
 
 ## Changelog
 
+= 3.3.3 =
+* Fixed errors in "Segmentation" screen
+* Fixed bug causing installation fail for MySQL versions after 5.7
+
 = 3.3.2 =
 * Modified the error message on configuration page 
 * Remove config.xml file as Prestashop.com upload section requires from us in order to allow our module to be uploaded.
