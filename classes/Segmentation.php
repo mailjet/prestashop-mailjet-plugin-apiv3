@@ -246,7 +246,7 @@ class Segmentation
             $tmp = array();
             $join = '';
             $field = '';
-			$multistoreWhere = '';
+            $multistoreWhere = '';
             $labels = array(
                 '(SELECT COUNT(DISTINCT(wo0.id_order)) FROM ' .
                 _DB_PREFIX_ . 'orders wo0 WHERE wo0.id_customer = c.id_customer) AS "' . $this->ll(4) . '"',
@@ -895,7 +895,6 @@ class Segmentation
                     }
                     
                 } else {
-
                     $multistoreWhere = ' AND c.id_shop = ' . (int)$post['fieldSelect'][$i];
 
                     if (Tools::strlen($val1) > 0 && Tools::strlen($val2) > 0) {
@@ -1191,7 +1190,7 @@ class Segmentation
         if ($limit) {
             $select .= ' LIMIT ' . (int) $limit['start'] . ', ' . (int) $limit['length'];
         }
-		
+
         return $select;
     }
 
