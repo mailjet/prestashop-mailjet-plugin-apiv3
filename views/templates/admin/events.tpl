@@ -55,7 +55,7 @@
 
         {else}
 
-            <form action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'|default:''}" method="POST">
+            <form id="eventsForm" action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'|default:''}" method="POST">
                 <div id="tableWrapper">
                     <table cellpadding="1" cellspacing="1" id="vsTable">
                         <thead>
@@ -82,7 +82,10 @@
                     </table>
                 </div>
                 <div class="MJ_event_link">
-                    <input type="submit" value="{l s='Fix the selected errors' mod='mailjet'}" />
+                    <button name="fixEvents" value="1" onclick="document.getElementById('eventsForm').submit();">{l s='Clear' mod='mailjet'} </button>
+
+                    <button name="deleteEvents" value="1" onclick="document.getElementById('eventsForm').submit();" >{l s='Unsubscribe & clear' mod='mailjet'} </button>
+
                     {if $MJ_paging.prev}
                         {assign var=calc value=$MJ_paging.current_page - 1}
                         <a href="{$MJ_adminmodules_link|escape:'htmlall':'UTF-8'|default:''}&{$MJ_REQUEST_PAGE_TYPE|escape:'htmlall':'UTF-8'|default:''}={$MJ_page_name|escape:'htmlall':'UTF-8'|default:''}&page=1"><<</a>

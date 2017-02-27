@@ -52,6 +52,7 @@ require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Synchroniz
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Initial.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php');
+include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php');
 
 
 class Mailjet extends Module
@@ -830,11 +831,19 @@ class Mailjet extends Module
         } elseif (Tools::isSubmit('MJ_set_login')) {
             $this->checkAuthentication();
         } elseif (($events_list = Tools::getValue('events'))) {
-            $mj_event = new MailJetEvents();
-            foreach ($events_list as $key => $id_mf_events) {
-                $mj_event->id = $id_mf_events;
-                if ($mj_event->delete()) {
-                    unset($events_list[$key]);
+            if (Tools::getValue('fixEvents') || Tools::getValue('deleteEvents')) {
+                $mj_event = new MailJetEvents();
+                foreach ($events_list as $key => $id_mf_events) {
+                    $mj_event->id = $id_mf_events;
+                    if (Tools::getValue('deleteEvents')) {
+                        $eventData = $mj_event->getEventById($mj_event->id);
+                        $customer = Customer::getByEmail($eventData[0]['email']);
+                        $hooks_events = new HooksEvents();
+                        $hooks_events->unsubscribe($eventData[0]);
+                    }
+                    if ($mj_event->delete()) {
+                        unset($events_list[$key]);
+                    }
                 }
             }
             $this->context->smarty->assign('MJ_events_form_success', $events_list);

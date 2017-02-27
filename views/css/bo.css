@@ -327,7 +327,7 @@ table#vsTable .titleImage {
     position: relative;
 }
 
-.MJ_event_link a, #events input[type="submit"]{
+.MJ_event_link a, #events input[type="submit"], #events button{
     padding: 2px 4px;
     font-weight: bolder;
     background: #4c4d53;
@@ -342,7 +342,7 @@ table#vsTable .titleImage {
 .MJ_event_link > input { position: absolute;top:0; left:0;}
 
 
-#events input[type=submit] { padding: 0; padding: 4px 10px; border: none; cursor: pointer; }
+#events input[type=submit], #events button { padding: 0; padding: 4px 10px; border: none; cursor: pointer; }
 
 /* HOME TAB */
 

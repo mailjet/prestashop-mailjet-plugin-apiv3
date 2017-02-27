@@ -35,7 +35,7 @@ class MailJetEvents extends ObjectModel
 
     const DEFAULT_EVENT = 'open';
     const ALL_EVENTS_KEYS = 'keys_list';
-    const LIMIT_EVENT = 10;
+    const LIMIT_EVENT = 50;
 
     private $limit_event;
     public $current_page;
@@ -199,6 +199,13 @@ class MailJetEvents extends ObjectModel
         }
         return count(DB::getInstance()->executeS($query));
     }
+
+    public function getEventById($eventId)
+    {
+        $query = 'SELECT e.* FROM `' . _DB_PREFIX_ . $this->table . '` e  WHERE e.`id_mj_events` = "' . $eventId . '"';
+        return DB::getInstance()->executeS($query);
+    }
+
 
     /**
      * Set the limit for any fetch
