@@ -130,7 +130,7 @@ class Mailjet extends Module
             Get started today with 6000 free emails per month.'
         );
         $this->author = 'PrestaShop';
-        $this->version = '3.3.3';
+        $this->version = '3.4.0';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -837,7 +837,6 @@ class Mailjet extends Module
                     $mj_event->id = $id_mf_events;
                     if (Tools::getValue('deleteEvents')) {
                         $eventData = $mj_event->getEventById($mj_event->id);
-                        $customer = Customer::getByEmail($eventData[0]['email']);
                         $hooks_events = new HooksEvents();
                         $hooks_events->unsubscribe($eventData[0]);
                     }
