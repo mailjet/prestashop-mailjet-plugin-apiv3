@@ -51,62 +51,80 @@ if (empty($post)) {
 }
 
 # Decode Trigger Informations
-$t = Tools::jsonDecode($post, true);
+$allEvents = Tools::jsonDecode($post, true);
 
-# No Informations sent with the Event
-if (!is_array($t) || !isset($t['event'])) {
+if (!is_array($allEvents)) {
     header('HTTP/1.1 422 Not ok');
     /* => do action */
     return;
 }
 
-$events = new MailJetEvents($t['event'], $t);
-
 /*
- * 	Event handler
- * 	- please check https://www.mailjet.com/docs/event_tracking for further informations.
+ * If we get Version 1 event it is single array.
+ * Then we need to convert it to multi-array
+ * to reuse the same functionallity used for Version 2 (multi-array of events)
  */
-switch ($t['event']) {
-    case 'open':
-        /* => do action */
-        /* If an error occurs, tell Mailjet to retry later: header('HTTP/1.1 400 Error'); */
-        /* If it works, tell Mailjet it's OK */
-        header('HTTP/1.1 200 Ok');
-        break;
+if (array_key_exists('event', $allEvents)) {
+    $allEvents = array($allEvents);
+}
 
-    case 'click':
-        /* => do action */
-        break;
+foreach ($allEvents as $key => $event) {
 
-    case 'bounce':
+# No Informations sent with the Event
+    if (!is_array($event) || !isset($event['event'])) {
+        header('HTTP/1.1 422 Not ok');
         /* => do action */
-        $events->add();
-        break;
+        return;
+    }
 
-    case 'spam':
-        /* => do action */
-        $events->add();
-        break;
+    $mjEvents = new MailJetEvents($event['event'], $event);
 
-    case 'blocked':
-        /* => do action */
-        $events->add();
-        break;
+    /*
+     * 	Event handler
+     * 	- please check https://www.mailjet.com/docs/event_tracking for further informations.
+     */
+    switch ($event['event']) {
+        case 'open':
+            /* => do action */
+            /* If an error occurs, tell Mailjet to retry later: header('HTTP/1.1 400 Error'); */
+            /* If it works, tell Mailjet it's OK */
+            header('HTTP/1.1 200 Ok');
+            break;
 
-    case 'unsub':
-        /* => do action */
-        $hooks_events = new HooksEvents();
-        $hooks_events->unsubscribe($t);
-        break;
+        case 'click':
+            /* => do action */
+            break;
 
-    case 'typofix':
-        /* => do action */
-        $events->add();
-        break;
+        case 'bounce':
+            /* => do action */
+            $mjEvents->add();
+            break;
 
-    /* # No handler */
-    default:
-        header('HTTP/1.1 423 No handler');
-        /* => do action */
-        break;
+        case 'spam':
+            /* => do action */
+            $mjEvents->add();
+            break;
+
+        case 'blocked':
+            /* => do action */
+            $mjEvents->add();
+            break;
+
+        case 'unsub':
+            /* => do action */
+            $hooksEvents = new HooksEvents();
+            $hooksEvents->unsubscribe($event);
+            break;
+
+        case 'typofix':
+            /* => do action */
+            $mjEvents->add();
+            break;
+
+        /* # No handler */
+        default:
+            header('HTTP/1.1 423 No handler');
+            /* => do action */
+            break;
+    }
 }
