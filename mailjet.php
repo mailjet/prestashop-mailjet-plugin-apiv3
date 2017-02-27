@@ -837,7 +837,6 @@ class Mailjet extends Module
                     $mj_event->id = $id_mf_events;
                     if (Tools::getValue('deleteEvents')) {
                         $eventData = $mj_event->getEventById($mj_event->id);
-                        $customer = Customer::getByEmail($eventData[0]['email']);
                         $hooks_events = new HooksEvents();
                         $hooks_events->unsubscribe($eventData[0]);
                     }
