@@ -1212,6 +1212,7 @@ class Mailjet extends Module
                 break;
 
             case 'EVENTS':
+
                 $page = ($page = Tools::getValue('page')) ? $page : 1;
 
                 $event = MailJetEvents::ALL_EVENTS_KEYS;
@@ -1245,6 +1246,7 @@ class Mailjet extends Module
                     'host' => $this->context->shop->domain,
                     'url' => $url,
                 ));
+
                 break;
 
             case 'ACCOUNT':
@@ -1530,7 +1532,9 @@ class Mailjet extends Module
     {
         foreach ($events as &$event) {
             if (!empty($event['email'])) {
-                $customer = Customer::getByEmail($event['email']);
+
+                $customerClass = new Customer();
+                $customer = $customerClass->getByEmail($event['email']);
 
                 if (isset($customer->id) && !empty($customer->id)) {
                     $params = array(
