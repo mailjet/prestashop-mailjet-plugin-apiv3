@@ -67,35 +67,34 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 
         $segmentationObject = new Segmentation();
 
-        $contstToAddCsv = array();
+        $contstToAddArray = array();
         foreach ($allUsers as $userInfo) {
-            $contstToAddCsv[] = array($userInfo['email'], $userInfo['firstname'], $userInfo['lastname']);
+            $contstToAddArray[] = array(
+                'Email' => $userInfo['email'],
+                'Properties' => array(
+                    'firstname' => $userInfo['firstname'],
+                    'lastname' => $userInfo['lastname']
+                )
+            );
         }
 
         /*
-         * Sets related contact meta data like firstname, lastname, etc...
-         */
+        * Sets related contact meta data like firstname, lastname, etc...
+        */
         $this->getApiOverlay()->setContactMetaData(array(
-            array('Datatype' => 'str', 'Name' => $segmentationObject->ll(48), 'NameSpace' => 'static'),
-            array('Datatype' => 'str', 'Name' => $segmentationObject->ll(49), 'NameSpace' => 'static')
+            array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
+            array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
         ));
 
-        $headers = array("email", "firstname", "lastname");
-        $contstToAddCsvString = '';
-        $contstToAddCsvString .= implode(",", $headers) . "\n";
-        foreach ($contstToAddCsv as $contact) {
-            $contstToAddCsvString .= implode(",", $contact) . "\n";
-        }
+        $asyncJobResponse = $apiOverlay->asyncManageContactsToList($contstToAddArray, $newlyCreatedListId);
 
-        $apiResponse = $apiOverlay->createContacts($contstToAddCsvString, $newlyCreatedListId);
-
-        if (!isset($apiResponse->ID)) {
+        if (!isset($asyncJobResponse->Data[0]->JobID)) {
             $segmentSynch = new HooksSynchronizationSegment($this->getApiOverlay());
             $segmentSynch->deleteList($newlyCreatedListId);
             throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
         }
 
-        $batchJobResponse = $apiOverlay->batchJobContacts($newlyCreatedListId, $apiResponse->ID);
+        $batchJobResponse = $apiOverlay->getAsyncJobStatus($newlyCreatedListId, $asyncJobResponse);
 
         if ($batchJobResponse == false) {
             throw new HooksSynchronizationException('Batchjob problem');

@@ -49,6 +49,14 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
     {
         $existingListId = $this->getExistingMailjetListId($filterId);
 
+        /*
+         * Sets related contact meta data like firstname, lastname, etc...
+         */
+        $this->getApiOverlay()->setContactMetaData(array(
+            array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
+            array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
+        ));
+
         if ($existingListId) {
             return $this->update($contacts, $existingListId);
         }
@@ -142,7 +150,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
         $total_contacts = count($res_contacts);
         if ($total_contacts === 0) {
-            $response = 'No Result';
+            $responseMsg = 'No Result';
         }
 
         $contacts_done = 0;
@@ -156,58 +164,44 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 $val = $reste_contacts;
             }
 
-            $contactsToCsv = array();
+            $contactsToAdd = array();
             for ($ic = 1; $ic <= 50; $ic++) {
                 $rc = array_pop($res_contacts);
                 if (!empty($rc[$mail_index])) {
-                    $contactsToCsv[] = array($rc[$mail_index], $rc[$firstNameIndex], $rc[$lastNameIndex]);
+                    $contactsToAdd[] = array(
+                        'Email' => $rc[$mail_index],
+                        'Properties' => array(
+                            'firstname' => $rc[$firstNameIndex],
+                            'lastname' => $rc[$lastNameIndex]
+                        )
+                    );
                 }
             }
 
             # Call
             try {
 
-                $headers = array("email", "firstname", "lastname");
-                $string_contacts = '';
-                $string_contacts .= implode(",", $headers) . "\n";
-                foreach ($contactsToCsv as $contact) {
-                    $string_contacts .= implode(",", $contact) . "\n";
-                }
-
-                /*
-                 * Sets related contact meta data like firstname, lastname, etc...
-                 */
-                $this->getApiOverlay()->setContactMetaData(
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/'.$newListId.'/managemanycontacts'} (
                     array(
-                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
-                        array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
+                        'method' => 'JSON',
+                        'Action' => 'addforce',
+                        'Contacts' => $contactsToAdd
                     )
                 );
-
-                $res = $this->getApiOverlay()->createContacts($string_contacts, $newListId);
-
-                if (!isset($res->ID)) {
-                    throw new HooksSynchronizationException('Create contacts problem');
-                }
-
-
-                $batchJobResponse = $this->getApiOverlay()->batchJobContacts($newListId, $res->ID);
-
-                if ($batchJobResponse == false) {
-                    throw new HooksSynchronizationException('Batchjob problem');
-                }
 
                 $contacts_done += $val;
 
                 Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor(($contacts_done * 100) / $total_contacts));
 
-                $response = 'OK';
+                //$responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : 'NoK';
+                $responseMsg = 'OK';
+
             } catch (Exception $e) {
-                $response = 'Try again later';
+                $responseMsg = 'Try again later';
             }
         }
 
-        return $response;
+        return $responseMsg;
     }
 
     /**
@@ -240,87 +234,75 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         foreach ($contacts as $contact) {
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
-                $contactsToCsv[$contact[$mail_index]] = array(
-                    $contact[$mail_index],
-                    $contact[$firstNameIndex],
-                    $contact[$lastNameIndex]
-                );
+                $contactsToCsv[$contact[$mail_index]]['firstname'] = $contact[$firstNameIndex];
+                $contactsToCsv[$contact[$mail_index]]['lastname'] = $contact[$lastNameIndex];
             }
         }
 
         $this->gatherCurrentContacts($existingListId);
 
-        $contacstToAdd = array();
-        $contacstToRemove = array();
+        $contactsToAdd = array();
+        $contactsToRemove = array();
 
         foreach ($prestashopContacts as $email) {
             if (!in_array($email, $this->mailjetContacts)) {
-                $contacstToAdd[] = $contactsToCsv[$email];
+                $contactsToAdd[] =  [
+                    'Email' => $email,
+                    'Properties' => $contactsToCsv[$email]
+                ];
             }
         }
 
         foreach ($this->mailjetContacts as $email) {
             if (!in_array($email, $prestashopContacts)) {
-                $contacstToRemove[] = $email;
+                $contactsToRemove[] =  [
+                    'Email' => $email
+                ];
+                //$contactsToRemove[] =  $email;
             }
         }
 
-        $response = 'Pending';
+        $responseMsg = 'Pending';
 
         try {
-            if (!empty($contacstToAdd)) {
-                /*
-                 * Sets related contact meta data like firstname, lastname, etc...
-                 */
-                $this->getApiOverlay()->setContactMetaData(
-                    array(
-                        array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
-                        array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
-                    )
+            if (!empty($contactsToAdd)) {
+
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/'.$existingListId.'/managemanycontacts'} (
+                    [
+                        'method' => 'JSON',
+                        'Action' => 'addforce',
+                        'Contacts' => $contactsToAdd
+                    ]
                 );
-
-                $headers = array("email", "firstname", "lastname");
-                $contstToAddCsv = '';
-                $contstToAddCsv .= implode(",", $headers) . "\n";
-                foreach ($contactsToCsv as $contact) {
-                    $contstToAddCsv .= implode(",", $contact) . "\n";
-                }
-
-                $res = $this->getApiOverlay()->createContacts($contstToAddCsv, $existingListId);
-
-                if (!isset($res->ID)) {
-                    throw new HooksSynchronizationException('Create contacts problem');
-                }
-
-                $batchJobResponse = $this->getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'addforce');
-
-                if ($batchJobResponse == false) {
-                    throw new HooksSynchronizationException('Batchjob problem');
-                }
             }
 
-            if (!empty($contacstToRemove)) {
-                $contstToRemoveCsv = implode(' ', $contacstToRemove);
 
-                $res = $this->getApiOverlay()->createContacts($contstToRemoveCsv, $existingListId);
-
-                if (!isset($res->ID)) {
-                    throw new HooksSynchronizationException('Create contacts problem');
-                }
-
-                $batchJobResponse = $this->getApiOverlay()->batchJobContacts($existingListId, $res->ID, 'remove');
-
-                if ($batchJobResponse == false) {
-                    throw new HooksSynchronizationException('Batchjob problem');
-                }
+            if (!empty($contactsToRemove)) {
+//
+//                foreach ($contactsToRemove as $emailToRemove) {
+//                    $contact = array(
+//                        "Email" =>  $emailToRemove,   // Mandatory field!
+//                        "Action" =>  "remove",
+//                    );
+//                    $response = $this->getApiOverlay()->addDetailedContactToList($contact, $existingListId);
+//                }
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/'.$existingListId.'/managemanycontacts'} (
+                    [
+                        'method' => 'JSON',
+                        'Action' => 'remove',
+                        'Contacts' => $contactsToRemove
+                    ]
+                );
             }
 
-            $response = 'OK';
+            //$responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : 'NoK';
+            $responseMsg = 'OK';
+
         } catch (Exception $e) {
-            $response = $e;
+            $responseMsg = $e;
         }
 
-        return $response;
+        return $responseMsg;
     }
 
     /**
