@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.1 =
+* Segmentation fix
+
 = 3.4.0 =
 * Added possibility to unsubscribe customer from Prestashop newsletter through the List Cleanup
 * Added support of multiple Mailjet email events at one request
