@@ -252,6 +252,7 @@ class Mailjet extends Module
             && $this->registerHook('actionAdminCustomersControllerSaveAfter')
             && $this->registerHook('actionAdminCustomersControllerStatusAfter')
             && $this->registerHook('actionAdminCustomersControllerDeleteBefore')
+            && $this->registerHook('actionObjectCustomerDeleteBefore')
             && $this->registerHook('actionObjectCustomerUpdateAfter')
             && $this->registerHook('BackOfficeHeader')
             && $this->registerHook('adminCustomers')
@@ -497,6 +498,7 @@ class Mailjet extends Module
         }
     }
 
+
     /**
      *
      * @author atanas
@@ -520,6 +522,25 @@ class Mailjet extends Module
             $this->errors_list[] = $this->l($e->getMessage());
         }
     }
+
+
+    public function hookActionObjectCustomerDeleteBefore($params)
+    {
+        $customer = $params['object'];
+
+        if (!$customer->id) {
+            return;
+        }
+
+        $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+
+        try {
+            $singleUserSynchronization->remove($customer->email);
+        } catch (Exception $e) {
+            $this->errors_list[] = $this->l($e->getMessage());
+        }
+    }
+
 
     /**
      *
