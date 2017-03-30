@@ -130,7 +130,7 @@ class Mailjet extends Module
             Get started today with 6000 free emails per month.'
         );
         $this->author = 'PrestaShop';
-        $this->version = '3.4.0';
+        $this->version = '3.4.2';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -252,6 +252,7 @@ class Mailjet extends Module
             && $this->registerHook('actionAdminCustomersControllerSaveAfter')
             && $this->registerHook('actionAdminCustomersControllerStatusAfter')
             && $this->registerHook('actionAdminCustomersControllerDeleteBefore')
+            && $this->registerHook('actionObjectCustomerDeleteBefore')
             && $this->registerHook('actionObjectCustomerUpdateAfter')
             && $this->registerHook('BackOfficeHeader')
             && $this->registerHook('adminCustomers')
@@ -455,7 +456,7 @@ class Mailjet extends Module
         try {
             if ($changedMail) {
                 if ($customer->active == 1 && $customer->newsletter == 1) {
-                    $initialSynchronization->subscribe($newEmail);
+                    $initialSynchronization->subscribe($customer);
                 }
                 $initialSynchronization->remove($oldEmail);
             }
@@ -465,7 +466,7 @@ class Mailjet extends Module
             if ($customer->active == 0 || $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($newEmail);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($newEmail);
+                $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -490,12 +491,13 @@ class Mailjet extends Module
             if ($customer->active == 0 || $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($customer->email);
+                $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
         }
     }
+
 
     /**
      *
@@ -514,12 +516,31 @@ class Mailjet extends Module
             if ($customer->active == 0 || $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($customer->email);
+                $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
         }
     }
+
+
+    public function hookActionObjectCustomerDeleteBefore($params)
+    {
+        $customer = $params['object'];
+
+        if (!$customer->id) {
+            return;
+        }
+
+        $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+
+        try {
+            $singleUserSynchronization->remove($customer->email);
+        } catch (Exception $e) {
+            $this->errors_list[] = $this->l($e->getMessage());
+        }
+    }
+
 
     /**
      *
@@ -586,7 +607,7 @@ class Mailjet extends Module
         try {
 
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']->email);
+                $initialSynchronization->subscribe($params['newCustomer']);
             }
             $this->checkAutoAssignment($params['newCustomer']->id);
         } catch (Exception $e) {
@@ -607,7 +628,7 @@ class Mailjet extends Module
 
         try {
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']->email);
+                $initialSynchronization->subscribe($params['newCustomer']);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -748,7 +769,7 @@ class Mailjet extends Module
 
             if ($result) {
                 if ($customer->active == 1 && $customer->newsletter == 1) {
-                    $initialSynchronization->subscribe($customer->email, $mailjetListID);
+                    $initialSynchronization->subscribe($customer, $mailjetListID);
                 }
             } else {
                 $initialSynchronization->remove($customer->email, $mailjetListID);

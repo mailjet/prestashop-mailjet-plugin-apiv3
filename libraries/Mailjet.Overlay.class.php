@@ -51,7 +51,7 @@
  *
  */
 // ---------------------------------------------------------------------
-
+require_once 'php-mailjet-v3-simple.class.php';
 require_once 'Mailjet.Api.class.php';
 require_once 'MailJet.Data.Api.class.php';
 require_once 'Mailjet.Exception.class.php';
@@ -104,6 +104,14 @@ class Mailjet_ApiOverlay
      * @var		resource $_api
      */
     private $_api = NULL;
+
+    /**
+     * Mailjet API PHP Wrapper Instance
+     *
+     * @access	private
+     * @var		resource $_apiPHPWrapper
+     */
+    private $_apiPHPWrapper = NULL;
 
     /**
      * Singleton pattern : Current instance
@@ -253,18 +261,32 @@ class Mailjet_ApiOverlay
     }
 
     /**
+     *
+     * @return API PHP Wrapper
+     */
+    public function getApiPHPWrapper()
+    {
+    	return $this->_apiPHPWrapper;
+    }
+
+    /**
      * Destructor
      *
      * Unset the API object
      *
      * @access	public
      * @uses	Mailjet::ApiOverlay::$_api
+     * @uses	Mailjet::ApiOverlay::$_apiPHPWrapper
      */
     public function __destruct()
     {
-        if (!is_null($this->_api)) {
+        if(!is_null($this->_api)) {
             unset($this->_api);
         }
+
+         if(!is_null($this->_apiPHPWrapper)) {
+             unset($this->_apiPHPWrapper);
+         }
     }
 
     /**
@@ -2993,6 +3015,145 @@ class Mailjet_ApiOverlay
         }
 
         return false;
+    }
+
+
+
+
+
+
+    public function asyncManageContactsToList($contacts, $list_id, $force = 'addforce')
+    {
+        $obj = new Mailjet();
+        $this->_apiPHPWrapper = new MailjetPHPWrapper($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+
+        $params = array(
+            "method" => "POST",
+            "ID" => $list_id,
+            "Action" => $force,
+            "Contacts" => $contacts
+        );
+
+        $asyncJobResponse = $this->_apiPHPWrapper->contactslistManageManyContacts($params);
+
+        if ($this->_apiPHPWrapper->_response_code == 201) {
+            echo "success - proper request";
+        } else {
+            throw new Mailjet_ApiException($this->_apiPHPWrapper->_response_code, $this->_errors[$this->_apiPHPWrapper->_response_code]);
+        }
+
+        return $asyncJobResponse;
+
+    }
+
+
+    /**
+     *  @param array $asyncJobResponse The result object returned by the async job. (See function above)
+     *
+     */
+    function getAsyncJobStatus($list_id, $asyncJobResponse)
+    {
+        $obj = new Mailjet();
+        $this->_apiPHPWrapper = new MailjetPHPWrapper($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+
+        $jobID = $asyncJobResponse->Data[0]->JobID;
+
+        $statusParams = array(
+            "method" => "VIEW",
+            "ID" => $list_id,
+            "JobID" => $jobID,
+        );
+        $response = $this->_apiPHPWrapper->contactslistManageManyContacts($statusParams);
+
+        if ($this->_apiPHPWrapper->_response_code == 200) {
+            echo "success - status obtained";
+        } else {
+            throw new Mailjet_ApiException($this->_apiPHPWrapper->_response_code, $this->_errors[$this->_apiPHPWrapper->_response_code]);
+        }
+
+        return $response;
+    }
+
+
+    /**
+    *  @param  array   $contact    An array describing a contact.
+    *  $contact array example
+    *  $contact = array(
+    *      "Email"         =>  "foo@bar.com",   // Mandatory field!
+    *      "Name"          =>  "FooBar",
+    *      "Action"        =>  "addnoforce",
+    *      "Properties"    =>  array(
+    *          "Prop1" =>  "value1",
+    *          ...
+    *      )
+    *  );
+    *  @param  int     $listID     The ID of the list.
+    *
+    */
+    function addDetailedContactToList($contact, $listID)
+    {
+        //$this->sendEmailWithAttachments('fismailov@mailjet.com','fismailov@mailjet.com','inside the addDetailedContactToList',print_r($contact, 1) . ' - ' . $listID);
+        $obj = new Mailjet();
+        $this->_apiPHPWrapper = new MailjetPHPWrapper($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+
+        $params = array(
+            "method" => "POST",
+            "ID" => $listID
+        );
+        $params = array_merge($params, $contact);
+        $response = $this->_apiPHPWrapper->contactslistManageContact($params);
+
+        if ($this->_apiPHPWrapper->_response_code == 201) {
+            //echo "success - detailed contact ".$contactID." added to the list ".$listID;
+        } else {
+           // throw new Mailjet_ApiException($this->_apiPHPWrapper->_response_code, $this->_errors[$this->_apiPHPWrapper->_response_code]);
+        }
+        return $response;
+    }
+
+    /**
+     * A function to send an email with some attachments (absolute paths on your computer):
+     *
+     *  $params = array(
+            "method" => "POST",
+            "from" => "ms.mailjet@example.com",
+            "to" => "mr.mailjet@example.com",
+            "subject" => "Hello World!",
+            "text" => "Greetings from Mailjet.",
+            "attachment" => array(
+                "MyFirstAttachment" => "@/path/to/first/file.txt",
+                "@/path/to/second/file.pdf",
+                "MyThirdAttachment" => "@/path/to/third/file.jpg"
+            )
+        );
+     *
+     * @return type
+     */
+    function sendEmailWithAttachments($from, $to, $subject, $body = "", $attachments = null)
+    {
+        $obj = new Mailjet();
+        $this->_apiPHPWrapper = new MailjetPHPWrapper($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
+
+        $params = array(
+            "method" => "POST",
+            "from" => $from,
+            "to" => $to,
+            "subject" => $subject,
+            "text" => $body
+        );
+
+        if (isset($attachments) && is_array($attachments)) {
+            $params["attachment"] = $attachments;
+        }
+
+        $result = $this->_apiPHPWrapper->sendEmail($params);
+
+        if ($this->_apiPHPWrapper->_response_code == 200)
+           echo "success - email sent";
+        else
+           echo "error - ".$this->_apiPHPWrapper->_response_code;
+
+        return $result;
     }
 
     /**
