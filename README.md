@@ -68,6 +68,11 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.2 =
+* Customer synchronization fix - update contact properties on customer profile modification
+* Customer synchronization fix - delete Mailjet contact if related Prestashop customer profile is deleted
+* Customer synchronization fix - When Prestashop customer email is changed - delete the existing Mailjet contact with that email and create a new one with the updated email address
+
 = 3.4.1 =
 * Segmentation fix
 
