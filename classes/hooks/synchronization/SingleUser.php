@@ -64,7 +64,6 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
         } elseif(is_object($email)) {
 
             $contact = array(
-                "Email" =>  $email,   // Mandatory field!
                 "Action" =>  "addforce",
                 'Email' => $email->email,
                 'Name' => $email->firstname,

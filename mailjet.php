@@ -455,7 +455,7 @@ class Mailjet extends Module
         try {
             if ($changedMail) {
                 if ($customer->active == 1 && $customer->newsletter == 1) {
-                    $initialSynchronization->subscribe($newEmail);
+                    $initialSynchronization->subscribe($customer);
                 }
                 $initialSynchronization->remove($oldEmail);
             }
@@ -465,7 +465,7 @@ class Mailjet extends Module
             if ($customer->active == 0 || $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($newEmail);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($newEmail);
+                $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -490,7 +490,7 @@ class Mailjet extends Module
             if ($customer->active == 0 || $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($customer->email);
+                $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -514,7 +514,7 @@ class Mailjet extends Module
             if ($customer->active == 0 || $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($customer->email);
+                $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -586,7 +586,7 @@ class Mailjet extends Module
         try {
 
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']->email);
+                $initialSynchronization->subscribe($params['newCustomer']);
             }
             $this->checkAutoAssignment($params['newCustomer']->id);
         } catch (Exception $e) {
@@ -607,7 +607,7 @@ class Mailjet extends Module
 
         try {
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']->email);
+                $initialSynchronization->subscribe($params['newCustomer']);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -748,7 +748,7 @@ class Mailjet extends Module
 
             if ($result) {
                 if ($customer->active == 1 && $customer->newsletter == 1) {
-                    $initialSynchronization->subscribe($customer->email, $mailjetListID);
+                    $initialSynchronization->subscribe($customer, $mailjetListID);
                 }
             } else {
                 $initialSynchronization->remove($customer->email, $mailjetListID);
