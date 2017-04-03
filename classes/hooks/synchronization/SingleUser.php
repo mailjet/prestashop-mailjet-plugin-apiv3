@@ -26,21 +26,21 @@
 
 class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronizationAbstract
 {
-	/**
-	 *
-	 * @param string $email
-	 * @return boolean
-	 */
-	public function subscribe($email, $list_id = null)
-	{
+    /**
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function subscribe($email, $list_id = null)
+    {
         $api = $this->getApi();
         $update_list_id = $list_id ? $list_id : $this->getAlreadyCreatedMasterListId();
         $api->resetRequest();
 
-        if(!$update_list_id || empty($update_list_id)) {
+        if (!$update_list_id || empty($update_list_id)) {
             $params = array(
-                'method' 	=> 'JSON',
-                'Name' 		=> self::LIST_NAME
+                'method' => 'JSON',
+                'Name' => self::LIST_NAME
             );
 
             $response = $this->getApiOverlay()->createContactsListP($params);
@@ -48,23 +48,19 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                 throw new HooksSynchronizationException('There is a problem with the list\'s creation.');
             }
 
-
             $update_list_id = $response->ID;
         }
 
 
-        if(is_string($email)){
-
+        if (is_string($email)) {
             $contact = array(
-                "Email" =>  $email,   // Mandatory field!
-                "Action" =>  "addforce",
+                "Email" => $email,   // Mandatory field!
+                "Action" => "addforce",
             );
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
-
-        } elseif(is_object($email)) {
-
+        } elseif (is_object($email)) {
             $contact = array(
-                "Action" =>  "addforce",
+                "Action" => "addforce",
                 'Email' => $email->email,
                 'Name' => $email->firstname,
                 'Properties' => array(
@@ -75,82 +71,82 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
         }
         return $response && $response->Count > 0 ? true : false;
-	}
+    }
 
 
-	/**
-	 *
-	 * @param string $email
-	 * @return boolean
-	 */
-	public function unsubscribe($email, $list_id = null)
-	{
-		if ($list_id) {
+    /**
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function unsubscribe($email, $list_id = null)
+    {
+        if ($list_id) {
             $contact = array(
-                "Email" =>  $email,   // Mandatory field!
-                "Action" =>  "unsub",
+                "Email" => $email,   // Mandatory field!
+                "Action" => "unsub",
             );
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
 
             if (!$response || !($response->Count > 0)) {
                 return false;
             }
-		} else {
-			$apiOverlay = $this->getApiOverlay();
+        } else {
+            $apiOverlay = $this->getApiOverlay();
 
-			$lists = $apiOverlay->getContactsLists();
+            $lists = $apiOverlay->getContactsLists();
 
-			foreach ($lists as $list) {
+            foreach ($lists as $list) {
                 $contact = array(
-                    "Email" =>  $email,   // Mandatory field!
-                    "Action" =>  "unsub",
+                    "Email" => $email,   // Mandatory field!
+                    "Action" => "unsub",
                 );
                 $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
 
                 if (!$response || !($response->Count > 0)) {
                     return false;
                 }
-			}
-		}
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 *
-	 * @param string $email
-	 * @return boolean
-	 */
-	public function remove($email, $list_id = null)
-	{
-		if ($list_id) {
+    /**
+     *
+     * @param string $email
+     * @return boolean
+     */
+    public function remove($email, $list_id = null)
+    {
+        if ($list_id) {
             $contact = array(
-                "Email" =>  $email,   // Mandatory field!
-                "Action" =>  "remove",
+                "Email" => $email,   // Mandatory field!
+                "Action" => "remove",
             );
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
 
             if (!$response || !($response->Count > 0)) {
                 return false;
             }
-		} else {
-			$apiOverlay = $this->getApiOverlay();
+        } else {
+            $apiOverlay = $this->getApiOverlay();
 
-			$lists = $apiOverlay->getContactsLists();
+            $lists = $apiOverlay->getContactsLists();
 
-			foreach ($lists as $list) {
+            foreach ($lists as $list) {
                 $contact = array(
-                    "Email" =>  $email,   // Mandatory field!
-                    "Action" =>  "remove",
+                    "Email" => $email,   // Mandatory field!
+                    "Action" => "remove",
                 );
                 $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
 
                 if (!$response || !($response->Count > 0)) {
                     return false;
                 }
-			}
-		}
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

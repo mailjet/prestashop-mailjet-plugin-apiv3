@@ -97,12 +97,12 @@ class Segmentation
             'mj_ajaxFile' => _MODULE_DIR_ . 'mailjet/ajax/ajax.php',
             'mj_ajaxSyncFile' => _MODULE_DIR_ . 'mailjet/ajax/sync.php',
             'mj_ajaxBundle' => _MODULE_DIR_ . 'mailjet/ajax/bundlejs_prestashop.php',
-            'mj_id_employee' => (int) Context::getContext()->cookie->id_employee,
+            'mj_id_employee' => (int)Context::getContext()->cookie->id_employee,
             'mj_lblMan' => stripReturn($this->ll(20)),
             'mj_lblWoman' => stripReturn($this->ll(21)),
             'mj_lblUnknown' => stripReturn($this->ll(43)),
             'mj_trads' => array_map('stripReturn', $this->trad),
-            'mj_groups' => Group::getGroups((int) Context::getContext()->cookie->id_lang),
+            'mj_groups' => Group::getGroups((int)Context::getContext()->cookie->id_lang),
             'mj_filter_list' => Db::getInstance()->ExecuteS('SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`'),
             'mj_base_select' => Db::getInstance()->ExecuteS(
                 'SELECT id_basecondition, label FROM `' . _DB_PREFIX_ . 'mj_basecondition`'
@@ -150,7 +150,7 @@ class Segmentation
     {
         $res = Db::getInstance()->executeS(
             'SELECT id_sourcecondition, label FROM `' .
-            _DB_PREFIX_ . 'mj_sourcecondition` WHERE `id_basecondition` = ' . (int) $ID
+            _DB_PREFIX_ . 'mj_sourcecondition` WHERE `id_basecondition` = ' . (int)$ID
         );
         $html = '<select id="sourceSelect' .
             Tools::safeOutput($inputID) . '" name="sourceSelect[]" class="sourceSelect fixed">';
@@ -171,9 +171,9 @@ class Segmentation
         // ID = 4 when trying to segment by multi store customers
         $query = $ID == 4
             ? 'SELECT id_shop AS id_fieldcondition, name AS label FROM `' .
-                _DB_PREFIX_ . 'shop` WHERE active = 1 ORDER BY name'
+            _DB_PREFIX_ . 'shop` WHERE active = 1 ORDER BY name'
             : 'SELECT id_fieldcondition, label FROM `' .
-                _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_sourcecondition` = ' . (int) $ID;
+            _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_sourcecondition` = ' . (int)$ID;
         $res = Db::getInstance()->ExecuteS($query);
         $html = '<select name="fieldSelect[]" class="fieldSelect fixed" id="fieldSelect' .
             Tools::safeOutput($inputID) . '">';
@@ -194,13 +194,13 @@ class Segmentation
     public function getBinder($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_fieldcondition` = ' . (int) $ID
+            'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_fieldcondition` = ' . (int)$ID
         );
     }
 
     public function formatDate($post)
     {
-        switch ((int) Context::getContext()->cookie->id_lang) {
+        switch ((int)Context::getContext()->cookie->id_lang) {
             case 2:
                 $dataToFormat = array(33);
                 if (isset($post['fieldSelect'])) {
@@ -893,7 +893,6 @@ class Segmentation
                           $field .= ' '.$post['rule_a'][$i].' '.str_replace('%0', _DB_PREFIX_, $tmp);
                           $default = true; */
                     }
-                    
                 } else {
                     $multistoreWhere = ' AND c.id_shop = ' . (int)$post['fieldSelect'][$i];
 
@@ -907,7 +906,6 @@ class Segmentation
                         $sub_where = 'UNIX_TIMESTAMP(c' . $i . '.date_add) <= UNIX_TIMESTAMP("' .
                             pSQL($val2) . '")';
                     }
-
                     // $sub_where .= ' AND ' . $sub_where_and;
                     //$field = '';
                 }
@@ -943,18 +941,11 @@ class Segmentation
                 $customer_orders = array(2, 3, 4, 5, 6, 7, 8, 9, 15, 16, 28, 34, 35);
                 $customer_lostcarts = array(10, 29, 30, 31, 32);
 
-
                 if ($post['sourceSelect'][$i] != 4) {
-
                     $fieldSelect_count = count($post['fieldSelect']);
                     for ($j = $sub_base; $j < $fieldSelect_count; $j++) {
-                        if (
-                            ($j == $sub_base
-                                && isset($post['rule_a'][$j + 1])
-                                && $post['rule_a'][$j + 1] != '+'
-                            )
-                            ||
-                            ($j > $sub_base && $post['rule_a'][$j] != '+')
+                        if (($j == $sub_base && isset($post['rule_a'][$j + 1]) && $post['rule_a'][$j + 1] != '+')
+                            || ($j > $sub_base && $post['rule_a'][$j] != '+')
                         ) {
                             break;
                         }
@@ -1083,7 +1074,6 @@ class Segmentation
                         break;
 
                     case 'AND':
-
                     case 'OR':
                         if (isset($post['rule_a'][$i + 1]) && $post['rule_a'][$i + 1] == '+') {
                             $sub_prefix = '(';
@@ -1188,7 +1178,7 @@ class Segmentation
         }
 
         if ($limit) {
-            $select .= ' LIMIT ' . (int) $limit['start'] . ', ' . (int) $limit['length'];
+            $select .= ' LIMIT ' . (int)$limit['start'] . ', ' . (int)$limit['length'];
         }
 
         return $select;
@@ -1212,9 +1202,9 @@ class Segmentation
     {
         $sql = 'SELECT id_category
             FROM ' . _DB_PREFIX_ . 'category
-            WHERE id_parent = ' . (int) $id_category;
+            WHERE id_parent = ' . (int)$id_category;
 
-        $rows = (array) Db::getInstance()->executeS($sql);
+        $rows = (array)Db::getInstance()->executeS($sql);
 
         $categories = array();
 
@@ -1263,7 +1253,7 @@ class Segmentation
                 Db::getInstance()->Execute(
                     'UPDATE `' . _DB_PREFIX_ . 'mj_filter` SET `name` = "' .
                     pSQL($post['name']) . '", `description` = "' .
-                    pSQL($post['description']) . '" WHERE `id_filter`=' . (int) $id_filter
+                    pSQL($post['description']) . '" WHERE `id_filter`=' . (int)$id_filter
                 );
             } else {
                 $query = '
@@ -1271,10 +1261,10 @@ class Segmentation
 					SET
 						`name` = "' . pSQL($post['name']) . '",
 						`description` = "' . pSQL($post['description']) . '",
-						`id_group` = "' . (int) $post['idgroup'] . '",
-						`assignment_auto` = ' . (int) (bool) $auto_assign . ',
-						`replace_customer` = ' . (int) (bool) $replace_customer . '
-					WHERE `id_filter`=' . (int) $id_filter;
+						`id_group` = "' . (int)$post['idgroup'] . '",
+						`assignment_auto` = ' . (int)(bool)$auto_assign . ',
+						`replace_customer` = ' . (int)(bool)$replace_customer . '
+					WHERE `id_filter`=' . (int)$id_filter;
 
                 Db::getInstance()->Execute($query);
             }
@@ -1289,8 +1279,8 @@ class Segmentation
                 'INSERT INTO `' . _DB_PREFIX_ . 'mj_filter` (`name`, `description`, `date_start`,
                     `date_end`, `id_group`, `assignment_auto`, `replace_customer`)
                 VALUES ("' . pSQL($post['name']) . '", "' . pSQL($post['description']) . '", '
-                . 'NULL, NULL, "' . (int) $post['idgroup'] . '", ' .
-                (int) (bool) $auto_assign . ', ' . (int) (bool) $replace_customer . ')'
+                . 'NULL, NULL, "' . (int)$post['idgroup'] . '", ' .
+                (int)(bool)$auto_assign . ', ' . (int)(bool)$replace_customer . ')'
             );
             $id_filter = Db::getInstance()->getValue('SELECT MAX(id_filter) FROM `' . _DB_PREFIX_ . 'mj_filter`');
         }
@@ -1300,7 +1290,7 @@ class Segmentation
             Db::getInstance()->Execute(
                 'INSERT INTO `' . _DB_PREFIX_ . 'mj_condition`(`id_filter`, `id_basecondition`, `id_sourcecondition`,
                     `id_fieldcondition`, `rule_a`, `rule_action`, `data`, `value1`, `value2`)
-                VALUES (' . (int) $id_filter . ', ' . pSQL($post['baseSelect'][$i]) . ', ' .
+                VALUES (' . (int)$id_filter . ', ' . pSQL($post['baseSelect'][$i]) . ', ' .
                 pSQL($post['sourceSelect'][$i]) . ', ' .
                 pSQL($post['fieldSelect'][$i]) . ', "' . pSQL($post['rule_a'][$i]) . '", "' .
                 pSQL($post['rule_action'][$i]) . '", "' .
@@ -1322,7 +1312,7 @@ class Segmentation
             $replace_customer_text = '--';
         }
 
-        if (!($group_name = $this->getGroupName((int) $post['idgroup']))) {
+        if (!($group_name = $this->getGroupName((int)$post['idgroup']))) {
             $group_name = '--';
         }
 
@@ -1345,9 +1335,9 @@ class Segmentation
     public function deleteFilter($id)
     {
         $deleteFromDb =
-            Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int) $id)
+            Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int)$id)
             &&
-            Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_filter` WHERE `id_filter` =' . (int) $id);
+            Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_filter` WHERE `id_filter` =' . (int)$id);
 
         if ($deleteFromDb) {
             /* try { */
@@ -1360,21 +1350,22 @@ class Segmentation
             /* } catch (Exception $e) { } */
         }
 
-        return (bool) $deleteFromDb;
+        return (bool)$deleteFromDb;
     }
 
     public function deleteCondition($id)
     {
         return Db::getInstance()->Execute(
-            'DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int) $id
+            'DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int)$id
         );
     }
 
     public function loadFilter($id_filter)
     {
         if ($res = Db::getInstance()->ExecuteS(
-            'SELECT c.* FROM `' . _DB_PREFIX_ . 'mj_condition` c  WHERE c.`id_filter`=' . (int) $id_filter
-        )) {
+            'SELECT c.* FROM `' . _DB_PREFIX_ . 'mj_condition` c  WHERE c.`id_filter`=' . (int)$id_filter
+        )
+        ) {
             $i = 1;
             foreach ($res as &$r) {
                 $r['getSourceSelect'] = $this->getSourceSelect($r['id_basecondition'], $i, $r['id_sourcecondition']);
@@ -1390,7 +1381,7 @@ class Segmentation
     public function loadFilterInfo($id_filter)
     {
         $res = Db::getInstance()->ExecuteS(
-            'SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`  WHERE `id_filter`=' . (int) $id_filter
+            'SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`  WHERE `id_filter`=' . (int)$id_filter
         );
         $json = Tools::jsonEncode($res);
         return '{"return" : ' . $json . '}';
@@ -1419,49 +1410,49 @@ class Segmentation
     private function getField($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT field FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
+            'SELECT field FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
         );
     }
 
     public function getFieldLabel($ID)
     {
         return $this->trad[Db::getInstance()->getValue(
-            'SELECT label FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
+            'SELECT label FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
         )];
     }
 
     private function getFieldLabelSQL($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT labelSQL FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
+            'SELECT labelSQL FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
         );
     }
 
     public function fieldIsPrintable($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT printable FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
+            'SELECT printable FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
         );
     }
 
     private function getFieldBinder($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
+            'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
         );
     }
 
     private function getBase($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT tablename FROM `' . _DB_PREFIX_ . 'mj_basecondition` WHERE id_basecondition = ' . (int) $ID
+            'SELECT tablename FROM `' . _DB_PREFIX_ . 'mj_basecondition` WHERE id_basecondition = ' . (int)$ID
         );
     }
 
     private function getSource($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT jointable FROM `' . _DB_PREFIX_ . 'mj_sourcecondition` WHERE id_sourcecondition = ' . (int) $ID
+            'SELECT jointable FROM `' . _DB_PREFIX_ . 'mj_sourcecondition` WHERE id_sourcecondition = ' . (int)$ID
         );
     }
 
@@ -1489,9 +1480,9 @@ class Segmentation
 
     public function getDateByIdLang($date)/* , $id_lang) */
     {
-        switch ((int) Context::getContext()->cookie->id_lang) {
+        switch ((int)Context::getContext()->cookie->id_lang) {
             case 2: // fr
-                $date = Tools::substr($date, 8, 2) . '-' . Tools::substr($date, 5, 2) . '-' .Tools::substr($date, 0, 4);
+                $date = Tools::substr($date, 8, 2) . '-' . Tools::substr($date, 5, 2) . '-' . Tools::substr($date, 0, 4);
                 break;
             default:
         }
@@ -1501,9 +1492,9 @@ class Segmentation
 
     public function getIdLangByIdEmployee($id_employee)
     {
-        $sql = 'SELECT id_lang FROM ' . _DB_PREFIX_ . 'employee WHERE id_employee = ' . (int) $id_employee;
+        $sql = 'SELECT id_lang FROM ' . _DB_PREFIX_ . 'employee WHERE id_employee = ' . (int)$id_employee;
 
-        return (int) DB::getInstance()->getValue($sql);
+        return (int)DB::getInstance()->getValue($sql);
     }
 
     public function initLang($id_lang = 0)
@@ -1512,13 +1503,13 @@ class Segmentation
             $id_lang = $this->getCurrentIdLang();
         }
 
-        if (file_exists($this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt')) {
+        if (file_exists($this->_path . '/translations/translation_cache_' . (int)$id_lang . '.txt')) {
             $this->trad = Tools::jsonDecode(
-                Tools::file_get_contents($this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt')
+                Tools::file_get_contents($this->_path . '/translations/translation_cache_' . (int)$id_lang . '.txt')
             );
         } else {
             $this->cacheLang();
-            $tmp_create = $this->_path . '/translations/translation_create_' . (int) $id_lang . '.txt';
+            $tmp_create = $this->_path . '/translations/translation_create_' . (int)$id_lang . '.txt';
             if (file_exists($tmp_create)) {
                 $fp = fopen($tmp_create, 'r');
                 $trad = array();
@@ -1537,7 +1528,7 @@ class Segmentation
             file_put_contents(
                 $this->_path .
                 '/translations/translation_cache_' .
-                (int) $id_lang .
+                (int)$id_lang .
                 '.txt',
                 Tools::jsonEncode($this->trad)
             );
@@ -1546,15 +1537,15 @@ class Segmentation
 
     public function getCurrentIdLang()
     {
-        if (($id_employee = (int) Tools::getValue('id_employee')) > 0) {
+        if (($id_employee = (int)Tools::getValue('id_employee')) > 0) {
             $id_lang = $this->getIdLangByIdEmployee($id_employee);
-        } elseif (($id_employee = (int) Context::getContext()->cookie->id_employee) > 0) {
+        } elseif (($id_employee = (int)Context::getContext()->cookie->id_employee) > 0) {
             $id_lang = $this->getIdLangByIdEmployee($id_employee);
         } else {
-            $id_lang = (int) Context::getContext()->cookie->id_lang;
+            $id_lang = (int)Context::getContext()->cookie->id_lang;
         }
 
-        return (int) $id_lang;
+        return (int)$id_lang;
     }
 
     private function clearCacheLang()
@@ -1685,20 +1676,20 @@ class Segmentation
     {
         $sql = 'SELECT COUNT(*)
 				FROM ' . _DB_PREFIX_ . 'customer_group
-				WHERE id_group = ' . (int) $id_group . ' AND id_customer = ' . (int) $id_customer;
+				WHERE id_group = ' . (int)$id_group . ' AND id_customer = ' . (int)$id_customer;
 
-        return (bool) DB::getInstance()->getValue($sql);
+        return (bool)DB::getInstance()->getValue($sql);
     }
 
     public function getGroupName($id_group, $id_lang = 0)
     {
         if (!$id_lang) {
-            $id_lang = (int) Context::getContext()->cookie->id_lang;
+            $id_lang = (int)Context::getContext()->cookie->id_lang;
         }
 
         $sql = 'SELECT name
 				FROM ' . _DB_PREFIX_ . 'group_lang
-				WHERE id_group = ' . (int) $id_group . ' AND id_lang = ' . (int) $id_lang;
+				WHERE id_group = ' . (int)$id_group . ' AND id_lang = ' . (int)$id_lang;
 
         return DB::getInstance()->getValue($sql);
     }
@@ -1723,8 +1714,8 @@ class Segmentation
             foreach ($lists as $l) {
                 $n = explode('idf', $l->Name);
 
-                if ((string) $n[0] == (string) $filterId) {
-                    $id_list_contact = (int) $l->ID;
+                if ((string)$n[0] == (string)$filterId) {
+                    $id_list_contact = (int)$l->ID;
                     $this->contactListsMap[$filterId] = $id_list_contact;
                     break;
                 }

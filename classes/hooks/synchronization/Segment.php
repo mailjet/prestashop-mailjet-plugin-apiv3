@@ -73,7 +73,6 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
     public function updateName($mailjetListId, $prestashopFilterId, $newName)
     {
         if ($mailjetListId) {
-
             $params = array(
                 'ID' => $mailjetListId,
                 'method' => 'JSON',
@@ -180,8 +179,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
             # Call
             try {
-
-                $response = $this->getApiOverlay()->getApi()->{'contactslist/'.$newListId.'/managemanycontacts'} (
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'} (
                     array(
                         'method' => 'JSON',
                         'Action' => 'addforce',
@@ -195,7 +193,6 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
                 //$responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : 'NoK';
                 $responseMsg = 'OK';
-
             } catch (Exception $e) {
                 $responseMsg = 'Try again later';
             }
@@ -246,18 +243,18 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
         foreach ($prestashopContacts as $email) {
             if (!in_array($email, $this->mailjetContacts)) {
-                $contactsToAdd[] =  [
+                $contactsToAdd[] = array(
                     'Email' => $email,
                     'Properties' => $contactsToCsv[$email]
-                ];
+                );
             }
         }
 
         foreach ($this->mailjetContacts as $email) {
             if (!in_array($email, $prestashopContacts)) {
-                $contactsToRemove[] =  [
+                $contactsToRemove[] = array(
                     'Email' => $email
-                ];
+                );
                 //$contactsToRemove[] =  $email;
             }
         }
@@ -266,14 +263,14 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
         try {
             if (!empty($contactsToAdd)) {
-
-                $response = $this->getApiOverlay()->getApi()->{'contactslist/'.$existingListId.'/managemanycontacts'} (
-                    [
-                        'method' => 'JSON',
-                        'Action' => 'addforce',
-                        'Contacts' => $contactsToAdd
-                    ]
-                );
+                $response = $this->getApiOverlay()->getApi()
+                    ->{'contactslist/' . $existingListId . '/managemanycontacts'} (
+                        array(
+                            'method' => 'JSON',
+                            'Action' => 'addforce',
+                            'Contacts' => $contactsToAdd
+                        )
+                    );
             }
 
 
@@ -286,18 +283,18 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 //                    );
 //                    $response = $this->getApiOverlay()->addDetailedContactToList($contact, $existingListId);
 //                }
-                $response = $this->getApiOverlay()->getApi()->{'contactslist/'.$existingListId.'/managemanycontacts'} (
-                    [
-                        'method' => 'JSON',
-                        'Action' => 'remove',
-                        'Contacts' => $contactsToRemove
-                    ]
-                );
+                $response = $this->getApiOverlay()->getApi()
+                    ->{'contactslist/' . $existingListId . '/managemanycontacts'} (
+                        array(
+                            'method' => 'JSON',
+                            'Action' => 'remove',
+                            'Contacts' => $contactsToRemove
+                        )
+                    );
             }
 
             //$responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : 'NoK';
             $responseMsg = 'OK';
-
         } catch (Exception $e) {
             $responseMsg = $e;
         }
@@ -321,8 +318,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
             foreach ($lists as $l) {
                 $n = explode('idf', $l->Name);
 
-                if ((string) $n[0] == (string) $filterId) {
-                    $listId = (int) $l->ID;
+                if ((string)$n[0] == (string)$filterId) {
+                    $listId = (int)$l->ID;
                     break;
                 }
             }

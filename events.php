@@ -69,7 +69,6 @@ if (array_key_exists('event', $allEvents)) {
 }
 
 foreach ($allEvents as $key => $event) {
-
 # No Informations sent with the Event
     if (!is_array($event) || !isset($event['event'])) {
         header('HTTP/1.1 422 Not ok');
