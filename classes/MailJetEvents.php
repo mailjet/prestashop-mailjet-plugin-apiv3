@@ -69,7 +69,6 @@ class MailJetEvents extends ObjectModel
 
         $this->setLimit(MailJetEvents::LIMIT_EVENT);
         $this->setPage(1);
-
     }
 
     /**
