@@ -130,7 +130,7 @@ class Mailjet extends Module
             Get started today with 6000 free emails per month.'
         );
         $this->author = 'PrestaShop';
-        $this->version = '3.4.2';
+        $this->version = '3.4.3';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -740,12 +740,8 @@ class Mailjet extends Module
                     Db::getInstance()->execute($sql);
                 }
 
-                $values = array(
-                    'id_group' => (int)$formatRow['idgroup'],
-                    'id_customer' => (int)$id_customer
-                );
-
-                DB::getInstance()->autoExecute(_DB_PREFIX_ . 'customer_group', $values, 'INSERT');
+                Db::getInstance()->execute('INSERT INTO `' . _DB_PREFIX_ . 'customer_group` (`id_customer`, `id_group`)
+                    VALUES ("' .(int) $formatRow['idgroup'] . '", "' . ((int) $id_customer) . '")');
 
                 // Mailjet update
                 $customer = new Customer($id_customer);
