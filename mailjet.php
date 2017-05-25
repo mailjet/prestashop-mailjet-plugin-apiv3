@@ -741,7 +741,7 @@ class Mailjet extends Module
                 }
 
                 Db::getInstance()->execute('INSERT INTO `' . _DB_PREFIX_ . 'customer_group` (`id_customer`, `id_group`)
-                    VALUES ("' .(int) $formatRow['idgroup'] . '", "' . ((int) $id_customer) . '")');
+                    VALUES ("' . ((int) $id_customer) . '", "' .(int) $formatRow['idgroup'] . '")');
 
                 // Mailjet update
                 $customer = new Customer($id_customer);
