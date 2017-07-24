@@ -760,7 +760,7 @@ class Mailjet extends Module
             $mailjetListID = $obj->getMailjetContactListId($filterId);
 
             if ($result) {
-                if ($customer->active == 1 && $customer->newsletter == 1) {
+                if ($customer->active == 1) {
                     $initialSynchronization->subscribe($customer, $mailjetListID);
                 }
             } else {
