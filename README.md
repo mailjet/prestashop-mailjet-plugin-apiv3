@@ -68,6 +68,10 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.4 =
+* A new way to synchronize customers through segmentation
+* Optimize the SQL
+
 = 3.4.3 =
 * Replace deprecated `autoExecute` DB class method with `execute`
 
