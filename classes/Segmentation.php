@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -23,7 +24,6 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
-
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Initial.php');
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser.php');
@@ -51,7 +51,7 @@ class Segmentation
 
         $this->displayName = $this->l('Segment Module');
         $this->description = $this->l('Module for Customer Segmentation');
-        $this->page = 10;
+        $this->page = 25;
     }
 
     public function initContent()
@@ -71,41 +71,34 @@ class Segmentation
             'mj_MODULE_DIR_' => _MODULE_DIR_,
             'mj_hint_fieldset' => array(
                 $this->l(
-                    'This module enables you to create segments of customers according to any criteria you think of.'
-                    . 'You can then either display and export the selected customers or associate them to an existing '
-                    . 'customer group.',
-                    'mailjet'
+                        'This module enables you to create segments of customers according to any criteria you think of.'
+                        . 'You can then either display and export the selected customers or associate them to an existing '
+                        . 'customer group.', 'mailjet'
                 ),
                 $this->l(
-                    'These segments are particularly useful to create special offers associated with customer groups '
-                    . '(e.g., send a coupon to the customers interested in some products)',
-                    'mailjet'
+                        'These segments are particularly useful to create special offers associated with customer groups '
+                        . '(e.g., send a coupon to the customers interested in some products)', 'mailjet'
                 ),
                 $this->l(
-                    'Create an infinite number of filters corresponding to your needs!',
-                    'mailjet'
+                        'Create an infinite number of filters corresponding to your needs!', 'mailjet'
                 )
             ),
-            'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr')
-                ? 'dd-mm-yy'
-                : 'yy-mm-dd',
-            'mj_datepickerPersonnalized' => version_compare(_PS_VERSION_, '1.5', '<')
-                ? '<script type="text/javascript" src="' .
-                _PS_JS_DIR_ . 'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>'
-                : '',
+            'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
+            'mj_datepickerPersonnalized' => version_compare(_PS_VERSION_, '1.5', '<') ? '<script type="text/javascript" src="' .
+                    _PS_JS_DIR_ . 'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>' : '',
             'mj_token' => Tools::getValue('token'),
             'mj_ajaxFile' => _MODULE_DIR_ . 'mailjet/ajax/ajax.php',
             'mj_ajaxSyncFile' => _MODULE_DIR_ . 'mailjet/ajax/sync.php',
             'mj_ajaxBundle' => _MODULE_DIR_ . 'mailjet/ajax/bundlejs_prestashop.php',
-            'mj_id_employee' => (int)Context::getContext()->cookie->id_employee,
+            'mj_id_employee' => (int) Context::getContext()->cookie->id_employee,
             'mj_lblMan' => stripReturn($this->ll(20)),
             'mj_lblWoman' => stripReturn($this->ll(21)),
             'mj_lblUnknown' => stripReturn($this->ll(43)),
             'mj_trads' => array_map('stripReturn', $this->trad),
-            'mj_groups' => Group::getGroups((int)Context::getContext()->cookie->id_lang),
+            'mj_groups' => Group::getGroups((int) Context::getContext()->cookie->id_lang),
             'mj_filter_list' => Db::getInstance()->ExecuteS('SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`'),
             'mj_base_select' => Db::getInstance()->ExecuteS(
-                'SELECT id_basecondition, label FROM `' . _DB_PREFIX_ . 'mj_basecondition`'
+                    'SELECT id_basecondition, label FROM `' . _DB_PREFIX_ . 'mj_basecondition`'
             )
         ));
 
@@ -149,11 +142,11 @@ class Segmentation
     public function getSourceSelect($ID, $inputID, $selected = null)
     {
         $res = Db::getInstance()->executeS(
-            'SELECT id_sourcecondition, label FROM `' .
-            _DB_PREFIX_ . 'mj_sourcecondition` WHERE `id_basecondition` = ' . (int)$ID
+                'SELECT id_sourcecondition, label FROM `' .
+                _DB_PREFIX_ . 'mj_sourcecondition` WHERE `id_basecondition` = ' . (int) $ID
         );
         $html = '<select id="sourceSelect' .
-            Tools::safeOutput($inputID) . '" name="sourceSelect[]" class="sourceSelect fixed">';
+                Tools::safeOutput($inputID) . '" name="sourceSelect[]" class="sourceSelect fixed">';
         $html .= '<option value="-1">--SELECT--</option>';
         foreach ($res as $r) {
             $html .= '<option value="' . Tools::safeOutput($r['id_sourcecondition']) . '"';
@@ -169,14 +162,12 @@ class Segmentation
     public function getIndicSelect($ID, $inputID, $selected = null)
     {
         // ID = 4 when trying to segment by multi store customers
-        $query = $ID == 4
-            ? 'SELECT id_shop AS id_fieldcondition, name AS label FROM `' .
-            _DB_PREFIX_ . 'shop` WHERE active = 1 ORDER BY name'
-            : 'SELECT id_fieldcondition, label FROM `' .
-            _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_sourcecondition` = ' . (int)$ID;
+        $query = $ID == 4 ? 'SELECT id_shop AS id_fieldcondition, name AS label FROM `' .
+                _DB_PREFIX_ . 'shop` WHERE active = 1 ORDER BY name' : 'SELECT id_fieldcondition, label FROM `' .
+                _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_sourcecondition` = ' . (int) $ID;
         $res = Db::getInstance()->ExecuteS($query);
         $html = '<select name="fieldSelect[]" class="fieldSelect fixed" id="fieldSelect' .
-            Tools::safeOutput($inputID) . '">';
+                Tools::safeOutput($inputID) . '">';
         $html .= '<option value="-1">--SELECT--</option>';
         foreach ($res as $r) {
             /* reserved cases 30 to 40 for names of shops for multi-store segmentation @see ajax/ajax.php */
@@ -194,13 +185,13 @@ class Segmentation
     public function getBinder($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_fieldcondition` = ' . (int)$ID
+                        'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE `id_fieldcondition` = ' . (int) $ID
         );
     }
 
     public function formatDate($post)
     {
-        switch ((int)Context::getContext()->cookie->id_lang) {
+        switch ((int) Context::getContext()->cookie->id_lang) {
             case 2:
                 $dataToFormat = array(33);
                 if (isset($post['fieldSelect'])) {
@@ -208,24 +199,24 @@ class Segmentation
                         if (in_array($value, array(12, 17, 18, 19, 20, 28, 35, 36))) {
                             if (Tools::strlen($post['value1'][$key]) >= 10) {
                                 $post['value1'][$key] = Tools::substr($post['value1'][$key], 6, 4) . '-' .
-                                    Tools::substr($post['value1'][$key], 3, 2) .
-                                    '-' .
-                                    Tools::substr($post['value1'][$key], 0, 2);
+                                        Tools::substr($post['value1'][$key], 3, 2) .
+                                        '-' .
+                                        Tools::substr($post['value1'][$key], 0, 2);
                             }
 
                             if (Tools::strlen($post['value2'][$key]) >= 10) {
                                 $post['value2'][$key] = Tools::substr($post['value2'][$key], 6, 4) . '-' .
-                                    Tools::substr($post['value2'][$key], 3, 2) .
-                                    '-' .
-                                    Tools::substr($post['value2'][$key], 0, 2);
+                                        Tools::substr($post['value2'][$key], 3, 2) .
+                                        '-' .
+                                        Tools::substr($post['value2'][$key], 0, 2);
                             }
                         }
                         if (in_array($value, $dataToFormat)) {
                             if (Tools::strlen($post['data'][$key]) >= 10) {
                                 $post['data'][$key] = Tools::substr($post['data'][$key], 6, 4) . '-' .
-                                    Tools::substr($post['data'][$key], 3, 2) .
-                                    '-' .
-                                    Tools::substr($post['data'][$key], 0, 2);
+                                        Tools::substr($post['data'][$key], 3, 2) .
+                                        '-' .
+                                        Tools::substr($post['data'][$key], 0, 2);
                             }
                         }
                     }
@@ -297,8 +288,17 @@ class Segmentation
 
                 foreach ($fieldSelectData as $fieldKey => $case) {
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
-                    $operator = $ruleAction[$fieldKey] == 'IN' ? '=' : '!=';
-
+                    $operator = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
+                    $action = $ruleAction[$fieldKey] == 'IN';
+                    if ($ruleAction[$fieldKey] == 'IN') {
+                        $minAction = ' >= ';
+                        $maxAction = ' <= ';
+                        $exclude = false;
+                    } else {
+                        $minAction = ' <= ';
+                        $maxAction = ' >= ';
+                        $exclude = true;
+                    }
                     switch ($case) {
                         // Gender
                         case '11':
@@ -310,17 +310,20 @@ class Segmentation
                         case '12':
                             $date = false;
                             $where .= $logicalOperator . ' c.newsletter = 1 ';
+
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
                                 $data = true;
-                                $where .= ' AND UNIX_TIMESTAMP(c.newsletter_date_add) >= '
+                                $where .= ' AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
                                         . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
-                                $date = true;
-                                $where .= 'AND UNIX_TIMESTAMP(c.newsletter_date_add) <= '
+                                $data = true;
+                                $where .= 'AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
-
+                            if ($exclude) {
+                                $where .= ' OR c.newsletter_date_add IS NULL';
+                            }
                             if (!$data) {
                                 $this->displayRuleError($i + 1, $this->trad[82]);
                             }
@@ -339,13 +342,16 @@ class Segmentation
                             $data = false;
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
                                 $data = true;
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) >= '
+                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $minAction
                                         . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
                                 $data = true;
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) <= '
+                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $maxAction
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                            }
+                            if($exclude){
+                                $where .= ' OR c.birthday IS NULL';
                             }
                             if (!$data) {
                                 $this->displayRuleError($i + 1, $this->trad[85]);
@@ -355,12 +361,15 @@ class Segmentation
                         case '19':
                             $where .= $logicalOperator . ' c.newsletter ' . $operator . ' ' . $sourceData[$fieldKey];
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
-                                $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) >= '
+                                $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
                                         . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
-                                $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) <= '
+                                $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                            }
+                            if ($exclude) {
+                                $where .= ' OR c.newsletter_date_add IS NULL';
                             }
                             break;
                         // Newsletter opt-in
@@ -379,12 +388,21 @@ class Segmentation
                                     $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'connections conn ON conn.id_guest = g.id_guest ';
                                     $joined_tables[] = 'connections';
                                 }
-                                $where .= ' conn.http_referer LIKE "%' . pSQL($sourceData[$fieldKey]) . '%"';
+                                $like = ' LIKE ';
+                                if ($exclude) {
+                                    $like = ' NOT LIKE ';
+                                }
+                                $where .= $logicalOperator.' conn.http_referer ' . $exclude . ' "%' . pSQL($sourceData[$fieldKey]) . '%"';
                             }
                             break;
                         // Promo code
                         case '22':
-                            // discount table does not exists, as column active
+                            $discount_table = _PS_VERSION_ >= '1.5.0.1' ? 'cart_rule' : 'discount';
+                            if (!in_array($discount_table, $joined_tables)) {
+                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . $discount_table . ' AS d ON d.id_customer = c.id_customer ';
+                                $joined_tables[] = $discount_table;
+                            }
+                            $where .= $logicalOperator . 'd.active' . $operator . (int) $sourceData[$fieldKey];
                             break;
                         // Assets
                         case '23':
@@ -440,19 +458,19 @@ class Segmentation
                             }
                             $operator = ' AND ';
                             if ($ruleAction[$fieldKey] == 'IN') {
-                                $min = ' >= ';
-                                $max = ' <= ';
+                                $minValue1 = ' >= ';
+                                $maxValue2 = ' <= ';
                             } else {
-                                $min = ' <= ';
-                                $max = ' >= ';
+                                $minValue1 = ' <= ';
+                                $maxValue2 = ' >= ';
                                 $operator = ' OR ';
                             }
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
-                                $where .= ' AND UNIX_TIMESTAMP(conn.date_add)' . $min
+                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(conn.date_add)' . $minValue1
                                         . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
-                                $where .= $operator . 'UNIX_TIMESTAMP(conn.date_add)' . $max
+                                $where .= $operator . 'UNIX_TIMESTAMP(conn.date_add)' . $maxValue2
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
                             break;
@@ -472,6 +490,11 @@ class Segmentation
                 $fieldSelectData = $this->getSegmentByType($ordersSegmentIndex, $sourceSelect);
                 foreach ($fieldSelectData as $fieldKey => $orderCase) {
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
+                    // include - true , exclude - false
+                    $exclude = $ruleAction[$fieldKey] != 'IN';
+                    $action_oprator = $ruleAction[$fieldKey] == 'IN' ? '=' : '!=';
+                    $minValue1 = (int) $value1[$fieldKey];
+                    $maxValue2 = (int) $value2[$fieldKey];
                     switch ($orderCase) {
                         // Number of orders
                         case '2':
@@ -480,7 +503,7 @@ class Segmentation
                             // include, exclude
                             $action = $ruleAction[$fieldKey] == 'IN';
                             $and = '';
-                            if ($action) {
+                            if (!$exclude) {
                                 // Include
                                 $min_operator = '>=';
                                 $max_operator = '<=';
@@ -491,12 +514,12 @@ class Segmentation
                                 $max_operator = '>';
                                 $and = ' OR ';
                             }
-                            if ($min >= 0) {
+                            if ($minValue1 >= 0) {
                                 $and = empty($and) ? ' AND ' : $and;
-                                $having .= ' count(o.id_customer) ' . $min_operator . $min;
+                                $having .= ' count(o.id_customer) ' . $min_operator . $minValue1;
                             }
-                            if ($max >= 0) {
-                                $having .= $and . ' count(o.id_customer) ' . $max_operator . $max;
+                            if ($maxValue2 >= 0) {
+                                $having .= $and . ' count(o.id_customer) ' . $max_operator . $maxValue2;
                             }
                             break;
                         // Order status
@@ -506,16 +529,14 @@ class Segmentation
                                 $joined_tables[] = 'order_history';
                             }
                             if ($sourceData[$fieldKey] > 0) {
-                                $action = $ruleAction[$fieldKey] == 'IN' ? '=' : '!=';
-                                $exclude = $ruleAction[$fieldKey] == 'IN' ? '' : ' OR id_order_state is null';
-                                $where .= $logicalOperator . ' id_order_state ' . $action . $sourceData[$fieldKey] . $exclude;
+                                $exclude = $exclude ? ' OR id_order_state is null':'';
+                                $where .= $logicalOperator . ' id_order_state ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
                             }
                             break;
                         // Payment method
                         case '4':
-                            $action = $ruleAction[$fieldKey] == 'IN' ? '=' : '!=';
-                            $exclude = $ruleAction[$fieldKey] == 'IN' ? '' : ' OR o.payment is null';
-                            $where .= $logicalOperator . ' o.payment ' . $action . '"' . $sourceData[$fieldKey] . '" ' . $exclude;
+                            $exclude = $exclude ? ' OR o.payment is null':'';
+                            $where .= $logicalOperator . ' o.payment ' . $action_oprator . '"' . $sourceData[$fieldKey] . '" ' . $exclude;
                             break;
                         // Product name
                         case '5':
@@ -523,20 +544,17 @@ class Segmentation
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
                                 $joined_tables[] = 'order_detail';
                             }
-                            $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
-                            $exclude = $ruleAction[$fieldKey] == 'IN' ? '' : ' OR od.product_id IS NULL ';
-                            $where .= $logicalOperator . ' od.product_id ' . $action . $sourceData[$fieldKey] . $exclude;
+                            $exclude = $exclude ? ' OR od.product_id IS NULL ':'';
+                            $where .= $logicalOperator . ' od.product_id ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
                             break;
                         // Category name
                         case '6':
-                            // @todo exclude problem - One product can be in many categories, so we don`t know from which category is
+                            // Exclude problem - One product can be in many categories, so we don`t know from which category is
                             // and can not exclude it
-                            // the order product - hSQL query 10
                             $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
                             $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'category_product cp ON cp.id_product = od.product_id ';
-                            $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
-                            $exclude = $ruleAction[$fieldKey] == 'IN' ? '' : ' OR cp.id_category IS NULL ';
-                            $where .= $logicalOperator . ' cp.id_category ' . $action . $sourceData[$fieldKey] . $exclude;
+                            $exclude = $exclude ? ' OR cp.id_category IS NULL ':'';
+                            $where .= $logicalOperator . ' cp.id_category ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
                             break;
                         // Brand name
                         case '7':
@@ -553,14 +571,8 @@ class Segmentation
                                 $joined_tables[] = 'manufacturer';
                             }
 
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                $action = ' = ';
-                            } else {
-                                $action = ' != ';
-                                $exclude = ' OR m.id_manufacturer IS NULL ';
-                            }
-                            $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
-                            $where .= $logicalOperator . ' m.id_manufacturer ' . $action . $sourceData[$fieldKey] . $exclude;
+                            $exclude = $exclude ? ' OR m.id_manufacturer IS NULL ' : '';
+                            $where .= $logicalOperator . ' m.id_manufacturer ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
                             break;
                         // Sales
                         case '8':
@@ -571,7 +583,7 @@ class Segmentation
                             $min = (int) $value1[$fieldKey];
                             $max = (int) $value2[$fieldKey];
                             $additional_select_column .= ', cu.conversion_rate, o.total_paid_real';
-                            if ($ruleAction[$fieldKey] == 'IN') {
+                            if (!$exclude) {
                                 // Include
                                 $minAction = ' >= ';
                                 $maxAction = ' <= ';
@@ -585,16 +597,16 @@ class Segmentation
                                 $operator = ' OR ';
                             }
                             if ($sourceData[$fieldKey] == 1) {
-                                $having .= ' FORMAT((SUM(o.total_paid_real)/cu.conversion_rate), 2) ' . $minAction . $min;
-                                if ($max > 0) {
-                                    $having .= $operator . ' FORMAT((SUM(o.total_paid_real)/cu.conversion_rate), 2) ' . $maxAction . $max;
+                                $having .= ' FORMAT((SUM(o.total_paid_real)/cu.conversion_rate), 2) ' . $minAction . $minValue1;
+                                if ($maxValue2 > 0) {
+                                    $having .= $operator . ' FORMAT((SUM(o.total_paid_real)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
                                 }
                             }
 
                             if ($sourceData[$fieldKey] == 2) {
-                                $having .= ' FORMAT((SUM(o.total_products)/cu.conversion_rate), 2) ' . $minAction . $min;
-                                if ($max > 0) {
-                                    $having .= $operator . ' FORMAT((SUM(o.total_products)/cu.conversion_rate), 2) ' . $maxAction . $max;
+                                $having .= ' FORMAT((SUM(o.total_products)/cu.conversion_rate), 2) ' . $minAction . $minValue1;
+                                if ($maxValue2 > 0) {
+                                    $having .= $operator . ' FORMAT((SUM(o.total_products)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
                                 }
                             }
                             $having .= $exclude;
@@ -628,16 +640,16 @@ class Segmentation
                             }
 
                             if ($sourceData[$fieldKey] == 1) {
-                                $having .= ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $minAction . $min;
-                                if ($max > 0) {
-                                    $having .= $operator . ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $maxAction . $max;
+                                $having .= ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $minAction . $minValue1;
+                                if ($maxValue2 > 0) {
+                                    $having .= $operator . ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
                                 }
                             }
 
                             if ($sourceData[$fieldKey] == 2) {
-                                $having .= ' FORMAT((AVG(o.total_products)/cu.conversion_rate), 2)' . $minAction . $min;
-                                if ($max > 0) {
-                                    $having .= $operator . 'FORMAT((AVG(o.total_products)/cu.conversion_rate), 2) ' . $maxAction . $max;
+                                $having .= ' FORMAT((AVG(o.total_products)/cu.conversion_rate), 2)' . $minAction . $minValue1;
+                                if ($maxValue2 > 0) {
+                                    $having .= $operator . 'FORMAT((AVG(o.total_products)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
                                 }
                             }
                             $having .= $exclude;
@@ -766,14 +778,14 @@ class Segmentation
                     $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'orders AS o ON (o.id_customer = c.id_customer) ';
                     $joined_tables[] = 'orders';
                 }
+                $include = $ruleAction[$fieldKey] == 'IN';
                 foreach ($fieldSelectData as $fieldKey => $case) {
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
 
                     switch ($case) {
                         // Number of abandoned carts
                         case '10':
-//                        $group_by .= ' c.id_customer ';
-                            $action = $ruleAction[$fieldKey] == 'IN' ? '>=' : '<=';
+                            $action = $include ? '>=' : '<=';
                             if (strpos($additional_select_column, 'o.id_order') === false) {
                                 $additional_select_column = ', o.id_order';
                             }
@@ -943,10 +955,10 @@ class Segmentation
                 . ' GROUP BY c.id_customer ' . $group_by
                 . $order_by
                 . $having;
-        
+
         // Pagination
         if ($limit) {
-            $sql .= ' LIMIT ' . (int)$limit['start'] . ', ' . (int)$limit['length'];
+            $sql .= ' LIMIT ' . (int) $limit['start'] . ', ' . (int) $limit['length'];
         }
         return $sql;
     }
@@ -969,9 +981,9 @@ class Segmentation
     {
         $sql = 'SELECT id_category
             FROM ' . _DB_PREFIX_ . 'category
-            WHERE id_parent = ' . (int)$id_category;
+            WHERE id_parent = ' . (int) $id_category;
 
-        $rows = (array)Db::getInstance()->executeS($sql);
+        $rows = (array) Db::getInstance()->executeS($sql);
 
         $categories = array();
 
@@ -986,8 +998,8 @@ class Segmentation
     public function displayRuleError($id, $error) /* alias */
     {
         die('<p class="noResult">' .
-            Tools::safeOutput($this->trad[81]) . ' ' . Tools::safeOutput($id) . ' : ' . Tools::safeOutput($error) .
-            '</p>');
+                Tools::safeOutput($this->trad[81]) . ' ' . Tools::safeOutput($id) . ' : ' . Tools::safeOutput($error) .
+                '</p>');
     }
 
     public function getName($idfield, $id)
@@ -1018,9 +1030,9 @@ class Segmentation
 
             if ($post['idgroup'] == 0) {
                 Db::getInstance()->Execute(
-                    'UPDATE `' . _DB_PREFIX_ . 'mj_filter` SET `name` = "' .
-                    pSQL($post['name']) . '", `description` = "' .
-                    pSQL($post['description']) . '" WHERE `id_filter`=' . (int)$id_filter
+                        'UPDATE `' . _DB_PREFIX_ . 'mj_filter` SET `name` = "' .
+                        pSQL($post['name']) . '", `description` = "' .
+                        pSQL($post['description']) . '" WHERE `id_filter`=' . (int) $id_filter
                 );
             } else {
                 $query = '
@@ -1028,10 +1040,10 @@ class Segmentation
 					SET
 						`name` = "' . pSQL($post['name']) . '",
 						`description` = "' . pSQL($post['description']) . '",
-						`id_group` = "' . (int)$post['idgroup'] . '",
-						`assignment_auto` = ' . (int)(bool)$auto_assign . ',
-						`replace_customer` = ' . (int)(bool)$replace_customer . '
-					WHERE `id_filter`=' . (int)$id_filter;
+						`id_group` = "' . (int) $post['idgroup'] . '",
+						`assignment_auto` = ' . (int) (bool) $auto_assign . ',
+						`replace_customer` = ' . (int) (bool) $replace_customer . '
+					WHERE `id_filter`=' . (int) $id_filter;
 
                 Db::getInstance()->Execute($query);
             }
@@ -1043,11 +1055,11 @@ class Segmentation
             /* } catch (Exception $e) { } */
         } else {
             Db::getInstance()->Execute(
-                'INSERT INTO `' . _DB_PREFIX_ . 'mj_filter` (`name`, `description`, `date_start`,
+                    'INSERT INTO `' . _DB_PREFIX_ . 'mj_filter` (`name`, `description`, `date_start`,
                     `date_end`, `id_group`, `assignment_auto`, `replace_customer`)
                 VALUES ("' . pSQL($post['name']) . '", "' . pSQL($post['description']) . '", '
-                . 'NULL, NULL, "' . (int)$post['idgroup'] . '", ' .
-                (int)(bool)$auto_assign . ', ' . (int)(bool)$replace_customer . ')'
+                    . 'NULL, NULL, "' . (int) $post['idgroup'] . '", ' .
+                    (int) (bool) $auto_assign . ', ' . (int) (bool) $replace_customer . ')'
             );
             $id_filter = Db::getInstance()->getValue('SELECT MAX(id_filter) FROM `' . _DB_PREFIX_ . 'mj_filter`');
         }
@@ -1055,14 +1067,14 @@ class Segmentation
 
         for ($i = 0; $i < $nb; $i++) {
             Db::getInstance()->Execute(
-                'INSERT INTO `' . _DB_PREFIX_ . 'mj_condition`(`id_filter`, `id_basecondition`, `id_sourcecondition`,
+                    'INSERT INTO `' . _DB_PREFIX_ . 'mj_condition`(`id_filter`, `id_basecondition`, `id_sourcecondition`,
                     `id_fieldcondition`, `rule_a`, `rule_action`, `data`, `value1`, `value2`)
-                VALUES (' . (int)$id_filter . ', ' . pSQL($post['baseSelect'][$i]) . ', ' .
-                pSQL($post['sourceSelect'][$i]) . ', ' .
-                pSQL($post['fieldSelect'][$i]) . ', "' . pSQL($post['rule_a'][$i]) . '", "' .
-                pSQL($post['rule_action'][$i]) . '", "' .
-                pSQL($post['data'][$i]) . '", "' . $this->formatDate2(pSQL($post['value1'][$i])) . '", "' .
-                $this->formatDate2(pSQL($post['value2'][$i])) . '")'
+                VALUES (' . (int) $id_filter . ', ' . pSQL($post['baseSelect'][$i]) . ', ' .
+                    pSQL($post['sourceSelect'][$i]) . ', ' .
+                    pSQL($post['fieldSelect'][$i]) . ', "' . pSQL($post['rule_a'][$i]) . '", "' .
+                    pSQL($post['rule_action'][$i]) . '", "' .
+                    pSQL($post['data'][$i]) . '", "' . $this->formatDate2(pSQL($post['value1'][$i])) . '", "' .
+                    $this->formatDate2(pSQL($post['value2'][$i])) . '")'
             );
         }
 
@@ -1079,7 +1091,7 @@ class Segmentation
             $replace_customer_text = '--';
         }
 
-        if (!($group_name = $this->getGroupName((int)$post['idgroup']))) {
+        if (!($group_name = $this->getGroupName((int) $post['idgroup']))) {
             $group_name = '--';
         }
 
@@ -1101,10 +1113,8 @@ class Segmentation
 
     public function deleteFilter($id)
     {
-        $deleteFromDb =
-            Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int)$id)
-            &&
-            Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_filter` WHERE `id_filter` =' . (int)$id);
+        $deleteFromDb = Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int) $id) &&
+                Db::getInstance()->Execute('DELETE FROM `' . _DB_PREFIX_ . 'mj_filter` WHERE `id_filter` =' . (int) $id);
 
         if ($deleteFromDb) {
             /* try { */
@@ -1117,21 +1127,21 @@ class Segmentation
             /* } catch (Exception $e) { } */
         }
 
-        return (bool)$deleteFromDb;
+        return (bool) $deleteFromDb;
     }
 
     public function deleteCondition($id)
     {
         return Db::getInstance()->Execute(
-            'DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int)$id
+                        'DELETE FROM `' . _DB_PREFIX_ . 'mj_condition` WHERE `id_filter` =' . (int) $id
         );
     }
 
     public function loadFilter($id_filter)
     {
         if ($res = Db::getInstance()->ExecuteS(
-            'SELECT c.* FROM `' . _DB_PREFIX_ . 'mj_condition` c  WHERE c.`id_filter`=' . (int)$id_filter
-        )
+                'SELECT c.* FROM `' . _DB_PREFIX_ . 'mj_condition` c  WHERE c.`id_filter`=' . (int) $id_filter
+                )
         ) {
             $i = 1;
             foreach ($res as &$r) {
@@ -1148,7 +1158,7 @@ class Segmentation
     public function loadFilterInfo($id_filter)
     {
         $res = Db::getInstance()->ExecuteS(
-            'SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`  WHERE `id_filter`=' . (int)$id_filter
+                'SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`  WHERE `id_filter`=' . (int) $id_filter
         );
         $json = Tools::jsonEncode($res);
         return '{"return" : ' . $json . '}';
@@ -1177,56 +1187,56 @@ class Segmentation
     private function getField($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT field FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
+                        'SELECT field FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
         );
     }
 
     public function getFieldLabel($ID)
     {
         return $this->trad[Db::getInstance()->getValue(
-            'SELECT label FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
+                        'SELECT label FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
         )];
     }
 
     private function getFieldLabelSQL($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT labelSQL FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
+                        'SELECT labelSQL FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
         );
     }
 
     public function fieldIsPrintable($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT printable FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
+                        'SELECT printable FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
         );
     }
 
     private function getFieldBinder($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int)$ID
+                        'SELECT binder FROM `' . _DB_PREFIX_ . 'mj_fieldcondition` WHERE id_fieldcondition = ' . (int) $ID
         );
     }
 
     private function getBase($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT tablename FROM `' . _DB_PREFIX_ . 'mj_basecondition` WHERE id_basecondition = ' . (int)$ID
+                        'SELECT tablename FROM `' . _DB_PREFIX_ . 'mj_basecondition` WHERE id_basecondition = ' . (int) $ID
         );
     }
 
     private function getSource($ID)
     {
         return Db::getInstance()->getValue(
-            'SELECT jointable FROM `' . _DB_PREFIX_ . 'mj_sourcecondition` WHERE id_sourcecondition = ' . (int)$ID
+                        'SELECT jointable FROM `' . _DB_PREFIX_ . 'mj_sourcecondition` WHERE id_sourcecondition = ' . (int) $ID
         );
     }
 
     public function getShopBirthdate()
     {
         return Db::getInstance()->executeS(
-            'SELECT date_add FROM ' . _DB_PREFIX_ . 'mj_configuration WHERE name = "PS_LANG_DEFAULT"'
+                        'SELECT date_add FROM ' . _DB_PREFIX_ . 'mj_configuration WHERE name = "PS_LANG_DEFAULT"'
         );
     }
 
@@ -1247,7 +1257,7 @@ class Segmentation
 
     public function getDateByIdLang($date)/* , $id_lang) */
     {
-        switch ((int)Context::getContext()->cookie->id_lang) {
+        switch ((int) Context::getContext()->cookie->id_lang) {
             case 2: // fr
                 $date = Tools::substr($date, 8, 2) . '-' . Tools::substr($date, 5, 2) . '-' . Tools::substr($date, 0, 4);
                 break;
@@ -1259,9 +1269,9 @@ class Segmentation
 
     public function getIdLangByIdEmployee($id_employee)
     {
-        $sql = 'SELECT id_lang FROM ' . _DB_PREFIX_ . 'employee WHERE id_employee = ' . (int)$id_employee;
+        $sql = 'SELECT id_lang FROM ' . _DB_PREFIX_ . 'employee WHERE id_employee = ' . (int) $id_employee;
 
-        return (int)DB::getInstance()->getValue($sql);
+        return (int) DB::getInstance()->getValue($sql);
     }
 
     public function initLang($id_lang = 0)
@@ -1270,13 +1280,13 @@ class Segmentation
             $id_lang = $this->getCurrentIdLang();
         }
 
-        if (file_exists($this->_path . '/translations/translation_cache_' . (int)$id_lang . '.txt')) {
+        if (file_exists($this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt')) {
             $this->trad = Tools::jsonDecode(
-                Tools::file_get_contents($this->_path . '/translations/translation_cache_' . (int)$id_lang . '.txt')
+                            Tools::file_get_contents($this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt')
             );
         } else {
             $this->cacheLang();
-            $tmp_create = $this->_path . '/translations/translation_create_' . (int)$id_lang . '.txt';
+            $tmp_create = $this->_path . '/translations/translation_create_' . (int) $id_lang . '.txt';
             if (file_exists($tmp_create)) {
                 $fp = fopen($tmp_create, 'r');
                 $trad = array();
@@ -1293,26 +1303,25 @@ class Segmentation
                 fclose($fp);
             }
             file_put_contents(
-                $this->_path .
-                '/translations/translation_cache_' .
-                (int)$id_lang .
-                '.txt',
-                Tools::jsonEncode($this->trad)
+                    $this->_path .
+                    '/translations/translation_cache_' .
+                    (int) $id_lang .
+                    '.txt', Tools::jsonEncode($this->trad)
             );
         }
     }
 
     public function getCurrentIdLang()
     {
-        if (($id_employee = (int)Tools::getValue('id_employee')) > 0) {
+        if (($id_employee = (int) Tools::getValue('id_employee')) > 0) {
             $id_lang = $this->getIdLangByIdEmployee($id_employee);
-        } elseif (($id_employee = (int)Context::getContext()->cookie->id_employee) > 0) {
+        } elseif (($id_employee = (int) Context::getContext()->cookie->id_employee) > 0) {
             $id_lang = $this->getIdLangByIdEmployee($id_employee);
         } else {
-            $id_lang = (int)Context::getContext()->cookie->id_lang;
+            $id_lang = (int) Context::getContext()->cookie->id_lang;
         }
 
-        return (int)$id_lang;
+        return (int) $id_lang;
     }
 
     private function clearCacheLang()
@@ -1443,20 +1452,20 @@ class Segmentation
     {
         $sql = 'SELECT COUNT(*)
 				FROM ' . _DB_PREFIX_ . 'customer_group
-				WHERE id_group = ' . (int)$id_group . ' AND id_customer = ' . (int)$id_customer;
+				WHERE id_group = ' . (int) $id_group . ' AND id_customer = ' . (int) $id_customer;
 
-        return (bool)DB::getInstance()->getValue($sql);
+        return (bool) DB::getInstance()->getValue($sql);
     }
 
     public function getGroupName($id_group, $id_lang = 0)
     {
         if (!$id_lang) {
-            $id_lang = (int)Context::getContext()->cookie->id_lang;
+            $id_lang = (int) Context::getContext()->cookie->id_lang;
         }
 
         $sql = 'SELECT name
 				FROM ' . _DB_PREFIX_ . 'group_lang
-				WHERE id_group = ' . (int)$id_group . ' AND id_lang = ' . (int)$id_lang;
+				WHERE id_group = ' . (int) $id_group . ' AND id_lang = ' . (int) $id_lang;
 
         return DB::getInstance()->getValue($sql);
     }
@@ -1481,8 +1490,8 @@ class Segmentation
             foreach ($lists as $l) {
                 $n = explode('idf', $l->Name);
 
-                if ((string)$n[0] == (string)$filterId) {
-                    $id_list_contact = (int)$l->ID;
+                if ((string) $n[0] == (string) $filterId) {
+                    $id_list_contact = (int) $l->ID;
                     $this->contactListsMap[$filterId] = $id_list_contact;
                     break;
                 }
@@ -1491,6 +1500,7 @@ class Segmentation
 
         return $id_list_contact;
     }
+
 }
 
 function stripReturn($txt)
