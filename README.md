@@ -68,9 +68,16 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.5 =
+* Fixed MasterList sync issues
+* Unsubscribed customers are added to the segment contact list as unsubscribed instead of subscribed
+* Optimized 'Update contact list' when a segmentation contains a large number of contacts
+* Fixed an issue related to the exclude action in Segmentation
+* Fixed an issue with the "Associate in real time" feature
+
 = 3.4.4 =
 * A new way to synchronize customers through segmentation
-* Optimize the SQL
+* Optimized the SQL
 
 = 3.4.3 =
 * Replace deprecated `autoExecute` DB class method with `execute`
