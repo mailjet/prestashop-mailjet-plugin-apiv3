@@ -322,7 +322,7 @@ class Segmentation
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
                             if ($exclude) {
-                                $where .= ' OR c.newsletter_date_add IS NULL';
+                                $where .= ' OR c.newsletter_date_add="0000-00-00 00:00:00" ';
                             }
                             if (!$data) {
                                 $this->displayRuleError($i + 1, $this->trad[82]);
@@ -351,7 +351,7 @@ class Segmentation
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
                             if($exclude){
-                                $where .= ' OR c.birthday IS NULL';
+                                $where .= ' OR c.birthday="0000-00-00" ';
                             }
                             if (!$data) {
                                 $this->displayRuleError($i + 1, $this->trad[85]);
@@ -369,7 +369,7 @@ class Segmentation
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
                             if ($exclude) {
-                                $where .= ' OR c.newsletter_date_add IS NULL';
+                                $where .= ' OR c.newsletter_date_add="0000-00-00 00:00:00" ';
                             }
                             break;
                         // Newsletter opt-in
@@ -418,8 +418,6 @@ class Segmentation
                             break;
                         // Address contains
                         case '25':
-                            $action = $ruleAction[$fieldKey] == 'IN';
-
                             if (Tools::strlen($sourceData[$fieldKey]) > 0) {
                                 if ($action) {
                                     // Include
@@ -435,7 +433,6 @@ class Segmentation
                         // Postcode starts with
                         case '26':
                             if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
-                                $action = $ruleAction[$fieldKey] == 'IN';
                                 if ($action) {
                                     // Include
                                     $where .= $logicalOperator . ' ad.postcode LIKE "' . pSQL($sourceData[$fieldKey]) . '%"';
@@ -447,7 +444,6 @@ class Segmentation
                             break;
                         // Date of visit
                         case '36':
-                            // @todo strange exclude behavior, hsql query 9
                             if (!in_array('guest', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'guest AS g ON g.id_customer = c.id_customer ';
                                 $joined_tables[] = 'guest';
@@ -477,7 +473,6 @@ class Segmentation
                     }
                 }
             }
-
             $isOrderSegment = in_array($ordersSegmentIndex, $sourceSelect);
             // If there are any order segments
             if ($isOrderSegment) {
@@ -498,10 +493,6 @@ class Segmentation
                     switch ($orderCase) {
                         // Number of orders
                         case '2':
-                            $min = (int) $value1[$fieldKey];
-                            $max = (int) $value2[$fieldKey];
-                            // include, exclude
-                            $action = $ruleAction[$fieldKey] == 'IN';
                             $and = '';
                             if (!$exclude) {
                                 // Include
@@ -580,8 +571,6 @@ class Segmentation
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
                             }
-                            $min = (int) $value1[$fieldKey];
-                            $max = (int) $value2[$fieldKey];
                             $additional_select_column .= ', cu.conversion_rate, o.total_paid_real';
                             if (!$exclude) {
                                 // Include
@@ -613,8 +602,6 @@ class Segmentation
                             break;
                         // Average sales
                         case '9':
-
-                            // @todo Exclude should be added
                             if (!in_array('currency', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
@@ -622,9 +609,6 @@ class Segmentation
                             if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
                                 $additional_select_column .= ', cu.conversion_rate';
                             }
-                            $min = (int) $value1[$fieldKey];
-                            $max = (int) $value2[$fieldKey];
-
                             if ($ruleAction[$fieldKey] == 'IN') {
                                 // Include
                                 $minAction = ' >= ';
@@ -946,13 +930,16 @@ class Segmentation
                 . '     c.email AS "' . $this->ll(75) . '", '
                 . '     ad.phone AS "' . $this->ll(73) . '", '
                 . '     ad.phone_mobile AS "' . $this->ll(74) . '" ' . $additional_select_column
+                . '     , c.newsletter '
                 . ' FROM ' . $from
                 . ' LEFT JOIN ' . _DB_PREFIX_ . 'address AS ad '
                 . '     ON ad.id_customer = c.id_customer '
                 . ' ' . $join
                 . ' WHERE c.deleted = 0 AND c.active = 1 '
                 . $where
-                . ' GROUP BY c.id_customer ' . $group_by
+                . ' GROUP BY email'
+                #. 'c.id_customer '
+                #.$group_by. ', c.email '
                 . $order_by
                 . $having;
 
