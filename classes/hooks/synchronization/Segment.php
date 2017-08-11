@@ -37,7 +37,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
      *
      * @var int
      */
-    private $limitPerRequest = 2;
+    private $limitPerRequest = 2500;
 
     /**
      *
@@ -77,7 +77,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 'ID' => $mailjetListId,
                 'method' => 'JSON',
                 'Name' => $prestashopFilterId . 'idf' .
-                    preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($newName))
+                preg_replace('`[^a-zA-Z0-9]`iUs', '', Tools::strtolower($newName))
             );
 
             /* # Api call */
@@ -158,20 +158,36 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         while (!empty($res_contacts)) {
             $reste_contacts = count($res_contacts);
 
-            $val = 50;
+            $val = 2500;
             if ($reste_contacts < $val) {
                 $val = $reste_contacts;
             }
 
             $contactsToAdd = array();
-            for ($ic = 1; $ic <= 50; $ic++) {
+            for ($ic = 1; $ic <= $val; $ic++) {
                 $rc = array_pop($res_contacts);
-                if (!empty($rc[$mail_index])) {
-                    $contactsToAdd[] = array(
-                        'Email' => $rc[$mail_index],
+                if ( (int)$rc['newsletter'] != 0) {
+                    $sub = $rc;
+                }else{
+                    $unsub = $rc;
+                }
+
+                if (!empty($sub)) {
+                    $contactsToAddSubscrubed[] = array(
+                        'Email' => $sub[$mail_index],
                         'Properties' => array(
-                            'firstname' => $rc[$firstNameIndex],
-                            'lastname' => $rc[$lastNameIndex]
+                            'firstname' => $sub[$firstNameIndex],
+                            'lastname' => $sub[$lastNameIndex]
+                        )
+                    );
+                }
+                
+                if (!empty($unsub)) {
+                    $contactsToAddUnsubscribed[] = array(
+                        'Email' => $unsub[$mail_index],
+                        'Properties' => array(
+                            'firstname' => $unsub[$firstNameIndex],
+                            'lastname' => $unsub[$lastNameIndex]
                         )
                     );
                 }
@@ -179,13 +195,25 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
             # Call
             try {
-                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'} (
-                    array(
-                        'method' => 'JSON',
-                        'Action' => 'addforce',
-                        'Contacts' => $contactsToAdd
-                    )
-                );
+                if(!empty($sub)){
+                    $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'}(
+                            array(
+                                'method' => 'JSON',
+                                'Action' => 'addforce',
+                                'Contacts' => $contactsToAddSubscrubed
+                            )
+                    );
+                }
+                
+                if(!empty($unsub)){
+                    $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'}(
+                            array(
+                                'method' => 'JSON',
+                                'Action' => 'unsub',
+                                'Contacts' => $contactsToAddUnsubscribed
+                            )
+                    );
+                }
 
                 $contacts_done += $val;
 
@@ -227,26 +255,34 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         }
 
         $prestashopContacts = array();
+        $prestashopUsers = array();
         $contactsToCsv = array();
         foreach ($contacts as $contact) {
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
                 $contactsToCsv[$contact[$mail_index]]['firstname'] = $contact[$firstNameIndex];
                 $contactsToCsv[$contact[$mail_index]]['lastname'] = $contact[$lastNameIndex];
+                $prestashopUsers[$contact[$mail_index]]['newsletter'] = $contact['newsletter'];
             }
         }
 
         $this->gatherCurrentContacts($existingListId);
 
         $contactsToAdd = array();
+        $contactsToAddUnsub = array();
         $contactsToRemove = array();
 
         foreach ($prestashopContacts as $email) {
             if (!in_array($email, $this->mailjetContacts)) {
-                $contactsToAdd[] = array(
+                $contactData = array(
                     'Email' => $email,
                     'Properties' => $contactsToCsv[$email]
                 );
+                if( (int)$prestashopUsers[$email]['newsletter'] == 0 ) {
+                    $contactsToAddUnsub[] = $contactData;
+                }else{
+                    $contactsToAdd[] = $contactData;
+                }
             }
         }
 
@@ -262,29 +298,34 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $responseMsg = 'Pending';
 
         try {
-            if (!empty($contactsToAdd)) {
+            if (!empty($contactsToAddUnsub)) {
+
                 $response = $this->getApiOverlay()->getApi()
-                    ->{'contactslist/' . $existingListId . '/managemanycontacts'} (
+                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
+                        array(
+                            'method' => 'JSON',
+                            'Action' => 'unsub',
+                            'Contacts' => $contactsToAddUnsub
+                        )
+                );
+            }
+            
+            if (!empty($contactsToAdd)) {
+
+                $response = $this->getApiOverlay()->getApi()
+                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
                         array(
                             'method' => 'JSON',
                             'Action' => 'addforce',
                             'Contacts' => $contactsToAdd
                         )
-                    );
+                );
             }
 
 
             if (!empty($contactsToRemove)) {
-//
-//                foreach ($contactsToRemove as $emailToRemove) {
-//                    $contact = array(
-//                        "Email" =>  $emailToRemove,   // Mandatory field!
-//                        "Action" =>  "remove",
-//                    );
-//                    $response = $this->getApiOverlay()->addDetailedContactToList($contact, $existingListId);
-//                }
                 $response = $this->getApiOverlay()->getApi()
-                    ->{'contactslist/' . $existingListId . '/managemanycontacts'} (
+                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
                         array(
                             'method' => 'JSON',
                             'Action' => 'remove',
@@ -384,4 +425,5 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
             $this->gatherCurrentContacts($mailjetListId, $offset + $this->limitPerRequest);
         }
     }
+
 }

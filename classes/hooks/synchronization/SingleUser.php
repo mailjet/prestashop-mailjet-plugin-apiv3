@@ -51,7 +51,6 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             $update_list_id = $response->ID;
         }
 
-
         if (is_string($email)) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
@@ -59,8 +58,9 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             );
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
         } elseif (is_object($email)) {
+            $action = $email->newsletter == 1 ? 'addforce' : 'unsub';
             $contact = array(
-                "Action" => "addforce",
+                "Action" => $action,
                 'Email' => $email->email,
                 'Name' => $email->firstname,
                 'Properties' => array(
@@ -134,7 +134,11 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
             $lists = $apiOverlay->getContactsLists();
 
+            $masterListId = $this->getAlreadyCreatedMasterListId();
             foreach ($lists as $list) {
+                if ($list->ID == $masterListId) {
+                    continue;
+                }
                 $contact = array(
                     "Email" => $email,   // Mandatory field!
                     "Action" => "remove",
