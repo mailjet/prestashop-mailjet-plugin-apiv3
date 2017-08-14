@@ -1,5 +1,4 @@
 <?php
-
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,6 +23,7 @@
  * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of PrestaShop SA
  */
+
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Initial.php');
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser.php');
@@ -71,16 +71,19 @@ class Segmentation
             'mj_MODULE_DIR_' => _MODULE_DIR_,
             'mj_hint_fieldset' => array(
                 $this->l(
-                        'This module enables you to create segments of customers according to any criteria you think of.'
-                        . 'You can then either display and export the selected customers or associate them to an existing '
-                        . 'customer group.', 'mailjet'
+                        'This module enables you to create segments of customers according to any criteria you think of.' .
+                        'You can then either display and export the selected customers or associate them to an existing ' .
+                        'customer group.',
+                        'mailjet'
                 ),
                 $this->l(
                         'These segments are particularly useful to create special offers associated with customer groups '
-                        . '(e.g., send a coupon to the customers interested in some products)', 'mailjet'
+                        . '(e.g., send a coupon to the customers interested in some products)',
+                        'mailjet'
                 ),
                 $this->l(
-                        'Create an infinite number of filters corresponding to your needs!', 'mailjet'
+                        'Create an infinite number of filters corresponding to your needs!',
+                        'mailjet'
                 )
             ),
             'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
@@ -97,9 +100,7 @@ class Segmentation
             'mj_trads' => array_map('stripReturn', $this->trad),
             'mj_groups' => Group::getGroups((int) Context::getContext()->cookie->id_lang),
             'mj_filter_list' => Db::getInstance()->ExecuteS('SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`'),
-            'mj_base_select' => Db::getInstance()->ExecuteS(
-                    'SELECT id_basecondition, label FROM `' . _DB_PREFIX_ . 'mj_basecondition`'
-            )
+            'mj_base_select' => Db::getInstance()->ExecuteS('SELECT id_basecondition, label FROM `' . _DB_PREFIX_ . 'mj_basecondition`')
         ));
 
         return '';
@@ -112,7 +113,7 @@ class Segmentation
             $trad_file = _PS_MODULE_DIR_ . 'mailjet/translations/' . Context::getContext()->language->iso_code . '.php';
             if (file_exists($trad_file)) {
                 $_MODULE = array();
-                @include($trad_file);
+                @include_once($trad_file);
 
                 $key = '<{mailjet}prestashop>segmentation_' . md5(str_replace('\'', '\\\'', $string));
                 /*
@@ -253,7 +254,7 @@ class Segmentation
      * @param type $speField
      * @return string
      */
-    public function getQuery($post, $live, $limit = false, $speField = '')
+    public function getQuery($post, $live, $limit = false, $having_id_customer = false)
     {
         if (empty($post)) {
             $post = $_GET;
@@ -264,7 +265,6 @@ class Segmentation
         $join = '';
         $joined_tables = '';
         $additional_select_column = '';
-        $group_by = '';
         $order_by = '';
         $where = '';
         $having = '';
@@ -286,6 +286,7 @@ class Segmentation
             if ($isCustomerSegment) {
                 $fieldSelectData = $this->getSegmentByType($customerSegmentIndex, $sourceSelect);
 
+                $i = 0;
                 foreach ($fieldSelectData as $fieldKey => $case) {
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
                     $operator = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
@@ -308,7 +309,7 @@ class Segmentation
                             break;
                         // Subscription date
                         case '12':
-                            $date = false;
+                            $data = false;
                             $where .= $logicalOperator . ' c.newsletter = 1 ';
 
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
@@ -326,6 +327,7 @@ class Segmentation
                             }
                             if (!$data) {
                                 $this->displayRuleError($i + 1, $this->trad[82]);
+                                $i++;
                             }
                             break;
                         // Country
@@ -350,11 +352,12 @@ class Segmentation
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $maxAction
                                         . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
-                            if($exclude){
+                            if ($exclude) {
                                 $where .= ' OR c.birthday="0000-00-00" ';
                             }
                             if (!$data) {
                                 $this->displayRuleError($i + 1, $this->trad[85]);
+                                $i++;
                             }
                             break;
                         // Newsletter subscription and date
@@ -392,7 +395,7 @@ class Segmentation
                                 if ($exclude) {
                                     $like = ' NOT LIKE ';
                                 }
-                                $where .= $logicalOperator.' conn.http_referer ' . $exclude . ' "%' . pSQL($sourceData[$fieldKey]) . '%"';
+                                $where .= $logicalOperator.' conn.http_referer ' . $like . ' "%' . pSQL($sourceData[$fieldKey]) . '%"';
                             }
                             break;
                         // Promo code
@@ -476,13 +479,13 @@ class Segmentation
             $isOrderSegment = in_array($ordersSegmentIndex, $sourceSelect);
             // If there are any order segments
             if ($isOrderSegment) {
-
                 // Table `orders` is used in each orderSegment so we need it anyway
                 if (!in_array('orders', $joined_tables)) {
                     $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'orders o ON o.id_customer = c.id_customer';
                     $joined_tables[] = 'orders';
                 }
                 $fieldSelectData = $this->getSegmentByType($ordersSegmentIndex, $sourceSelect);
+                $i = 0;
                 foreach ($fieldSelectData as $fieldKey => $orderCase) {
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
                     // include - true , exclude - false
@@ -677,6 +680,7 @@ class Segmentation
                                         . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
                                 $this->displayRuleError($i + 1, $this->trad[89]);
+                                $i++;
                             }
                             $where .= $exclude;
                             break;
@@ -693,6 +697,7 @@ class Segmentation
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $sign . ' UNIX_TIMESTAMP("' . pSQL($sourceData[$fieldKey]) . '")' . $include;
                             } else {
                                 $this->displayRuleError($i + 1, $this->trad[93]);
+                                $i++;
                             }
                             $order_by .= ' ORDER BY UNIX_TIMESTAMP(o.date_add) DESC';
                             break;
@@ -714,6 +719,7 @@ class Segmentation
                         case '35':
                             if ((int) $sourceData[$fieldKey] == 0) {
                                 $this->displayRuleError($i + 1, $this->trad[95]);
+                                $i++;
                             } else {
                                 $having .= ' COUNT(c.id_customer) >= ' . (int) $sourceData[$fieldKey];
                             }
@@ -741,6 +747,7 @@ class Segmentation
                                         . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
                                 $this->displayRuleError($i + 1, $this->trad[89]);
+                                $i++;
                             }
                             $where .= $exclude;
                             break;
@@ -763,6 +770,7 @@ class Segmentation
                     $joined_tables[] = 'orders';
                 }
                 $include = $ruleAction[$fieldKey] == 'IN';
+                $i = 0;
                 foreach ($fieldSelectData as $fieldKey => $case) {
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
 
@@ -814,6 +822,7 @@ class Segmentation
                                         . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
                                 $this->displayRuleError($i + 1, $this->trad[89]);
+                                $i++;
                             }
                             $where .= $exclude;
                             break;
@@ -921,6 +930,11 @@ class Segmentation
 
         if (!empty($having)) {
             $having = ' HAVING ' . $having;
+            if ($having_id_customer) {
+                $having .= ' AND ' . $having_id_customer;
+            }
+        } elseif (empty($having) && $having_id_customer) {
+            $having = ' HAVING ' . $having_id_customer;
         }
 
         $sql = 'SELECT '
@@ -1290,10 +1304,8 @@ class Segmentation
                 fclose($fp);
             }
             file_put_contents(
-                    $this->_path .
-                    '/translations/translation_cache_' .
-                    (int) $id_lang .
-                    '.txt', Tools::jsonEncode($this->trad)
+                    $this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt',
+                    Tools::jsonEncode($this->trad)
             );
         }
     }

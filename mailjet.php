@@ -727,16 +727,13 @@ class Mailjet extends Module
         foreach ($formatRows as $filterId => $formatRow) {
             $obj = new Segmentation();
 
-            $sql = $obj->getQuery($formatRow, true) . ' HAVING c.id_customer = ' . (int)$id_customer;
+            $sql = $obj->getQuery($formatRow, true, false, ' c.id_customer = ' . (int)$id_customer);
 
             $result = DB::getInstance()->executeS($sql);
 
             if ($result && !$obj->belongsToGroup($formatRow['idgroup'], $id_customer)) {
                 if ($formatRow['replace_customer']) {
-                    $sql = 'DELETE
-						FROM ' . _DB_PREFIX_ . 'customer_group
-						WHERE id_customer = ' . (int)$id_customer;
-
+                    $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'customer_group WHERE id_customer = ' . (int)$id_customer;
                     Db::getInstance()->execute($sql);
                 }
 
@@ -760,7 +757,7 @@ class Mailjet extends Module
             $mailjetListID = $obj->getMailjetContactListId($filterId);
 
             if ($result) {
-				if ($customer->active == 1) {
+                if ($customer->active == 1) {
                     $initialSynchronization->subscribe($customer, $mailjetListID);
                 }
             } else {
