@@ -262,7 +262,7 @@ class Segmentation
 
         $from = str_replace('%1', _DB_PREFIX_, $this->getBase($post['baseSelect'][0]));
         $join = '';
-        $joined_tables = '';
+        $joined_tables = [];
         $additional_select_column = '';
         $group_by = '';
         $order_by = '';
