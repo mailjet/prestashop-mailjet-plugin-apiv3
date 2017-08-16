@@ -506,13 +506,13 @@ class Mailjet extends Module
     public function hookActionAdminCustomersControllerStatusAfter($params)
     {
         $customer = $params['return'];
-
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
             $this->checkAutoAssignment($customer->id);
-
-            if ($customer->active == 0 || $customer->newsletter == 0) {
+            if ($customer->active == 0) {
+                $initialSynchronization->removeFromAllLists($customer->email);
+            } elseif ($customer->active == 1 && $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
