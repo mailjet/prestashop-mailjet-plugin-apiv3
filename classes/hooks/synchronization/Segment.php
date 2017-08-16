@@ -154,6 +154,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
         $contacts_done = 0;
 
+        $contactsToAddSubscrubed = array();
+        $contactsToAddUnsubscribed = array();
         // On va maintenant ajouter les contacts par 50 à la liste
         while (!empty($res_contacts)) {
             $reste_contacts = count($res_contacts);
@@ -163,12 +165,11 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 $val = $reste_contacts;
             }
 
-            $contactsToAdd = array();
             for ($ic = 1; $ic <= $val; $ic++) {
                 $rc = array_pop($res_contacts);
-                if ( (int)$rc['newsletter'] != 0) {
+                if ((int) $rc['newsletter'] != 0) {
                     $sub = $rc;
-                }else{
+                } else {
                     $unsub = $rc;
                 }
 
@@ -181,7 +182,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                         )
                     );
                 }
-                
+
                 if (!empty($unsub)) {
                     $contactsToAddUnsubscribed[] = array(
                         'Email' => $unsub[$mail_index],
@@ -195,7 +196,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
             # Call
             try {
-                if(!empty($sub)){
+                if (!empty($sub)) {
                     $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'}(
                             array(
                                 'method' => 'JSON',
@@ -204,8 +205,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                             )
                     );
                 }
-                
-                if(!empty($unsub)){
+
+                if (!empty($unsub)) {
                     $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'}(
                             array(
                                 'method' => 'JSON',
@@ -219,8 +220,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
                 Configuration::updateValue('MJ_PERCENTAGE_SYNC', floor(($contacts_done * 100) / $total_contacts));
 
-                //$responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : 'NoK';
-                $responseMsg = 'OK';
+                $responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : '';
             } catch (Exception $e) {
                 $responseMsg = 'Try again later';
             }
@@ -239,7 +239,6 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
     {
         $segmentationObject = new Segmentation();
 
-        // ** ** Détection du bon Index
         $mail_index = 'Email';
         if ($contacts) {
             $contact_ids = array_keys($contacts[0]);
@@ -258,6 +257,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $prestashopUsers = array();
         $contactsToCsv = array();
         foreach ($contacts as $contact) {
+            $contact[$mail_index] = strtolower($contact[$mail_index]);
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
                 $contactsToCsv[$contact[$mail_index]]['firstname'] = $contact[$firstNameIndex];
@@ -273,14 +273,15 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $contactsToRemove = array();
 
         foreach ($prestashopContacts as $email) {
+            $email = strtolower($email);
             if (!in_array($email, $this->mailjetContacts)) {
                 $contactData = array(
                     'Email' => $email,
                     'Properties' => $contactsToCsv[$email]
                 );
-                if( (int)$prestashopUsers[$email]['newsletter'] == 0 ) {
+                if ((int) $prestashopUsers[$email]['newsletter'] == 0) {
                     $contactsToAddUnsub[] = $contactData;
-                }else{
+                } else {
                     $contactsToAdd[] = $contactData;
                 }
             }
@@ -298,44 +299,42 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $responseMsg = 'Pending';
 
         try {
-            if (!empty($contactsToAddUnsub)) {
-
-                $response = $this->getApiOverlay()->getApi()
-                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
-                        array(
-                            'method' => 'JSON',
-                            'Action' => 'unsub',
-                            'Contacts' => $contactsToAddUnsub
-                        )
-                );
-            }
-            
-            if (!empty($contactsToAdd)) {
-
-                $response = $this->getApiOverlay()->getApi()
-                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
-                        array(
-                            'method' => 'JSON',
-                            'Action' => 'addforce',
-                            'Contacts' => $contactsToAdd
-                        )
-                );
-            }
-
-
+            $response = false;
             if (!empty($contactsToRemove)) {
-                $response = $this->getApiOverlay()->getApi()
-                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
-                        array(
-                            'method' => 'JSON',
-                            'Action' => 'remove',
-                            'Contacts' => $contactsToRemove
-                        )
-                    );
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $existingListId . '/managemanycontacts'}(
+                    array(
+                        'method' => 'JSON',
+                        'Action' => 'remove',
+                        'Contacts' => $contactsToRemove
+                    )
+                );
             }
 
-            //$responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : 'NoK';
-            $responseMsg = 'OK';
+            if (!empty($contactsToAddUnsub)) {
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $existingListId . '/managemanycontacts'}(
+                    array(
+                        'method' => 'JSON',
+                        'Action' => 'unsub',
+                        'Contacts' => $contactsToAddUnsub
+                    )
+                );
+            }
+
+            if (!empty($contactsToAdd)) {
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $existingListId . '/managemanycontacts'}(
+                    array(
+                        'method' => 'JSON',
+                        'Action' => 'addforce',
+                        'Contacts' => $contactsToAdd
+                    )
+                );
+            }
+
+            if($response){
+                $responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : false;
+            }else{
+                $responseMsg = 'OK';
+            }
         } catch (Exception $e) {
             $responseMsg = $e;
         }
@@ -359,8 +358,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
             foreach ($lists as $l) {
                 $n = explode('idf', $l->Name);
 
-                if ((string)$n[0] == (string)$filterId) {
-                    $listId = (int)$l->ID;
+                if ((string) $n[0] == (string) $filterId) {
+                    $listId = (int) $l->ID;
                     break;
                 }
             }
@@ -425,5 +424,4 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
             $this->gatherCurrentContacts($mailjetListId, $offset + $this->limitPerRequest);
         }
     }
-
 }
