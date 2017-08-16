@@ -143,7 +143,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                     "Email" => $email,   // Mandatory field!
                     "Action" => "remove",
                 );
-                $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
+                $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
 
                 if (!$response || !($response->Count > 0)) {
                     return false;
@@ -169,7 +169,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                 "Email" => $email,   // Mandatory field!
                 "Action" => "remove",
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
+            $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
 
             if (!$response || !($response->Count > 0)) {
                 return false;
