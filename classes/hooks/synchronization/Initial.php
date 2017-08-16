@@ -65,6 +65,8 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
             throw new HooksSynchronizationException('You don\'t have any users in the database.');
         }
 
+        #$segmentationObject = new Segmentation();
+
         $contstToAddArray = array();
         foreach ($allUsers as $userInfo) {
             $contstToAddArray[] = array(
