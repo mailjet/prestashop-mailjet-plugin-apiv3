@@ -113,7 +113,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
-     *
+     * Remove email from a specific list or from all lists except masterList
      * @param string $email
      * @return boolean
      */
@@ -143,7 +143,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                     "Email" => $email,   // Mandatory field!
                     "Action" => "remove",
                 );
-                $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
+                $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
 
                 if (!$response || !($response->Count > 0)) {
                     return false;
@@ -151,6 +151,30 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             }
         }
 
+        return true;
+    }
+
+    /**
+     * Remove email from all lists even in masterList
+     * @param string $email
+     * @return boolean
+     */
+    public function removeFromAllLists($email){
+        $apiOverlay = $this->getApiOverlay();
+
+        $lists = $apiOverlay->getContactsLists();
+
+        foreach ($lists as $list) {
+            $contact = array(
+                "Email" => $email,   // Mandatory field!
+                "Action" => "remove",
+            );
+            $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
+
+            if (!$response || !($response->Count > 0)) {
+                return false;
+            }
+        }
         return true;
     }
 }

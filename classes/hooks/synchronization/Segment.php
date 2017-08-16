@@ -239,7 +239,6 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
     {
         $segmentationObject = new Segmentation();
 
-        // ** ** Détection du bon Index
         $mail_index = 'Email';
         if ($contacts) {
             $contact_ids = array_keys($contacts[0]);
@@ -258,6 +257,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $prestashopUsers = array();
         $contactsToCsv = array();
         foreach ($contacts as $contact) {
+            $contact[$mail_index] = strtolower($contact[$mail_index]);
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
                 $contactsToCsv[$contact[$mail_index]]['firstname'] = $contact[$firstNameIndex];
@@ -273,6 +273,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $contactsToRemove = array();
 
         foreach ($prestashopContacts as $email) {
+            $email = strtolower($email);
             if (!in_array($email, $this->mailjetContacts)) {
                 $contactData = array(
                     'Email' => $email,
@@ -298,41 +299,42 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $responseMsg = 'Pending';
 
         try {
+            $response = false;
+            if (!empty($contactsToRemove)) {
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $existingListId . '/managemanycontacts'}(
+                    array(
+                        'method' => 'JSON',
+                        'Action' => 'remove',
+                        'Contacts' => $contactsToRemove
+                    )
+                );
+            }
+
             if (!empty($contactsToAddUnsub)) {
-                $response = $this->getApiOverlay()->getApi()
-                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
-                        array(
-                            'method' => 'JSON',
-                            'Action' => 'unsub',
-                            'Contacts' => $contactsToAddUnsub
-                        )
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $existingListId . '/managemanycontacts'}(
+                    array(
+                        'method' => 'JSON',
+                        'Action' => 'unsub',
+                        'Contacts' => $contactsToAddUnsub
+                    )
                 );
             }
 
             if (!empty($contactsToAdd)) {
-                $response = $this->getApiOverlay()->getApi()
-                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
-                        array(
-                            'method' => 'JSON',
-                            'Action' => 'addforce',
-                            'Contacts' => $contactsToAdd
-                        )
+                $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $existingListId . '/managemanycontacts'}(
+                    array(
+                        'method' => 'JSON',
+                        'Action' => 'addforce',
+                        'Contacts' => $contactsToAdd
+                    )
                 );
             }
 
-
-            if (!empty($contactsToRemove)) {
-                $response = $this->getApiOverlay()->getApi()
-                        ->{'contactslist/' . $existingListId . '/managemanycontacts'}(
-                        array(
-                            'method' => 'JSON',
-                            'Action' => 'remove',
-                            'Contacts' => $contactsToRemove
-                        )
-                );
+            if($response){
+                $responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : false;
+            }else{
+                $responseMsg = 'OK';
             }
-
-            $responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : 'NoK';
         } catch (Exception $e) {
             $responseMsg = $e;
         }
