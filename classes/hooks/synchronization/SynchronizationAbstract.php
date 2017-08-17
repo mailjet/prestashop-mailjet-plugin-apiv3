@@ -97,7 +97,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
      *
      * @return number|boolean
      */
-    protected function getAlreadyCreatedMasterListId()
+    public function getAlreadyCreatedMasterListId()
     {
         if (!$this->masterListId) {
             $lists = $this->getApiOverlay()->getContactsLists();

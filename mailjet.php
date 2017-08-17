@@ -486,9 +486,14 @@ class Mailjet extends Module
 
         try {
             $this->checkAutoAssignment($customer->id);
-
-            if ($customer->active == 0 || $customer->newsletter == 0) {
+            if ($customer->active == 0) {
+                $initialSynchronization->removeFromAllLists($customer->email);
+            } elseif ($customer->active == 1 && $customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($customer->email);
+
+                // Remove a customer from the MasterList When he unsubscribe via profil
+                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                $initialSynchronization->remove($customer->email, $masterListId);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
             }
