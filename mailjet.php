@@ -422,50 +422,36 @@ class Mailjet extends Module
 
 
     /**
-     *
+     * New customer is created via Administration Panel
      * @author atanas
      * @param array $params
      */
     public function hookActionAdminCustomersControllerSaveBefore()
     {
         $customer = new Customer(Tools::getValue('id_customer'));
-
         Configuration::updateValue('PREVIOUS_MJ_USER_MAIL', $customer->email);
-    }
 
-    /**
-     *
-     * @author atanas
-     * @param array $params
-     */
+    }
+    
     public function hookActionAdminCustomersControllerSaveAfter($params)
     {
         $customer = $params['return'];
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
-        $newEmail = $customer->email;
-        $oldEmail = Configuration::get('PREVIOUS_MJ_USER_MAIL');
-
-        $changedMail = false;
-
-        if ($newEmail != $oldEmail) {
-            $changedMail = true;
-        }
-
         try {
-            if ($changedMail) {
-                if ($customer->active == 1 && $customer->newsletter == 1) {
-                    $initialSynchronization->subscribe($customer);
-                }
-                $initialSynchronization->remove($oldEmail);
-            }
-
             $this->checkAutoAssignment($customer->id);
-
-            if ($customer->active == 0 || $customer->newsletter == 0) {
-                $initialSynchronization->unsubscribe($newEmail);
-            } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($customer);
+            if ($customer->active == 0) {
+                $initialSynchronization->removeFromAllLists($customer->email);
+            } elseif ($customer->active == 1 && $customer->newsletter = 0) {
+                // Get all lists where customer is subscribed
+                $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
+                
+                // Unsubscribe user from all lists where he is subscribed
+                foreach ($subsSegmentListsIds as $listId) {
+                    $initialSynchronization->unsubscribe($email, $listId);
+                }
+            } elseif ($customer->active == 1 && $customer->newsletter = 1) {
+                $initialSynchronization->subscribe($email);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -477,6 +463,29 @@ class Mailjet extends Module
      * or by admin via Customers listing - click on 'Newsletter' checkbox in the listing
      * (note that the Hook for customer profile edition by Admin is different -
      * it is hookActionAdminCustomersControllerSaveAfter)
+     * @param type $params
+     */
+    public function hookActionAdminCustomersControllerStatusAfter($params)  
+    {
+        echo __LINE__;exit;
+        $customer = $params['return'];
+        $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+        try {
+            $this->checkAutoAssignment($customer->id);
+            if ($customer->active == 0) {
+                $initialSynchronization->removeFromAllLists($customer->email);
+            } elseif ($customer->active == 1 && $customer->newsletter == 0) {
+                $initialSynchronization->unsubscribe($customer->email);
+            } elseif ($customer->active == 1 && $customer->newsletter == 1) {
+                $initialSynchronization->subscribe($customer);
+            }
+        } catch (Exception $e) {
+            $this->errors_list[] = $this->l($e->getMessage());
+        }
+    }
+    
+    /**
+     * User profile action
      * @param type $params
      */
     public function hookActionObjectCustomerUpdateAfter($params)
@@ -501,32 +510,6 @@ class Mailjet extends Module
             $this->errors_list[] = $this->l($e->getMessage());
         }
     }
-
-
-    /**
-     *
-     * @author atanas
-     * @param array $params
-     */
-    public function hookActionAdminCustomersControllerStatusAfter($params)
-    {
-        $customer = $params['return'];
-        $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-
-        try {
-            $this->checkAutoAssignment($customer->id);
-            if ($customer->active == 0) {
-                $initialSynchronization->removeFromAllLists($customer->email);
-            } elseif ($customer->active == 1 && $customer->newsletter == 0) {
-                $initialSynchronization->unsubscribe($customer->email);
-            } elseif ($customer->active == 1 && $customer->newsletter == 1) {
-                $initialSynchronization->subscribe($customer);
-            }
-        } catch (Exception $e) {
-            $this->errors_list[] = $this->l($e->getMessage());
-        }
-    }
-
 
     public function hookActionObjectCustomerDeleteBefore($params)
     {
@@ -553,6 +536,7 @@ class Mailjet extends Module
      */
     public function hookActionAdminCustomersControllerDeleteBefore()
     {
+        echo __LINE__;exit;
         $customer = new Customer(Tools::getValue('id_customer'));
 
         if (!$customer->id) {
@@ -570,6 +554,7 @@ class Mailjet extends Module
 
     public function hookAdminCustomers()
     {
+        echo __LINE__;exit;
         return;
 
         /*
@@ -606,6 +591,7 @@ class Mailjet extends Module
      */
     public function hookCreateAccount($params)
     {
+        echo __LINE__;exit;
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
@@ -627,6 +613,7 @@ class Mailjet extends Module
      */
     public function hookCustomerAccount($params)
     {
+        echo __LINE__;exit;
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
@@ -731,7 +718,6 @@ class Mailjet extends Module
 
         foreach ($formatRows as $filterId => $formatRow) {
             $obj = new Segmentation();
-
             $sql = $obj->getQuery($formatRow, true, false, ' c.id_customer = ' . (int)$id_customer);
 
             $result = DB::getInstance()->executeS($sql);
@@ -764,6 +750,8 @@ class Mailjet extends Module
             if ($result) {
                 if ($customer->active == 1) {
                     $initialSynchronization->subscribe($customer, $mailjetListID);
+                }else{
+                    $initialSynchronization->unsubscribe($customer, $mailjetListID);
                 }
             } else {
                 $initialSynchronization->remove($customer->email, $mailjetListID);

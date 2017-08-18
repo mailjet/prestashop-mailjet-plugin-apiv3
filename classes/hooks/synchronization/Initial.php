@@ -112,7 +112,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 			FROM ' . _DB_PREFIX_ . 'customer
 			WHERE active = 1
 			AND newsletter = 1
-			AND deleted = 0
-		');
+			AND deleted = 0'
+        );
     }
 }

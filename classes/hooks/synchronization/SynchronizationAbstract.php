@@ -112,4 +112,23 @@ abstract class HooksSynchronizationSynchronizationAbstract
         }
         return $this->masterListId;
     }
+    
+    public function getMailjetSegmentationLists($listNames)
+    {
+        if (!is_array($listNames)) {
+            return false;
+        }
+
+        $mailjetLists = $this->getApiOverlay()->getContactsLists();
+
+        $mailjetSegmentListIds = array();
+
+        foreach ($mailjetLists as $mailjetList) {
+            if (in_array($mailjetList->Name, $listNames)) {
+                $mailjetSegmentListIds[] = (int) $mailjetList->ID;
+            }
+        }
+        return $mailjetSegmentListIds;
+    }
+
 }
