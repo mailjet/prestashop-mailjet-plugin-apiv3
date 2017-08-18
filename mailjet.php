@@ -549,7 +549,7 @@ class Mailjet extends Module
         $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
-            $singleUserSynchronization->remove($customer->email);
+            $singleUserSynchronization->removeFromAllLists($customer->email);
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
         }
