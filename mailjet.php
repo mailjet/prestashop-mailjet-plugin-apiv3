@@ -186,7 +186,6 @@ class Mailjet extends Module
         $this->account = ($account = Tools::jsonDecode(Configuration::get('MAILJET'))) ? $account : $this->account;
         $this->account->TOKEN = Tools::getValue('token');
         $this->updateAccountSettings();
-        /* $segmentation = new Segmentation(); */
 
         // Install SQL
         $sql = array();
@@ -467,7 +466,6 @@ class Mailjet extends Module
      */
     public function hookActionAdminCustomersControllerStatusAfter($params)  
     {
-        echo __LINE__;exit;
         $customer = $params['return'];
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
@@ -475,7 +473,13 @@ class Mailjet extends Module
             if ($customer->active == 0) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 0) {
-                $initialSynchronization->unsubscribe($customer->email);
+                // Get all lists where customer is subscribed
+                $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
+                
+                // Unsubscribe user from all lists where he is subscribed
+                foreach ($subsSegmentListsIds as $listId) {
+                    $initialSynchronization->unsubscribe($email, $listId);
+                }
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
             }
@@ -536,7 +540,6 @@ class Mailjet extends Module
      */
     public function hookActionAdminCustomersControllerDeleteBefore()
     {
-        echo __LINE__;exit;
         $customer = new Customer(Tools::getValue('id_customer'));
 
         if (!$customer->id) {
@@ -554,7 +557,6 @@ class Mailjet extends Module
 
     public function hookAdminCustomers()
     {
-        echo __LINE__;exit;
         return;
 
         /*
@@ -591,7 +593,6 @@ class Mailjet extends Module
      */
     public function hookCreateAccount($params)
     {
-        echo __LINE__;exit;
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
@@ -613,7 +614,6 @@ class Mailjet extends Module
      */
     public function hookCustomerAccount($params)
     {
-        echo __LINE__;exit;
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
