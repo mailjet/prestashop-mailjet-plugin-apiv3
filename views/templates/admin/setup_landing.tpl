@@ -30,7 +30,7 @@
             {$MJ_templates.setup_landing_message|escape:'quotes':'UTF-8'|default:''}
         </li>
         <li id="divYouTubePlayer">    
-            <iframe width="400" height="300" src="https://www.youtube.com/embed/192pmEakul0?rel=0&amp;controls=0&amp;showinfo=0&autoplay=0" frameborder="0" allowfullscreen></iframe>
+            <iframe width="400" height="300" src="https://www.youtube.com/embed/dLr5H8Z8384?rel=0&amp;controls=0&amp;showinfo=0&autoplay=0" frameborder="0" allowfullscreen></iframe>
         </li>
     </ul>
 
