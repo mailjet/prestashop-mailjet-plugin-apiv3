@@ -111,6 +111,49 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
         return true;
     }
+    
+    public function unsubscribeListsExceptMaster($email)
+    {
+        $apiOverlay = $this->getApiOverlay();
+
+        $lists = $apiOverlay->getContactsLists();
+
+        $masterListId = $this->getAlreadyCreatedMasterListId();
+        foreach ($lists as $list) {
+            if ($list->ID == $masterListId) {
+                continue;
+            }
+            $contact = array(
+                "Email" => $email, // Mandatory field!
+                "Action" => "unsub",
+            );
+            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
+
+            if (!$response || !($response->Count > 0)) {
+                return false;
+            }
+        }
+    }
+    
+    /**
+     * Get segment lists in which a customer is subscribed
+     * @param string $email
+     * @return [int] $subscribedListsIds
+     */
+    public function getSubscribedSegmentLists($email){
+        $apiOverlay = $this->getApiOverlay();
+        $lists = $apiOverlay->getCustomerLists($email);
+        if(!$lists){
+            return false;
+        }
+        $subscribedListsIds = array();
+        foreach ($lists->Data as $list) {
+            if ($list->IsUnsub == false) {
+                $subscribedListsIds[] = $list->ID;
+            }
+        }
+        return $subscribedListsIds;
+    }
 
     /**
      * Remove email from a specific list or from all lists except masterList

@@ -65,37 +65,46 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
             throw new HooksSynchronizationException('You don\'t have any users in the database.');
         }
 
-        $contstToAddArray = array();
-        foreach ($allUsers as $userInfo) {
-            $contstToAddArray[] = array(
-                'Email' => $userInfo['email'],
-                'Properties' => array(
-                    'firstname' => $userInfo['firstname'],
-                    'lastname' => $userInfo['lastname']
-                )
-            );
-        }
+        while (!empty($allUsers)) {
+            $rest_contacts = count($allUsers);
 
-        /*
-        * Sets related contact meta data like firstname, lastname, etc...
-        */
-        $this->getApiOverlay()->setContactMetaData(array(
-            array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
-            array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
-        ));
+            $chunck_size = 2500;
+            if ($rest_contacts < $chunck_size) {
+                $chunck_size = $rest_contacts;
+            }
 
-        $asyncJobResponse = $apiOverlay->asyncManageContactsToList($contstToAddArray, $newlyCreatedListId);
+            $contacts = array();
+            for ($i = 1; $i <= $chunck_size; $i++) {
+                $userInfo = array_pop($allUsers);
+                $contacts[] = array(
+                    'Email' => $userInfo['email'],
+                    'Properties' => array(
+                        'firstname' => $userInfo['firstname'],
+                        'lastname' => $userInfo['lastname']
+                    )
+                );
+            }
 
-        if (!isset($asyncJobResponse->Data[0]->JobID)) {
-            $segmentSynch = new HooksSynchronizationSegment($this->getApiOverlay());
-            $segmentSynch->deleteList($newlyCreatedListId);
-            throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
-        }
+            /*
+             * Sets related contact meta data like firstname, lastname, etc...
+             */
+            $this->getApiOverlay()->setContactMetaData(array(
+                array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
+                array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
+            ));
 
-        $batchJobResponse = $apiOverlay->getAsyncJobStatus($newlyCreatedListId, $asyncJobResponse);
+            $asyncJobResponse = $apiOverlay->asyncManageContactsToList($contacts, $newlyCreatedListId);
 
-        if ($batchJobResponse == false) {
-            throw new HooksSynchronizationException('Batchjob problem');
+            if (!isset($asyncJobResponse->Data[0]->JobID)) {
+                $segmentSynch = new HooksSynchronizationSegment($this->getApiOverlay());
+                $segmentSynch->deleteList($newlyCreatedListId);
+                throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
+            }
+            $batchJobResponse = $apiOverlay->getAsyncJobStatus($newlyCreatedListId, $asyncJobResponse);
+
+            if ($batchJobResponse == false) {
+                throw new HooksSynchronizationException('Batchjob problem');
+            }
         }
 
         return $newlyCreatedListId;
@@ -112,7 +121,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
 			FROM ' . _DB_PREFIX_ . 'customer
 			WHERE active = 1
 			AND newsletter = 1
-			AND deleted = 0
-		');
+			AND deleted = 0'
+        );
     }
 }

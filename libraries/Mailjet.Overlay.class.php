@@ -3260,6 +3260,24 @@ class Mailjet_ApiOverlay
 
         return $response;
     }
+    
+    public function getCustomerLists($email){
+        if(!is_string($email)){
+            return false;
+        }
+        $this->_api->resetRequest();
+        $this->_api->{'contact/' . $email . '/getcontactslists'}(
+            array(
+                'method' => 'GET'
+            )
+        );
+        $response = $this->_api->getResponse();
+        
+        if ($response && $response->Count > 0) {
+            return $response;
+        }
+        return false;
+    }
 
     /**
      * LIST : Get your contacts from a list with some filters
@@ -3409,7 +3427,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function createContactsList(string $label, string $name)
+    public function createContactsList($label, $name)
     {
         $params = array(
             'method' => 'POST',
