@@ -68,6 +68,12 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.6 =
+* Update the all sync scenarios
+* Improve the initial sync to "Master Prestashop contact list" during plugin activation to send the contacts in bulks
+* Update logos
+* Update introduction video
+
 = 3.4.5 =
 * Fixed MasterList sync issues
 * Unsubscribed customers are added to the segment contact list as unsubscribed instead of subscribed
