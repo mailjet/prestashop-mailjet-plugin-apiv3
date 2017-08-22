@@ -3261,7 +3261,7 @@ class Mailjet_ApiOverlay
         return $response;
     }
     
-    public function getSegmentLists($email){
+    public function getCustomerLists($email){
         if(!is_string($email)){
             return false;
         }

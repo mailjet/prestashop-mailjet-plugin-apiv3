@@ -142,7 +142,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      */
     public function getSubscribedSegmentLists($email){
         $apiOverlay = $this->getApiOverlay();
-        $lists = $apiOverlay->getSegmentLists($email);
+        $lists = $apiOverlay->getCustomerLists($email);
         if(!$lists){
             return false;
         }
