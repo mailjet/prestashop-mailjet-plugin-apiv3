@@ -3427,7 +3427,7 @@ class Mailjet_ApiOverlay
      *
      * @return mixed Response from the API
      */
-    public function createContactsList(string $label, string $name)
+    public function createContactsList($label, $name)
     {
         $params = array(
             'method' => 'POST',
