@@ -789,7 +789,7 @@ class Mailjet extends Module
                 // Mailjet update
                 $customer = new Customer($id_customer);
             }
-			if(!isset($customer)){
+            if (!isset($customer)) {
                 $customer = new Customer($id_customer);
             }
             $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
