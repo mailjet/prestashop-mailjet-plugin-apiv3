@@ -1810,6 +1810,13 @@ class Mailjet extends Module
         );
     }
 
+    public function checkMjAuth()
+    {
+        $API_KEY = Tools::getValue('mj_api_key');
+        $SECRET_KEY = Tools::getValue('mj_secret_key');
+        return $this->auth($API_KEY, $SECRET_KEY);
+    }
+
     /**
      * Ajax Method
      * Mailjet will call this method when user have done the subscription process

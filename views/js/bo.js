@@ -49,6 +49,35 @@
 
 
     $(document).ready(function () {
+        $('#mj_login_form').submit(function (e) {
+            var mj_api_key = $('#mj_api_key').val();
+            var mj_secret_key = $('#mj_secret_key').val();
+            $.ajax({
+                type: 'POST',
+                url: _PS_MJ_MODULE_DIR_ + 'ajax.php',
+                data: {
+                    method: 'checkMjAuth',
+                    mj_api_key: mj_api_key,
+                    mj_secret_key: mj_secret_key
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result === true) {
+                        $('#login_button').hide();
+                        $('#wrong_credentials_message').hide();
+                        $('#loading_message').show();
+                        valid = true;
+                    } else {
+                        $('#wrong_credentials_message').show();
+                        valid = false;
+                    }
+                },
+                async: false
+            });
+            if (valid === false) {
+                e.preventDefault();
+            }
+        });
 
         switch (MJ_page_name)
         {
