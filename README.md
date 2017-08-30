@@ -68,6 +68,10 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.7 =
+* Improve the plugin activation page
+* Enable the "Reset" plugin button
+
 = 3.4.6 =
 * Update the all sync scenarios
 * Improve the initial sync to "Master Prestashop contact list" during plugin activation to send the contacts in bulks

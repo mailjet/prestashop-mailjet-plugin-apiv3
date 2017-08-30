@@ -73,6 +73,30 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
         return $response && $response->Count > 0 ? true : false;
     }
 
+    /**
+     * Add to a list(same status as in PS)
+     * @param Customer $customer
+     * @param int $mailjet_list_id
+     * @return boolean
+     */
+    public function addToList($customer, $mailjet_list_id)
+    {
+        if (is_object($customer)) {
+            $action = $customer->newsletter == 1 ? 'addforce' : 'unsub';
+            $contact = array(
+                "Action" => $action,
+                'Email' => $customer->email,
+                'Name' => $customer->firstname,
+                'Properties' => array(
+                    'firstname' => $customer->firstname,
+                    'lastname' => $customer->lastname
+                )
+            );
+            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $mailjet_list_id);
+            return $response && $response->Count > 0 ? true : false;
+        }
+        return false;
+    }
 
     /**
      *

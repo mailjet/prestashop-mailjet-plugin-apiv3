@@ -23,14 +23,19 @@
 * International Registered Trademark & Property of PrestaShop SA
 *}
 <div class="center_page">
-    <form action="{$MJ_adminmodules_link|escape:'htmlall':'UTF-8'|default:''}" method="post">
+    <form id="mj_login_form" action="{$MJ_adminmodules_link|escape:'htmlall':'UTF-8'|default:''}" method="post">
         <fieldset>
             <legend>{l s='Your Mailjet login information' mod='mailjet'}</legend>
             <div>
                 <p>{l s='Please enter below your Mailjet login information.' mod='mailjet'} (<a href="https://eu.mailjet.com/account/api_keys" target="_blank"><u>{l s='Mailjet account' mod='mailjet'}</u></a>)</p>
-                <p><label>Api Key</label><input type="text" name="mj_api_key" value="{$account->API_KEY|escape:'htmlall':'UTF-8'|default:''}" size="60" /></p>
-                <p><label>Secret Key :</label><input type="text" name="mj_secret_key" value="{$account->SECRET_KEY|escape:'htmlall':'UTF-8'|default:''}" size="60" /></p>
-                <p><label>&nbsp;</label><input type="submit" name="MJ_set_connect" value="{l s='Save & Login' mod='mailjet'}" class="button" /></p>
+                <p><label>Api Key :</label><input type="text" id="mj_api_key" name="mj_api_key" value="{$account->API_KEY|escape:'htmlall':'UTF-8'|default:''}" size="60" /></p>
+                <p><label>Secret Key :</label><input type="text" id="mj_secret_key" name="mj_secret_key" value="{$account->SECRET_KEY|escape:'htmlall':'UTF-8'|default:''}" size="60" /></p>
+                <div style="width: 45%;margin: 0 auto;">
+                    Clicking the "Save & Login" will start an initial customer sync process, which will take a few minutes depending on the size of your customer database. Please be patient.
+                </div>
+                <p><label>&nbsp;</label><input type="submit" id="login_button" name="MJ_set_connect" value="{l s='Save & Login' mod='mailjet'}" class="button" /></p>
+                <p style="display:none;color:black;width:45%;margin:0 auto;" id="loading_message"><strong>Please wait...</strong></p>
+                <p style="display:none;color:red;width:45%;margin:0 auto;" id="wrong_credentials_message"><b>Wrong credentials</b></p>
             </div>
         </fieldset>
     </form>

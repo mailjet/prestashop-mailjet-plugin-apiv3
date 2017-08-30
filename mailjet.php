@@ -130,7 +130,7 @@ class Mailjet extends Module
             Get started today with 6000 free emails per month.'
         );
         $this->author = 'PrestaShop';
-        $this->version = '3.4.6';
+        $this->version = '3.4.7';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -294,11 +294,16 @@ class Mailjet extends Module
             $tabMain->delete();
         }
 
+        // Deletes and unsets all Mailjet module related settings
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
+        Configuration::deleteByName('MJ_ALLEMAILS');
+        unset($this->account);
+        unset($this->triggers);
 
         return parent::uninstall();
     }
+
 
     public function hookHeader()
     {
@@ -432,29 +437,77 @@ class Mailjet extends Module
 
     }
     
+    /**
+     * Just after new customer is created via Administration Panel
+     * @param array $params
+     */
     public function hookActionAdminCustomersControllerSaveAfter($params)
     {
         $customer = $params['return'];
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
-            $this->checkAutoAssignment($customer->id);
             if ($customer->active == 0) {
+                // Remove customer from all lists(and segment lists)
                 $initialSynchronization->removeFromAllLists($customer->email);
-            } elseif ($customer->active == 1 && $customer->newsletter = 0) {
-                // Get all lists where customer is subscribed
-                $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
-                
-                // Unsubscribe user from all lists where he is subscribed
-                foreach ($subsSegmentListsIds as $listId) {
-                    $initialSynchronization->unsubscribe($email, $listId);
+            } else {
+                // Manage customer in his segment lists
+                $filter_ids = $this->newCheckAutoAssignment($customer->id);
+                foreach ($filter_ids as $filter_id => $result) {
+                    $mailjetListID = $obj->getMailjetContactListId($filter_id);
+
+                    if ($result) {
+                        $initialSynchronization->addToList($customer, $mailjetListID);
+                    } else {
+                        // Remove customer from a list
+                        $initialSynchronization->remove($customer->email, $mailjetListID);
+                    }
                 }
-            } elseif ($customer->active == 1 && $customer->newsletter = 1) {
-                $initialSynchronization->subscribe($email);
+                // Add to the master list
+                if ($customer->newsletter == 1) {
+                   $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                   $initialSynchronization->subscribe($customer->email, $masterListId);
+                }
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
         }
+    }
+    
+    /**
+     * Retrieve 
+     * @return array
+     */
+    private function getAutoAssigmentSegments(){
+        $sql = 'SELECT *
+            FROM ' . _DB_PREFIX_ . 'mj_filter f
+            LEFT JOIN ' . _DB_PREFIX_ . 'mj_condition c ON c.id_filter = f.id_filter
+            WHERE f.assignment_auto = 1';
+
+        $rows = DB::getInstance()->executeS($sql);
+        if (!is_array($rows)) {
+            return $this;
+        }
+
+        $formatRows = array();
+        foreach ($rows as $row) {
+            $id_filter = (int) $row['id_filter'];
+            $formatRows[$id_filter]['mode'] = 0;
+            $formatRows[$id_filter]['replace_customer'] = (bool) $row['replace_customer'];
+            $formatRows[$id_filter]['name'] = $row['name'];
+            $formatRows[$id_filter]['description'] = $row['description'];
+            $formatRows[$id_filter]['idfilter'] = $id_filter;
+            $formatRows[$id_filter]['idgroup'] = $row['id_group'];
+            $formatRows[$id_filter]['rule_a'][] = $row['rule_a'];
+            $formatRows[$id_filter]['rule_action'][] = $row['rule_action'];
+            $formatRows[$id_filter]['baseSelect'][] = $row['id_basecondition'];
+            $formatRows[$id_filter]['sourceSelect'][] = $row['id_sourcecondition'];
+            $formatRows[$id_filter]['fieldSelect'][] = $row['id_fieldcondition'];
+            $formatRows[$id_filter]['data'][] = $row['data'];
+            $formatRows[$id_filter]['value1'][] = $row['value1'];
+            $formatRows[$id_filter]['value2'][] = $row['value2'];
+        }
+        return $formatRows;
     }
 
     /**
@@ -684,37 +737,36 @@ class Mailjet extends Module
         return $this->hookUpdateOrderStatus($params);
     }
 
+    public function newCheckAutoAssignment($id_customer)
+    {
+        $formatRows = $this->getAutoAssigmentSegments();
+        $filterIds = array();
+        foreach ($formatRows as $filterId => $formatRow) {
+            $obj = new Segmentation();
+            $sql = $obj->getQuery($formatRow, true, false, ' c.id_customer = ' . (int)$id_customer);
+
+            $result = DB::getInstance()->executeS($sql);
+            if ($result && !$obj->belongsToGroup($formatRow['idgroup'], $id_customer)) {
+                if ($formatRow['replace_customer']) {
+                    $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'customer_group WHERE id_customer = ' . (int)$id_customer;
+                    Db::getInstance()->execute($sql);
+                }
+                Db::getInstance()->execute('INSERT INTO `' . _DB_PREFIX_ . 'customer_group` (`id_customer`, `id_group`)
+                    VALUES ("' . ((int) $id_customer) . '", "' .(int) $formatRow['idgroup'] . '")');
+            } elseif (!$result && $obj->belongsToGroup($formatRow['idgroup'], $id_customer)) {
+                $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'customer_group
+                    WHERE id_group = ' . (int)$formatRow['idgroup'] . ' AND id_customer = ' . (int)$id_customer;
+                DB::getInstance()->execute($sql);
+            }
+            
+            $filterIds[$filterId] = $result ? $filterId : false;
+        }
+        return $filterIds;
+    }
+
     public function checkAutoAssignment($id_customer = 0)
     {
-        $sql = 'SELECT *
-            FROM ' . _DB_PREFIX_ . 'mj_filter f
-            LEFT JOIN ' . _DB_PREFIX_ . 'mj_condition c ON c.id_filter = f.id_filter
-            WHERE f.assignment_auto = 1';
-
-        $rows = DB::getInstance()->executeS($sql);
-
-        if (!is_array($rows)) {
-            return $this;
-        }
-
-        $formatRows = array();
-        foreach ($rows as $row) {
-            $id_filter = (int)$row['id_filter'];
-            $formatRows[$id_filter]['mode'] = 0;
-            $formatRows[$id_filter]['replace_customer'] = (bool)$row['replace_customer'];
-            $formatRows[$id_filter]['name'] = $row['name'];
-            $formatRows[$id_filter]['description'] = $row['description'];
-            $formatRows[$id_filter]['idfilter'] = $id_filter;
-            $formatRows[$id_filter]['idgroup'] = $row['id_group'];
-            $formatRows[$id_filter]['rule_a'][] = $row['rule_a'];
-            $formatRows[$id_filter]['rule_action'][] = $row['rule_action'];
-            $formatRows[$id_filter]['baseSelect'][] = $row['id_basecondition'];
-            $formatRows[$id_filter]['sourceSelect'][] = $row['id_sourcecondition'];
-            $formatRows[$id_filter]['fieldSelect'][] = $row['id_fieldcondition'];
-            $formatRows[$id_filter]['data'][] = $row['data'];
-            $formatRows[$id_filter]['value1'][] = $row['value1'];
-            $formatRows[$id_filter]['value2'][] = $row['value2'];
-        }
+        $formatRows = $this->getAutoAssigmentSegments();
 
         foreach ($formatRows as $filterId => $formatRow) {
             $obj = new Segmentation();
@@ -742,8 +794,9 @@ class Mailjet extends Module
                 // Mailjet update
                 $customer = new Customer($id_customer);
             }
-
-            $customer = new Customer($id_customer);
+            if (!isset($customer)) {
+                $customer = new Customer($id_customer);
+            }
             $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
             $mailjetListID = $obj->getMailjetContactListId($filterId);
 
@@ -1760,6 +1813,13 @@ class Mailjet extends Module
             'result' => 1, //(bool)$this->account['ACTIVATION'],
             'url' => $this->getAdminModuleLink($params)
         );
+    }
+
+    public function checkMjAuth()
+    {
+        $API_KEY = Tools::getValue('mj_api_key');
+        $SECRET_KEY = Tools::getValue('mj_secret_key');
+        return $this->auth($API_KEY, $SECRET_KEY);
     }
 
     /**
