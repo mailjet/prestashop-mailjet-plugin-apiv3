@@ -294,11 +294,16 @@ class Mailjet extends Module
             $tabMain->delete();
         }
 
+        // Deletes and unsets all Mailjet module related settings
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
+        Configuration::deleteByName('MJ_ALLEMAILS');
+        unset($this->account);
+        unset($this->triggers);
 
         return parent::uninstall();
     }
+
 
     public function hookHeader()
     {
