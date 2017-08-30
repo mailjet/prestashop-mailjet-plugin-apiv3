@@ -47,8 +47,26 @@
         });
     }
 
-
     $(document).ready(function () {
+
+        $('#mj_login_form').submit(function () {
+            var mj_api_key = $('#mj_api_key').val();
+            var mj_secret_key = $('#mj_secret_key').val();
+            var data = {
+                method: 'checkMjAuth',
+                mj_api_key: mj_api_key,
+                mj_secret_key: mj_secret_key
+            };
+            $.post(_PS_MJ_MODULE_DIR_ + 'ajax.php', data, function (response) {
+                if (response === false) {
+                    $('#loading_message').hide();
+                    $('#wrong_credentials_message').show();
+                }
+            });
+            $('#login_button').hide();
+            $('#wrong_credentials_message').hide();
+            $('#loading_message').show();
+        });
 
         switch (MJ_page_name)
         {
