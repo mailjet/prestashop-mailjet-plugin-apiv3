@@ -1274,8 +1274,8 @@ class Mailjet extends Module
                 unset($titles['original_address']);
                 unset($titles['new_address']);
 
-                $url = 'http://' .
-                    $this->context->shop->domain . '/modules/mailjet/events.php?h=' . $this->getEventsHash();
+                $part = $this->context->shop->domain.$this->context->shop->physical_uri;
+                $url = 'http://' . $part . 'modules/mailjet/events.php?h=' . $this->getEventsHash();
 
                 $this->context->smarty->assign(array(
                     'MJ_events_list' => $this->setUserLinkToEvents($mj_event->fetch()),
