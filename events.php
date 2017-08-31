@@ -83,6 +83,10 @@ foreach ($allEvents as $key => $event) {
      * 	- please check https://www.mailjet.com/docs/event_tracking for further informations.
      */
     switch ($event['event']) {
+        case 'sent':
+            header('HTTP/1.1 200 Ok');
+            break;
+
         case 'open':
             /* => do action */
             /* If an error occurs, tell Mailjet to retry later: header('HTTP/1.1 400 Error'); */
