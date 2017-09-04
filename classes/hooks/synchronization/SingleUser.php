@@ -158,16 +158,17 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             }
         }
     }
-    
+
     /**
      * Get segment lists in which a customer is subscribed
      * @param string $email
      * @return [int] $subscribedListsIds
      */
-    public function getSubscribedSegmentLists($email){
+    public function getSubscribedSegmentLists($email)
+    {
         $apiOverlay = $this->getApiOverlay();
         $lists = $apiOverlay->getCustomerLists($email);
-        if(!$lists){
+        if (!$lists) {
             return false;
         }
         $subscribedListsIds = array();
@@ -226,7 +227,8 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      * @param string $email
      * @return boolean
      */
-    public function removeFromAllLists($email){
+    public function removeFromAllLists($email)
+    {
         $apiOverlay = $this->getApiOverlay();
 
         $lists = $apiOverlay->getContactsLists();

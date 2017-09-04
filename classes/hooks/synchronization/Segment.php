@@ -257,7 +257,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $prestashopUsers = array();
         $contactsToCsv = array();
         foreach ($contacts as $contact) {
-            $contact[$mail_index] = strtolower($contact[$mail_index]);
+            $contact[$mail_index] = Tools::strtolower($contact[$mail_index]);
             $prestashopContacts[] = $contact[$mail_index];
             if (!empty($contact[$mail_index])) {
                 $contactsToCsv[$contact[$mail_index]]['firstname'] = $contact[$firstNameIndex];
@@ -273,7 +273,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         $contactsToRemove = array();
 
         foreach ($prestashopContacts as $email) {
-            $email = strtolower($email);
+            $email = Tools::strtolower($email);
             if (!in_array($email, $this->mailjetContacts)) {
                 $contactData = array(
                     'Email' => $email,
@@ -330,9 +330,9 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 );
             }
 
-            if($response){
+            if ($response) {
                 $responseMsg = $response->getResponse() && $response->getResponse()->Count > 0 ? 'OK' : false;
-            }else{
+            } else {
                 $responseMsg = 'OK';
             }
         } catch (Exception $e) {
