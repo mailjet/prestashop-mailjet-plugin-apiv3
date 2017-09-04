@@ -116,12 +116,6 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      */
     private function getAllActiveCustomers()
     {
-        return $this->getDbInstance()->executeS('
-			SELECT *
-			FROM ' . _DB_PREFIX_ . 'customer
-			WHERE active = 1
-			AND newsletter = 1
-			AND deleted = 0'
-        );
+        return $this->getDbInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'customer WHERE active = 1 AND newsletter = 1 AND deleted = 0');
     }
 }
