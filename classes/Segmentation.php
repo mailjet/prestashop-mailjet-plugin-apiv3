@@ -392,7 +392,7 @@ class Segmentation
                                 if ($exclude) {
                                     $like = ' NOT LIKE ';
                                 }
-                                $where .= $logicalOperator.' conn.http_referer ' . $like . ' "%' . pSQL($sourceData[$fieldKey]) . '%"';
+                                $where .= $logicalOperator . ' conn.http_referer ' . $like . ' "%' . pSQL($sourceData[$fieldKey]) . '%"';
                             }
                             break;
                         // Promo code
@@ -508,7 +508,7 @@ class Segmentation
                                 $and = empty($and) ? ' AND ' : $and;
                                 $having .= ' count(o.id_customer) ' . $min_operator . $minValue1;
                             }
-                            if ($maxValue2 >= 0) {
+                            if ($maxValue2 > 0) {
                                 $having .= $and . ' count(o.id_customer) ' . $max_operator . $maxValue2;
                             }
                             break;
@@ -519,13 +519,13 @@ class Segmentation
                                 $joined_tables[] = 'order_history';
                             }
                             if ($sourceData[$fieldKey] > 0) {
-                                $exclude = $exclude ? ' OR id_order_state is null':'';
+                                $exclude = $exclude ? ' OR id_order_state is null' : '';
                                 $where .= $logicalOperator . ' id_order_state ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
                             }
                             break;
                         // Payment method
                         case '4':
-                            $exclude = $exclude ? ' OR o.payment is null':'';
+                            $exclude = $exclude ? ' OR o.payment is null' : '';
                             $where .= $logicalOperator . ' o.payment ' . $action_oprator . '"' . $sourceData[$fieldKey] . '" ' . $exclude;
                             break;
                         // Product name
@@ -534,7 +534,7 @@ class Segmentation
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
                                 $joined_tables[] = 'order_detail';
                             }
-                            $exclude = $exclude ? ' OR od.product_id IS NULL ':'';
+                            $exclude = $exclude ? ' OR od.product_id IS NULL ' : '';
                             $where .= $logicalOperator . ' od.product_id ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
                             break;
                         // Category name
@@ -543,7 +543,7 @@ class Segmentation
                             // and can not exclude it
                             $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
                             $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'category_product cp ON cp.id_product = od.product_id ';
-                            $exclude = $exclude ? ' OR cp.id_category IS NULL ':'';
+                            $exclude = $exclude ? ' OR cp.id_category IS NULL ' : '';
                             $where .= $logicalOperator . ' cp.id_category ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
                             break;
                         // Brand name
@@ -825,21 +825,11 @@ class Segmentation
                         // Product name
                         case '30':
                             if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
-                                if (!in_array('order_detail', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
-                                    $joined_tables[] = 'order_detail';
+                                $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
+                                if (!in_array('cart_product', $joined_tables)) {
+                                    $join .= ' JOIN ' . _DB_PREFIX_ . 'cart_product AS cp ON cp.id_cart = cart.id_cart and cp.id_product' . $action . (int) $sourceData[$fieldKey];
+                                    $joined_tables[] = 'cart_product';
                                 }
-                                if ($ruleAction[$fieldKey] == 'IN') {
-                                    $action = ' = ';
-                                    $exclude = '';
-                                } else {
-                                    $action = ' != ';
-                                    $exclude = ' OR od.product_id IS NULL ';
-                                }
-                                if (strpos($additional_select_column, 'o.id_order') === false) {
-                                    $additional_select_column = ', o.id_order';
-                                }
-                                $where .= $logicalOperator . ' od.product_id ' . $action . (int) $sourceData[$fieldKey] . $exclude;
                                 $having .= ' o.id_order IS NULL ';
                             }
                             break;
@@ -909,14 +899,15 @@ class Segmentation
             // If there are any customer segments
             if ($isShopSegment) {
                 $fieldSelectData = $this->getSegmentByType($shopSegmentIndex, $sourceSelect);
-                if ($ruleAction[$fieldKey] == 'IN') {
-                    $operator = ' = ';
-                } else {
-                    $operator = ' != ';
-                }
-                $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
+
                 foreach ($fieldSelectData as $fieldKey => $case) {
-                    $shopId = (int) $sourceData[$fieldKey];
+                    $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
+                    if ($ruleAction[$fieldKey] == 'IN') {
+                        $operator = ' = ';
+                    } else {
+                        $operator = ' != ';
+                    }
+                    $shopId = (int) $case;
                     if ($shopId > 0) {
                         $where .= $logicalOperator . 'c.id_shop ' . $operator . $shopId;
                     }
