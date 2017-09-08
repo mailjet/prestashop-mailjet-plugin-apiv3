@@ -69,7 +69,7 @@
     <div class="mj_landing">
         <div align="center">
             <br />
-            {l s='Should you have any questions or encounter any difficulties, please consult our [1][2]User Guide[/2][/1] or contact our technical [1][3]Support Team[/3][/1]' tags=['<strong>','<a target="_blank" href="https://www.mailjet.com/guides/prestashop-user-guide">','<a target="_blank" href="https://www.mailjet.com/support/ticket">'] mod='mailjet'}
+            {l s='Should you have any questions or encounter any difficulties, please consult our [1][2]User Guide[/2][/1] or contact our technical [1][3]Support Team[/3][/1]' tags=['<strong>','<a target="_blank" href="https://www.mailjet.com/guides/prestashop-user-guide/">','<a target="_blank" href="https://www.mailjet.com/support/ticket">'] mod='mailjet'}
         </div>
     </div>
 {/if}

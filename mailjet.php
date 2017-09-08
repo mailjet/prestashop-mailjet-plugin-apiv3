@@ -412,7 +412,6 @@ class Mailjet extends Module
         return $this->fetchTemplate('/views/templates/admin/', 'bo-header');
     }
 
-
     private function getOnlyEmailSenders($sendersFromApi)
     {
         $emailSenders = array();
@@ -424,7 +423,6 @@ class Mailjet extends Module
         return $emailSenders;
     }
 
-
     /**
      * New customer is created via Administration Panel
      * @author atanas
@@ -434,9 +432,8 @@ class Mailjet extends Module
     {
         $customer = new Customer(Tools::getValue('id_customer'));
         Configuration::updateValue('PREVIOUS_MJ_USER_MAIL', $customer->email);
-
     }
-    
+
     /**
      * Just after new customer is created via Administration Panel
      * @param array $params
@@ -454,6 +451,7 @@ class Mailjet extends Module
                 // Manage customer in his segment lists
                 $filter_ids = $this->newCheckAutoAssignment($customer->id);
                 foreach ($filter_ids as $filter_id => $result) {
+                    $obj = new Segmentation();
                     $mailjetListID = $obj->getMailjetContactListId($filter_id);
 
                     if ($result) {
@@ -465,8 +463,8 @@ class Mailjet extends Module
                 }
                 // Add to the master list
                 if ($customer->newsletter == 1) {
-                   $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                   $initialSynchronization->subscribe($customer->email, $masterListId);
+                    $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                    $initialSynchronization->subscribe($customer->email, $masterListId);
                 }
             }
         } catch (Exception $e) {
@@ -475,10 +473,11 @@ class Mailjet extends Module
     }
     
     /**
-     * Retrieve 
+     * Retrieve active segments
      * @return array
      */
-    private function getAutoAssigmentSegments(){
+    private function getAutoAssigmentSegments()
+    {
         $sql = 'SELECT *
             FROM ' . _DB_PREFIX_ . 'mj_filter f
             LEFT JOIN ' . _DB_PREFIX_ . 'mj_condition c ON c.id_filter = f.id_filter
@@ -517,7 +516,7 @@ class Mailjet extends Module
      * it is hookActionAdminCustomersControllerSaveAfter)
      * @param type $params
      */
-    public function hookActionAdminCustomersControllerStatusAfter($params)  
+    public function hookActionAdminCustomersControllerStatusAfter($params)
     {
         $customer = $params['return'];
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
@@ -531,7 +530,7 @@ class Mailjet extends Module
                 
                 // Unsubscribe user from all lists where he is subscribed
                 foreach ($subsSegmentListsIds as $listId) {
-                    $initialSynchronization->unsubscribe($email, $listId);
+                    $initialSynchronization->unsubscribe($customer->email, $listId);
                 }
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
@@ -803,14 +802,13 @@ class Mailjet extends Module
             if ($result) {
                 if ($customer->active == 1) {
                     $initialSynchronization->subscribe($customer, $mailjetListID);
-                }else{
+                } else {
                     $initialSynchronization->unsubscribe($customer, $mailjetListID);
                 }
             } else {
                 $initialSynchronization->remove($customer->email, $mailjetListID);
             }
         }
-
         return $this;
     }
 
@@ -1274,8 +1272,8 @@ class Mailjet extends Module
                 unset($titles['original_address']);
                 unset($titles['new_address']);
 
-                $url = 'http://' .
-                    $this->context->shop->domain . '/modules/mailjet/events.php?h=' . $this->getEventsHash();
+                $part = $this->context->shop->domain.$this->context->shop->physical_uri;
+                $url = 'http://' . $part . 'modules/mailjet/events.php?h=' . $this->getEventsHash();
 
                 $this->context->smarty->assign(array(
                     'MJ_events_list' => $this->setUserLinkToEvents($mj_event->fetch()),
