@@ -86,7 +86,8 @@ class Segmentation
                     'mailjet'
                 )
             ),
-            'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
+            //            'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
+            'mj_datePickerJsFormat' => 'yy-mm-dd',
             'mj_datepickerPersonnalized' => version_compare(_PS_VERSION_, '1.5', '<') ? '<script type="text/javascript" src="' .
             _PS_JS_DIR_ . 'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>' : '',
             'mj_token' => Tools::getValue('token'),
@@ -253,6 +254,7 @@ class Segmentation
      */
     public function getQuery($post, $live, $limit = false, $having_id_customer = false)
     {
+        $this->initContent();
         if (empty($post)) {
             $post = $_GET;
         }
@@ -265,6 +267,7 @@ class Segmentation
         $order_by = '';
         $where = '';
         $having = '';
+        $havings = array();
         $ordersSegmentIndex = 1;
         $customerSegmentIndex = 2;
         $abandonedCartsIndex = 3;
@@ -277,6 +280,7 @@ class Segmentation
         $ruleAction = $post['rule_action'];
         $value1 = $post['value1'];
         $value2 = $post['value2'];
+        $i = 0;
         if ($live) {
             $isCustomerSegment = in_array($customerSegmentIndex, $sourceSelect);
             // If there are any customer segments
@@ -300,12 +304,14 @@ class Segmentation
                     switch ($case) {
                         // Gender
                         case '11':
+                            $i++;
                             // In db customer without gender is set to 0 insteat of 9
                             $gender = $sourceData[$fieldKey] == 9 ? 0 : $sourceData[$fieldKey];
                             $where .= $logicalOperator . ' c.id_gender ' . $operator . ' ' . $gender;
                             break;
                         // Subscription date
                         case '12':
+                            $i++;
                             $data = false;
                             $where .= $logicalOperator . ' c.newsletter = 1 ';
 
@@ -322,22 +328,23 @@ class Segmentation
                             if ($exclude) {
                                 $where .= ' OR c.newsletter_date_add="0000-00-00 00:00:00" ';
                             }
+                            
                             if (!$data) {
-                                $this->displayRuleError($i + 1, $this->trad[82]);
-                                $i++;
+                                $this->displayRuleError($i, $this->trad[82]);
                             }
                             break;
                         // Country
                         case '13':
+                            $i++;
                             $where .= $logicalOperator . ' ad.id_country ' . $operator . ' ' . $sourceData[$fieldKey];
                             break;
                         // Last visit
                         case '17':
-                            // Which column ?
-                            // @todo Check in admin UI /customers, prelast column
+                            $i++;
                             break;
                         // Date of birth
                         case '18':
+                            $i++;
                             $data = false;
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
                                 $data = true;
@@ -353,12 +360,12 @@ class Segmentation
                                 $where .= ' OR c.birthday="0000-00-00" ';
                             }
                             if (!$data) {
-                                $this->displayRuleError($i + 1, $this->trad[85]);
-                                $i++;
+                                $this->displayRuleError($i, $this->trad[85]);
                             }
                             break;
                         // Newsletter subscription and date
                         case '19':
+                            $i++;
                             $where .= $logicalOperator . ' c.newsletter ' . $operator . ' ' . $sourceData[$fieldKey];
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
                                 $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
@@ -374,10 +381,12 @@ class Segmentation
                             break;
                         // Newsletter opt-in
                         case '20':
+                            $i++;
                             $where .= $logicalOperator . ' c.optin ' . $operator . ' ' . $sourceData[$fieldKey];
                             break;
                         // Origin
                         case '21':
+                            $i++;
                             // @todo Data is empty allways
                             if ($sourceData[$fieldKey]) {
                                 if (!in_array('guest', $joined_tables)) {
@@ -397,6 +406,7 @@ class Segmentation
                             break;
                         // Promo code
                         case '22':
+                            $i++;
                             $discount_table = _PS_VERSION_ >= '1.5.0.1' ? 'cart_rule' : 'discount';
                             if (!in_array($discount_table, $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . $discount_table . ' AS d ON d.id_customer = c.id_customer ';
@@ -406,9 +416,11 @@ class Segmentation
                             break;
                         // Assets
                         case '23':
+                            $i++;
                             break;
                         // Product return
                         case '24':
+                            $i++;
                             if (!in_array('order_return', $joined_tables)) {
                                 $join .= 'LEFT JOIN ' . _DB_PREFIX_ . 'order_return AS oret ON oret.id_customer = c.id_customer';
                                 $joined_tables[] = 'order_return';
@@ -417,6 +429,7 @@ class Segmentation
                             break;
                         // Address contains
                         case '25':
+                            $i++;
                             if (Tools::strlen($sourceData[$fieldKey]) > 0) {
                                 if ($action) {
                                     // Include
@@ -431,6 +444,7 @@ class Segmentation
                             break;
                         // Postcode starts with
                         case '26':
+                            $i++;
                             if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
                                 if ($action) {
                                     // Include
@@ -443,6 +457,7 @@ class Segmentation
                             break;
                         // Date of visit
                         case '36':
+                            $i++;
                             if (!in_array('guest', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'guest AS g ON g.id_customer = c.id_customer ';
                                 $joined_tables[] = 'guest';
@@ -481,7 +496,6 @@ class Segmentation
                     $joined_tables[] = 'orders';
                 }
                 $fieldSelectData = $this->getSegmentByType($ordersSegmentIndex, $sourceSelect);
-                $i = 0;
                 foreach ($fieldSelectData as $fieldKey => $orderCase) {
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
                     // include - true , exclude - false
@@ -492,6 +506,7 @@ class Segmentation
                     switch ($orderCase) {
                         // Number of orders
                         case '2':
+                            $i++;
                             $and = '';
                             if (!$exclude) {
                                 // Include
@@ -505,15 +520,20 @@ class Segmentation
                                 $and = ' OR ';
                             }
                             if ($minValue1 >= 0) {
-                                $and = empty($and) ? ' AND ' : $and;
                                 $having .= ' count(o.id_customer) ' . $min_operator . $minValue1;
                             }
                             if ($maxValue2 > 0) {
-                                $having .= $and . ' count(o.id_customer) ' . $max_operator . $maxValue2;
+                                if ($having != '') {
+                                    $having .= $and;
+                                }
+                                $having .= ' count(o.id_customer) ' . $max_operator . $maxValue2;
+                                $havings[] = $having;
+                                $having = '';
                             }
                             break;
                         // Order status
                         case '3':
+                            $i++;
                             if (!in_array('order_history', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_history AS oh ON oh.id_order = o.id_order';
                                 $joined_tables[] = 'order_history';
@@ -525,11 +545,13 @@ class Segmentation
                             break;
                         // Payment method
                         case '4':
+                            $i++;
                             $exclude = $exclude ? ' OR o.payment is null' : '';
                             $where .= $logicalOperator . ' o.payment ' . $action_oprator . '"' . $sourceData[$fieldKey] . '" ' . $exclude;
                             break;
                         // Product name
                         case '5':
+                            $i++;
                             if (!in_array('order_detail', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
                                 $joined_tables[] = 'order_detail';
@@ -539,6 +561,7 @@ class Segmentation
                             break;
                         // Category name
                         case '6':
+                            $i++;
                             // Exclude problem - One product can be in many categories, so we don`t know from which category is
                             // and can not exclude it
                             $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
@@ -548,6 +571,7 @@ class Segmentation
                             break;
                         // Brand name
                         case '7':
+                            $i++;
                             if (!in_array('order_detail', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail AS od ON od.id_order = o.id_order ';
                                 $joined_tables[] = 'order_detail';
@@ -566,6 +590,7 @@ class Segmentation
                             break;
                         // Sales
                         case '8':
+                            $i++;
                             if (!in_array('currency', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
@@ -598,9 +623,12 @@ class Segmentation
                                 }
                             }
                             $having .= $exclude;
+                            $havings[] = $having;
+                            $having = '';
                             break;
                         // Average sales
                         case '9':
+                            $i++;
                             if (!in_array('currency', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
@@ -636,15 +664,19 @@ class Segmentation
                                 }
                             }
                             $having .= $exclude;
+                            $havings[] = $having;
+                            $having = '';
                             break;
                         // Gift package
                         case '15':
+                            $i++;
                             $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
                             $exclude = $action == ' != ' ? ' OR o.gift IS NULL' : '';
                             $where .= $logicalOperator . ' o.gift ' . $action . (int) $sourceData[$fieldKey] . $exclude;
                             break;
                         // Recycled packaging
                         case '16':
+                            $i++;
                             $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
                             $exclude = $action == ' != ' ? ' OR o.recyclable IS NULL' : '';
                             $where .= ' o.recyclable ' . $action . (int) $sourceData[$fieldKey] . $exclude;
@@ -652,6 +684,7 @@ class Segmentation
 
                         // Order date
                         case '28':
+                            $i++;
                             if ($ruleAction[$fieldKey] == 'IN') {
                                 // Include
                                 $minAction = ' >= ';
@@ -675,13 +708,13 @@ class Segmentation
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $maxAction
                                         . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
-                                $this->displayRuleError($i + 1, $this->trad[89]);
-                                $i++;
+                                $this->displayRuleError($i, $this->trad[89]);
                             }
                             $where .= $exclude;
                             break;
                         // No order since
                         case '33':
+                            $i++;
                             if ($ruleAction[$fieldKey] == 'IN') {
                                 $include = ' OR o.date_add IS NULL ';
                                 $sign = ' < ';
@@ -692,32 +725,25 @@ class Segmentation
                             if (Tools::strlen($sourceData[$fieldKey]) > 0) {
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $sign . ' UNIX_TIMESTAMP("' . pSQL($sourceData[$fieldKey]) . '")' . $include;
                             } else {
-                                $this->displayRuleError($i + 1, $this->trad[93]);
-                                $i++;
+                                $this->displayRuleError($i, $this->trad[93]);
                             }
                             $order_by .= ' ORDER BY UNIX_TIMESTAMP(o.date_add) DESC';
                             break;
                         // Promo code
                         case '34':
+                            $i++;
                             #  _DB_PREFIX_ . 'order_discount'; - does not exists
-//                            $where .= '';
-//                            if ((int) $sourceData[$fieldKey] > 0) {
-//                                $sub_where = 'o' . $i . '.id_order IN (SELECT od' . $i . '.id_order '
-//                                        . 'FROM ' . _DB_PREFIX_ . 'order_discount od' . $i .
-//                                        ' WHERE od' . $i . '.id_order = o' . $i . '.id_order)';
-//                            } else {
-//                                $sub_where = 'o' . $i . '.id_order NOT IN (SELECT od' . $i . '.id_order '
-//                                        . 'FROM ' . _DB_PREFIX_ . 'order_discount od' . $i .
-//                                        ' WHERE od' . $i . '.id_order = o' . $i . '.id_order)';
-//                            }
+                            # ps17_order_cart_rule - may be should be used, but it doesnt work as expected
                             break;
                         // Order frequency
                         case '35':
+                            $i++;
                             if ((int) $sourceData[$fieldKey] == 0) {
-                                $this->displayRuleError($i + 1, $this->trad[95]);
-                                $i++;
+                                $this->displayRuleError($i, $this->trad[95]);
                             } else {
                                 $having .= ' COUNT(c.id_customer) >= ' . (int) $sourceData[$fieldKey];
+                                $havings[] = $having;
+                                $having = '';
                             }
                             if ($ruleAction[$fieldKey] == 'IN') {
                                 // Include
@@ -742,8 +768,7 @@ class Segmentation
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $maxAction
                                         . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
-                                $this->displayRuleError($i + 1, $this->trad[89]);
-                                $i++;
+                                $this->displayRuleError($i, $this->trad[89]);
                             }
                             $where .= $exclude;
                             break;
@@ -765,14 +790,14 @@ class Segmentation
                     $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'orders AS o ON (o.id_customer = c.id_customer) ';
                     $joined_tables[] = 'orders';
                 }
-                $include = $ruleAction[$fieldKey] == 'IN';
-                $i = 0;
                 foreach ($fieldSelectData as $fieldKey => $case) {
+                    $include = $ruleAction[$fieldKey] == 'IN';
                     $logicalOperator = ' ' . $ruleA[$fieldKey] . ' ';
 
                     switch ($case) {
                         // Number of abandoned carts
                         case '10':
+                            $i++;
                             $action = $include ? '>=' : '<=';
                             if (strpos($additional_select_column, 'o.id_order') === false) {
                                 $additional_select_column = ', o.id_order';
@@ -790,9 +815,12 @@ class Segmentation
                                     $having .= ' OR COUNT(cart.id_cart) >=' . (int) $value2[$fieldKey];
                                 }
                             }
+                            $havings[] = $having;
+                            $having = '';
                             break;
                         // Date of abandoned cart
                         case '29':
+                            $i++;
                             #$having .= ' o.id_order IS NULL ';
                             if ($ruleAction[$fieldKey] == 'IN') {
                                 // Include
@@ -817,13 +845,13 @@ class Segmentation
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $maxAction .
                                     ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
-                                $this->displayRuleError($i + 1, $this->trad[89]);
-                                $i++;
+                                $this->displayRuleError($i, $this->trad[89]);
                             }
                             $where .= $exclude;
                             break;
                         // Product name
                         case '30':
+                            $i++;
                             if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
                                 $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
                                 if (!in_array('cart_product', $joined_tables)) {
@@ -831,10 +859,13 @@ class Segmentation
                                     $joined_tables[] = 'cart_product';
                                 }
                                 $having .= ' o.id_order IS NULL ';
+                                $havings[] = $having;
+                                $having = '';
                             }
                             break;
                         // Category name
                         case '31':
+                            $i++;
                             if (Tools::strlen($sourceData[$fieldKey]) > 0) {
                                 if (!in_array('cart_product', $joined_tables)) {
                                     $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'cart_product as cp ON(cp.id_cart=cart.id_cart) ';
@@ -857,12 +888,14 @@ class Segmentation
                                     $additional_select_column = ', o.id_order';
                                 }
                                 $where .= ' AND cl.id_category' . $action . $sourceData[$fieldKey];
-                                #$group_by .= ', cp.id_product ';
                                 $having .= ' COUNT(cart.id_cart) >= 1 and o.id_order IS NULL';
+                                $havings[] = $having;
+                                $having = '';
                             }
                             break;
                         // Brand name
                         case '32':
+                            $i++;
                             if (Tools::strlen($sourceData[$fieldKey]) > 0) {
                                 if (!in_array('cart_product', $joined_tables)) {
                                     $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'cart_product as cp ON(cp.id_cart=cart.id_cart)';
@@ -887,8 +920,9 @@ class Segmentation
                                     $additional_select_column = ', o.id_order';
                                 }
                                 $where .= $logicalOperator . ' m.id_manufacturer ' . $action . $sourceData[$fieldKey] . $exclude;
-                                #$group_by .= ', cp.id_product ';
-                                $having .= ' COUNT(cart.id_cart) >= 1 and o.id_order IS NULL ';
+                                $having .= ' COUNT(cart.id_cart) >= 1 AND o.id_order IS NULL ';
+                                $havings[] = $having;
+                                $having = '';
                             }
                             break;
                     }
@@ -915,13 +949,13 @@ class Segmentation
             }
         }
 
-        if (!empty($having)) {
-            $having = ' HAVING ' . $having;
-            if ($having_id_customer) {
-                $having .= ' AND ' . $having_id_customer;
-            }
-        } elseif (empty($having) && $having_id_customer) {
-            $having = ' HAVING ' . $having_id_customer;
+        if ($having_id_customer) {
+            $havings[] = $having_id_customer;
+        }
+
+        $having = '';
+        if (!empty($havings)) {
+            $having = ' HAVING ' . implode(' AND ', $havings);
         }
 
         $sql = 'SELECT '
@@ -939,8 +973,6 @@ class Segmentation
                 . ' WHERE c.deleted = 0 AND c.active = 1 '
                 . $where
                 . ' GROUP BY email'
-                #. 'c.id_customer '
-                #.$group_by. ', c.email '
                 . $order_by
                 . $having;
 
