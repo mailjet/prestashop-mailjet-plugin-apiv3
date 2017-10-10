@@ -68,6 +68,12 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.8 =
+* Improve segmentation
+* Provide a meaningful error message when the user doesn't enter mandatory data
+* Fix datepicker locale issue
+* Update the link to Mailjet documentation
+
 = 3.4.7 =
 * Improve the plugin activation page
 * Enable the "Reset" plugin button
