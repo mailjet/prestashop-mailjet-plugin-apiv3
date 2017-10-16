@@ -86,7 +86,7 @@ class Segmentation
                     'mailjet'
                 )
             ),
-            //            'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
+//            'mj_datePickerJsFormat' => Context::getContext()->cookie->id_lang == Language::getIdByIso('fr') ? 'dd-mm-yy' : 'yy-mm-dd',
             'mj_datePickerJsFormat' => 'yy-mm-dd',
             'mj_datepickerPersonnalized' => version_compare(_PS_VERSION_, '1.5', '<') ? '<script type="text/javascript" src="' .
             _PS_JS_DIR_ . 'jquery/datepicker/jquery-ui-personalized-1.6rc4.packed.js"></script>' : '',
@@ -272,6 +272,8 @@ class Segmentation
         $customerSegmentIndex = 2;
         $abandonedCartsIndex = 3;
         $shopSegmentIndex = 4;
+        
+        
 
         $this->fieldSelect = $post['fieldSelect'];
         $sourceSelect = $post['sourceSelect'];
@@ -315,12 +317,18 @@ class Segmentation
                             $data = false;
                             $where .= $logicalOperator . ' c.newsletter = 1 ';
 
-                            if (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (Tools::strlen($value1[$fieldKey]) > 0 ) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[82]);
+                                }
                                 $data = true;
                                 $where .= ' AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
                                 . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[82]);
+                                }
                                 $data = true;
                                 $where .= 'AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
                                 . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
@@ -347,11 +355,17 @@ class Segmentation
                             $i++;
                             $data = false;
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[85]);
+                                }
                                 $data = true;
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $minAction
                                 . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[85]);
+                                }
                                 $data = true;
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $maxAction
                                 . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
@@ -368,10 +382,16 @@ class Segmentation
                             $i++;
                             $where .= $logicalOperator . ' c.newsletter ' . $operator . ' ' . $sourceData[$fieldKey];
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[82]);
+                                }
                                 $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
                                 . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[82]);
+                                }
                                 $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
                                 . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
@@ -476,10 +496,16 @@ class Segmentation
                                 $operator = ' OR ';
                             }
                             if (Tools::strlen($value1[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[100]);
+                                }
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(conn.date_add)' . $minValue1
                                 . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             }
                             if (Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[100]);
+                                }
                                 $where .= $operator . 'UNIX_TIMESTAMP(conn.date_add)' . $maxValue2
                                 . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             }
@@ -507,11 +533,15 @@ class Segmentation
                         // Number of orders
                         case '2':
                             $i++;
+                            if (strpos($additional_select_column, 'count(o.id_customer) AS "Number of orders"') === false) {
+                                $additional_select_column .= ', count(o.id_customer) AS "Number of orders"';
+                            }
                             $and = '';
                             if (!$exclude) {
                                 // Include
                                 $min_operator = '>=';
                                 $max_operator = '<=';
+                                $and = ' AND ';
                             } else {
                                 // Exclude
                                 // Not equal because we cannot exclude e.g. customer with 1 order
@@ -527,9 +557,9 @@ class Segmentation
                                     $having .= $and;
                                 }
                                 $having .= ' count(o.id_customer) ' . $max_operator . $maxValue2;
-                                $havings[] = $having;
-                                $having = '';
                             }
+                            $havings[] = $having;
+                            $having = '';
                             break;
                         // Order status
                         case '3':
@@ -591,11 +621,21 @@ class Segmentation
                         // Sales
                         case '8':
                             $i++;
+                            # Feature 
+//                            if (!in_array('order_state', $joined_tables)) {
+//                                $join .= ' JOIN ' . _DB_PREFIX_ . 'order_state AS os ON os.id_order_state = o.current_state AND os.paid = 1 ';
+//                                $joined_tables[] = 'order_state';
+//                            }
                             if (!in_array('currency', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
                             }
-                            $additional_select_column .= ', cu.conversion_rate, o.total_paid_real';
+                            if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
+                                    $additional_select_column .= ', cu.conversion_rate';
+                            }
+                            if (strpos($additional_select_column, 'o.total_paid_real') === false) {
+                                    $additional_select_column .= ', o.total_paid_real';
+                            }
                             if (!$exclude) {
                                 // Include
                                 $minAction = ' >= ';
@@ -628,13 +668,21 @@ class Segmentation
                             break;
                         // Average sales
                         case '9':
-                            $i++;
+                            $i++; 
+                            // Get orders with only paid current status
+                            if (!in_array('order_state', $joined_tables)) {
+                                $join .= ' JOIN ' . _DB_PREFIX_ . 'order_state AS os ON os.id_order_state = o.current_state AND os.paid = 1 ';
+                                $joined_tables[] = 'order_state';
+                            }
                             if (!in_array('currency', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
                             }
                             if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
                                 $additional_select_column .= ', cu.conversion_rate';
+                            }
+                            if (strpos($additional_select_column, 'FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) AS "Average sales"') === false) {
+                                $additional_select_column .= ', FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) AS "Average sales"';
                             }
                             if ($ruleAction[$fieldKey] == 'IN') {
                                 // Include
@@ -699,12 +747,21 @@ class Segmentation
                                 $is_negative = ' NOT ';
                             }
                             if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[89]);
+                                }
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $is_negative . ' BETWEEN UNIX_TIMESTAMP("' .
                                         pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
                             } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[89]);
+                                }
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $minAction
                                         . ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[89]);
+                                }
                                 $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $maxAction
                                         . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
@@ -723,6 +780,9 @@ class Segmentation
                                 $sign = ' > ';
                             }
                             if (Tools::strlen($sourceData[$fieldKey]) > 0) {
+                                if (!validateDate($sourceData[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[93]);
+                                }
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $sign . ' UNIX_TIMESTAMP("' . pSQL($sourceData[$fieldKey]) . '")' . $include;
                             } else {
                                 $this->displayRuleError($i, $this->trad[93]);
@@ -759,12 +819,21 @@ class Segmentation
                                 $is_negative = ' NOT ';
                             }
                             if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[89]);
+                                }
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $is_negative . 'BETWEEN UNIX_TIMESTAMP("' .
                                         pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
                             } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[89]);
+                                }
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $minAction
                                         . ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[89]);
+                                }
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $maxAction
                                         . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
@@ -800,7 +869,7 @@ class Segmentation
                             $i++;
                             $action = $include ? '>=' : '<=';
                             if (strpos($additional_select_column, 'o.id_order') === false) {
-                                $additional_select_column = ', o.id_order';
+                                $additional_select_column .= ', o.id_order';
                             }
                             if ($ruleAction[$fieldKey] == 'IN') {
                                 // Include
@@ -836,16 +905,25 @@ class Segmentation
                                 $is_negative = ' NOT ';
                             }
                             if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[103]);
+                                }
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $is_negative . 'BETWEEN UNIX_TIMESTAMP("' .
                                     pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
                             } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
+                                if (!validateDate($value1[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[103]);
+                                }
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $minAction .
                                     ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
                             } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
+                                if (!validateDate($value2[$fieldKey])) {
+                                    $this->displayRuleError($i, $this->trad[103]);
+                                }
                                 $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $maxAction .
                                     ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
                             } else {
-                                $this->displayRuleError($i, $this->trad[89]);
+                                $this->displayRuleError($i, $this->trad[103]);
                             }
                             $where .= $exclude;
                             break;
@@ -885,7 +963,7 @@ class Segmentation
                                     $action = ' != ';
                                 }
                                 if (strpos($additional_select_column, 'o.id_order') === false) {
-                                    $additional_select_column = ', o.id_order';
+                                    $additional_select_column .= ', o.id_order';
                                 }
                                 $where .= ' AND cl.id_category' . $action . $sourceData[$fieldKey];
                                 $having .= ' COUNT(cart.id_cart) >= 1 and o.id_order IS NULL';
@@ -917,7 +995,7 @@ class Segmentation
                                     $exclude = ' OR m.id_manufacturer IS NULL';
                                 }
                                 if (strpos($additional_select_column, 'o.id_order') === false) {
-                                    $additional_select_column = ', o.id_order';
+                                    $additional_select_column .= ', o.id_order';
                                 }
                                 $where .= $logicalOperator . ' m.id_manufacturer ' . $action . $sourceData[$fieldKey] . $exclude;
                                 $having .= ' COUNT(cart.id_cart) >= 1 AND o.id_order IS NULL ';
@@ -980,6 +1058,7 @@ class Segmentation
         if ($limit) {
             $sql .= ' LIMIT ' . (int) $limit['start'] . ', ' . (int) $limit['length'];
         }
+        echo $additional_select_column."<br><hr>".$sql."<hr>";
         return $sql;
     }
 
@@ -1447,6 +1526,7 @@ class Segmentation
             105 => $this->l('Number of orders'),
             106 => $this->l('Products'),
             107 => $this->l('Shop'),
+            108 => $this->l('Date format must be yyyy-mm-dd'),
         );
     }
 
@@ -1502,6 +1582,29 @@ class Segmentation
 
         return $id_list_contact;
     }
+}
+
+function validateDate($date)
+{
+    // Use this after some improvement and tests
+    //if (preg_match("/^[0-9]{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[1-2][0-9]|3[0-1])$/", $date));
+
+    if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $date, $matches)) {
+        $year = (int) $matches[1];
+        $month = (int) $matches[2];
+        $day = (int) $matches[3];
+        if ($month < 1 || $month > 12) {
+            return false;
+        }
+        if ($year < 1900 || $year > (int) date('Y')) {
+            return false;
+        }
+        if ($day < 1 || $day > 31) {
+            return false;
+        }
+        return true;
+    }
+    return false;
 }
 
 function stripReturn($txt)
