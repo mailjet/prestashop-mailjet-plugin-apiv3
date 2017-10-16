@@ -1058,7 +1058,6 @@ class Segmentation
         if ($limit) {
             $sql .= ' LIMIT ' . (int) $limit['start'] . ', ' . (int) $limit['length'];
         }
-        echo $additional_select_column."<br><hr>".$sql."<hr>";
         return $sql;
     }
 
