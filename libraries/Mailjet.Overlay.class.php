@@ -1739,20 +1739,20 @@ class Mailjet_ApiOverlay
      * @return mixed Response from the API
      */
     public function createCampaign(
-        string $lang,
-        string $from,
-        string $from_name = null,
-        string $subject,
-        string $edition_mode = null,
-        string $edition_type = null,
-        integer $list_id = null,
-        string $callback = null,
-        string $footer = null,
-        string $permalink = null,
-        integer $template_id = null,
-        string $token = null,
-        string $reply_to = null,
-        string $title = null
+        $lang,
+        $from,
+        $subject,
+        $from_name = null,
+        $edition_mode = null,
+        $edition_type = null,
+        $list_id = null,
+        $callback = null,
+        $footer = null,
+        $permalink = null,
+        $template_id = null,
+        $token = null,
+        $reply_to = null,
+        $title = null
     )
     {
         $params = array(
@@ -1819,8 +1819,8 @@ class Mailjet_ApiOverlay
             $response = $this->createCampaign(
                 $parameters->lang,
                 $parameters->from,
-                $parameters->from_name,
                 $parameters->subject,
+                $parameters->from_name,
                 $parameters->edition_mode,
                 $parameters->edition_type,
                 $parameters->list_id,
@@ -1861,18 +1861,18 @@ class Mailjet_ApiOverlay
      * @return mixed Response from the API
      */
     public function createCampaignFrom(
-        integer $id,
-        string $lang = null,
-        string $from = null,
-        string $from_name = null,
-        string $subject = null,
-        integer $list_id = null,
-        string $callback = null,
-        string $footer = null,
-        string $permalink = null,
-        integer $template_id = null,
-        string $reply_to = null,
-        string $title = null
+        $id,
+        $lang = null,
+        $from = null,
+        $from_name = null,
+        $subject = null,
+        $list_id = null,
+        $callback = null,
+        $footer = null,
+        $permalink = null,
+        $template_id = null,
+        $reply_to = null,
+        $title = null
     )
     {
         $params = array(
@@ -3490,13 +3490,18 @@ class Mailjet_ApiOverlay
     public function deleteContactsList($id)
     {
         $params = array(
-            'method' => 'POST',
+            'method' => 'DELETE',
             'id' => $id
         );
 
-        $response = $this->_api->listsDelete($params);
+//        $response = $this->_api->listsDelete($params);
+        $response = $this->_api->{'contactslist/' . $id }(
+            array(
+                'method' => 'DELETE'
+            )
+        );
         if ($response !== FALSE) {
-            return ($response);
+            return true;//($response);
         } else {
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }

@@ -98,20 +98,10 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
      */
     public function deleteList($mailjetListId)
     {
-        if ($mailjetListId) {
-            $params = array(
-                'ID' => $mailjetListId,
-                'method' => 'DELETE'
-            );
-
-            /* # Api call */
-            /* $oldList = */
-            $this->getApiOverlay()->createContactsListP($params);
-
-            return true;
+        if (!$mailjetListId) {
+            return false;
         }
-
-        return false;
+        return $this->getApiOverlay()->deleteContactsList($mailjetListId);
     }
 
     /**
