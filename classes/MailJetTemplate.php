@@ -174,7 +174,7 @@ class MailjetTemplate
     public function getCampaignURL($name = 'CAMPAIGN', $token = null)
     {
         $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = $ps_shop_domain . '/modules/mailjet/callback_campaign.php';
+        $cb = urlencode($ps_shop_domain . 'modules/mailjet/callback_campaign.php');
         $url = $this->mjWebsite .
             '/campaigns?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&f=am&locale=' .
             $this->locale;
@@ -184,7 +184,7 @@ class MailjetTemplate
     public function getPricingURL($name = 'PRICING', $token = null)
     {
         $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = $ps_shop_domain . '/modules/mailjet/callback_campaign.php';
+        $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         if ($token) {
             $url = $this->mjWebsite .
                 '/reseller/pricing?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&locale=' .
@@ -200,7 +200,7 @@ class MailjetTemplate
     public function getStatsURL($name = 'STATS', $token = null)
     {
         $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = $ps_shop_domain . '/modules/mailjet/callback_campaign.php';
+        $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         $url = $this->mjWebsite .
             '/stats?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&f=am&locale=' .
             $this->locale;
@@ -210,7 +210,7 @@ class MailjetTemplate
     public function getContactsURL($name = 'CONTACTS', $token = null)
     {
         $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = $ps_shop_domain . '/modules/mailjet/callback_campaign.php';
+        $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         $url = $this->mjWebsite .
             '/contacts?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&f=am&locale=' .
             $this->locale;

@@ -34,9 +34,13 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      */
     public function synchronize()
     {
-        if ($masterListId = $this->getAlreadyCreatedMasterListId()) {
+        $masterListId = $this->getAlreadyCreatedMasterListId();
+        if ($masterListId) {
             $segmentSynch = new HooksSynchronizationSegment($this->getApiOverlay());
-            $segmentSynch->deleteList($masterListId);
+            $is_master_deleted = $segmentSynch->deleteList($masterListId);
+            if(!$is_master_deleted){
+                    throw new HooksSynchronizationException('Master list is not deleted!');
+            }
         }
 
         $apiOverlay = $this->getApiOverlay();
