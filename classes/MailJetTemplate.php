@@ -175,9 +175,12 @@ class MailjetTemplate
     {
         $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
         $cb = urlencode($ps_shop_domain . 'modules/mailjet/callback_campaign.php');
-        $url = $this->mjWebsite .
-            '/campaigns?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&f=am&locale=' .
-            $this->locale;
+        
+        // Let cb parameter in official version
+        $url = $this->mjWebsite . '/campaigns?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&f=am&locale=' . $this->locale;
+        
+        // Remove cb parameter while fix issue
+        // $url = $this->mjWebsite . '/campaigns?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&locale=' . $this->locale;
         $this->iframes_url[$name] = $url;
     }
 

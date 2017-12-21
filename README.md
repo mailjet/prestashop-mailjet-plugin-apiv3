@@ -68,6 +68,12 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.9 =
+* Fix initial sync for php version 5.3
+* Resolve initial masterList creation issue
+* Encode callback parameter
+* Update callback response message which resolve campaign callback issue
+
 = 3.4.8 =
 * Improve segmentation
 * Provide a meaningful error message when the user doesn't enter mandatory data
