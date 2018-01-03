@@ -51,7 +51,7 @@ if (Tools::getIsset('response')) {
 }
 
 if ($data->next_step_url) {
-	$expected_response_message = array('html saved successfully', 'campaign added successfully');
+    $expected_response_message = array('html saved successfully', 'campaign added successfully');
     if (!empty($response) && in_array($response->message, $expected_response_message)) {
         $mj_data = new Mailjet_Api($mj->getAccountSettingsKey('API_KEY'), $mj->getAccountSettingsKey('SECRET_KEY'));
         $campaignId = (int) $data->campaign_id;
