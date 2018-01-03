@@ -317,7 +317,7 @@ class Segmentation
                             $data = false;
                             $where .= $logicalOperator . ' c.newsletter = 1 ';
 
-                            if (Tools::strlen($value1[$fieldKey]) > 0 ) {
+                            if (Tools::strlen($value1[$fieldKey]) > 0) {
                                 if (!validateDate($value1[$fieldKey])) {
                                     $this->displayRuleError($i, $this->trad[82]);
                                 }
@@ -621,7 +621,7 @@ class Segmentation
                         // Sales
                         case '8':
                             $i++;
-                            # Feature 
+                            # Feature
 //                            if (!in_array('order_state', $joined_tables)) {
 //                                $join .= ' JOIN ' . _DB_PREFIX_ . 'order_state AS os ON os.id_order_state = o.current_state AND os.paid = 1 ';
 //                                $joined_tables[] = 'order_state';
@@ -668,7 +668,7 @@ class Segmentation
                             break;
                         // Average sales
                         case '9':
-                            $i++; 
+                            $i++;
                             // Get orders with only paid current status
                             if (!in_array('order_state', $joined_tables)) {
                                 $join .= ' JOIN ' . _DB_PREFIX_ . 'order_state AS os ON os.id_order_state = o.current_state AND os.paid = 1 ';
