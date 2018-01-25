@@ -118,6 +118,7 @@ class Mailjet extends Module
 
     public function __construct()
     {
+        $this->account = json_decode(json_encode($this->account));
         //$this->getAdminFullUrl();
         // Default module variable
         $this->name = 'mailjet';
