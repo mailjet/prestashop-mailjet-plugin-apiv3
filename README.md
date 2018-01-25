@@ -67,6 +67,8 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.10 =
+* Fix installation plugin issue
 
 = 3.4.9 =
 * Fix initial sync for php version 5.3
