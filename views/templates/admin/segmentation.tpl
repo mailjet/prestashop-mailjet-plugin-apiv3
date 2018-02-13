@@ -245,7 +245,7 @@
                                     <option value="1">{l s='Yes' mod='mailjet'}</option>
                                 </select>
                             </span>
-                            <span class="help">{l s='Assign customers to this group automatically. It will create a new filter which associate customers in real time in your shop' mod='mailjet'}.</span>
+                            <span class="help">{l s='Assign customers to this group automatically. It will create a new filter which associates customers in real time in your shop' mod='mailjet'}.</span>
                         </div>
                         <div class="rowAction" id="attrib">
                             <label>{l s='Assign group selection' mod='mailjet'}</label>
