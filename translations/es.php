@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = array(); 
 $_MODULE['<{mailjet}prestashop>ajax_210056c8a36e035de0a336f7fa055f27'] = 'El token enviado es incorrecto';
 $_MODULE['<{mailjet}prestashop>ajax_21a5d428ea929b1e12aa8ea0c57feede'] = 'El método solicitado no existe:';
 $_MODULE['<{mailjet}prestashop>mailjet_ff01de9408b9c15ff689f4e32fc19f99'] = 'Mailjet';
