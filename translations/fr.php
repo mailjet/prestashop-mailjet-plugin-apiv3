@@ -6,6 +6,7 @@ $_MODULE['<{mailjet}prestashop>ajax_210056c8a36e035de0a336f7fa055f27'] = 'Erreur
 $_MODULE['<{mailjet}prestashop>ajax_21a5d428ea929b1e12aa8ea0c57feede'] = 'La méthode appelée n\'existe pas';
 $_MODULE['<{mailjet}prestashop>mailjet_ff01de9408b9c15ff689f4e32fc19f99'] = 'Mailjet';
 $_MODULE['<{mailjet}prestashop>mailjet_f1206f9fadc5ce41694f69129aecac26'] = 'Configure';
+$_MODULE['<{mailjet}prestashop>mailjet_cd5c0ec6678023a37ce686b04cdf7d2d'] = 'Créez des listes de contacts et des segments clients. Réalisez des newsletters avec un éditeur d\'emails intuitif. Déterminez ce qui déclenche l\'engagement des clients. Suivez et analysez toutes les interactions des utilisateurs. Réduisez les événements ayant un impact négatif sur l\'engagement des utilisateurs (emails bloqués, désinscriptions et spams) et optimisez la délivrabilité et votre chiffre d\'affaires. Démarrez immédiatement avec 6 000 emails gratuits par mois.';
 $_MODULE['<{mailjet}prestashop>mailjet_b78a3223503896721cca1303f776159b'] = 'Titre';
 $_MODULE['<{mailjet}prestashop>mailjet_bd09d588f425900508bcd88c0ab77723'] = 'E-mails envoyés';
 $_MODULE['<{mailjet}prestashop>mailjet_e286eeea0c35d94c404ab575a099515d'] = 'Montant R.O.I.';
