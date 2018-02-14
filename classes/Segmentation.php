@@ -71,7 +71,7 @@ class Segmentation
             'mj_MODULE_DIR_' => _MODULE_DIR_,
             'mj_hint_fieldset' => array(
                 $this->l(
-                    'This module enables you to create segments of customers according to any criteria you think of.' .
+                    'This module enables you to create segments of customers according to any criteria you think of. ' .
                     'You can then either display and export the selected customers or associate them to an existing ' .
                     'customer group.',
                     'mailjet'

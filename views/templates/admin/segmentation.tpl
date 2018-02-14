@@ -52,10 +52,10 @@
 <div class="center_page">
 
     {if !empty($mj_hint_fieldset.0) || !empty($mj_hint_fieldset.1) || !empty($mj_hint_fieldset.2) }
-        <fieldset class="width6 hint seg_fieldset">&nbsp;
-            {$mj_hint_fieldset.0|escape:'htmlall':'UTF-8'|default:''}<br /><br />
-            {$mj_hint_fieldset.1|escape:'htmlall':'UTF-8'|default:''}<br /><br />
-            {$mj_hint_fieldset.2|escape:'htmlall':'UTF-8'|default:''}
+        <fieldset class="width6 hint seg_fieldset">
+            {l s='This module enables you to create segments of customers according to any criteria you think of. You can then either display and export the selected customers or associate them to an existing customer group.' mod='mailjet'} <br /><br />
+            {l s='These segments are particularly useful to create special offers associated with customer groups (e.g., send a coupon to the customers interested in some products)' mod='mailjet'}<br /><br />
+            {l s='Create an infinite number of filters corresponding to your needs!' mod='mailjet'}
         </fieldset>
     {/if}
 
@@ -245,7 +245,7 @@
                                     <option value="1">{l s='Yes' mod='mailjet'}</option>
                                 </select>
                             </span>
-                            <span class="help">{l s='Assign customers to this group automatically. It will create a new filter which associate customers in real time in your shop' mod='mailjet'}.</span>
+                            <span class="help">{l s='Assign customers to this group automatically. It will create a new filter which associates customers in real time in your shop' mod='mailjet'}.</span>
                         </div>
                         <div class="rowAction" id="attrib">
                             <label>{l s='Assign group selection' mod='mailjet'}</label>
