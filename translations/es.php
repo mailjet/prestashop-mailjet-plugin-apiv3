@@ -6,11 +6,7 @@ $_MODULE['<{mailjet}prestashop>ajax_210056c8a36e035de0a336f7fa055f27'] = 'El tok
 $_MODULE['<{mailjet}prestashop>ajax_21a5d428ea929b1e12aa8ea0c57feede'] = 'El método solicitado no existe:';
 $_MODULE['<{mailjet}prestashop>mailjet_ff01de9408b9c15ff689f4e32fc19f99'] = 'Mailjet';
 $_MODULE['<{mailjet}prestashop>mailjet_f1206f9fadc5ce41694f69129aecac26'] = 'Configure';
-$_MODULE['<{mailjet}prestashop>mailjet_cd5c0ec6678023a37ce686b04cdf7d2d'] = 'Create contact lists and client segment groups,
-            drag-n-drop newsletters, define client re-engagement triggers,
-            follow and analyze all email user interaction, minimize negative user engagement events
-            (blocked, unsubs and spam) and optimise deliverability and revenue generation.
-            Get started today with 6000 free emails per month.';
+$_MODULE['<{mailjet}prestashop>mailjet_d7d99ae24378402eeef70275a0434ba9'] = 'Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.';
 $_MODULE['<{mailjet}prestashop>mailjet_b78a3223503896721cca1303f776159b'] = 'Título';
 $_MODULE['<{mailjet}prestashop>mailjet_bd09d588f425900508bcd88c0ab77723'] = 'Correos electrónicos enviados';
 $_MODULE['<{mailjet}prestashop>mailjet_e286eeea0c35d94c404ab575a099515d'] = 'Rentabilidad sobre la inversión (Cantidad)';
