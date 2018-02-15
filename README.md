@@ -67,6 +67,9 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.11 =
+* Fix translations
+
 = 3.4.10 =
 * Fix installation plugin issue
 
