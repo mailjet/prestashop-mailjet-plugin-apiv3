@@ -351,6 +351,7 @@ if ($mailjet->triggers['active']) {
                         for ($i = 0; $i < 8; $i++) {
                             $code .= Tools::substr($alphanum, mt_rand(1, Tools::strlen($alphanum)) - 1, 1);
                         }
+                        $code_length = Tools::strlen($code);
                     }
 
                     $name = array();
