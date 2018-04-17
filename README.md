@@ -67,6 +67,9 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.12 =
+* Fix tracking parameter
+
 = 3.4.11 =
 * Fix translations
 
