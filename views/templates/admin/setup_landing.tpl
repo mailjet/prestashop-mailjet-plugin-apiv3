@@ -37,7 +37,7 @@
     <br style="clear:left;" />
 
     <div id="setup_landing_bt">
-        <a target="_blank" href="https://{$lang|escape:'htmlall':'UTF-8'}.mailjet.com/signup?p=prestashop-3.0" id="setup_landing_bt_activate"
+        <a target="_blank" href="https://{$lang|escape:'htmlall':'UTF-8'}.mailjet.com/signup?aff=prestashop-3.0" id="setup_landing_bt_activate"
            class="default_button_style default_background_orange">
             {l s='Register' mod='mailjet'}
         </a>
