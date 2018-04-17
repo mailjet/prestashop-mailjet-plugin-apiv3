@@ -67,8 +67,11 @@ Happy emailing!
 
 
 ## Changelog
-= 3.4.12 =
+= 3.4.13 =
 * Fix tracking parameter
+
+= 3.4.12 =
+* Fix birthday promo trigger
 
 = 3.4.11 =
 * Fix translations
