@@ -55,7 +55,7 @@ Your customers will benefit by receiving personalized and pertinent emails deliv
 4. Upload the zip in your Prestashop installation.
 5. Connect your Mailjet Account. 
 
-If you are not yet a Mailjet user, please click [Register](https://app.mailjet.com/signup?p=prestashop-3.0) to create a new account. 
+If you are not yet a Mailjet user, please click [Register](https://app.mailjet.com/signup?aff=prestashop-3.0) to create a new account. 
 To view the different pricing plans, please click the ‘Pricing’ button.
 
 Once you have a Mailjet account, click ‘Connect’ to enter your Mailjet Main Account API Key & Secret Key information as shown below.  Click the Mailjet account link to view your API Key information [Account API keys](https://www.mailjet.com/account/api_keys)
@@ -67,6 +67,9 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.13 =
+* Fix tracking parameter
+
 = 3.4.12 =
 * Fix birthday promo trigger
 
