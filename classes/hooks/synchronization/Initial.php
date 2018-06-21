@@ -66,7 +66,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         $allUsers = $this->getAllActiveCustomers();
 
         if (count($allUsers) === 0) {
-            throw new HooksSynchronizationException('You don\'t have any users in the database.');
+            throw new HooksSynchronizationException('You don\'t have any newsletter subscribed users in the database');
         }
 
         while (!empty($allUsers)) {
