@@ -27,6 +27,8 @@
 class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbstract
 {
 
+    const CHUNK_SIZE = 2500;
+
     /**
      *
      * @throws Exception
@@ -63,16 +65,15 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         }
         // increase the memory limit because the database could contain too many customers
         ini_set('memory_limit', '1028M');
-        $allUsers = $this->getAllActiveCustomers();
-
-        if (count($allUsers) === 0) {
-            throw new HooksSynchronizationException('You don\'t have any newsletter subscribed users in the database');
-        }
+        $start = 0;
+        $limit = self::CHUNK_SIZE;
+        $allUsers = $this->getActiveCustomers($start, $limit);
+        $firstLoop = true;
 
         while (!empty($allUsers)) {
             $rest_contacts = count($allUsers);
 
-            $chunck_size = 2500;
+            $chunck_size = self::CHUNK_SIZE;
             if ($rest_contacts < $chunck_size) {
                 $chunck_size = $rest_contacts;
             }
@@ -89,13 +90,15 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
                 );
             }
 
-            /*
-             * Sets related contact meta data like firstname, lastname, etc...
-             */
-            $this->getApiOverlay()->setContactMetaData(array(
-                array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
-                array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
-            ));
+            if (true === $firstLoop) {
+                /*
+                 * Sets related contact meta data like firstname, lastname, etc...
+                 */
+                $this->getApiOverlay()->setContactMetaData(array(
+                    array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
+                    array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
+                ));
+            }
 
             $asyncJobResponse = $apiOverlay->asyncManageContactsToList($contacts, $newlyCreatedListId);
 
@@ -104,11 +107,15 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
                 $segmentSynch->deleteList($newlyCreatedListId);
                 throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
             }
-            $batchJobResponse = $apiOverlay->getAsyncJobStatus($newlyCreatedListId, $asyncJobResponse);
+//            $batchJobResponse = $apiOverlay->getAsyncJobStatus($newlyCreatedListId, $asyncJobResponse);
+//
+//            if ($batchJobResponse == false) {
+//                throw new HooksSynchronizationException('Batchjob problem');
+//            }
 
-            if ($batchJobResponse == false) {
-                throw new HooksSynchronizationException('Batchjob problem');
-            }
+            $start = $start + self::CHUNK_SIZE;
+            $allUsers = $this->getActiveCustomers($start, $limit);
+            $firstLoop = false;
         }
 
         return $newlyCreatedListId;
@@ -118,8 +125,8 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      *
      * @return array
      */
-    private function getAllActiveCustomers()
+    private function getActiveCustomers($start = 0, $limit = self::CHUNK_SIZE)
     {
-        return $this->getDbInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'customer WHERE active = 1 AND newsletter = 1 AND deleted = 0');
+        return $this->getDbInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'customer WHERE active = 1 AND newsletter = 1 AND deleted = 0 LIMIT ' . $start . ', ' . $limit );
     }
 }
