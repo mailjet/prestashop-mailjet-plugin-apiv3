@@ -67,6 +67,9 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.14 =
+* Optimize initial customers sync
+
 = 3.4.13 =
 * Fix tracking parameter
 
