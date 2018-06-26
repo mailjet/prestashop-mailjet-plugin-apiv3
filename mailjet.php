@@ -1963,4 +1963,41 @@ class Mailjet extends Module
     {
         return md5($this->account->TOKEN);
     }
+
+    public function hookActionExportGDPRData($customer)
+    {
+        if (!Tools::isEmpty($customer['email']) && Validate::isEmail($customer['email'])) {
+
+            if (!$customer) {
+                return false;
+            }
+
+            $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+            $customerMailJet = $initialSynchronization->getCustomerByEmail($customer['email']);
+            
+            if( !$customerMailJet || empty($customerMailJet) ) {
+                return json_encode($this->l('Mailjet : Unable to export customer using email.'));
+            }
+
+            $dateAdd = new DateTime($customerMailJet->Data[0]->CreatedAt);
+            $dateLastActivity = new DateTime($customerMailJet->Data[0]->LastActivityAt);      
+
+            $return[] = [
+                $this->l('Email') => $customerMailJet->Data[0]->Email,
+                $this->l('Date add') => $dateAdd->format('Y-m-d H:i:s'),
+                $this->l('Newsletters sended') => $customerMailJet->Data[0]->DeliveredCount,
+                $this->l('Last Activity') =>  $dateLastActivity->format('Y-m-d H:i:s'), 
+            ];
+
+            return json_encode($return);
+
+        }
+    }
+
+    public function hookRegisterGDPRConsent($param)
+    {
+
+        return;
+    }
+
 }
