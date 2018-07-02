@@ -246,23 +246,83 @@ class Mailjet extends Module
             && $this->registerHook('actionAdminCustomersControllerSaveAfter')
             && $this->registerHook('actionAdminCustomersControllerStatusAfter')
             && $this->registerHook('actionAdminCustomersControllerDeleteBefore')
+            && $this->registerHook('actionDeleteGDPRCustomer')
+            && $this->registerHook('actionExportGDPRData')
             && $this->registerHook('actionObjectCustomerDeleteBefore')
             && $this->registerHook('actionObjectCustomerUpdateAfter')
-            && $this->registerHook('BackOfficeHeader')
             && $this->registerHook('adminCustomers')
-            && $this->registerHook('header')
-            && $this->registerHook('newOrder')
-            && $this->registerHook('createAccount')
-            && $this->registerHook('updateQuantity')
-            && $this->registerHook('cart')
             && $this->registerHook('authentication')
-            && $this->registerHook('invoice')
-            && $this->registerHook('updateOrderStatus')
-            && $this->registerHook('orderConfirmation')
-            && $this->registerHook('orderSlip')
-            && $this->registerHook('orderReturn')
+            && $this->registerHook('BackOfficeHeader')
             && $this->registerHook('cancelProduct')
+            && $this->registerHook('cart')
+            && $this->registerHook('createAccount')
+            && $this->registerHook('header')
+            && $this->registerHook('invoice')
+            && $this->registerHook('newOrder')
+            && $this->registerHook('orderConfirmation')
+            && $this->registerHook('orderReturn')
+            && $this->registerHook('orderSlip')
+            && $this->registerHook('registerGDPRConsent')
+            && $this->registerHook('updateOrderStatus')
+            && $this->registerHook('updateQuantity')
         );
+    }
+
+    public function hookActionExportGDPRData($customer)
+    {
+        $email = $customer['email'];
+        // if (empty($email) || Validate::isEmail($email)) {
+            // return json_encode($this->l('Newsletter Popup : Invalid email format.'));
+        // }
+
+        $data = [
+            'email' => $customer['email'],
+            'firstName' => 'testFirstName',
+            'lastName' => 'testLastName',
+        ];
+        return json_encode($data);
+//        return json_encode($this->l('Newsletter Popup : Unable to export customer data.'));
+    }
+
+    public function hookActionDeleteGDPRCustomer($customer)
+    {
+        $email = $customer['email'];
+        // if (empty($email) || Validate::isEmail($email)) {
+            // return json_encode($this->l('Newsletter Popup : Invalid email format.'));
+        // }
+
+        // find properties only(username, lastname) via email and delete them
+        $deleted = $this->deleteGdprCustomer($email);
+        if($deleted) {
+            return json_encode(true);
+        }
+        return json_encode($this->l('Newsletter Popup : Unable to delete customer data.'));
+    }
+
+    /**
+     * Remove from ps user lists
+     * @param string $email
+     * @return boolean
+     */
+    private function deleteGdprCustomer($email)
+    {
+        $api = MailjetTemplate::getApi();
+        $initialSynchronization = new HooksSynchronizationSingleUser($api);
+        $segmentListsIds = $initialSynchronization->getSubscribedSegmentLists($email);
+        var_dump($segmentListsIds);
+        $masterListId = $this->getAlreadyCreatedMasterListId();
+        echo "<br>masterListId:".$masterListId."<br>";
+        foreach ($segmentListsIds as $listId) {
+//            $contact = array(
+//                "Email" => $email, // Mandatory field!
+//                "Action" => "remove",
+//            );
+//            $response = $apiOverlay->addDetailedContactToList($contact, $listId);
+                $api->deleteContact($email, $listId);
+        }
+        return true;
+
+//        return $initialSynchronization->removeFromAllLists($email);
     }
 
     public function uninstall()
