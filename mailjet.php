@@ -246,23 +246,61 @@ class Mailjet extends Module
             && $this->registerHook('actionAdminCustomersControllerSaveAfter')
             && $this->registerHook('actionAdminCustomersControllerStatusAfter')
             && $this->registerHook('actionAdminCustomersControllerDeleteBefore')
+            && $this->registerHook('actionExportGDPRData')
             && $this->registerHook('actionObjectCustomerDeleteBefore')
             && $this->registerHook('actionObjectCustomerUpdateAfter')
-            && $this->registerHook('BackOfficeHeader')
             && $this->registerHook('adminCustomers')
-            && $this->registerHook('header')
-            && $this->registerHook('newOrder')
-            && $this->registerHook('createAccount')
-            && $this->registerHook('updateQuantity')
-            && $this->registerHook('cart')
             && $this->registerHook('authentication')
-            && $this->registerHook('invoice')
-            && $this->registerHook('updateOrderStatus')
-            && $this->registerHook('orderConfirmation')
-            && $this->registerHook('orderSlip')
-            && $this->registerHook('orderReturn')
+            && $this->registerHook('BackOfficeHeader')
             && $this->registerHook('cancelProduct')
+            && $this->registerHook('cart')
+            && $this->registerHook('createAccount')
+            && $this->registerHook('header')
+            && $this->registerHook('invoice')
+            && $this->registerHook('newOrder')
+            && $this->registerHook('orderConfirmation')
+            && $this->registerHook('orderReturn')
+            && $this->registerHook('orderSlip')
+            && $this->registerHook('registerGDPRConsent')
+            && $this->registerHook('updateOrderStatus')
+            && $this->registerHook('updateQuantity')
         );
+    }
+
+    // Export customer gdpr data
+    public function hookActionExportGDPRData($customer)
+    {
+        $email = $customer['email'];
+        if (empty($email)) {
+           return json_encode($this->l('Newsletter Popup : Invalid email format.'));
+        }
+        $api = MailjetTemplate::getApi();
+        $user = $api->getContactData($email);
+
+         $data = array();
+         $firstname = '';
+         $lastname = '';
+         if (is_object($user) && $user->Count > 0 && isset($user->Data[0]) && isset($user->Data[0]->Data)) {
+             $contactDataProperties = $user->Data[0]->Data;
+            foreach ($contactDataProperties as $propertyData) {
+                if ($propertyData->Name == 'firstname') {
+                    $firstname = $propertyData->Value;
+                    continue;
+                }
+                if ($propertyData->Name == 'lastname') {
+                    $lastname = $propertyData->Value;
+                    continue;
+                }
+            }
+            $data[] = array(
+                'Email' => $email,
+                'Firstname' => $firstname,
+                'Lastname' => $lastname
+            );
+            return json_encode($data);
+        }
+
+        return json_encode($this->l('No data'));
     }
 
     public function uninstall()
