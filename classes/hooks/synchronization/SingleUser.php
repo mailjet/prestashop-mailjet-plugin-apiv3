@@ -246,4 +246,20 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
         }
         return true;
     }
+
+    /**
+     * Get Contact information by email
+     * @param string $email
+     * @return object
+     */
+    public function getCustomerByEmail($email)
+    {
+        $apiOverlay = $this->getApiOverlay();
+        $contact= $apiOverlay->getContactByEmail($email);
+        if (!$contact) {
+            return false;
+        }
+        return $contact;
+    }
+
 }
