@@ -67,6 +67,9 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.15 =
+* Add compability with GDPR compliance module
+
 = 3.4.14 =
 * Optimize initial customers sync
 
