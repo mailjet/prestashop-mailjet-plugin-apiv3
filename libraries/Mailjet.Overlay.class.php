@@ -2931,6 +2931,25 @@ class Mailjet_ApiOverlay
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
+    
+    public function getContactData($contactEmail)
+    {
+        $paramsRequest = array(
+            'method' => 'GET',
+            'ID' => $contactEmail,
+            'Email' => $contactEmail,
+        );
+
+        $this->_api->resetRequest();
+        $this->_api->contactdata($paramsRequest);
+
+        $response = $this->_api->getResponse();
+        if ($response !== FALSE) {
+            return ($response);
+        } else {
+            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
+        }
+    }
 
     public function getContactByEmail($contactEmail)
     {

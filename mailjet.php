@@ -246,7 +246,6 @@ class Mailjet extends Module
             && $this->registerHook('actionAdminCustomersControllerSaveAfter')
             && $this->registerHook('actionAdminCustomersControllerStatusAfter')
             && $this->registerHook('actionAdminCustomersControllerDeleteBefore')
-            && $this->registerHook('actionDeleteGDPRCustomer')
             && $this->registerHook('actionExportGDPRData')
             && $this->registerHook('actionObjectCustomerDeleteBefore')
             && $this->registerHook('actionObjectCustomerUpdateAfter')
@@ -268,61 +267,40 @@ class Mailjet extends Module
         );
     }
 
+    // Export customer gdpr data
     public function hookActionExportGDPRData($customer)
     {
         $email = $customer['email'];
-        // if (empty($email) || Validate::isEmail($email)) {
-            // return json_encode($this->l('Newsletter Popup : Invalid email format.'));
-        // }
-
-        $data = [
-            'email' => $customer['email'],
-            'firstName' => 'testFirstName',
-            'lastName' => 'testLastName',
-        ];
-        return json_encode($data);
-//        return json_encode($this->l('Newsletter Popup : Unable to export customer data.'));
-    }
-
-    public function hookActionDeleteGDPRCustomer($customer)
-    {
-        $email = $customer['email'];
-        // if (empty($email) || Validate::isEmail($email)) {
-            // return json_encode($this->l('Newsletter Popup : Invalid email format.'));
-        // }
-
-        // find properties only(username, lastname) via email and delete them
-        $deleted = $this->deleteGdprCustomer($email);
-        if($deleted) {
-            return json_encode(true);
+        if (empty($email)) {
+           return json_encode($this->l('Newsletter Popup : Invalid email format.'));
         }
-        return json_encode($this->l('Newsletter Popup : Unable to delete customer data.'));
-    }
-
-    /**
-     * Remove from ps user lists
-     * @param string $email
-     * @return boolean
-     */
-    private function deleteGdprCustomer($email)
-    {
         $api = MailjetTemplate::getApi();
-        $initialSynchronization = new HooksSynchronizationSingleUser($api);
-        $segmentListsIds = $initialSynchronization->getSubscribedSegmentLists($email);
-        var_dump($segmentListsIds);
-        $masterListId = $this->getAlreadyCreatedMasterListId();
-        echo "<br>masterListId:".$masterListId."<br>";
-        foreach ($segmentListsIds as $listId) {
-//            $contact = array(
-//                "Email" => $email, // Mandatory field!
-//                "Action" => "remove",
-//            );
-//            $response = $apiOverlay->addDetailedContactToList($contact, $listId);
-                $api->deleteContact($email, $listId);
-        }
-        return true;
+        $user = $api->getContactData($email);
 
-//        return $initialSynchronization->removeFromAllLists($email);
+         $data = array();
+         $firstname = '';
+         $lastname = '';
+         if (is_object($user) && $user->Count > 0 && isset($user->Data[0]) && isset($user->Data[0]->Data)) {
+             $contactDataProperties = $user->Data[0]->Data;
+            foreach ($contactDataProperties as $propertyData) {
+                if ($propertyData->Name == 'firstname') {
+                    $firstname = $propertyData->Value;
+                    continue;
+                }
+                if ($propertyData->Name == 'lastname') {
+                    $lastname = $propertyData->Value;
+                    continue;
+                }
+            }
+            $data[] = array(
+                'Email' => $email,
+                'Firstname' => $firstname,
+                'Lastname' => $lastname
+            );
+            return json_encode($data);
+        }
+
+        return json_encode($this->l('No data'));
     }
 
     public function uninstall()
