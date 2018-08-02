@@ -272,16 +272,24 @@ class Mailjet extends Module
     {
         $email = $customer['email'];
         if (empty($email)) {
-           return json_encode($this->l('Newsletter Popup : Invalid email format.'));
+           return json_encode($this->l('Invalid email format.'));
         }
         $api = MailjetTemplate::getApi();
-        $user = $api->getContactData($email);
+        $contactData = $api->getContactData($email);
+        $lastCampaignSent = '';
+        try {
+            $contactByEmail = $api->getContactByEmail($email);
+            $creationDate = !empty($contactByEmail->Data[0] && $contactByEmail->Data[0]->CreatedAt) ? new DateTime($contactByEmail->Data[0]->CreatedAt) : '';
+            $lastCampaignSent = !empty($contactByEmail->Data[0] && $contactByEmail->Data[0]->CreatedAt) ? new DateTime($contactByEmail->Data[0]->CreatedAt) : '';
+        } catch (Mailjet_ApiException $e) {
+            return json_encode($this->l('No data'));
+        }
 
-         $data = array();
-         $firstname = '';
-         $lastname = '';
-         if (is_object($user) && $user->Count > 0 && isset($user->Data[0]) && isset($user->Data[0]->Data)) {
-             $contactDataProperties = $user->Data[0]->Data;
+        $data = array();
+        $firstname = '';
+        $lastname = '';
+        if (is_object($contactData) && $contactData->Count > 0 && isset($contactData->Data[0]) && isset($contactData->Data[0]->Data)) {
+            $contactDataProperties = $contactData->Data[0]->Data;
             foreach ($contactDataProperties as $propertyData) {
                 if ($propertyData->Name == 'firstname') {
                     $firstname = $propertyData->Value;
@@ -295,7 +303,9 @@ class Mailjet extends Module
             $data[] = array(
                 'Email' => $email,
                 'Firstname' => $firstname,
-                'Lastname' => $lastname
+                'Lastname' => $lastname,
+                'Last campaign sent' => $lastCampaignSent->format('Y-m-d H:i:s'),
+                'Creation date' => $creationDate->format('Y-m-d H:i:s')
             );
             return json_encode($data);
         }
