@@ -127,6 +127,6 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      */
     private function getActiveCustomers($start = 0, $limit = self::CHUNK_SIZE)
     {
-        return $this->getDbInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'customer WHERE active = 1 AND newsletter = 1 AND deleted = 0 LIMIT ' . $start . ', ' . $limit );
+        return $this->getDbInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'customer WHERE active = 1 AND newsletter = 1 AND deleted = 0 LIMIT ' . $start . ', ' . $limit);
     }
 }
