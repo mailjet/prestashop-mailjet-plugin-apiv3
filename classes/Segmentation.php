@@ -630,12 +630,14 @@ class Segmentation
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
                             }
+
                             if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
                                     $additional_select_column .= ', cu.conversion_rate';
                             }
-                            if (strpos($additional_select_column, 'o.total_paid_real') === false) {
-                                    $additional_select_column .= ', o.total_paid_real';
-                            }
+
+                            // Amount taxes included or excluded
+                            $paid_field = ($sourceData[$fieldKey] == 1) ? 'o.total_paid_tax_incl' : 'o.total_paid_tax_excl';
+
                             if (!$exclude) {
                                 // Include
                                 $minAction = ' >= ';
@@ -646,22 +648,28 @@ class Segmentation
                                 // Exclude
                                 $minAction = ' <= ';
                                 $maxAction = ' >= ';
-                                $exclude = ' OR o.total_paid_real IS NULL ';
+                                if (strpos($additional_select_column, 'o.total_paid_tax_incl') === false) {
+                                    $additional_select_column .= ', o.total_paid_tax_incl';
+                                }
+                                $exclude = ' OR o.total_paid_tax_incl IS NULL ';
                                 $operator = ' OR ';
                             }
-                            if ($sourceData[$fieldKey] == 1) {
-                                $having .= ' FORMAT((SUM(o.total_paid_real)/cu.conversion_rate), 2) ' . $minAction . $minValue1;
-                                if ($maxValue2 > 0) {
-                                    $having .= $operator . ' FORMAT((SUM(o.total_paid_real)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
-                                }
+                            
+                            $salesTotalPaid = '
+                                avg('.$paid_field.')/cu.conversion_rate * (SELECT count(id_customer)
+                                    FROM ps_address
+                                    WHERE id_customer = c.id_customer
+                                    GROUP BY id_customer LIMIT 1)';
+
+                            if(strpos($additional_select_column, $salesTotalPaid) === false) {
+                                $additional_select_column .= ', '. $salesTotalPaid . ' AS "Total paid"';
                             }
 
-                            if ($sourceData[$fieldKey] == 2) {
-                                $having .= ' FORMAT((SUM(o.total_products)/cu.conversion_rate), 2) ' . $minAction . $minValue1;
-                                if ($maxValue2 > 0) {
-                                    $having .= $operator . ' FORMAT((SUM(o.total_products)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
-                                }
+                            $having .= $salesTotalPaid . $minAction . $minValue1;
+                            if ($maxValue2 > 0) {
+                                $having .= $operator . $salesTotalPaid . $maxAction . $maxValue2;
                             }
+
                             $having .= $exclude;
                             $havings[] = $having;
                             $having = '';
