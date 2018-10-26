@@ -661,7 +661,7 @@ class Segmentation
                                     WHERE id_customer = c.id_customer
                                     GROUP BY id_customer LIMIT 1)';
 
-                            if(strpos($additional_select_column, $salesTotalPaid) === false) {
+                            if (strpos($additional_select_column, $salesTotalPaid) === false) {
                                 $additional_select_column .= ', '. $salesTotalPaid . ' AS "Total paid"';
                             }
 
