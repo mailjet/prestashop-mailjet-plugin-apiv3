@@ -272,7 +272,7 @@ class Mailjet extends Module
     {
         $email = $customer['email'];
         if (empty($email)) {
-           return json_encode($this->l('Invalid email format.'));
+            return json_encode($this->l('Invalid email format.'));
         }
         $api = MailjetTemplate::getApi();
         $contactData = $api->getContactData($email);
