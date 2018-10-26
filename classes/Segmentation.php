@@ -656,7 +656,7 @@ class Segmentation
                             }
                             
                             $salesTotalPaid = '
-                                avg('.$paid_field.')/cu.conversion_rate * (SELECT count(id_customer)
+                                sum('.$paid_field.')/cu.conversion_rate / (SELECT count(id_customer)
                                     FROM '._DB_PREFIX_.'address
                                     WHERE id_customer = c.id_customer
                                     GROUP BY id_customer LIMIT 1)';
