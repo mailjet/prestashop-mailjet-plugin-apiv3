@@ -57,7 +57,7 @@
         {l s='Errors list:' mod='mailjet'}
         <ul class="mj_errors">
             {foreach from=$MJ_errors item=current_error}
-                <li>{$current_error|default:''}</li>
+                <li>{$current_error|escape:'htmlall':'UTF-8'|default:''}</li>
                 {/foreach}
         </ul>
     </div>

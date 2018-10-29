@@ -656,12 +656,12 @@ class Segmentation
                             }
                             
                             $salesTotalPaid = '
-                                avg('.$paid_field.')/cu.conversion_rate * (SELECT count(id_customer)
-                                    FROM ps_address
+                                sum('.$paid_field.')/cu.conversion_rate / (SELECT count(id_customer)
+                                    FROM '._DB_PREFIX_.'address
                                     WHERE id_customer = c.id_customer
                                     GROUP BY id_customer LIMIT 1)';
 
-                            if(strpos($additional_select_column, $salesTotalPaid) === false) {
+                            if (strpos($additional_select_column, $salesTotalPaid) === false) {
                                 $additional_select_column .= ', '. $salesTotalPaid . ' AS "Total paid"';
                             }
 
@@ -669,7 +669,7 @@ class Segmentation
                             if ($maxValue2 > 0) {
                                 $having .= $operator . $salesTotalPaid . $maxAction . $maxValue2;
                             }
-
+                            $where .= $logicalOperator . 'o.current_state IN(2, 5, 9, 12) ';
                             $having .= $exclude;
                             $havings[] = $having;
                             $having = '';
