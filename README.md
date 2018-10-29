@@ -67,6 +67,10 @@ Happy emailing!
 
 
 ## Changelog
+
+= 3.4.16 =
+Fixed segmentation on Customers > Sales > Amount of sales
+
 = 3.4.15 =
 * Add compability with GDPR compliance module
 
