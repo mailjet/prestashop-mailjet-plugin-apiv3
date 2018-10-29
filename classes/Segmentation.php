@@ -669,7 +669,7 @@ class Segmentation
                             if ($maxValue2 > 0) {
                                 $having .= $operator . $salesTotalPaid . $maxAction . $maxValue2;
                             }
-
+                            $where .= $logicalOperator . 'o.current_state IN(2, 5, 9, 12) ';
                             $having .= $exclude;
                             $havings[] = $having;
                             $having = '';
