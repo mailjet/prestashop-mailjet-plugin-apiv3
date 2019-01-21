@@ -1211,7 +1211,7 @@ class Mailjet extends Module
         }
 
         $this->mj_template = new MailjetTemplate();
-        $this->page_name = $this->mj_pages->getCurrentPageName();
+        $this->page_name = $this->mj_pages === null ? 'CONNECT_STEP_0' : $this->mj_pages->getCurrentPageName();
         $this->postProcess();
 
         $this->context->smarty->assign(array('is_landing' => false));
