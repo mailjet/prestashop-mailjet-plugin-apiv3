@@ -173,11 +173,11 @@ class MailjetTemplate
 
     public function getCampaignURL($name = 'CAMPAIGN', $token = null)
     {
-        $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = urlencode($ps_shop_domain . 'modules/mailjet/callback_campaign.php');
-        
+        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+        // $cb = urlencode($ps_shop_domain . 'modules/mailjet/callback_campaign.php');
+
         // Let cb parameter in official version
-        $url = $this->mjWebsite . '/campaigns?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&f=am&locale=' . $this->locale;
+        $url = $this->mjWebsite . '/campaigns?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&f=am&locale=' . $this->locale;
         
         // Remove cb parameter while fix issue
         // $url = $this->mjWebsite . '/campaigns?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&locale=' . $this->locale;
@@ -186,11 +186,11 @@ class MailjetTemplate
 
     public function getPricingURL($name = 'PRICING', $token = null)
     {
-        $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
+        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+        // $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         if ($token) {
             $url = $this->mjWebsite .
-                '/reseller/pricing?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&locale=' .
+                '/reseller/pricing?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&locale=' .
                 $this->locale;
         } else {
             $url = $this->mjWebsite .
@@ -202,20 +202,20 @@ class MailjetTemplate
 
     public function getStatsURL($name = 'STATS', $token = null)
     {
-        $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
+        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+        // $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         $url = $this->mjWebsite .
-            '/stats?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&f=am&locale=' .
+            '/stats?t=' . $token . '&r=Prestashop-3.0&show_menu=none&f=am&locale=' .
             $this->locale;
         $this->iframes_url[$name] = $url;
     }
 
     public function getContactsURL($name = 'CONTACTS', $token = null)
     {
-        $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
+        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
+        // $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         $url = $this->mjWebsite .
-            '/contacts?t=' . $token . '&r=Prestashop-3.0&cb=' . $cb . '&show_menu=none&sp=display&f=am&locale=' .
+            '/contacts?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&f=am&locale=' .
             $this->locale;
         $this->iframes_url[$name] = $url;
     }
