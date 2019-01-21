@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.17 =
+* Remove callback parameter
+
 = 3.4.16 =
 * Fixed segmentation on Customers > Sales > Amount of sales
 

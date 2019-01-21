@@ -1,5 +1,5 @@
 {*
-* 2007-2018 PrestaShop
+* 2007-2019 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -18,7 +18,7 @@
 * needs please refer to http://www.prestashop.com for more information.
 *
 * @author    PrestaShop SA <contact@prestashop.com>
-* @copyright 2007-2018 PrestaShop SA
+* @copyright 2007-2019 PrestaShop SA
 * @license   http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 * International Registered Trademark & Property of PrestaShop SA
 *}<!-- Mailjet : Campaigns -->
@@ -30,7 +30,7 @@
             <div class="button" style="padding:10px;">
                 <div style="display:inline-block;vertical-align:middle;">
                     <label for="ctitle" class="t"><b style="color:#000;font-size:13px;">{l s='Title' mod='mailjet'}</b> <sup style="color:#900;">*</sup> : </label>
-                    <input id="ctitle" name="ctitle" type="text" style="width:400px;" /><br />
+                    <input id="ctitle" name="ctitle" type="text" style="width:400px;"/><br />
                 </div>
                 <div style="display:inline-block;vertical-align:middle;">
                     &nbsp; - &nbsp; {l s='Language' mod='mailjet'} <sup style="color:#900;">*</sup> : 
