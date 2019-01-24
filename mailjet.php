@@ -366,13 +366,13 @@ class Mailjet extends Module
         if (Tools::isSubmit('submitNewsletter')) {
             try {
                 $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
 
                 // UnSubscribe
                 if (Tools::getValue('action') == '1') {
                     // Remove customer from all lists(and segment lists)
-                    $initialSynchronization->removeFromAllLists(Tools::getValue('email'));
+                    $initialSynchronization->remove(Tools::getValue('email'), $masterListId);
                 } elseif (Tools::getValue('action') == '0') { // Subscribe - to the Mailjet master list
-                    $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
                     $initialSynchronization->subscribe(Tools::getValue('email'), $masterListId);
                 }
             } catch (Exception $e) {

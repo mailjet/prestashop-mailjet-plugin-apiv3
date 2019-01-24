@@ -46,6 +46,11 @@ class HooksEvents
         if ($customer) {
             $customer->newsletter = 0;
             $customer->update();
+        } else { // Newsletter subsciber
+            $sql = 'DELETE FROM '._DB_PREFIX_.'emailsubscription WHERE `email` = \''.pSQL($event['email']).'\'';
+            if (!isset($sql) || !Db::getInstance()->execute($sql)) {
+                return false;
+            }
         }
     }
 }
