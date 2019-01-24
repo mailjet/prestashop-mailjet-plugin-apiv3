@@ -359,7 +359,28 @@ class Mailjet extends Module
             Db::getInstance()->execute('REPLACE INTO `' . _DB_PREFIX_ . 'mj_roi_cart`(id_cart, token_presta)
 			    VALUES(' . $this->context->cart->id . ', \'' . pSQL(Tools::getValue('tokp')) . '\')');
         }
+
+        /*
+         * RM: 29680 - add prestashop newsletter sunscribers to Mailjet master contact list
+         */
+        if (Tools::isSubmit('submitNewsletter')) {
+            try {
+                $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+
+                // UnSubscribe
+                if (Tools::getValue('action') == '1') {
+                    // Remove customer from all lists(and segment lists)
+                    $initialSynchronization->removeFromAllLists(Tools::getValue('email'));
+                } elseif (Tools::getValue('action') == '0') { // Subscribe - to the Mailjet master list
+                    $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                    $initialSynchronization->subscribe(Tools::getValue('email'), $masterListId);
+                }
+            } catch (Exception $e) {
+                $this->errors_list[] = $this->l($e->getMessage());
+            }
+        }
     }
+
 
     public function hookNewOrder($params)
     {
