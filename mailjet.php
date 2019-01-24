@@ -411,6 +411,25 @@ class Mailjet extends Module
 
     public function hookBackOfficeHeader()
     {
+        // Process subscribers changed by Admin through the BackOffice
+        if (Tools::isSubmit('subscribedmerged') && $this->isAccountSet()) {
+            $id = Tools::getValue('id');
+            if (preg_match('/(^N)/', $id)) {
+                $id = (int) substr($id, 1);
+                $sql = 'SELECT `email`
+                FROM '._DB_PREFIX_.'emailsubscription
+                WHERE `id` = \''.pSQL($id).'\'';
+                if ($subscriber = Db::getInstance()->getRow($sql)) {
+                    if (!empty($subscriber['email'])) {
+                        $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                        $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                        $initialSynchronization->remove($subscriber['email'], $masterListId);
+                    }
+                }
+            }
+        } // End Subscribers processing
+
+
         $controller = Tools::getValue('tab');
         if (empty($controller)) {
             $controller = Tools::getValue('controller');
