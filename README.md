@@ -68,6 +68,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.18 =
+* Synchronize Prestashop newsletter subscribers to Mailjet contact list and vice versa
+
 = 3.4.17 =
 * Remove callback parameter
 
