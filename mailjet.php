@@ -125,7 +125,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.4.17';
+        $this->version = '3.4.18';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -359,7 +359,28 @@ class Mailjet extends Module
             Db::getInstance()->execute('REPLACE INTO `' . _DB_PREFIX_ . 'mj_roi_cart`(id_cart, token_presta)
 			    VALUES(' . $this->context->cart->id . ', \'' . pSQL(Tools::getValue('tokp')) . '\')');
         }
+
+        /*
+         * RM: 29680 - add prestashop newsletter sunscribers to Mailjet master contact list
+         */
+        if (Tools::isSubmit('submitNewsletter')) {
+            try {
+                $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+
+                // UnSubscribe
+                if (Tools::getValue('action') == '1') {
+                    // Remove customer from all lists(and segment lists)
+                    $initialSynchronization->remove(Tools::getValue('email'), $masterListId);
+                } elseif (Tools::getValue('action') == '0') { // Subscribe - to the Mailjet master list
+                    $initialSynchronization->subscribe(Tools::getValue('email'), $masterListId);
+                }
+            } catch (Exception $e) {
+                $this->errors_list[] = $this->l($e->getMessage());
+            }
+        }
     }
+
 
     public function hookNewOrder($params)
     {
@@ -390,6 +411,27 @@ class Mailjet extends Module
 
     public function hookBackOfficeHeader()
     {
+        // Process subscribers changed by Admin through the BackOffice
+        if (Tools::isSubmit('subscribedmerged') && $this->isAccountSet()) {
+            $id = Tools::getValue('id');
+            if (preg_match('/(^N)/', $id)) {
+                $id = (int) substr($id, 1);
+                if (version_compare(_PS_VERSION_, '1.7', '<')) {
+                    $sql = 'SELECT `email` FROM '._DB_PREFIX_.'newsletter WHERE `id` = \''.pSQL($id).'\'';
+                } else {
+                    $sql = 'SELECT `email` FROM '._DB_PREFIX_.'emailsubscription WHERE `id` = \''.pSQL($id).'\'';
+                }
+                if ($subscriber = Db::getInstance()->getRow($sql)) {
+                    if (!empty($subscriber['email'])) {
+                        $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                        $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                        $initialSynchronization->remove($subscriber['email'], $masterListId);
+                    }
+                }
+            }
+        } // End Subscribers processing
+
+
         $controller = Tools::getValue('tab');
         if (empty($controller)) {
             $controller = Tools::getValue('controller');
