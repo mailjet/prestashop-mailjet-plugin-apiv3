@@ -415,7 +415,7 @@ class Mailjet extends Module
         if (Tools::isSubmit('subscribedmerged') && $this->isAccountSet()) {
             $id = Tools::getValue('id');
             if (preg_match('/(^N)/', $id)) {
-                $id = (int) substr($id, 1);
+                $id = (int) Tools::substr($id, 1);
                 if (version_compare(_PS_VERSION_, '1.7', '<')) {
                     $sql = 'SELECT `email` FROM '._DB_PREFIX_.'newsletter WHERE `id` = \''.pSQL($id).'\'';
                 } else {
