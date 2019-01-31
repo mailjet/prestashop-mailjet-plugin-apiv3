@@ -180,6 +180,10 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
      */
     private function getActiveSubscribers($start = 0, $limit = self::CHUNK_SIZE)
     {
+        // For older than PS 1.7 versions
+        if (version_compare(_PS_VERSION_, '1.7', '<')) {
+            return $this->getDbInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'newsletter WHERE active = 1 LIMIT ' . $start . ', ' . $limit);
+        }
         return $this->getDbInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'emailsubscription WHERE active = 1 LIMIT ' . $start . ', ' . $limit);
     }
 }

@@ -416,7 +416,11 @@ class Mailjet extends Module
             $id = Tools::getValue('id');
             if (preg_match('/(^N)/', $id)) {
                 $id = (int) substr($id, 1);
-                $sql = 'SELECT `email` FROM '._DB_PREFIX_.'emailsubscription WHERE `id` = \''.pSQL($id).'\'';
+                if (version_compare(_PS_VERSION_, '1.7', '<')) {
+                    $sql = 'SELECT `email` FROM '._DB_PREFIX_.'newsletter WHERE `id` = \''.pSQL($id).'\'';
+                } else {
+                    $sql = 'SELECT `email` FROM '._DB_PREFIX_.'emailsubscription WHERE `id` = \''.pSQL($id).'\'';
+                }
                 if ($subscriber = Db::getInstance()->getRow($sql)) {
                     if (!empty($subscriber['email'])) {
                         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
