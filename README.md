@@ -9,7 +9,8 @@ Boost your ROI and increase your merchant revenue with the Mailjet v3 all-in-one
 ## Plug-in Key Info
 
 * Plug-in languages: English, French, German, Spanish 
-* PrestaShop Compatibility: PrestaShop v1.4.10 - v1.7.5
+* PrestaShop Compatibility: PrestaShop v1.5.0 - v1.7.5
+* PHP Compatibility: requires PHP 5.5 or newer
 * Mailjet Compatibility: Mailjet v3 account
 * Support: https://app.mailjet.com/support/ticket
 * Requires Mailjet free or paid account
@@ -18,7 +19,7 @@ Boost your ROI and increase your merchant revenue with the Mailjet v3 all-in-one
 
 With Mailjet, optimise your deliverability, get your emails delivered to the inbox and avoid the spam folder. Install the official Mailjet PrestaShop add-on and get access to:
  
-* ROI Stats: Real-time sales and net revenue figures per marketing newsletter. Find out who opened, clicked, bounced or unsubscribed from your mailings, create graphs, export data and much more
+* Campaign Stats - Find out who opened, clicked, bounced or unsubscribed from your mailings, create graphs, export data and much more
  
 * Setup triggered email events based on customer behavior (birthday promo, abandoned cart, survey request, …)
  
@@ -40,20 +41,16 @@ With Mailjet, optimise your deliverability, get your emails delivered to the inb
  
 * 24/7 customer support is available in English, French, German and Spanish
 
-Is your shop using version 1.5? This module is already pre-installed and ready to use! To activate it, go to the "Modules" tab in your back office and click "Install".
-
-To connect your Mailjet account, sign up or sign into your account and copy/paste your API and Secret Keys over into the add-on. 
+To connect your Mailjet account, [sign up](https://app.mailjet.com/signup?aff=prestashop-3.0) or [sign in](https://app.mailjet.com/account/api_keys) to your account and copy/paste your API and Secret Keys over into the add-on. 
 
 ## Customer Benefits
 
 Your customers will benefit by receiving personalized and pertinent emails delivered straight into their inbox increasing engagement and repeat buying. 
 
 ## Installation:
-1. Download the zip.
-2. Unzip the archive and rename the folder to "mailjet".
-3. Then zip again the folder.
-4. Upload the zip in your Prestashop installation.
-5. Connect your Mailjet Account. 
+1. Download the mailjet.zip file from the [latest release](https://github.com/mailjet/prestashop-mailjet-plugin-apiv3/releases).
+2. Upload the zip in your Prestashop installation.
+3. Connect your Mailjet Account. 
 
 If you are not yet a Mailjet user, please click [Register](https://app.mailjet.com/signup?aff=prestashop-3.0) to create a new account. 
 To view the different pricing plans, please click the 'Pricing' button.
