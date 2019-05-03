@@ -156,7 +156,7 @@
     </fieldset>
 
     <br />
-    <a href="https://www.mailjet.com/account" class="paramsbutton button" target="_blank">{l s='Advanced parameters' mod='mailjet'}</a>
+    <a href="https://app.mailjet.com/account" class="paramsbutton button" target="_blank">{l s='Advanced parameters' mod='mailjet'}</a>
 
 </div>
 </div>
