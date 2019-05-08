@@ -145,7 +145,7 @@ class Mailjet extends Module
 
             $this->initTriggers();
         }
-
+        $this->mj_pages = $this->getMjPages($this->account->AUTHENTICATION);
         $this->initContext();
     }
 
@@ -442,9 +442,6 @@ class Mailjet extends Module
         } elseif (Tools::getValue('configure') != $this->name) {
             return '';
         }
-
-        // Need to set some js value
-        $this->mj_pages = new MailJetPages($this->account->AUTHENTICATION);
 
         $smarty_page = array();
         $nobug = array();
@@ -1253,7 +1250,7 @@ class Mailjet extends Module
         }
 
         $this->mj_template = new MailjetTemplate();
-        $this->page_name = $this->mj_pages === null ? 'CONNECT_STEP_0' : $this->mj_pages->getCurrentPageName();
+        $this->page_name = $this->mj_pages->getCurrentPageName();
         $this->postProcess();
 
         $this->context->smarty->assign(array('is_landing' => false));
@@ -2052,5 +2049,14 @@ class Mailjet extends Module
     public function getEventsHash()
     {
         return md5($this->account->TOKEN);
+    }
+
+    /**
+     * @param $authenticationStatus
+     * @return MailJetPages
+     */
+    private function getMjPages($authenticationStatus)
+    {
+        return new MailJetPages($authenticationStatus);
     }
 }
