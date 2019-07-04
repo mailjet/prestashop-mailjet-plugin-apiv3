@@ -1766,7 +1766,7 @@ class Mailjet extends Module
 
             return true;
         } else {
-            <?php $this->errors_list[] = $this->l('Please verify that you have entered your API and secret key correctly.') . '<a href="https://app.mailjet.com/support/why-is-my-prestashop-integration-not-working,803.htm" target="_blank" style="text-decoration:underline;">' . $this->l('Click here ') .'</a>' . $this->l(' for more information.');
+            $this->errors_list[] = $this->l('Please verify that you have entered your API and secret key correctly.') . '<a href="https://app.mailjet.com/support/why-is-my-prestashop-integration-not-working,803.htm" target="_blank" style="text-decoration:underline;">' . $this->l('Click here ') .'</a>' . $this->l(' for more information.');
         }
 
         return false;
