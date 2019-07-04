@@ -113,8 +113,6 @@ class mailjetdata
      * @access	private
      * @var		string $_api_url
      */
-    //private $_api_url = 'ks381064.kimsufi.com/apitest4/';
-    //private $_api_url = 'betapi.mailjet.com/fastapitest/';
     private $_api_url = 'api.mailjet.com/v3/';
 
     /**
