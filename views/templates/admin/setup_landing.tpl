@@ -45,7 +45,7 @@
            id="setup_landing_bt_connect" class="default_button_style">
             {l s='Connect' mod='mailjet'}
         </a>
-        <a target="_blank" href="http://{$lang|escape:'htmlall':'UTF-8'}.mailjet.com/pricing_v3 " id="setup_landing_bt_pricing" class="default_button_style">
+        <a target="_blank" href="http://{$lang|escape:'htmlall':'UTF-8'}.mailjet.com/pricing " id="setup_landing_bt_pricing" class="default_button_style">
             {l s='Pricing' mod='mailjet'}
         </a>
         <br clear="left"/>

@@ -3111,7 +3111,6 @@ class Mailjet_ApiOverlay
     */
     function addDetailedContactToList($contact, $listID)
     {
-        //$this->sendEmailWithAttachments('fismailov@mailjet.com','fismailov@mailjet.com','inside the addDetailedContactToList',print_r($contact, 1) . ' - ' . $listID);
         $obj = new Mailjet();
         $this->_apiPHPWrapper = new MailjetPHPWrapper($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
 

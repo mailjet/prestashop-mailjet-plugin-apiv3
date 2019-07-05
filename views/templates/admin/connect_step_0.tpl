@@ -27,7 +27,7 @@
         <fieldset>
             <legend>{l s='Your Mailjet login information' mod='mailjet'}</legend>
             <div>
-                <p>{l s='Please enter below your Mailjet login information.' mod='mailjet'} (<a href="https://eu.mailjet.com/account/api_keys" target="_blank"><u>{l s='Mailjet account' mod='mailjet'}</u></a>)</p>
+                <p>{l s='Please enter below your Mailjet login information.' mod='mailjet'} (<a href="https://app.mailjet.com/account/api_keys" target="_blank"><u>{l s='Mailjet account' mod='mailjet'}</u></a>)</p>
                 <p><label>Api Key :</label><input type="text" id="mj_api_key" name="mj_api_key" value="{$account->API_KEY|escape:'htmlall':'UTF-8'|default:''}" size="60" /></p>
                 <p><label>Secret Key :</label><input type="text" id="mj_secret_key" name="mj_secret_key" value="{$account->SECRET_KEY|escape:'htmlall':'UTF-8'|default:''}" size="60" /></p>
                 <div style="width: 45%;margin: 0 auto;">
