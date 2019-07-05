@@ -1766,11 +1766,7 @@ class Mailjet extends Module
 
             return true;
         } else {
-            $this->errors_list[] = $this->l('Please verify that you have entered your API and secret key correctly. ' .
-                'Please note this plug-in is compatible for Mailjet v3 accounts only.') .
-                '<a href="https://app.mailjet.com/support/why-do-i-get-an-api-error-when-trying-to-activate-a-mailjet'
-                . '-plug-in,497.htm" target="_blank" style="text-decoration:underline;">' .
-                $this->l('Click here ') .'</a>' . $this->l(' to check the version of your Mailjet account');
+            $this->errors_list[] = $this->l('Please verify that you have entered your API and secret key correctly.');
         }
 
         return false;
