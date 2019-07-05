@@ -1,22 +1,19 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array(); 
+$_MODULE = array();
 $_MODULE['<{mailjet}prestashop>ajax_210056c8a36e035de0a336f7fa055f27'] = 'Erreur de token';
 $_MODULE['<{mailjet}prestashop>ajax_21a5d428ea929b1e12aa8ea0c57feede'] = 'La méthode appelée n\'existe pas';
+$_MODULE['<{mailjet}prestashop>mailjet_d7d99ae24378402eeef70275a0434ba9'] = 'Créez des listes de contacts et des segments clients. Réalisez des newsletters avec un éditeur d\'emails intuitif. Déterminez ce qui déclenche l\'engagement des clients. Suivez et analysez toutes les interactions des utilisateurs. Réduisez les événements ayant un impact négatif sur l\'engagement des utilisateurs (emails bloqués, désinscriptions et spams) et optimisez la délivrabilité et votre chiffre d\'affaires. Démarrez immédiatement avec 6 000 emails gratuits par mois.';
 $_MODULE['<{mailjet}prestashop>mailjet_ff01de9408b9c15ff689f4e32fc19f99'] = 'Mailjet';
 $_MODULE['<{mailjet}prestashop>mailjet_f1206f9fadc5ce41694f69129aecac26'] = 'Configure';
-$_MODULE['<{mailjet}prestashop>mailjet_d7d99ae24378402eeef70275a0434ba9'] = 'Créez des listes de contacts et des segments clients. Réalisez des newsletters avec un éditeur d\'emails intuitif. Déterminez ce qui déclenche l\'engagement des clients. Suivez et analysez toutes les interactions des utilisateurs. Réduisez les événements ayant un impact négatif sur l\'engagement des utilisateurs (emails bloqués, désinscriptions et spams) et optimisez la délivrabilité et votre chiffre d\'affaires. Démarrez immédiatement avec 6 000 emails gratuits par mois.';
+$_MODULE['<{mailjet}prestashop>mailjet_5a5e1e87a8eaa7a31d48ee128302f2bc'] = 'Format d\'email invalide.';
+$_MODULE['<{mailjet}prestashop>mailjet_42a7b2626eae970122e01f65af2f5092'] = 'Pas de données';
 $_MODULE['<{mailjet}prestashop>mailjet_b78a3223503896721cca1303f776159b'] = 'Titre';
 $_MODULE['<{mailjet}prestashop>mailjet_bd09d588f425900508bcd88c0ab77723'] = 'E-mails envoyés';
 $_MODULE['<{mailjet}prestashop>mailjet_e286eeea0c35d94c404ab575a099515d'] = 'Montant R.O.I.';
 $_MODULE['<{mailjet}prestashop>mailjet_bbf4b60efdbdbf99e6abf1b9cc0ac2e7'] = 'ROI Percent';
 $_MODULE['<{mailjet}prestashop>mailjet_b69f4744968e0b625afb593e5eb62691'] = 'Number of sales';
-$_MODULE['<{mailjet}prestashop>mailjet_aa7643b4f268e1c47c2d6bf481fd2f3c'] = 'Veuillez cliquer ici ';
-$_MODULE['<{mailjet}prestashop>mailjet_920496a2c797782808eaed89c12a3cfc'] = 'pour plus d\'information.';
-$_MODULE['<{mailjet}prestashop>segmentation_9ac6f3bf4dbe4578dd99940ce11d3bd9'] = 'Ce module vous permet de créer des segments de clients selon les critères de votre choix. Vous pouvez afficher et exporter les clients sélectionnés ou les associer à un groupe de clients existant.';
-$_MODULE['<{mailjet}prestashop>segmentation_a94acd346380f8b57e4ea4fd800af9ed'] = 'Ces segments sont particulièrement utiles pour créer des offres spéciales associées à votre groupe de clients (exemple : envoyer un bon aux clients intéressés par certains produits).';
-$_MODULE['<{mailjet}prestashop>segmentation_16940b597104b6ffbc8dc17b12b72f49'] = 'Vous pouvez créer un nombre illimité de filtres pour répondre à tous vos besoins !';
 $_MODULE['<{mailjet}prestashop>segmentation_df69ac6036724472d31a92ae086c6c82'] = 'Module de Segmentation';
 $_MODULE['<{mailjet}prestashop>segmentation_38ed268efb9daba177b5cbbf14d1e04d'] = 'Module pour la Segmentation client';
 $_MODULE['<{mailjet}prestashop>segmentation_e6d0e1c8fc6a4fcf47869df87e04cd88'] = 'Clients';
@@ -126,6 +123,7 @@ $_MODULE['<{mailjet}prestashop>segmentation_d02bbc3cb147c272b0445ac5ca7d1a36'] =
 $_MODULE['<{mailjet}prestashop>segmentation_6d953361b8eabc1c4a06d274a76fc92d'] = 'Nombre de commandes';
 $_MODULE['<{mailjet}prestashop>segmentation_068f80c7519d0528fb08e82137a72131'] = 'Produits';
 $_MODULE['<{mailjet}prestashop>segmentation_9f82518d468b9fee614fcc92f76bb163'] = 'Boutique';
+$_MODULE['<{mailjet}prestashop>segmentation_6e3045c566a31fdd26481264ac482911'] = 'Le format de la date doit être aaaa-mm-jj';
 $_MODULE['<{mailjet}prestashop>account_8498b8860bd112fc39b7b62a574817c0'] = 'Mes informations';
 $_MODULE['<{mailjet}prestashop>account_b9987a246a537f4fe86f1f2e3d10dbdb'] = 'Affichage';
 $_MODULE['<{mailjet}prestashop>account_7f090bbab1cc7f9c08bf4e54d932d3c0'] = 'Modifier';
@@ -195,7 +193,7 @@ $_MODULE['<{mailjet}prestashop>configuration_9a989b749ed8bf65d641132a4b060d2d'] 
 $_MODULE['<{mailjet}prestashop>connect_step_0_71d284a580c79e103da584922b49ff4d'] = 'Vos informations de connexion à Mailjet';
 $_MODULE['<{mailjet}prestashop>connect_step_0_0c39aa058ec1fb88c4c4a1aacc96fb3c'] = 'Veuillez saisir ci-dessous vos informations de connexion à Mailjet';
 $_MODULE['<{mailjet}prestashop>connect_step_0_a7c87ac45effd6bfbdafef12374c489b'] = 'Compte Mailjet';
-$_MODULE['<{mailjet}prestashop>connect_step_0_f093bd053358d2e4ae3460a76a1425db'] = 'En cliquant sur le bouton "Enregistrer & Se connecter", vous lancerez une procédure de synchronisation de nouveau client, qui pourra prendre plusieurs minutes selon la taille de votre base de données clients. Merci pour votre patience.';
+$_MODULE['<{mailjet}prestashop>connect_step_0_f093bd053358d2e4ae3460a76a1425db'] = 'En cliquant sur le bouton \"Enregistrer & Se connecter\", vous lancerez une procédure de synchronisation de nouveau client, qui pourra prendre plusieurs minutes selon la taille de votre base de données clients. Merci pour votre patience.';
 $_MODULE['<{mailjet}prestashop>connect_step_0_4aabbc3d7b7dbef68508d5e6a2247a74'] = 'Enregistrer et se connecter';
 $_MODULE['<{mailjet}prestashop>connect_step_0_6110e3692a789bcff0870b04b13a06bb'] = 'Retour à l\'accueil';
 $_MODULE['<{mailjet}prestashop>events_ff4e350e168073bf804c419f3801cb91'] = 'Les éléments ont été correctement enregistrés';
@@ -243,6 +241,9 @@ $_MODULE['<{mailjet}prestashop>segmentation_c33315685a0cba3ce53be378b3c7874b'] =
 $_MODULE['<{mailjet}prestashop>segmentation_3a2d5fe857d8f9541136a124c2edec6c'] = 'OU';
 $_MODULE['<{mailjet}prestashop>segmentation_f4d72a64acd8929c0cc9ed96a7a336cc'] = 'Inclure';
 $_MODULE['<{mailjet}prestashop>segmentation_843f2812f595e7ec7c5036e89fde02d6'] = 'Exclure';
+$_MODULE['<{mailjet}prestashop>segmentation_9ac6f3bf4dbe4578dd99940ce11d3bd9'] = 'Ce module vous permet de créer des segments de clients selon les critères de votre choix. Vous pouvez afficher et exporter les clients sélectionnés ou les associer à un groupe de clients existant.';
+$_MODULE['<{mailjet}prestashop>segmentation_a94acd346380f8b57e4ea4fd800af9ed'] = 'Ces segments sont particulièrement utiles pour créer des offres spéciales associées à votre groupe de clients (exemple : envoyer un bon aux clients intéressés par certains produits).';
+$_MODULE['<{mailjet}prestashop>segmentation_16940b597104b6ffbc8dc17b12b72f49'] = 'Vous pouvez créer un nombre illimité de filtres pour répondre à tous vos besoins !';
 $_MODULE['<{mailjet}prestashop>segmentation_fedc257ff74eb931d3495f5514dd2271'] = 'Aucun Segment pour le moment';
 $_MODULE['<{mailjet}prestashop>segmentation_b718adec73e04ce3ec720dd11a06a308'] = 'ID';
 $_MODULE['<{mailjet}prestashop>segmentation_49ee3087348e8d44e1feda1917443987'] = 'Nom';
