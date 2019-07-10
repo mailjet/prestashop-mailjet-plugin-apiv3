@@ -65,6 +65,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.19 =
+* Fixed error with some store themes
+
 = 3.4.18 =
 * Synchronize Prestashop newsletter subscribers to Mailjet contact list and vice versa
 
