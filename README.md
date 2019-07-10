@@ -67,7 +67,7 @@ Happy emailing!
 
 = 3.4.19 =
 * Fixed link to Mailjet account in the plugin Admin page
-* Fixed fatal error occuring in some scenarios
+* Fixed fatal error occurring in some scenarios
 
 = 3.4.18 =
 * Synchronize Prestashop newsletter subscribers to Mailjet contact list and vice versa
