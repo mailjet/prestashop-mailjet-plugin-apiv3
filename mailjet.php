@@ -1766,7 +1766,7 @@ class Mailjet extends Module
 
             return true;
         } else {
-            $this->errors_list[] = $this->l('Please verify that you have entered your API and secret key correctly.');
+            $this->errors_list[] = $this->l('Please verify that you have entered correct API and secret key.');
         }
 
         return false;
