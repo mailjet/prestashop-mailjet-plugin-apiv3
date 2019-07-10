@@ -125,7 +125,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.4.18';
+        $this->version = '3.4.19';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -145,7 +145,7 @@ class Mailjet extends Module
 
             $this->initTriggers();
         }
-
+        $this->mj_pages = $this->getMjPages($this->account->AUTHENTICATION);
         $this->initContext();
     }
 
@@ -442,9 +442,6 @@ class Mailjet extends Module
         } elseif (Tools::getValue('configure') != $this->name) {
             return '';
         }
-
-        // Need to set some js value
-        $this->mj_pages = new MailJetPages($this->account->AUTHENTICATION);
 
         $smarty_page = array();
         $nobug = array();
@@ -1253,7 +1250,7 @@ class Mailjet extends Module
         }
 
         $this->mj_template = new MailjetTemplate();
-        $this->page_name = $this->mj_pages === null ? 'CONNECT_STEP_0' : $this->mj_pages->getCurrentPageName();
+        $this->page_name = $this->mj_pages->getCurrentPageName();
         $this->postProcess();
 
         $this->context->smarty->assign(array('is_landing' => false));
@@ -1769,11 +1766,7 @@ class Mailjet extends Module
 
             return true;
         } else {
-            $this->errors_list[] = $this->l('Please verify that you have entered your API and secret key correctly. ' .
-                'Please note this plug-in is compatible for Mailjet v3 accounts only.') .
-                '<a href="https://app.mailjet.com/support/why-do-i-get-an-api-error-when-trying-to-activate-a-mailjet'
-                . '-plug-in,497.htm" target="_blank" style="text-decoration:underline;">' .
-                $this->l('Click here ') .'</a>' . $this->l(' to check the version of your Mailjet account');
+            $this->errors_list[] = $this->l('Please verify that you have entered correct API and secret key.');
         }
 
         return false;
@@ -2052,5 +2045,14 @@ class Mailjet extends Module
     public function getEventsHash()
     {
         return md5($this->account->TOKEN);
+    }
+
+    /**
+     * @param $authenticationStatus
+     * @return MailJetPages
+     */
+    private function getMjPages($authenticationStatus)
+    {
+        return new MailJetPages($authenticationStatus);
     }
 }
