@@ -1,4 +1,4 @@
- <?php
+<?php
 
 global $_MODULE;
 $_MODULE = array();
@@ -217,7 +217,7 @@ $_MODULE['<{mailjet}prestashop>home_418540ce66deb7f8f1aa6a6261c70a58'] = 'Super!
 $_MODULE['<{mailjet}prestashop>home_f74b27e1b34abf42d8eb9e455e59b291'] = 'Das ist traurig. Das bedeutet das Ihre transaktionalen und ausgelösten E-Mails nicht von Mailjets tollen Lieferfähigkeit profitieren, aber keine Sorge. Sie können immernoch unser Kampagnentool für Newsletter benutzen.';
 $_MODULE['<{mailjet}prestashop>home_e14c24e0ebd1a8e467c60fa3df633cce'] = 'Was Sie mit dem Modul machen können';
 $_MODULE['<{mailjet}prestashop>home_4a2b3cd1dcfc8f6b662530c344c1b6c0'] = 'Segmentieren';
-$_MODULE['<{mailjet}prestashop>home_f1ce7753417d7c069dfe76a8d9c27f75'] = 'Mit der Hilfe von vordefinierten E-Commerce-Filter und  Kriterien, können Sie verschiedene zielgerichtete Kundensegmente erstellen und Ihnen E-Mails senden.';
+$_MODULE['<{mailjet}prestashop>home_f1ce7753417d7c069dfe76a8d9c27f75'] = 'Mit der Hilfe von vordefinierten E-Commerce-Filter und Kriterien, können Sie verschiedene zielgerichtete Kundensegmente erstellen und Ihnen E-Mails senden.';
 $_MODULE['<{mailjet}prestashop>home_504894b22ecc743eb94d05d5c70e4f80'] = 'Kampagnen';
 $_MODULE['<{mailjet}prestashop>home_70edc12496b64b95c8b855a067fbb84e'] = 'Erstellen und senden Sie Marketing-Newsletter Ihren Kunden über Drag&Drop HTML Designer. Eine Galerie von vordefinierten Vorlagen ist in Klickweite.';
 $_MODULE['<{mailjet}prestashop>home_e2c25128f65b77815f745d83b56c7a31'] = 'Transaktionale E-Mails';
@@ -234,7 +234,7 @@ $_MODULE['<{mailjet}prestashop>home_d95cf4ab2cbf1dfb63f066b50558b07d'] = 'Mein B
 $_MODULE['<{mailjet}prestashop>home_bd7ef9768f94fc0d981d7e84b7d6ec1b'] = 'Dieses Menü erlaubt Ihnen Ihre Einstellungen zu ändern um die Lieferfähigkeit zu optimieren. Sie finden hier auch Ihr Profil und Rechnungsdetails.';
 $_MODULE['<{mailjet}prestashop>home_f683581d3e75f05f9d9215f9b4696cef'] = 'Upgrade';
 $_MODULE['<{mailjet}prestashop>home_12e980ee9c066b5510bcaafeb0eda641'] = 'Klicken Sie hier um das zurzeit benutzte Programm zu ändern/verbessern.';
-$_MODULE['<{mailjet}prestashop>iframes_3802415601d99d5472785ab93963cb2c'] = 'Unfortunately your current bronze account is not compatible with the Mailjet PrestaShop module. To benefit from the advanced features for this module, such as ROI statistics and triggered emailing, please  upgrade to a Bronze +.  To help you get started, here is a code for -25 percent off for three months any plan:  [CODE]';
+$_MODULE['<{mailjet}prestashop>iframes_3802415601d99d5472785ab93963cb2c'] = 'Unfortunately your current bronze account is not compatible with the Mailjet PrestaShop module. To benefit from the advanced features for this module, such as ROI statistics and triggered emailing, please upgrade to a Bronze +. To help you get started, here is a code for -25 percent off for three months any plan: [CODE]';
 $_MODULE['<{mailjet}prestashop>login_92ca08bc4190065c9f7472582025573d'] = 'Sie haben schon ein Mailjet Benutzerkonto';
 $_MODULE['<{mailjet}prestashop>login_b357b524e740bc85b9790a0712d84a30'] = 'E-Mail-Adresse';
 $_MODULE['<{mailjet}prestashop>login_dc647eb65e6711e155375218212b3964'] = 'Password';
