@@ -65,6 +65,9 @@ Happy emailing!
 
 ## Changelog
 
+= 3.4.20 =
+* Fixes in German translation
+
 = 3.4.19 =
 * Fixed link to Mailjet account in the plugin Admin page
 * Fixed fatal error occurring in some scenarios
