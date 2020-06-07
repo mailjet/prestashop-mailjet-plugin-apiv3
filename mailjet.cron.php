@@ -134,7 +134,7 @@ if ($mailjet->triggers['active']) {
 		SELECT cp.id_cart 
 		FROM `' . _DB_PREFIX_ . 'cart_product` `cp` 
 		WHERE id_cart=`cp`.id_cart 
-		GROUP BY `cp`.id_cart HAVING COUNT(`cp`.id_cart) >0
+		
 		LIMIT 1
 	)	
             AND `ca_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL ' .
