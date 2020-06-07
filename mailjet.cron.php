@@ -130,6 +130,13 @@ if ($mailjet->triggers['active']) {
         WHERE	`tr`.id_trigger IS NULL
             AND `ca`.id_shop = ' . $id_shop . '
             AND `or`.id_order IS NULL
+		AND exists(
+		SELECT cp.id_cart 
+		FROM `' . _DB_PREFIX_ . 'cart_product` `cp` 
+		WHERE id_cart=`cp`.id_cart 
+		GROUP BY `cp`.id_cart HAVING COUNT(`cp`.id_cart) >0
+		LIMIT 1
+	)	
             AND `ca_ldu`.last_date_upd < DATE_SUB(NOW(), INTERVAL ' .
             $trigger[1]['period'] . ' ' . $period_type[$trigger[1]['periodType']] . ')
         ';
