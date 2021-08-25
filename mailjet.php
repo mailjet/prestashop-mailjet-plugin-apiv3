@@ -1390,11 +1390,14 @@ class Mailjet extends Module
             'MJ_errors' => $this->errors_list,
             'MJ_page_name' => $this->page_name,
             'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
+            'MJ_local_path' => $this->module_access['dir'],
             'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
             'MJ_authentication' => $this->isAccountSet(),
             'MJ_TOKEN_USER' => isset($this->account->{'TOKEN_' . $this->context->employee->id}) ?
                 $this->account->{'TOKEN_' . $this->context->employee->id} : null,
             'MJ_user_plan' => $this->getPlan(),
+            'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
+            'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE
         ));
 
         return $this->fetchTemplate('/views/templates/admin/', 'configuration');
