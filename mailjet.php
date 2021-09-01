@@ -1206,6 +1206,7 @@ class Mailjet extends Module
     {
         Configuration::updateValue('PS_MAIL_METHOD', self::DEFAULT_MAIL_OPTION);
     }
+    
     public function activateAllEmailMailjet()
     {
         Configuration::updateValue('PS_MAIL_SERVER', $this->mj_mail_server);
