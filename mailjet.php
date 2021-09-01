@@ -341,7 +341,6 @@ class Mailjet extends Module
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
         Configuration::deleteByName('MJ_ALLEMAILS');
-        Configuration::updateValue('MJ_ALLEMAILS', 1);
         $this->configToDefault();
         unset($this->account);
         unset($this->triggers);
