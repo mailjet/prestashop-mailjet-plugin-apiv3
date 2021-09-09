@@ -360,6 +360,15 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
+     * @return array
+     */
+    public function getAllLists()
+    {
+        return $this->getApiOverlay()->getContactsLists();
+    }
+
+    /**
+     *
      * @param string $filterId
      * @param string $fiterName
      * @return number

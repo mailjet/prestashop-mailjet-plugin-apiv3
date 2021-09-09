@@ -264,6 +264,9 @@ class Mailjet extends Module
             && $this->registerHook('registerGDPRConsent')
             && $this->registerHook('updateOrderStatus')
             && $this->registerHook('updateQuantity')
+            && $this->registerHook('actionNewsletterRegistrationAfter')
+            && $this->registerHook('actionNewsletterRegistrationBefore')
+            && $this->registerHook('actionControllerInitBefore')
         );
     }
 
@@ -409,8 +412,36 @@ class Mailjet extends Module
         }
     }
 
+    public function hookActionControllerInitBefore()
+    {
+        if (Tools::isSubmit('subscribedmerged') && $this->isAccountSet()) {
+            $id = Tools::getValue('id');
+            if (preg_match('/(^N)/', $id)) {
+                $id = (int) Tools::substr($id, 1);
+                if (version_compare(_PS_VERSION_, '1.7', '<')) {
+                    $sql = 'SELECT `email` FROM '._DB_PREFIX_.'newsletter WHERE `id` = \''. pSQL($id).'\'';
+                } else {
+                    $sql = 'SELECT `email` FROM '._DB_PREFIX_.'emailsubscription WHERE `id` = \''. pSQL($id).'\'';
+                }
+                if ($subscriber = Db::getInstance()->getRow($sql)) {
+                    if (!empty($subscriber['email'])) {
+                        $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                        $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                        $initialSynchronization->unsubscribe($subscriber['email'], $masterListId);
+                    }
+                }
+            }
+        }
+
+    }
+
     public function hookBackOfficeHeader()
     {
+        if (Tools::getIsset('sync_list')) {
+            $sync = new HooksSynchronizationInitial(MailjetTemplate::getApi());
+            $listId = $sync->getAlreadyCreatedMasterListId();
+            $sync->synchronizeSubscribers($listId);
+        }
         // Process subscribers changed by Admin through the BackOffice
         if (Tools::isSubmit('subscribedmerged') && $this->isAccountSet()) {
             $id = Tools::getValue('id');
@@ -630,17 +661,12 @@ class Mailjet extends Module
     {
         $customer = $params['object'];
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-
         try {
             $this->checkAutoAssignment($customer->id);
-            if ($customer->active == 0) {
+            if ($customer->deleted == 1) {
                 $initialSynchronization->removeFromAllLists($customer->email);
-            } elseif ($customer->active == 1 && $customer->newsletter == 0) {
+            } elseif ($customer->newsletter == 0) {
                 $initialSynchronization->unsubscribe($customer->email);
-
-                // Remove a customer from the MasterList When he unsubscribe via profil
-                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                $initialSynchronization->remove($customer->email, $masterListId);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
             }
@@ -737,6 +763,40 @@ class Mailjet extends Module
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * @param array $params
+     * @return void
+     */
+    public function hookActionNewsletterRegistrationAfter(array $params)
+    {
+        if (!$params['error'] && $params['action'] == '0') {
+            try {
+                $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                $initialSynchronization->subscribe($params['email'], $masterListId);
+            } catch (Exception $e) {
+                $this->errors_list[] = $this->l($e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * @param array $params
+     * @return void
+     */
+    public function hookActionNewsletterRegistrationBefore(array $params)
+    {
+        if (!$params['error'] && $params['action'] == '1') {
+            try {
+                $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                $initialSynchronization->remove($params['email'], $masterListId);
+            } catch (Exception $e) {
+                $this->errors_list[] = $this->l($e->getMessage());
+            }
         }
     }
 
@@ -1254,7 +1314,17 @@ class Mailjet extends Module
         $this->postProcess();
 
         $this->context->smarty->assign(array('is_landing' => false));
+        $output = '';
+        if (Tools::isSubmit('submit' . $this->name)) {
+            $configValue = (string) Tools::getValue('contact_list');
 
+            if (empty($configValue) || !Validate::isGenericName($configValue)) {
+                $output = $this->displayError($this->l('Invalid Configuration value'));
+            } else {
+                Configuration::updateValue('contact_list', $configValue);
+                $output = $this->displayConfirmation($this->l('Settings updated'));
+            }
+        }
         switch ($this->page_name) {
             case 'SETUP_LANDING':
                 $mt = new MailjetTemplate();
@@ -1383,21 +1453,81 @@ class Mailjet extends Module
             $this->checkTokenValidity();
             $this->checkPlanValidity();
         }
-
+        $tab = ['class_name' => 'AdminModules'];
+        $link = $this->context->link->getTabLink($tab) . '&configure=' . $this->name . '&conf=4&token=' . Tools::getAdminTokenLite('AdminModules') . '&sync_list=true';
         $this->context->smarty->assign(array(
             'MJ_templates' => $this->mj_template->getTemplates(),
             'MJ_iframes' => $this->mj_template->getIframesURL(),
             'MJ_errors' => $this->errors_list,
             'MJ_page_name' => $this->page_name,
             'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
+            'MJ_local_path' => $this->module_access['dir'],
             'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
             'MJ_authentication' => $this->isAccountSet(),
             'MJ_TOKEN_USER' => isset($this->account->{'TOKEN_' . $this->context->employee->id}) ?
                 $this->account->{'TOKEN_' . $this->context->employee->id} : null,
             'MJ_user_plan' => $this->getPlan(),
+            'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
+            'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE,
+            'MJ_sync_url' => $link,
+            
         ));
+        if ($this->page_name == 'CONTACTS') {
+            $this->context->smarty->assign([
+                'MJ_contact_list_form' => '<div class="center_page">' . $this->displayForm() . '</div>'
+            ]);
+        }
+        return $output . $this->fetchTemplate('/views/templates/admin/', 'configuration');
+    }
 
-        return $this->fetchTemplate('/views/templates/admin/', 'configuration');
+    public function displayForm()
+    {
+        $synchronization = new HooksSynchronizationSegment(MailjetTemplate::getApi());
+        $lists = $synchronization->getAllLists();
+        $formatedList = [];
+        foreach ($lists as $l) {
+            $formatedList[] = [
+                'name' => explode('idf', $l->Name)[0],
+                'list_id' => explode('idf', $l->ID)[0]
+            ];
+        }
+        $form = [
+            'form' => [
+                'legend' => [
+                    'title' => $this->trans('Settings', [], 'Admin.Global'),
+                    'icon' => 'icon-cogs',
+                ],
+                'input' => [
+                    [
+                        'type' => 'select',
+                        'label' => $this->l('Contact list:'),
+                        'name' => 'contact_list',
+                        'required' => true,
+                        'options' => [
+                          'query' => $formatedList,
+                          'id' => 'list_id',
+                          'name' => 'name'
+                        ]
+                    ],
+                ],
+                'submit' => [
+                    'title' => $this->l('Save'),
+                    'class' => 'btn btn-primary',
+                ],
+            ],
+        ];
+
+        $helper = new HelperForm();
+
+        $helper->table = $this->table;
+        $helper->name_controller = $this->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex . '&' . http_build_query(['configure' => $this->name]);
+        $helper->submit_action = 'submit' . $this->name;
+        $helper->fields_value['contact_list'] = Configuration::get('contact_list');
+        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
+
+        return $helper->generateForm([$form]);
     }
 
     public function displayAccount()
