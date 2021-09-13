@@ -264,6 +264,7 @@ class Mailjet extends Module
             && $this->registerHook('registerGDPRConsent')
             && $this->registerHook('updateOrderStatus')
             && $this->registerHook('updateQuantity')
+            && $this->registerHook('actionNewsletterRegistrationAfter')
         );
     }
 
@@ -737,6 +738,23 @@ class Mailjet extends Module
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
             return false;
+        }
+    }
+
+    /**
+     * @param array $params
+     * @return void
+     */
+    public function hookActionNewsletterRegistrationAfter(array $params)
+    {
+        if (!$params['error']) {
+            try {
+                $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
+                $initialSynchronization->subscribe($params['email'], $masterListId);
+            } catch (Exception $e) {
+                $this->errors_list[] = $this->l($e->getMessage());
+            }
         }
     }
 
