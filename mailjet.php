@@ -57,7 +57,7 @@ include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php');
 
 class Mailjet extends Module
 {
-
+    private const DEFAULT_MAIL_OPTION = 1;
     public $errors_list = array();
     public $page_name;
     public $module_access = array();
@@ -342,6 +342,7 @@ class Mailjet extends Module
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
         Configuration::deleteByName('MJ_ALLEMAILS');
+        $this->configToDefault();
         unset($this->account);
         unset($this->triggers);
 
@@ -1206,6 +1207,24 @@ class Mailjet extends Module
         }
     }
 
+    public function disable($force_all = false)
+    {
+        $this->configToDefault();
+        return parent::disable($force_all);
+
+    }
+
+    public function enable($force_all = false)
+    {
+        $this->activateAllEmailMailjet();
+        return parent::enable($force_all);
+    }
+
+    public function configToDefault()
+    {
+        Configuration::updateValue('PS_MAIL_METHOD', self::DEFAULT_MAIL_OPTION);
+    }
+    
     public function activateAllEmailMailjet()
     {
         Configuration::updateValue('PS_MAIL_SERVER', $this->mj_mail_server);
