@@ -386,14 +386,16 @@ table#vsTable .titleImage {
 .logo_mailjet_tiny {
     background-image:url(../img/MJSmall.png);
     width:164px;
-    height:58px;
+    background-size: 164px;
+    height:48px;
     margin-top:10px;
     margin-right:4px;
 }
 .logo_mailjet_center {
     background-image:url(../img/MJSmall.png);
     width:164px;
-    height:58px;
+    background-size: 164px;
+    height:48px;
 	margin-top: 10px;
     margin-left:auto;
     margin-right:auto;
