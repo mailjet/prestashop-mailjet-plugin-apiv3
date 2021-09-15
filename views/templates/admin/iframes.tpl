@@ -31,5 +31,8 @@
         {/if}
     {/if}
 {/if}
+{if $MJ_page_name == "CONTACTS"}
+    {$MJ_contact_list_form}
+{/if}
 <iframe border="0" id="mj_iframe" width="100%" height="1200px" src="{$MJ_iframes.$MJ_page_name|escape:'htmlall':'UTF-8'}{if !empty($MJ_TOKEN_USER)}{/if}">
 </iframe>
