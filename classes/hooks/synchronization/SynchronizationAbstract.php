@@ -99,6 +99,9 @@ abstract class HooksSynchronizationSynchronizationAbstract
      */
     public function getAlreadyCreatedMasterListId()
     {
+        if (Configuration::get('contact_list')) {
+            $this->masterListId = Configuration::get('contact_list');
+        }
         if (!$this->masterListId) {
             $lists = $this->getApiOverlay()->getContactsLists();
 

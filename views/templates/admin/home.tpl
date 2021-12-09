@@ -170,7 +170,9 @@
                 <a href="http://www.mailjet.com/pricing" target="_blank" class="btn_tab_home"><span></span><span>{l s='Upgrade' mod='mailjet'}</span></a>
                         {l s='Click here to change/upgrade your current plan.' mod='mailjet'}
             </li>
-
+            <li>
+                {include file="$MJ_local_path/views/templates/admin/list_config.tpl"}
+            </li>
         </ul>
     </div>
 </div>
