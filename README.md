@@ -64,6 +64,14 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.22 =
+* Fixed segmentation view for order max = 0
+
+= 3.4.21 =
+* Added updated logos
+* Added sync button
+* Fixed errors with paths
+* Fixed other minor things
 
 = 3.4.20 =
 * Fixes in German translation
