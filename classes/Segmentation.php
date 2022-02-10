@@ -552,7 +552,7 @@ class Segmentation
                             if ($minValue1 >= 0) {
                                 $having .= ' count(o.id_customer) ' . $min_operator . $minValue1;
                             }
-                            if ($maxValue2 > 0) {
+                            if ($maxValue2 >= 0) {
                                 if ($having != '') {
                                     $having .= $and;
                                 }
