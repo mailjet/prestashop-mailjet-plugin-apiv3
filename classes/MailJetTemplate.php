@@ -85,7 +85,7 @@ class MailjetTemplate
     /**
      * Get the api connection
      * @static
-     * @return null
+     * @return Mailjet_ApiOverlay|Mailjet_Api|null
      */
     public static function getApi($with_overlay = true)
     {
