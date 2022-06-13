@@ -64,6 +64,9 @@ Happy emailing!
 
 
 ## Changelog
+= 3.4.23 =
+* Fixed issues with displaying list of senders on the home page of module
+
 = 3.4.22 =
 * Fixed segmentation view for order max = 0
 

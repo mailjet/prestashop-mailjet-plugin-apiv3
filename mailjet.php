@@ -125,7 +125,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.4.20';
+        $this->version = '3.4.23';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -1474,6 +1474,12 @@ class Mailjet extends Module
         }
         $tab = ['class_name' => 'AdminModules'];
         $link = $this->context->link->getTabLink($tab) . '&configure=' . $this->name . '&conf=4&token=' . Tools::getAdminTokenLite('AdminModules') . '&sync_list=true';
+
+        $api = MailjetTemplate::getApi();
+        $infos = $api->getUser();
+        $mjSenders = $api->getSenders(null, $infos);
+        $currentSender = Configuration::get('PS_SHOP_EMAIL');
+
         $this->context->smarty->assign(array(
             'MJ_templates' => $this->mj_template->getTemplates(),
             'MJ_iframes' => $this->mj_template->getIframesURL(),
@@ -1489,6 +1495,8 @@ class Mailjet extends Module
             'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
             'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE,
             'MJ_sync_url' => $link,
+            'mjSenders' => $this->getOnlyEmailSenders($mjSenders),
+            'currentSender' => $currentSender,
         ));
         if ($this->page_name == 'CONTACTS') {
             $this->context->smarty->assign([
