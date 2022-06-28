@@ -368,6 +368,44 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
     }
 
     /**
+     * @return void
+     */
+    public function createPredefinedSegmentList(): void
+    {
+        //Step 1. Create Contact metadata
+        $params = [
+            'method' => 'POST',
+            'body' => [
+                'Name' => 'Potential customers',
+                'Expression' => "(ps_total_orders_count)",
+                'Description' => 'Contacts that do not have any orders',
+            ],
+        ];
+
+        //Step 2. Create predefined segments
+
+        $params = [
+            'method' => 'POST',
+            'Description' => 'Contacts that do not have any orders',
+            'Expression' => "(age<35)",
+            'Name' => 'Potential customers'
+        ];
+
+        print_r($this->getApiOverlay()->getContactMetaData());
+
+        $response = $this->getApiOverlay()->createContactMetaData([
+            'method' => 'POST',
+            'Datatype' => 'str',
+            'Name' => 'my_test_prop',
+            'NameSpace' => 'static'
+        ]);
+        var_dump($response);
+
+       // $response = $this->getApi()->contactfilter($params)->getResponse();
+        //var_dump($response);
+    }
+
+    /**
      *
      * @param string $filterId
      * @param string $fiterName

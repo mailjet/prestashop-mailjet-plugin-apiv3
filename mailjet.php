@@ -436,12 +436,19 @@ class Mailjet extends Module
 
     }
 
+    /**
+     * @return false|string
+     * @throws HooksSynchronizationException
+     */
     public function hookBackOfficeHeader()
     {
         if (Tools::getIsset('sync_list')) {
             $sync = new HooksSynchronizationInitial(MailjetTemplate::getApi());
             $listId = $sync->getAlreadyCreatedMasterListId();
             $sync->synchronizeSubscribers($listId);
+
+            $synchronizationSegment = new HooksSynchronizationSegment(MailjetTemplate::getApi());
+            $synchronizationSegment->createPredefinedSegmentList();
         }
         // Process subscribers changed by Admin through the BackOffice
         if (Tools::isSubmit('subscribedmerged') && $this->isAccountSet()) {
