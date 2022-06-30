@@ -3484,15 +3484,6 @@ class Mailjet_ApiOverlay
         }
 
         return false;
-
-
-        try {
-            $response = $this->createContactsList($parameters->label, $parameters->name);
-        } catch (Mailjet_ApiException $e) {
-            throw $e;
-        }
-
-        return $response;
     }
 
     /**

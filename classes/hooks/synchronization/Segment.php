@@ -26,6 +26,38 @@
 
 class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbstract
 {
+    private const PREDEFINED_SEGMENTS = [
+        [
+            'name' => 'Newcomers',
+            'description' => 'Customers who have created an account in the past 30 days',
+            'expression' => '(IsInPreviousDays(ps_account_creation_date,30))',
+        ],
+        [
+            'name' => 'Potential customers',
+            'description' => 'Contacts that don\'t have any orders',
+            'expression' => '(ps_total_orders_count<1)',
+        ],
+        [
+            'name' => 'First time customers',
+            'description' => 'Customers who have made their first purchase in the past 30 days',
+            'expression' => '(ps_total_orders_count=1) and (IsInPreviousDays(ps_last_order_date,30))',
+        ],
+        [
+            'name' => 'Recent customers',
+            'description' => 'Customers who have purchased in the past 30 days',
+            'expression' => '(IsInPreviousDays(ps_last_order_date,30))',
+        ],
+        [
+            'name' => 'Repeat customers',
+            'description' => 'Customers who have purchased more than once',
+            'expression' => '(ps_total_orders_count>1)',
+        ],
+        [
+            'name' => 'Lapsed customers',
+            'description' => 'Customers who haven\'t purchased in the past 6 months',
+            'expression' => '(not IsInPreviousDays(ps_last_order_date,180))',
+        ],
+    ];
 
     /**
      *
@@ -66,9 +98,11 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param int $filterId
+     * @param        $mailjetListId
+     * @param        $prestashopFilterId
      * @param string $newName
      * @return bool
+     * @throws Mailjet_ApiException
      */
     public function updateName($mailjetListId, $prestashopFilterId, $newName)
     {
@@ -84,7 +118,6 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
             $oldList = $this->getApiOverlay()->createContactsListP($params);
 
             if ($oldList) {
-                /* $listId = $oldList->ID; */
                 return true;
             }
         }
@@ -106,7 +139,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param array $contacts
+     * @param        $res_contacts
      * @param string $filterId
      * @param string $fiterName
      * @return mixed
@@ -335,8 +368,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
     /**
      *
      * @param string $filterId
-     * @param string $fiterName
      * @return int
+     * @throws Mailjet_ApiException
      */
     private function getExistingMailjetListId($filterId)
     {
@@ -365,6 +398,37 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
     public function getAllLists()
     {
         return $this->getApiOverlay()->getContactsLists();
+    }
+
+    /**
+     * @return void
+     */
+    public function createPredefinedSegmentList(): void
+    {
+        //Step 1. Create Contact metadata
+        $contactProperty = new ContactProperties(MailjetTemplate::getApi());
+        $isCreated = $contactProperty->createPredefinedProperties();
+        if (!$isCreated) {
+            return;
+        }
+
+        //Step 2. Create predefined segments
+        foreach (self::PREDEFINED_SEGMENTS as $segment) {
+            $params = [
+                'method' => 'JSON',
+                'Description' => $segment['description'],
+                'Expression' => $segment['expression'],
+                'Name' => $segment['name'],
+            ];
+
+            try {
+                $this->getApi()->resetRequest();
+                $this->getApi()->contactfilter($params)->getResponse();
+            } catch (Exception $exception) {
+                //just skip this error
+                 continue;
+            }
+        }
     }
 
     /**

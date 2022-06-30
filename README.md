@@ -64,6 +64,10 @@ Happy emailing!
 
 
 ## Changelog
+= 3.5.0 =
+* Add new feature. When we sync list data with prestashop we create predefined segment in account. It will help atutomate the process
+* Removed some dead code. Little cleanup
+
 = 3.4.23 =
 * Fixed issues with displaying list of senders on the home page of module
 
