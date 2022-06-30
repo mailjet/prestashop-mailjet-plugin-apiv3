@@ -123,7 +123,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.4.23';
+        $this->version = '3.5.0';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -633,7 +633,7 @@ class Mailjet extends Module
      * or by admin via Customers listing - click on 'Newsletter' checkbox in the listing
      * (note that the Hook for customer profile edition by Admin is different -
      * it is hookActionAdminCustomersControllerSaveAfter)
-     * @param type $params
+     * @param array $params
      */
     public function hookActionAdminCustomersControllerStatusAfter($params)
     {
@@ -661,7 +661,7 @@ class Mailjet extends Module
     
     /**
      * User profile action
-     * @param type $params
+     * @param array $params
      */
     public function hookActionObjectCustomerUpdateAfter($params)
     {
@@ -721,40 +721,10 @@ class Mailjet extends Module
         }
     }
 
-    public function hookAdminCustomers()
-    {
-        return;
-
-        /*
-          $api = MailjetTemplate::getApi();
-          $customer = new Customer((int)Tools::getValue('id_customer'));
-
-          $params = array(
-          'from' => $customer->email
-          );
-
-          $stats = (($res = $api->reportEmailStatistics($params)) && isset($res->stats)) ? $res->stats : array();
-
-          $translation = MailJetTranslate::getTranslationsByName('stats');
-          $data = array();
-
-          foreach ($stats as $key => $value)
-          if (isset($translation[$key]))
-          $data[$key] = array('title' => $translation[$key], 'value' => $value);
-
-          // Split the array into 2 for the display
-          $total = count($data);
-          $this->context->smarty->assign(
-            'MJ_stats', array(array_slice($data, 0, $total / 2), array_slice($data, $total / 2))
-            );
-          return $this->fetchTemplate('/views/templates/admin/', 'customer');
-         */
-    }
-
     /**
      *
      * @author atanas
-     * @param unknown_type $params
+     * @param array $params
      * @return boolean
      */
     public function hookCreateAccount($params)
@@ -809,7 +779,7 @@ class Mailjet extends Module
     /**
      *
      * @author atanas
-     * @param unknown_type $params
+     * @param array $params
      * @return boolean
      */
     public function hookCustomerAccount($params)
