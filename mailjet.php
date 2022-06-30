@@ -29,7 +29,6 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-/* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetTranslate.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetTemplate.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetPages.php');
@@ -45,13 +44,12 @@ if (version_compare(_PS_VERSION_, '1.7', '<')) {
         require_once(_PS_SWIFT_DIR_ . 'Swift/Connection/SMTP.php');
     }
 }
-/* include_once(_PS_SWIFT_DIR_.'Swift/Connection/NativeMail.php'); */
-/* include_once(_PS_SWIFT_DIR_.'Swift/Plugin/Decorator.php'); */
 
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Initial.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php');
+require_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/ContactProperties.php');
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php');
 
 

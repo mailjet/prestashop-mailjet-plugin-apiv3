@@ -46,7 +46,7 @@ class ContactProperties extends HooksSynchronizationSynchronizationAbstract
         foreach (self::PREDEFINED_CONTACT_PROPERTIES as $property) {
             $requestData = [
                 'method' => 'POST',
-                'datatype' => $property['type'],
+                'Datatype' => $property['type'],
                 'Name' => $property['name'],
                 'NameSpace' => $property['namespace'],
             ];
