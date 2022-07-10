@@ -36,6 +36,7 @@ require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetEvents.php');
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetLog.php');
 
 require_once(_PS_MODULE_DIR_ . 'mailjet/classes/Segmentation.php');
+require_once(_PS_MODULE_DIR_ . 'mailjet/classes/OrderNotifications.php');
 if (version_compare(_PS_VERSION_, '1.7', '<')) {
     if (version_compare(_PS_VERSION_, '1.6.1.5', '>=')) {
         require_once(_PS_CORE_DIR_ . '/tools/swift/swift_required.php');
@@ -62,6 +63,7 @@ class Mailjet extends Module
     public $mj_template = null;
     public $mj_pages = null;
     public $segmentation = null;
+    public $orderNotifications = null;
     public $mj_mail_server = 'in-v3.mailjet.com';
     public $mj_mail_port = 587;
 
@@ -1048,6 +1050,14 @@ class Mailjet extends Module
                 'AllMailsActiveMessage' => Tools::getValue('MJ_allemails_active') ? 1 : 2
             ));
         }
+
+        if (Tools::isSubmit('MJ_use_order_notifications')) {
+            $orderNotification = new OrderNotifications();
+            $useOrderNotification = $orderNotification->setActivationSettings();
+            $this->context->smarty->assign([
+                'mj_use_order_notification' => $useOrderNotification,
+            ]);
+        }
         // Campaign
         if (Tools::isSubmit('MJ_submitCampaign')) {
             $this->page_name = 'NEWSLETTER';
@@ -1349,7 +1359,10 @@ class Mailjet extends Module
                 $this->segmentation = new Segmentation();
                 $this->mj_template->setContent('SEGMENTATION', $this->segmentation->initContent());
                 break;
-
+            case 'ORDER_NOTIFICATIONS':
+                $this->orderNotifications = new OrderNotifications();
+                $this->mj_template->setContent('ORDER_NOTIFICATIONS', $this->orderNotifications->initContent());
+                break;
             case 'CAMPAIGN':
                 $this->mj_template->getCampaignURL(
                     'CAMPAIGN',
@@ -1851,20 +1864,8 @@ class Mailjet extends Module
 
     public function checkPlanValidity()
     {
-        /* $test = */
         new Mailjet_ApiOverlay($this->account->API_KEY, $this->account->SECRET_KEY);
         return;
-        /*
-          $plan = $test->getUserPlan();
-
-          if (Tools::getValue('MJ_request_page') != "PRICING" && ($plan->uname == "free" || $plan->uname == "bronze"))
-          {
-          // On redirige vers le pricing
-          //header("Location: index.php?tab=AdminModules&configure=mailjet&token=".
-          Tools::getValue('token')."&module_name=mailjet&MJ_request_page=PRICING");
-          //die();
-          }
-         */
     }
 
     public function auth($apiKey, $secretKey)

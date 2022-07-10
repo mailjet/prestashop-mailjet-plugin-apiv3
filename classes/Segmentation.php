@@ -117,14 +117,6 @@ class Segmentation
                 @include_once($trad_file);
 
                 $key = '<{mailjet}prestashop>segmentation_' . md5(str_replace('\'', '\\\'', $string));
-                /*
-                  if (!isset($_MODULE[$key]) && Context::getContext()->language->iso_code!='en')
-                  {
-                  $f = fopen($trad_file,"a+");
-                  fwrite($f, '$_MODULE[\''.$key.'\'] = \''.$string.'\';'.PHP_EOL);
-                  fclose($f);
-                  }
-                 */
             }
 
             return (isset($_MODULE[$key]) ? $_MODULE[$key] : ($module->l($string, $specific)));
@@ -622,10 +614,6 @@ class Segmentation
                         case '8':
                             $i++;
                             # Feature
-//                            if (!in_array('order_state', $joined_tables)) {
-//                                $join .= ' JOIN ' . _DB_PREFIX_ . 'order_state AS os ON os.id_order_state = o.current_state AND os.paid = 1 ';
-//                                $joined_tables[] = 'order_state';
-//                            }
                             if (!in_array('currency', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
                                 $joined_tables[] = 'currency';
