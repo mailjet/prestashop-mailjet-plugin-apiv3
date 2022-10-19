@@ -29,7 +29,7 @@ include_once(_PS_ROOT_DIR_ . '/init.php');
 include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
 $return = '';
 
-if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN')) {
+if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN') OR !Configuration::get('SEGMENT_CUSTOMER_TOKEN')) {
     exit();
 }
 
