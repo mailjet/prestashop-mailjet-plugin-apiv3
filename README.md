@@ -49,7 +49,7 @@ Your customers will benefit by receiving personalized and pertinent emails deliv
 
 ## Installation:
 1. Download the mailjet.zip file from the [latest release](https://github.com/mailjet/prestashop-mailjet-plugin-apiv3/releases).
-2. Change the name of archive to mailjet.
+2. Change the name of archive to `mailjet` and also change the name of folder inside archive to `mailjet`.
 3. Upload the zip in your Prestashop installation.
 4. Connect your Mailjet Account. 
 
