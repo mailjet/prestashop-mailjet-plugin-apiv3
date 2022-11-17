@@ -600,7 +600,7 @@ class mailjetdata
 
         // If an error is encountered, return an array
         if ($this->_info['http_code'] >= 300) {
-            $buffer = Tools::jsonDecode($buffer);
+            $buffer = json_decode($buffer);
         }
 
         return $buffer;
@@ -665,7 +665,7 @@ class mailjetdata
 
         $status_message = '';
         if ($this->_info['http_code'] >= 400) {
-            $buffer = Tools::jsonDecode($this->_buffer);
+            $buffer = json_decode($this->_buffer);
             if (!is_null($buffer) && isset($buffer->StatusCode) && isset($buffer->ErrorMessage)) {
                 $status_message = $buffer->StatusCode . ' - ' . $buffer->ErrorMessage;
                 if (isset($buffer->ErrorInfo) && !empty($buffer->ErrorInfo)) {

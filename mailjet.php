@@ -123,7 +123,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.5.0';
+        $this->version = '3.5.1';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -175,8 +175,7 @@ class Mailjet extends Module
 
     public function install()
     {
-        //$this->account = array(); // **
-        $this->account = ($account = Tools::jsonDecode(Configuration::get('MAILJET'))) ? $account : $this->account;
+        $this->account = ($account = json_decode(Configuration::get('MAILJET'))) ? $account : $this->account;
         $this->account->TOKEN = Tools::getValue('token');
         $this->updateAccountSettings();
 
@@ -1016,14 +1015,14 @@ class Mailjet extends Module
         // All emails sending by Mailjet ?
         if (Tools::isSubmit('MJ_set_allemails')) {
             $triggers =
-                ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'), true))
+                ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), true))
                     ? $triggers
                     : $this->triggers;
             Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
 
             if (Tools::getValue('MJ_allemails_active') == '1') {
                 // Set PS SHOP EMAIL to be selected Mailjet Sender address
-                $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+                $account = json_decode(Configuration::get('MAILJET'), true);
                 $account['EMAIL'] = Tools::getValue('MJ_senders');
                 Configuration::updateValue('MAILJET', Tools::jsonEncode($account));
                 Configuration::updateValue('PS_SHOP_EMAIL', Tools::getValue('MJ_senders'));
@@ -1176,7 +1175,7 @@ class Mailjet extends Module
 
             if (Tools::getValue('MJ_triggers_active') == '1') {
                 // Set PS SHOP EMAIL to be selected Mailjet Sender address
-                $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+                $account = json_decode(Configuration::get('MAILJET'), true);
                 $account['EMAIL'] = Tools::getValue('MJ_senders');
                 Configuration::updateValue('MAILJET', Tools::jsonEncode($account));
                 Configuration::updateValue('PS_SHOP_EMAIL', Tools::getValue('MJ_senders'));
@@ -1252,7 +1251,7 @@ class Mailjet extends Module
         Configuration::updateValue('PS_MAIL_METHOD', 2);
         Configuration::updateValue('MJ_ALLEMAILS', 1);
 
-        $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+        $account = json_decode(Configuration::get('MAILJET'), true);
         Configuration::updateValue('PS_SHOP_EMAIL', $account['EMAIL']);
         self::setSMTPconnectionParams();
     }
@@ -1707,7 +1706,7 @@ class Mailjet extends Module
     private function initTriggers()
     {
         $this->triggers =
-            ($triggers = Tools::jsonDecode(Configuration::get('MJ_TRIGGERS'), true)) ? $triggers : $this->triggers;
+            ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), true)) ? $triggers : $this->triggers;
 
         $languages = Language::getLanguages();
 
@@ -1887,7 +1886,7 @@ class Mailjet extends Module
             Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
             Configuration::updateValue('PS_MAIL_METHOD', 2);
 
-            //$account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+            //$account = json_decode(Configuration::get('MAILJET'), true);
             Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
 
@@ -1957,7 +1956,7 @@ class Mailjet extends Module
      */
     public function initAccountSettings()
     {
-        $this->account = ($account = Tools::jsonDecode(Configuration::get('MAILJET'))) ? $account : $this->account;
+        $this->account = ($account = json_decode(Configuration::get('MAILJET'))) ? $account : $this->account;
     }
 
     /**
@@ -2081,7 +2080,7 @@ class Mailjet extends Module
                 return self::sendMail1615($subject, $message, $to);
             }
 
-            $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+            $account = json_decode(Configuration::get('MAILJET'), true);
             $from = $account['EMAIL'];
             $from_name = Configuration::get('PS_SHOP_NAME');
 
@@ -2126,7 +2125,7 @@ class Mailjet extends Module
     public static function sendMail1615($subject, $message, $to)
     {
         try {
-            $account = Tools::jsonDecode(Configuration::get('MAILJET'), true);
+            $account = json_decode(Configuration::get('MAILJET'), true);
             $from = $account['EMAIL'];
             $from_name = Configuration::get('PS_SHOP_NAME');
 

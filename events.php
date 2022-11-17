@@ -51,7 +51,7 @@ if (empty($post)) {
 }
 
 # Decode Trigger Informations
-$allEvents = Tools::jsonDecode($post, true);
+$allEvents = json_decode($post, true);
 
 if (!is_array($allEvents)) {
     header('HTTP/1.1 422 Not ok');

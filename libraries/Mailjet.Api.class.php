@@ -584,7 +584,7 @@ class Mailjet_Api
             if (file_exists($this->_cache_path . $file)
                 && 0 === strpos(realpath($this->_cache_path . $file), realpath($this->_cache_path))
             ) {
-                $data = Tools::jsonDecode(Tools::file_get_contents($this->_cache_path . $file));
+                $data = json_decode(Tools::file_get_contents($this->_cache_path . $file));
                 if ($data['timestamp'] > time() - $cache) {
                     return ($data['result']);
                 }
@@ -802,7 +802,7 @@ class Mailjet_Api
         }
 
         $this->_response_code = curl_getinfo($this->_curl_handle, CURLINFO_HTTP_CODE);
-        $this->_response = ($this->_output == 'json') ? Tools::jsonDecode($buffer) : $buffer;
+        $this->_response = ($this->_output == 'json') ? json_decode($buffer) : $buffer;
 
         return ($this->_response_code == 200) ? TRUE : FALSE;
     }
