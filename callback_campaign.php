@@ -33,7 +33,7 @@ if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_')) {
 if (Tools::getIsset('data')) {
     $data = (object) Tools::getValue('data');
 } elseif (Tools::getIsset('mailjet')) {
-    $mailjet = Tools::jsonDecode(Tools::getValue('mailjet'));
+    $mailjet = json_decode(Tools::getValue('mailjet'));
     $data = $mailjet->data;
 } else {
     $data = new stdClass();

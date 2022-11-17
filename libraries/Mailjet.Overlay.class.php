@@ -2829,7 +2829,7 @@ class Mailjet_ApiOverlay
 
         $responesProfile = $this->_api->getResponse();
 
-        return Tools::jsonDecode($responesProfile);
+        return json_decode($responesProfile);
 
         if (!is_null($force)) {
             $params['force'] = $force;

@@ -1371,7 +1371,7 @@ class Segmentation
         }
 
         if (file_exists($this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt')) {
-            $this->trad = Tools::jsonDecode(
+            $this->trad = json_decode(
                 Tools::file_get_contents($this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt')
             );
         } else {

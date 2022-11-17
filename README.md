@@ -49,8 +49,9 @@ Your customers will benefit by receiving personalized and pertinent emails deliv
 
 ## Installation:
 1. Download the mailjet.zip file from the [latest release](https://github.com/mailjet/prestashop-mailjet-plugin-apiv3/releases).
-2. Upload the zip in your Prestashop installation.
-3. Connect your Mailjet Account. 
+2. Change the name of archive to mailjet.
+3. Upload the zip in your Prestashop installation.
+4. Connect your Mailjet Account. 
 
 If you are not yet a Mailjet user, please click [Register](https://app.mailjet.com/signup?aff=prestashop-3.0) to create a new account. 
 To view the different pricing plans, please click the 'Pricing' button.
@@ -64,6 +65,11 @@ Happy emailing!
 
 
 ## Changelog
+= 3.5.1 =
+* Fixed issue with security for ajax.php file
+* Changed method Tool::jsonDecode to native php function to avoid problem in future version of prestashop
+* Secure bundlejs_prestashop.php
+
 = 3.5.0 =
 * Add new feature. When we sync list data with prestashop we create predefined segment in account. It will help atutomate the process
 * Removed some dead code. Little cleanup

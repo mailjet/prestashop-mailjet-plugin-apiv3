@@ -29,6 +29,13 @@ if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_')) {
     require_once(realpath(dirname(__FILE__) . '/../../init.php'));
 }
 
+$token_ok = Tools::getAdminToken(
+    'AdminModules' . (int) Tab::getIdFromClassName('AdminModules') . (int) Tools::getValue('id_employee')
+);
+
+if (Tools::getValue('token') != $token_ok) {
+    die('hack attempt');
+}
 
 if (Tools::getIsset('emptyfile')) {
     header('Content-Type: application/force-download; name="' . Tools::getValue('name') . '"');
@@ -42,8 +49,6 @@ if (Tools::getIsset('emptyfile')) {
 }
 
 $post = trim(Tools::file_get_contents('php://input'));
-/* mail("guillaume@dream-me-up.fr", "callback ajax mailjet", $post.print_r($_POST, true).print_r($_GET, true)); */
-/* die(); */
 
 require_once(_PS_ROOT_DIR_ . '/config/config.inc.php');
 
