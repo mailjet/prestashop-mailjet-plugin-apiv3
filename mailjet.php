@@ -1447,7 +1447,12 @@ class Mailjet extends Module
             $this->checkPlanValidity();
         }
         $tab = ['class_name' => 'AdminModules'];
-        $link = $this->context->link->getTabLink($tab) . '&configure=' . $this->name . '&conf=4&token=' . Tools::getAdminTokenLite('AdminModules') . '&sync_list=true';
+
+        if (version_compare(PS_VERSION, '1.7.8.0', '>=')) {
+            $link = $this->context->link->getTabLink($tab) . '&configure=' . $this->name . '&conf=4&token=' . Tools::getAdminTokenLite('AdminModules') . '&sync_list=true';
+        } else {
+            $link = $this->context->link->getAdminLink($tab['class_name']) . '&set=' . $this->name . '&conf=4&token=' . Tools::getAdminTokenLite('AdminModules') . '&sync_list=true';
+        }
 
         $api = MailjetTemplate::getApi();
         $infos = $api->getUser();
@@ -1494,7 +1499,7 @@ class Mailjet extends Module
         $form = [
             'form' => [
                 'legend' => [
-                    'title' => $this->trans('Settings', [], 'Admin.Global'),
+                    'title' => $this->l('Settings'),
                     'icon' => 'icon-cogs',
                 ],
                 'input' => [
