@@ -20,10 +20,10 @@
             <page name="TRIGGERS" />
             <page name="CONTACTS" />
             <page name="STATS" />
-
             <page name="ROI" />
             <page name="EVENTS" />
             <page name="ACCOUNT" />
+            <page name="ORDER_NOTIFICATIONS" />
             <page name="PRICING" />
 
         </tab>
