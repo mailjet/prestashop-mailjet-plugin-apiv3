@@ -1448,7 +1448,7 @@ class Mailjet extends Module
         }
         $tab = ['class_name' => 'AdminModules'];
 
-        if (version_compare(PS_VERSION, '1.7.8.0', '>=')) {
+        if (version_compare(_PS_VERSION_, '1.7.8.0', '>=')) {
             $link = $this->context->link->getTabLink($tab) . '&configure=' . $this->name . '&conf=4&token=' . Tools::getAdminTokenLite('AdminModules') . '&sync_list=true';
         } else {
             $link = $this->context->link->getAdminLink($tab['class_name']) . '&set=' . $this->name . '&conf=4&token=' . Tools::getAdminTokenLite('AdminModules') . '&sync_list=true';
