@@ -1459,24 +1459,51 @@ class Mailjet extends Module
         $mjSenders = $api->getSenders(null, $infos);
         $currentSender = Configuration::get('PS_SHOP_EMAIL');
 
-        $this->context->smarty->assign(array(
-            'MJ_templates' => $this->mj_template->getTemplates(),
-            'MJ_iframes' => $this->mj_template->getIframesURL(),
-            'MJ_errors' => $this->errors_list,
-            'MJ_page_name' => $this->page_name,
-            'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
-            'MJ_local_path' => $this->module_access['dir'],
-            'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
-            'MJ_authentication' => $this->isAccountSet(),
-            'MJ_TOKEN_USER' => isset($this->account->{'TOKEN_' . $this->context->employee->id}) ?
-                $this->account->{'TOKEN_' . $this->context->employee->id} : null,
-            'MJ_user_plan' => $this->getPlan(),
-            'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
-            'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE,
-            'MJ_sync_url' => $link,
-            'mjSenders' => $this->getOnlyEmailSenders($mjSenders),
-            'currentSender' => $currentSender,
-        ));
+        if (version_compare(_PS_VERSION_, '8.0', '<')) {
+            $this->context->smarty->assign(
+                array(
+                    'MJ_templates' => $this->mj_template->getTemplates(),
+                    'MJ_iframes' => $this->mj_template->getIframesURL(),
+                    'MJ_errors' => $this->errors_list,
+                    'MJ_page_name' => $this->page_name,
+                    'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
+                    'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
+                    'MJ_authentication' => $this->isAccountSet(),
+                    'MJ_TOKEN_USER' => isset($this->account->{'TOKEN_' . $this->context->employee->id}) ? $this->account->{'TOKEN_' . $this->context->employee->id} : null,
+                    'MJ_user_plan' => $this->getPlan(),
+                    'MJ_base_dir' => $this->module_access['uri'],
+                    'MJ_local_path' => $this->module_access['dir'],
+                    'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE,
+                    'MJ_ADMINMODULES_TOKEN' => Tools::getAdminTokenLite('AdminModules'),
+                    'MJ_tab_page' => $this->mj_pages->getPages(MailJetPages::REQUIRE_PAGE),
+                    'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
+                    'MJ_allemails_active' => Configuration::get('MJ_ALLEMAILS'),
+                    'MJ_TOKEN' => $this->account->TOKEN,
+                    'mjSenders' => $this->getOnlyEmailSenders($mjSenders),
+                    'currentSender' => $currentSender
+                )
+            );
+        } else {
+            $this->context->smarty->assign(array(
+                'MJ_templates' => $this->mj_template->getTemplates(),
+                'MJ_iframes' => $this->mj_template->getIframesURL(),
+                'MJ_errors' => $this->errors_list,
+                'MJ_page_name' => $this->page_name,
+                'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
+                'MJ_local_path' => $this->module_access['dir'],
+                'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
+                'MJ_authentication' => $this->isAccountSet(),
+                'MJ_TOKEN_USER' => isset($this->account->{'TOKEN_' . $this->context->employee->id}) ?
+                    $this->account->{'TOKEN_' . $this->context->employee->id} : null,
+                'MJ_user_plan' => $this->getPlan(),
+                'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
+                'MJ_REQUEST_PAGE_TYPE' => MailJetPages::REQUEST_PAGE_TYPE,
+                'MJ_sync_url' => $link,
+                'mjSenders' => $this->getOnlyEmailSenders($mjSenders),
+                'currentSender' => $currentSender,
+            ));
+        }
+
         if ($this->page_name == 'CONTACTS') {
             $this->context->smarty->assign([
                 'MJ_contact_list_form' => '<div class="center_page">' . $this->displayForm() . '</div>'
