@@ -65,16 +65,20 @@ class Mailjet extends Module
     public $mj_mail_server = 'in-v3.mailjet.com';
     public $mj_mail_port = 587;
 
+    /**
+     * @return mixed|string
+     */
     public static function setMjMailServer()
     {
-        $mj = new Mailjet();
-        return $mj->mj_mail_server;
+        return (new Mailjet())->mj_mail_server;
     }
 
+    /**
+     * @return int|mixed
+     */
     public static function setMjMailPort()
     {
-        $mj = new Mailjet();
-        return $mj->mj_mail_port;
+        return (new Mailjet())->mj_mail_port;
     }
 
     /* Default account settings */
@@ -110,20 +114,19 @@ class Mailjet extends Module
         )
     );
 
-    /*
-     * * Construct Method
+    /**
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
-
     public function __construct()
     {
         $this->account = json_decode(json_encode($this->account));
-        //$this->getAdminFullUrl();
         // Default module variable
         $this->name = 'mailjet';
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.5.1';
+        $this->version = '3.5.2';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -147,6 +150,11 @@ class Mailjet extends Module
         $this->initContext();
     }
 
+    /**
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     private function initContext()
     {
         if (version_compare(_PS_VERSION_, '1.4', '>=') && class_exists('Context')) {
@@ -173,6 +181,10 @@ class Mailjet extends Module
      * * Install / Uninstall Methods
      */
 
+    /**
+     * @return bool
+     * @throws PrestaShopException
+     */
     public function install()
     {
         $this->account = ($account = json_decode(Configuration::get('MAILJET'))) ? $account : $this->account;
@@ -268,6 +280,12 @@ class Mailjet extends Module
     }
 
     // Export customer gdpr data
+
+    /**
+     * @param $customer
+     * @return false|string
+     * @throws Mailjet_ApiException
+     */
     public function hookActionExportGDPRData($customer)
     {
         $email = $customer['email'];
@@ -291,11 +309,11 @@ class Mailjet extends Module
         if (is_object($contactData) && $contactData->Count > 0 && isset($contactData->Data[0]) && isset($contactData->Data[0]->Data)) {
             $contactDataProperties = $contactData->Data[0]->Data;
             foreach ($contactDataProperties as $propertyData) {
-                if ($propertyData->Name == 'firstname') {
+                if ($propertyData->Name === 'firstname') {
                     $firstname = $propertyData->Value;
                     continue;
                 }
-                if ($propertyData->Name == 'lastname') {
+                if ($propertyData->Name === 'lastname') {
                     $lastname = $propertyData->Value;
                     continue;
                 }
@@ -313,6 +331,11 @@ class Mailjet extends Module
         return json_encode($this->l('No data'));
     }
 
+    /**
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function uninstall()
     {
         $fileTranslationCache = $this->_path . '/translations/translation_cache.txt';
@@ -349,6 +372,11 @@ class Mailjet extends Module
     }
 
 
+    /**
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
     public function hookHeader()
     {
         if (Tools::getIsset('tokp')) {
@@ -383,6 +411,10 @@ class Mailjet extends Module
     }
 
 
+    /**
+     * @param $params
+     * @return string|void
+     */
     public function hookNewOrder($params)
     {
         if (empty($params['customer']->id)) {
@@ -410,6 +442,9 @@ class Mailjet extends Module
         }
     }
 
+    /**
+     * @return void
+     */
     public function hookActionControllerInitBefore()
     {
         if (Tools::isSubmit('subscribedmerged') && $this->isAccountSet()) {
@@ -475,7 +510,9 @@ class Mailjet extends Module
 
         if (!in_array($controller, array('AdminModules', 'adminmodules', 'AdminCustomers'))) {
             return '';
-        } elseif (Tools::getValue('configure') != $this->name) {
+        }
+
+        if (Tools::getValue('configure') != $this->name) {
             return '';
         }
 
@@ -510,7 +547,7 @@ class Mailjet extends Module
                 'MJ_ADMINMODULES_TOKEN' => Tools::getAdminTokenLite('AdminModules'),
                 'MJ_available_pages' => $smarty_page,
                 'MJ_tab_page' => $this->mj_pages->getPages(MailJetPages::REQUIRE_PAGE),
-                'MJ_adminmodules_link' => $this->getAdminModuleLink(array()),
+                'MJ_adminmodules_link' => $this->getAdminModuleLink([]),
                 'MJ_allemails_active' => Configuration::get('MJ_ALLEMAILS'),
                 'MJ_TOKEN' => $this->account->TOKEN,
                 'nobug' => $nobug,
@@ -1272,7 +1309,7 @@ class Mailjet extends Module
 
         $connected = false;
 
-        for ($i = 0; $i < count($configs); ++$i) {
+        for ($i = 0, $iMax = count($configs); $i < $iMax; ++$i) {
             $errno = null;
             $errstr = null;
             $soc = @fSockOpen($configs [$i] [0] . $host, $configs [$i] [1], $errno, $errstr, 5);
@@ -1285,9 +1322,9 @@ class Mailjet extends Module
         }
 
         if ($connected) {
-            if ('ssl://' == $configs [$i] [0]) {
+            if ('ssl://' === $configs [$i] [0]) {
                 Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'ssl');
-            } elseif ('tls://' == $configs [$i] [0]) {
+            } elseif ('tls://' === $configs [$i] [0]) {
                 Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
             } else {
                 Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', '');
@@ -1296,6 +1333,10 @@ class Mailjet extends Module
         }
     }
 
+    /**
+     * @return string
+     * @throws Exception
+     */
     public function getContent()
     {
         if ($this->account->MASTER_LIST_SYNCHRONIZED == 0) {
@@ -1371,18 +1412,22 @@ class Mailjet extends Module
                 break;
 
             case 'NEWSLETTER':
+                //TODO investigate what we need here
                 $this->displayNewsletter();
                 break;
 
             case 'CAMPAIGN1':
+                //TODO investigate what we need here
                 $this->displayCampaign(1);
                 break;
 
             case 'CAMPAIGN2':
+                //TODO investigate what we need here
                 $this->displayCampaign(2);
                 break;
 
             case 'CAMPAIGN3':
+                //TODO investigate what we need here
                 $this->displayCampaign(3);
                 break;
 
@@ -1504,7 +1549,7 @@ class Mailjet extends Module
             ));
         }
 
-        if ($this->page_name == 'CONTACTS') {
+        if ($this->page_name === 'CONTACTS') {
             $this->context->smarty->assign([
                 'MJ_contact_list_form' => '<div class="center_page">' . $this->displayForm() . '</div>'
             ]);
@@ -1512,6 +1557,9 @@ class Mailjet extends Module
         return $output . $this->fetchTemplate('/views/templates/admin/', 'configuration');
     }
 
+    /**
+     * @return string
+     */
     public function displayForm()
     {
         $synchronization = new HooksSynchronizationSegment(MailjetTemplate::getApi());
@@ -1567,7 +1615,6 @@ class Mailjet extends Module
         $api = MailjetTemplate::getApi();
 
         // Traitements
-        //$tracking = $api->getTracking();
         $infos = $api->getUser();
 
         $sendersFromApi = $api->getSenders(null, $infos);
@@ -1682,6 +1729,9 @@ class Mailjet extends Module
         ));
     }
 
+    /**
+     * @return void
+     */
     public function displayTriggers()
     {
         // smarty vars
@@ -1719,6 +1769,9 @@ class Mailjet extends Module
         ));
     }
 
+    /**
+     * @return bool
+     */
     private function updateTriggers()
     {
         $triggers = $this->triggers;
@@ -1735,6 +1788,9 @@ class Mailjet extends Module
         return Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
     }
 
+    /**
+     * @return void
+     */
     private function initTriggers()
     {
         $this->triggers =
@@ -1752,11 +1808,17 @@ class Mailjet extends Module
         }
     }
 
+    /**
+     * @return array|mixed
+     */
     public function getTriggers()
     {
         return $this->triggers;
     }
 
+    /**
+     * @return void
+     */
     public function createTriggers()
     {
         $subject = array();
@@ -1871,31 +1933,21 @@ class Mailjet extends Module
     /**
      *
      * @author atanas
-     * @return mixed
+     * @return null|void
      */
     protected function getPlan()
     {
         if (!$this->isAccountSet()) {
             return null;
-        }
+        };
     }
 
+    /**
+     * @return void
+     */
     public function checkPlanValidity()
     {
-        /* $test = */
         new Mailjet_ApiOverlay($this->account->API_KEY, $this->account->SECRET_KEY);
-        return;
-        /*
-          $plan = $test->getUserPlan();
-
-          if (Tools::getValue('MJ_request_page') != "PRICING" && ($plan->uname == "free" || $plan->uname == "bronze"))
-          {
-          // On redirige vers le pricing
-          //header("Location: index.php?tab=AdminModules&configure=mailjet&token=".
-          Tools::getValue('token')."&module_name=mailjet&MJ_request_page=PRICING");
-          //die();
-          }
-         */
     }
 
     public function auth($apiKey, $secretKey)
@@ -1913,12 +1965,10 @@ class Mailjet extends Module
 
             Configuration::updateValue('PS_MAIL_SERVER', $this->mj_mail_server);
             Configuration::updateValue('PS_MAIL_SMTP_PORT', $this->mj_mail_port);
-            //Configuration::updateValue('PS_MAIL_SMTP_ENCRYPTION', 'tls');
             Configuration::updateValue('PS_MAIL_USER', $apiKey);
             Configuration::updateValue('PS_MAIL_PASSWD', $secretKey);
             Configuration::updateValue('PS_MAIL_METHOD', 2);
 
-            //$account = json_decode(Configuration::get('MAILJET'), true);
             Configuration::updateValue('PS_SHOP_EMAIL', $result->Email);
             self::setSMTPconnectionParams();
 
@@ -1927,9 +1977,9 @@ class Mailjet extends Module
             }
 
             return true;
-        } else {
-            $this->errors_list[] = $this->l('Please verify that you have entered correct API and secret key.');
         }
+
+        $this->errors_list[] = $this->l('Please verify that you have entered correct API and secret key.');
 
         return false;
     }
@@ -2014,7 +2064,7 @@ class Mailjet extends Module
     /**
      * Get Admin Module link
      *
-     * @param $params allow to add or override default key/value
+     * @param $params  ~ allow to add or override default key/value
      * @return string
      */
     public function getAdminModuleLink($params, $tab = 'AdminModules', $token = null)
