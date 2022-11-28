@@ -65,6 +65,10 @@ Happy emailing!
 
 
 ## Changelog
+= 3.5.2 =
+* Correct config file for PS version 1.7.*
+* Code cleanup
+
 = 3.5.1 =
 * Fixed issue with security for ajax.php file
 * Changed method Tool::jsonDecode to native php function to avoid problem in future version of prestashop
