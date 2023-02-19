@@ -69,7 +69,7 @@ if (Tools::getValue('action') == 'getBinder') {
                 'values' => $bindOrderStates
             );
 
-            die(Tools::jsonEncode($bind));
+            die(json_encode($bind));
         /* break; */
         case 4: /* payment method used */
             $res = Db::getInstance()->executeS('SELECT DISTINCT(payment) FROM ' . _DB_PREFIX_ . 'orders');
@@ -84,7 +84,7 @@ if (Tools::getValue('action') == 'getBinder') {
                 'values' => $values
             );
 
-            die(Tools::jsonEncode($bind));
+            die(json_encode($bind));
         /* break; */
         case 8: /* ca */
         case 9: /* avg ca */
@@ -98,7 +98,7 @@ if (Tools::getValue('action') == 'getBinder') {
                 'values' => $values
             );
 
-            die(Tools::jsonEncode($bind));
+            die(json_encode($bind));
         /* break; */
         case 19: /* newsletter subscription */
             $values = array(
@@ -111,7 +111,7 @@ if (Tools::getValue('action') == 'getBinder') {
                 'values' => $values
             );
 
-            die(Tools::jsonEncode($bind));
+            die(json_encode($bind));
         /* break; */
         case 15: /* gift package */
         case 16: /* recycled packaging */
@@ -130,7 +130,7 @@ if (Tools::getValue('action') == 'getBinder') {
                 'values' => $values
             );
 
-            die(Tools::jsonEncode($bind));
+            die(json_encode($bind));
         /* break; */
         case 21: /* origin	 */
             $sql = 'SELECT DISTINCT(conn.http_referer) AS url FROM ' . _DB_PREFIX_ . 'connections conn
@@ -151,7 +151,7 @@ if (Tools::getValue('action') == 'getBinder') {
                 'values' => $values
             );
 
-            die(Tools::jsonEncode($bind));
+            die(json_encode($bind));
         /* break; */
         case 27: /* city */
             $sql = 'SELECT DISTINCT(TRIM(a.city)) AS city FROM ' . _DB_PREFIX_ . 'address a
@@ -170,12 +170,12 @@ if (Tools::getValue('action') == 'getBinder') {
                 'values' => $values
             );
 
-            die(Tools::jsonEncode($bind));
+            die(json_encode($bind));
         /* break; */
         default:
             $bind = $obj->getBinder(Tools::getValue('ID'));
             if ($bind != '') {
-                $json = Tools::jsonEncode(explode(';', $bind));
+                $json = json_encode(explode(';', $bind));
                 die('{"return" : ' . $json . '}');
             }
     }

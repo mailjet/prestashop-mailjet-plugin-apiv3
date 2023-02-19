@@ -170,8 +170,6 @@ class Mailjet extends Module
             $this->context->shop = new Shop();
         }
 
-        //var_dump($this->account); die;
-
         if (!isset($this->context->shop->domain)) {
             $this->context->shop->domain = Configuration::get('PS_SHOP_DOMAIN');
         }
@@ -440,6 +438,15 @@ class Mailjet extends Module
                 Db::GetInstance()->Execute($sql);
             }
         }
+    }
+
+    /**
+     * @param $params
+     * @return void
+     */
+    public function hookOrderConfirmation($params)
+    {
+        //TODO implement hook in new version
     }
 
     /**
@@ -717,6 +724,15 @@ class Mailjet extends Module
         }
     }
 
+    /**
+     * @param $params
+     * @return void
+     */
+    public function hookAdminCustomers($params)
+    {
+        //TODO implement in the future
+    }
+
     public function hookActionObjectCustomerDeleteBefore($params)
     {
         $customer = $params['object'];
@@ -878,6 +894,11 @@ class Mailjet extends Module
     public function hookOrderSlip($params)
     {
         return $this->hookUpdateOrderStatus($params);
+    }
+
+    public function hookRegisterGDPRConsent($params)
+    {
+        //TODO Implement this later
     }
 
     public function hookOrderReturn($params)
@@ -1055,13 +1076,13 @@ class Mailjet extends Module
                 ($triggers = json_decode(Configuration::get('MJ_TRIGGERS'), true))
                     ? $triggers
                     : $this->triggers;
-            Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
+            Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
 
             if (Tools::getValue('MJ_allemails_active') == '1') {
                 // Set PS SHOP EMAIL to be selected Mailjet Sender address
                 $account = json_decode(Configuration::get('MAILJET'), true);
                 $account['EMAIL'] = Tools::getValue('MJ_senders');
-                Configuration::updateValue('MAILJET', Tools::jsonEncode($account));
+                Configuration::updateValue('MAILJET', json_encode($account));
                 Configuration::updateValue('PS_SHOP_EMAIL', Tools::getValue('MJ_senders'));
 
                 $this->context->smarty->assign(array(
@@ -1214,7 +1235,7 @@ class Mailjet extends Module
                 // Set PS SHOP EMAIL to be selected Mailjet Sender address
                 $account = json_decode(Configuration::get('MAILJET'), true);
                 $account['EMAIL'] = Tools::getValue('MJ_senders');
-                Configuration::updateValue('MAILJET', Tools::jsonEncode($account));
+                Configuration::updateValue('MAILJET', json_encode($account));
                 Configuration::updateValue('PS_SHOP_EMAIL', Tools::getValue('MJ_senders'));
 
                 $this->context->smarty->assign(array(
@@ -1239,7 +1260,7 @@ class Mailjet extends Module
 
         if (Tools::isSubmit('MJ_triggers_export_submit')) {
             $triggers =
-                ($triggers = Configuration::get('MJ_TRIGGERS')) ? $triggers : Tools::jsonEncode($this->triggers);
+                ($triggers = Configuration::get('MJ_TRIGGERS')) ? $triggers : json_encode($this->triggers);
 
             header("Content-Type: plain/text");
             header("Content-Disposition: Attachment; filename=Mailjet_Trigger_Templates.txt");
@@ -1785,7 +1806,7 @@ class Mailjet extends Module
             }
         }
 
-        return Configuration::updateValue('MJ_TRIGGERS', Tools::jsonEncode($triggers));
+        return Configuration::updateValue('MJ_TRIGGERS', json_encode($triggers));
     }
 
     /**
@@ -1900,6 +1921,7 @@ class Mailjet extends Module
 
     /**
      * Check the token validity
+     * @throws Exception
      */
     public function checkTokenValidity()
     {
@@ -1908,15 +1930,15 @@ class Mailjet extends Module
             ($this->account->{'TIMESTAMP_' . $this->context->employee->id} <= strtotime('-1 day'))
         ) {
             $this->account->{'IP_' . $this->context->employee->id} = $_SERVER['REMOTE_ADDR'];
-            $this->account->{'TIMESTAMP_' . $this->context->employee->id} = strtotime('now');
+            $this->account->{'TIMESTAMP_' . $this->context->employee->id} = time();
             $api = MailjetTemplate::getApi(false);
             $params = array(
                 'AllowedAccess' => 'campaigns,contacts,stats,pricing,account,reports',
                 'method' => 'JSON',
-                'APIKeyALT' => $api->getAPIKey(),
+                'APIKeyALT' => $api ? $api->getAPIKey(): '',
                 'TokenType' => 'iframe',
                 'IsActive' => true,
-                'SentData' => Tools::jsonEncode(array('plugin' => 'prestashop-3.0')),
+                'SentData' => json_encode(['plugin' => 'prestashop-3.0']),
             );
             $api->apitoken($params);
             $response = $api->getResponse();
@@ -2053,12 +2075,11 @@ class Mailjet extends Module
 
     /**
      * Update the account settings
-     *
-     * @return mixed
+     * @return bool
      */
     public function updateAccountSettings()
     {
-        return Configuration::updateValue('MAILJET', Tools::jsonEncode($this->account));
+        return Configuration::updateValue('MAILJET', json_encode($this->account));
     }
 
     /**
