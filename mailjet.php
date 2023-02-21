@@ -257,7 +257,7 @@ class Mailjet extends Module
             && $this->registerHook('actionObjectCustomerUpdateAfter')
             && $this->registerHook('adminCustomers')
             && $this->registerHook('authentication')
-            && $this->registerHook('BackOfficeHeader')
+            && $this->registerHook('displaybackOfficeHeader')
             && $this->registerHook('cancelProduct')
             && $this->registerHook('cart')
             && $this->registerHook('createAccount')
@@ -478,7 +478,7 @@ class Mailjet extends Module
      * @return false|string
      * @throws HooksSynchronizationException
      */
-    public function hookBackOfficeHeader()
+    public function hookDisplayBackOfficeHeader()
     {
         if (Tools::getIsset('sync_list')) {
             $sync = new HooksSynchronizationInitial(MailjetTemplate::getApi());
