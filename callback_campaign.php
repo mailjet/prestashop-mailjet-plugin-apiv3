@@ -24,9 +24,9 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-require_once(realpath(dirname(__FILE__) . '/../../config/config.inc.php'));
+require_once(dirname(__DIR__, 2) . '/config/config.inc.php');
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_')) {
-    require_once(realpath(dirname(__FILE__) . '/../../init.php'));
+    require_once(dirname(__FILE__, 3) . '/init.php');
 }
 
 
@@ -101,18 +101,18 @@ if ($data->next_step_url) {
         $res = $mj_data->data('newsletter', $campaignId, 'HTML', 'text/html', $html, 'PUT', 'LAST')->getResponse();
     }
 
-    $response = array(
+    $response = [
         'code' => 1,
         'continue' => true,
         'continue_address' => $data->next_step_url,
-    );
+    ];
 } else {
-    $response = array(
+    $response = [
         'code' => 0,
         'continue' => false,
         'exit_url' => 'SOME URL ADDRESS',
-    );
+    ];
 }
 
 header('Content-Type: application/json');
-echo Tools::jsonEncode($response);
+echo json_encode($response);

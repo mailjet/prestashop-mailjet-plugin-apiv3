@@ -1208,7 +1208,7 @@ class Segmentation
         $post['replace_customer'] = $replace_customer_text;
         $post['auto_assign'] = $auto_assign_text;
         $post['group_name'] = $group_name;
-        return Tools::jsonEncode($post);
+        return json_encode($post);
     }
 
     public function deleteFilter($id)
@@ -1242,15 +1242,20 @@ class Segmentation
                 $r['getIndicSelect'] = $this->getIndicSelect($r['id_sourcecondition'], $i, $r['id_fieldcondition']);
                 $i++;
             }
-            return Tools::jsonEncode($res);
+            return json_encode($res);
         }
         return false;
     }
 
+    /**
+     * @param $id_filter
+     * @return string
+     * @throws PrestaShopDatabaseException
+     */
     public function loadFilterInfo($id_filter)
     {
         $res = Db::getInstance()->ExecuteS('SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`  WHERE `id_filter`=' . (int) $id_filter);
-        $json = Tools::jsonEncode($res);
+        $json = json_encode($res);
         return '{"return" : ' . $json . '}';
     }
 
@@ -1394,7 +1399,7 @@ class Segmentation
             }
             file_put_contents(
                 $this->_path . '/translations/translation_cache_' . (int) $id_lang . '.txt',
-                Tools::jsonEncode($this->trad)
+                json_encode($this->trad)
             );
         }
     }

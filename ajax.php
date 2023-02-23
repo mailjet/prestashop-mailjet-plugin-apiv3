@@ -24,9 +24,9 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-require_once(realpath(dirname(__FILE__) . '/../../config/config.inc.php'));
+require_once(dirname(__DIR__, 2) . '/config/config.inc.php');
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_')) {
-    require_once(realpath(dirname(__FILE__) . '/../../init.php'));
+    require_once(dirname(__DIR__, 2) . '/init.php');
 }
 
 $token_ok = Tools::getAdminToken(
@@ -65,7 +65,7 @@ $method = Tools::isSubmit('method') ? Tools::getValue('method') : '';
 $token = Tools::isSubmit('token') ? Tools::getValue('token') : '';
 
 $mj = new Mailjet();
-$result = array();
+$result = [];
 
 MailJetLog::write(MailJetLog::$file, 'New request sent');
 
@@ -81,4 +81,4 @@ $message = isset($result['error']) ? $result['error'] : 'Success with method: ' 
 MailJetLog::write(MailJetLog::$file, $message);
 
 header('Content-Type: application/json');
-die(Tools::jsonEncode($result));
+die(json_encode($result));

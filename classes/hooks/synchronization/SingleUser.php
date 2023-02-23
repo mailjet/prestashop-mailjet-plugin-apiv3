@@ -34,7 +34,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     public function subscribe($email, $list_id = null)
     {
         $api = $this->getApi();
-        $update_list_id = $list_id ? $list_id : $this->getAlreadyCreatedMasterListId();
+        $update_list_id = $list_id ?: $this->getAlreadyCreatedMasterListId();
         $api->resetRequest();
 
         if (!$update_list_id || empty($update_list_id)) {

@@ -579,7 +579,7 @@ class mailjetdata
                 break;
 
             case 'JSON':
-                $RawData = Tools::jsonEncode($RawData);
+                $RawData = json_encode($RawData);
                 curl_setopt($this->_curl_handle, CURLOPT_CUSTOMREQUEST, "POST");
                 curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $RawData);
                 curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);

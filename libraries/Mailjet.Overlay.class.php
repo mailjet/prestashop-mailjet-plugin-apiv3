@@ -3511,9 +3511,9 @@ class Mailjet_ApiOverlay
         );
         if ($response !== FALSE) {
             return true;//($response);
-        } else {
-            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
+
+        throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 
     /**
