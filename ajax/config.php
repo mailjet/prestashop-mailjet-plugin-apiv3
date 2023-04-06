@@ -77,27 +77,27 @@ function getAdd($input, $type, $hidden = false)
     return $html;
 }
 
-if (Tools::getValue('type') == 'baseadd') {
+if (Tools::getValue('type') === 'baseadd') {
     Db::getInstance()->Execute(
         'INSERT INTO ' . _DB_PREFIX_ . 'basecondition(label, tablename)
 		values ("' . pSQL(Tools::getValue('label')) . '", "' . pSQL(Tools::getValue('tablename')) . '")'
     );
     Tools::redirect('modules/segmentmodule/config.php');
-} elseif (Tools::getValue('type') == 'sourceadd') {
+} elseif (Tools::getValue('type') === 'sourceadd') {
     Db::getInstance()->Execute(
         'INSERT INTO ' . _DB_PREFIX_ . 'sourcecondition(id_basecondition,label, jointable)
 		values ("' . pSQL(Tools::getValue('idbase')) . '","' .
         pSQL(Tools::getValue('label')) . '", "' . pSQL(Tools::getValue('jointable')) . '")'
     );
     Tools::redirect('modules/segmentmodule/config.php?type=addtobase&idbase=' . (int) Tools::getValue('idbase'));
-} elseif (Tools::getValue('type') == 'fieldadd') {
+} elseif (Tools::getValue('type') === 'fieldadd') {
     Db::getInstance()->Execute(
         'INSERT INTO ' . _DB_PREFIX_ . 'fieldcondition(id_sourcecondition,label, field)
 		values ("' . pSQL(Tools::getValue('idsource')) . '","' .
         pSQL(Tools::getValue('label')) . '", "' . pSQL(Tools::getValue('field')) . '")'
     );
     Tools::redirect('modules/segmentmodule/config.php?type=addtosource&idsource=' . (int) Tools::getValue('idsource'));
-} elseif (Tools::getValue('type') == 'addtosource') {
+} elseif (Tools::getValue('type') === 'addtosource') {
     echo 'add to :' . Tools::getValue('idsource') . ' <br />';
     echo getAdd(array('label', 'field'), 'fieldadd', array('idsource' => (int) Tools::getValue('idsource')));
     echo getTable(
@@ -105,7 +105,7 @@ if (Tools::getValue('type') == 'baseadd') {
         Db::getInstance()->executeS('SELECT * FROM ' . _DB_PREFIX_ . 'fieldcondition'),
         'field'
     );
-} elseif (Tools::getValue('type') == 'addtobase') {
+} elseif (Tools::getValue('type') === 'addtobase') {
     echo 'add to :' . Tools::getValue('idbase') . ' <br />';
     echo getAdd(array('label', 'jointable'), 'sourceadd', array('idbase' => (int) Tools::getValue('idbase')));
     echo getTable(

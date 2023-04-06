@@ -235,9 +235,16 @@ class Mailjet_Api
         return self::$_instance;
     }
 
+
     /**
-     *
-     * @param unknown_type $version
+     * @param $method
+     * @param $id
+     * @param $type
+     * @param $contType
+     * @param $params
+     * @param $request
+     * @param $lastID
+     * @return false|Mailjet_Api
      */
     public function data(
         $method,
@@ -576,7 +583,7 @@ class Mailjet_Api
         } else {
             $cache = $this->_cache;
         }
-        if ($request == 'GET' && $cache != 0) {
+        if ($request === 'GET' && $cache != 0) {
             sort($params);
             $file =
                 $object . '.' . hash('md5', $this->_apiKey . http_build_query($params, '', '')) . '.' . $this->_output;
@@ -590,7 +597,7 @@ class Mailjet_Api
             }
         }
 
-        return (NULL);
+        return null;
     }
 
     /**
@@ -638,7 +645,7 @@ class Mailjet_Api
      */
     public function __call($method, $args)
     {
-        $params = (sizeof($args) > 0) ? $args[0] : array();
+        $params = (count($args) > 0) ? $args[0] : array();
         $request = isset($params["method"]) ? strtoupper($params["method"]) : 'GET';
         if (isset($params["method"])) {
             unset($params["method"]);
@@ -676,10 +683,10 @@ class Mailjet_Api
     {
         $query_string = array();
         foreach ($params as $key => $value) {
-            if ($request == "GET" || in_array($key, array('apikey', 'output'))) {
+            if ($request === "GET" || in_array($key, array('apikey', 'output'))) {
                 $query_string[$key] = $key . '=' . urlencode($value);
             }
-            if ($key == "output") {
+            if ($key === "output") {
                 $this->_output = $value;
             }
         }
@@ -688,9 +695,9 @@ class Mailjet_Api
         if (isset($params['ID']) && $params['ID']) {
             $id = $params['ID'];
             unset($params['ID']);
-            $this->_debugCallUrl = $this->_apiUrl . '/' . $method . '/' . $id . '?' . join('&', $query_string);
+            $this->_debugCallUrl = $this->_apiUrl . '/' . $method . '/' . $id . '?' . implode('&', $query_string);
         } else {
-            $this->_debugCallUrl = $this->_apiUrl . '/' . $method . '/?' . join('&', $query_string);
+            $this->_debugCallUrl = $this->_apiUrl . '/' . $method . '/?' . implode('&', $query_string);
         }
 
         return $this->_debugCallUrl;
@@ -801,7 +808,7 @@ class Mailjet_Api
         }
 
         $this->_response_code = curl_getinfo($this->_curl_handle, CURLINFO_HTTP_CODE);
-        $this->_response = ($this->_output == 'json') ? json_decode($buffer) : $buffer;
+        $this->_response = ($this->_output === 'json') ? json_decode($buffer) : $buffer;
 
         return ($this->_response_code == 200) ? TRUE : FALSE;
     }
@@ -897,7 +904,7 @@ class Mailjet_Api
             $args = explode("&", $call_url['query']);
         }
 
-        if (sizeof($args) > 0) {
+        if (count($args) > 0) {
             foreach ($args as $arg) {
                 $arg = explode("=", $arg);
                 $this->_debugErrorHtml .=
@@ -907,7 +914,7 @@ class Mailjet_Api
 
         $this->_debugErrorHtml .= '</td></tr>';
 
-        if ($this->_request_post && sizeof($this->_request_post) > 0) {
+        if ($this->_request_post && count($this->_request_post) > 0) {
             $this->_debugErrorHtml .= '<tr><th>Post Arguments</th><td>';
 
             foreach ($this->_request_post as $k => $v) {
@@ -923,7 +930,8 @@ class Mailjet_Api
 
         $this->_debugErrorHtml .= '</div>';
 
-        if ($this->_debugEcho)
+        if ($this->_debugEcho) {
             echo $this->_debugErrorHtml;
+        }
     }
 }

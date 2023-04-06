@@ -29,7 +29,7 @@ class MailJetTranslate
 
     public static function getTranslationsByName($name, $iso = false)
     {
-        $file = dirname(__FILE__) . '/../xml/translate.xml';
+        $file = __DIR__ . '/../xml/translate.xml';
         $translations = array();
         $default_translation = array();
 
@@ -41,7 +41,7 @@ class MailJetTranslate
                     if ($data['code'] == $iso) {
                         $translations = (array) $data;
                     }
-                    if ($iso != 'en' && $data['code'] == 'en') {
+                    if ($iso !== 'en' && $data['code'] === 'en') {
                         $default_translation = (array) $data;
                     }
                 }

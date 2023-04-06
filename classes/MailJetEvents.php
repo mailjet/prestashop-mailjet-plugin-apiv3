@@ -84,7 +84,7 @@ class MailJetEvents extends ObjectModel
             return $this->default_scheme;
         }
 
-        $file = dirname(__FILE__) . '/../xml/events.xml';
+        $file = __DIR__ . '/../xml/events.xml';
         $scheme = array();
         //...$log = 'Scheme not found';
 
@@ -194,7 +194,7 @@ class MailJetEvents extends ObjectModel
     public function getTotal()
     {
         $query = 'SELECT e.`id_mj_events` FROM `' . _DB_PREFIX_ . $this->table . '` e ';
-        if ($this->params['event']['value'] && $this->params['event']['value'] != MailJetEvents::ALL_EVENTS_KEYS) {
+        if ($this->params['event']['value'] && $this->params['event']['value'] != self::ALL_EVENTS_KEYS) {
             $query .= 'WHERE e.`event` = "' . pSQL($this->params['event']['value']) . '"';
         }
         return count(DB::getInstance()->executeS($query));

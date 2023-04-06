@@ -1538,7 +1538,7 @@ class Mailjet extends Module
                 'MJ_template_name' => $this->mj_pages->getTemplateName($this->page_name),
                 'MJ_template_tab_name' => $this->mj_pages->getTemplateTabName($this->page_name),
                 'MJ_authentication' => $this->isAccountSet(),
-                'MJ_TOKEN_USER' => $this->account->{'TOKEN_' . $this->context->employee->id} ?? null,
+                'MJ_TOKEN_USER' => isset($this->account->{'TOKEN_' . $this->context->employee->id}) ? $this->account->{'TOKEN_' . $this->context->employee->id} : null,
                 'MJ_user_plan' => $this->getPlan(),
                 'MJ_base_dir' => $this->module_access['uri'],
                 'MJ_local_path' => $this->module_access['dir'],
