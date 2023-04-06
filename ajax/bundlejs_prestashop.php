@@ -33,7 +33,7 @@ if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN') || 
     exit();
 }
 
-if (Tools::getValue('action') == 'product') {
+if (Tools::getValue('action') === 'product') {
     if (Tools::getValue('name') != '') {
         $products = Product::searchByName(Configuration::get('PS_LANG_DEFAULT'), Tools::getValue('name'));
         if ($products) {
@@ -56,22 +56,22 @@ if (Tools::getValue('action') == 'product') {
     }
     die($return);
 }
-if (Tools::getValue('action') == 'productname') {
+if (Tools::getValue('action') === 'productname') {
     $obj = new Segmentation();
     $prod = new Product((int) Tools::getValue('id'), false, $obj->getCurrentIdLang());
     die($prod->name);
 }
-if (Tools::getValue('action') == 'categoryname') {
+if (Tools::getValue('action') === 'categoryname') {
     $obj = new Segmentation();
     $cat = new Category((int) Tools::getValue('id'), $obj->getCurrentIdLang());
     die($cat->name);
 }
-if (Tools::getValue('action') == 'brandname') {
+if (Tools::getValue('action') === 'brandname') {
     $obj = new Segmentation();
     $man = new Manufacturer((int) Tools::getValue('id'), $obj->getCurrentIdLang());
     die($man->name);
 }
-if (Tools::getValue('action') == 'category') {
+if (Tools::getValue('action') === 'category') {
     if (Tools::getValue('name') != '') {
         $products = Category::searchByName(Configuration::get('PS_LANG_DEFAULT'), Tools::getValue('name'));
         if ($products) {
@@ -94,7 +94,7 @@ if (Tools::getValue('action') == 'category') {
     }
     die($return);
 }
-if (Tools::getValue('action') == 'manufacturer') {
+if (Tools::getValue('action') === 'manufacturer') {
     if (Tools::getValue('name') != '') {
         $manufacturers = Db::getInstance()->executeS(
             'SELECT `id_manufacturer`, `name` FROM `' . _DB_PREFIX_ . 'manufacturer`

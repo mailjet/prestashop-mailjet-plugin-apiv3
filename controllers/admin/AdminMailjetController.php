@@ -35,7 +35,6 @@ class AdminMailjetController extends ModuleAdminController
 
         $token = Tools::getAdminTokenLite('AdminModules');
 
-        //$url = Dispatcher::getInstance()->createUrl('AdminModules', 1, array('token'=>$token), false);
         $url = 'index.php?controller=AdminModules&tab=AdminModules&token=' . $token;
         parent::__construct();
         Tools::redirectAdmin($url . '&configure=mailjet');

@@ -75,7 +75,7 @@ class MailJetPages
      */
     public function initTemplatesAccess()
     {
-        $file = dirname(__FILE__) . '/../xml/template.xml';
+        $file = __DIR__ . '/../xml/template.xml';
         if (file_exists($file) && ($xml = simplexml_load_file($file))) {
             $this->default_page = ($this->current_authentication ?
                 (string) $xml->tabs->tab->default_page['name'] :
@@ -118,9 +118,7 @@ class MailJetPages
 
     /**
      * Get current Page
-     *
-     * @param $current_authentication
-     * @return int|mixed
+     * @return array|false|string|string[]|null
      */
     public function getCurrentPageName()/* $account_status) */
     {
@@ -139,7 +137,7 @@ class MailJetPages
      */
     public function getPages($require_page = MailJetPages::ALL_PAGES)
     {
-        return $require_page == MailJetPages::ALL_PAGES ? $this->available_page : $this->extractAuthenticationPages();
+        return $require_page === MailJetPages::ALL_PAGES ? $this->available_page : $this->extractAuthenticationPages();
     }
 
     public function getTemplateTabName($name)
@@ -161,8 +159,7 @@ class MailJetPages
 
     /**
      * Check if the page is available into the list
-     *
-     * @param $num
+     * @param $name
      * @return bool
      */
     public function isAvailablePage($name)

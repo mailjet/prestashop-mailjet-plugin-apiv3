@@ -243,8 +243,7 @@ class MailjetTemplate
 
     /**
      * Get all fetched template
-     *
-     * @return string
+     * @return array
      */
     public function getTemplates()
     {

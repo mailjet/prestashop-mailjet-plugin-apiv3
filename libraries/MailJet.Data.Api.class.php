@@ -30,8 +30,6 @@ class MailjetDataType
     const MaxSizeMType = 10;
     const ResourceType = 11;
     const AllowedRType = 9;
-
-    //list_type NNN : a list of resource types for source type NNN.
 }
 
 /**
@@ -327,8 +325,9 @@ class mailjetdata
         $response = $this->_api->languagestring(array('ListType' => $datatype, 'limit' => 0));
         $result = array();
         if ($this->_api->getLastHTTPCode() < 400) {
-            foreach ($response->Data as $data)
+            foreach ($response->Data as $data) {
                 $result[$data->StringId] = $data->Value;
+            }
         }
 
         return ($result);
@@ -386,7 +385,7 @@ class mailjetdata
      *
      * @access	public
      *
-     * @return mixed Raw Data or NULL on error
+     * @return bool|string|null Raw Data or NULL on error
      * @todo curl_file ? Warning no boundaries accepted
      */
     public function getRawFile($File)
@@ -397,7 +396,7 @@ class mailjetdata
         //return (curl_file_create($File));
         //$curl_file = new CURLFile($File);
         //return (array('data' => '@'.$File));
-        return (NULL);
+        return null;
     }
 
     /**

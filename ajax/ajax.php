@@ -24,7 +24,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(realpath(dirname(__FILE__) . '/../../../') . '/config/config.inc.php');
+include_once(dirname(dirname(dirname(__DIR__))) . '/' . '/config/config.inc.php');
 include_once(_PS_ROOT_DIR_ . '/init.php');
 
 //header('Content-Type: application/json');
@@ -37,7 +37,7 @@ $token_ok = Tools::getAdminToken(
     'AdminModules' . (int) Tab::getIdFromClassName('AdminModules') . (int) Tools::getValue('id_employee')
 );
 
-if (Tools::getValue('token') != $token_ok) {
+if (Tools::getValue('token') !== $token_ok) {
     die('hack attempt');
 }
 
@@ -46,15 +46,15 @@ include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
 
 $obj = new segmentation();
 
-if (Tools::getValue('action') == 'getSource') {
+if (Tools::getValue('action') === 'getSource') {
     die($obj->getSourceSelect(Tools::getValue('baseID'), Tools::getValue('ID')));
 }
 
-if (Tools::getValue('action') == 'getIndic') {
+if (Tools::getValue('action') === 'getIndic') {
     die($obj->getIndicSelect(Tools::getValue('sourceID'), Tools::getValue('ID')));
 }
 
-if (Tools::getValue('action') == 'getBinder') {
+if (Tools::getValue('action') === 'getBinder') {
     switch (Tools::getValue('ID')) {
         case 3: /* order states */
             $orderStates = OrderState::getOrderStates($obj->getCurrentIdLang());
@@ -183,7 +183,7 @@ if (Tools::getValue('action') == 'getBinder') {
     die(''); /* default */
 }
 
-if (Tools::getValue('action') == 'getCountry') {
+if (Tools::getValue('action') === 'getCountry') {
     $context = Context::getContext();
     $rep = Country::getCountries((int) $context->language->id);
     $html = '{';
@@ -195,7 +195,7 @@ if (Tools::getValue('action') == 'getCountry') {
     die($html);
 }
 
-if (Tools::getValue('action') == 'date') {
+if (Tools::getValue('action') === 'date') {
     include_once(realpath(dirname(__FILE__) . '/../../..') . '/libraries/date.inc.php');
     $ret = array();
     switch (Tools::getValue('typedate')) {
@@ -216,7 +216,7 @@ if (Tools::getValue('action') == 'date') {
     die($ret['start'] . '/' . $ret['end']);
 }
 
-if (Tools::getValue('action') == 'Save') {
+if (Tools::getValue('action') === 'Save') {
     $assignAuto = false;
     if (Tools::getIsset('assign-auto')) {
         $assignAuto = (bool) Tools::getValue('assign-auto');
@@ -237,19 +237,19 @@ if (Tools::getValue('action') == 'Save') {
     die($obj->saveFilter($_POST, $assignAuto, $replace_customer));
 }
 
-if (Tools::getValue('action') == 'loadFilter') {
+if (Tools::getValue('action') === 'loadFilter') {
     die($obj->loadFilter(Tools::getValue('idfilter')));
 }
 
-if (Tools::getValue('action') == 'loadFilterInfo') {
+if (Tools::getValue('action') === 'loadFilterInfo') {
     die($obj->loadFilterInfo(Tools::getValue('idfilter')));
 }
 
-if (Tools::getValue('action') == 'deleteFilter') {
+if (Tools::getValue('action') === 'deleteFilter') {
     die($obj->deleteFilter(Tools::getValue('idfilter')));
 }
 
-if (Tools::getValue('action') == 'newGroup') {
+if (Tools::getValue('action') === 'newGroup') {
     $grp = new Group();
 
     $name = array();
@@ -264,7 +264,7 @@ if (Tools::getValue('action') == 'newGroup') {
     exit();
 }
 
-if (Tools::getValue('action') == 'addGroup') {
+if (Tools::getValue('action') === 'addGroup') {
     $sql = $obj->getQuery($_POST, true);
 
     if (!$sql) {
@@ -277,7 +277,7 @@ if (Tools::getValue('action') == 'addGroup') {
         die(false);
     }
 
-    if (Tools::getValue('mode') == 'rep') {
+    if (Tools::getValue('mode') === 'rep') {
         foreach ($rows as $row) {
             Db::getInstance()->Execute(
                 'DELETE FROM ' . _DB_PREFIX_ . 'customer_group WHERE id_customer = ' . (int) $row[$obj->ll(47)]
@@ -292,7 +292,7 @@ if (Tools::getValue('action') == 'addGroup') {
     die(true);
 }
 
-if (Tools::getValue('action') == 'getQuery') {
+if (Tools::getValue('action') === 'getQuery') {
     /* Determine la page en cours */
     $page = 0;
     if (Tools::getValue('page')) {
