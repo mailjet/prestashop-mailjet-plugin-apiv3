@@ -27,8 +27,10 @@
 class HooksEvents
 {
     /**
-     *
      * @param array $event
+     * @return bool
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function unsubscribe(array $event)
     {
@@ -46,15 +48,16 @@ class HooksEvents
         if ($customer) {
             $customer->newsletter = 0;
             $customer->update();
-        } else { // Newsletter subsciber
+
             if (version_compare(_PS_VERSION_, '1.7', '<')) {
                 $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'newsletter WHERE `email` = \'' . pSQL($event['email']) . '\'';
             } else {
                 $sql = 'DELETE FROM '._DB_PREFIX_.'emailsubscription WHERE `email` = \''.pSQL($event['email']).'\'';
             }
-            if (!isset($sql) || !Db::getInstance()->execute($sql)) {
-                return false;
-            }
+
+            return Db::getInstance()->execute($sql);
         }
+
+        return true;
     }
 }

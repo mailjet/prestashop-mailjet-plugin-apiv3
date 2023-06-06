@@ -24,7 +24,7 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(realpath(dirname(__FILE__) . '/../../') . '/config/config.inc.php');
+include_once(dirname(dirname(__DIR__)) . '/' . '/config/config.inc.php');
 
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetLog.php');
 include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetTranslate.php');
