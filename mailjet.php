@@ -803,7 +803,7 @@ class Mailjet extends Module
      */
     public function hookActionNewsletterRegistrationAfter(array $params)
     {
-        if (!$params['error'] && $params['action'] == '0') {
+        if (empty($params['error']) && $params['action'] == '0') {
             try {
                 $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
                 $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
@@ -820,7 +820,7 @@ class Mailjet extends Module
      */
     public function hookActionNewsletterRegistrationBefore(array $params)
     {
-        if (!$params['error'] && $params['action'] == '1') {
+        if (empty($params['error']) && $params['action'] == '1') {
             try {
                 $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
                 $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
