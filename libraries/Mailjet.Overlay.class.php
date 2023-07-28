@@ -324,7 +324,7 @@ class Mailjet_ApiOverlay
      * Secure or not the transaction through https
      *
      * @access	public
-     * @param boolean $secure TRUE to secure the transaction, FALSE otherwise
+     * @param bool $secure TRUE to secure the transaction, FALSE otherwise
      */
     public function secure($secure = TRUE)
     {
@@ -336,7 +336,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @uses	Mailjet::Api::$_response_code
-     * @return integer last Response HTTP Code
+     * @return int last Response HTTP Code
      */
     public function getHTTPCode()
     {
@@ -373,7 +373,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @param const $output API output format
      *
-     * @return boolean TRUE on success, FALSE otherwise
+     * @return bool TRUE on success, FALSE otherwise
      */
     public function setOutput($output)
     {
@@ -404,7 +404,7 @@ class Mailjet_ApiOverlay
      * PRODUCTION = none / TESTING = errors only / DEVELOPMENT = always
      *
      * @access	public
-     * @param integer $debug Debug flag
+     * @param int $debug Debug flag
      */
     public function setDebugFlag($debug)
     {
@@ -423,7 +423,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      *
-     * @return integer Debug flag
+     * @return int Debug flag
      */
     public function getDebugFlag()
     {
@@ -435,7 +435,7 @@ class Mailjet_ApiOverlay
      * If set to 0, Object caching will be disabled
      *
      * @access	public
-     * @param integer $cache Cache to set in seconds
+     * @param int $cache Cache to set in seconds
      */
     public function setCachePeriod($cache)
     {
@@ -448,7 +448,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      *
-     * @return integer Cache in seconds
+     * @return int Cache in seconds
      */
     public function getCachePeriod()
     {
@@ -461,7 +461,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @param string $cache_path path to the cached objects
      *
-     * @return boolean TRUE if the path is successfully set, FALSE otherwise
+     * @return bool TRUE if the path is successfully set, FALSE otherwise
      */
     public function setCachePath($cache_path)
     {
@@ -494,7 +494,7 @@ class Mailjet_ApiOverlay
     {
         if ($ErrLevel == E_RECOVERABLE_ERROR) {
             if (strpos($ErrMessage, 'must be an instance of Mailjet\string, string')
-                || strpos($ErrMessage, 'must be an instance of Mailjet\integer, integer')
+                || strpos($ErrMessage, 'must be an instance of Mailjet\int, int')
                 || strpos($ErrMessage, 'must be an instance of Mailjet\float, double')
                 || strpos($ErrMessage, 'must be an instance of Mailjet\boolean, boolean')
                 || strpos($ErrMessage, 'must be an instance of Mailjet\resource, resource')
@@ -637,25 +637,24 @@ class Mailjet_ApiOverlay
     /**
      * API : Get a list of the Sub-Account's API keys
      * - url : api.mailjet.com/0.1/apiKeylist
-     *
-     * @access	public
-     * @throw	Mailjet::Mailjet_ApiException
-     * @param boolean $active        Mailjet's approval status : 0=inactive, 1=active (Optional)
-     * @param string  $custom_status custom status : 'up', 'suspend', 'down' (Optional)
-     * @param string  $name          Custom name. Use * as a joker for a research (Optional)
-     * @param boolean $type          1=main, 0=subuser (Optional)
-     * @param string  $api_key       Api public key (Optional)
-     * @param integer $cache         Cache period for the object (Optional)
-     *
+     * @access    public
+     * @throw    Mailjet::Mailjet_ApiException
+     * @param bool $active Mailjet's approval status : 0=inactive, 1=active (Optional)
+     * @param string|null $custom_status custom status : 'up', 'suspend', 'down' (Optional)
+     * @param string|null $name Custom name. Use * as a joker for a research (Optional)
+     * @param bool $type 1=main, 0=subuser (Optional)
+     * @param string|null $api_key Api public key (Optional)
+     * @param int|null $cache Cache period for the object (Optional)
      * @return mixed Response from the API
+     * @throws Mailjet_ApiException
      */
     public function getSubAccounts(
-        boolean $active = null,
+        bool $active = null,
         string $custom_status = null,
         string $name = null,
-        boolean $type = null,
+        bool $type = null,
         string $api_key = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -719,15 +718,14 @@ class Mailjet_ApiOverlay
     /**
      * API : Get the secret of one of your Sub-Account
      * - url : api.mailjet.com/0.1/apiKeysecret
-     *
-     * @access	public
-     * @throw	Mailjet::Mailjet_ApiException
-     * @param string  $api_key Api public key (Required)
-     * @param integer $cache   Cache period for the object (Optional)
-     *
+     * @access    public
+     * @throw    Mailjet::Mailjet_ApiException
+     * @param string $api_key Api public key (Required)
+     * @param int|null $cache Cache period for the object (Optional)
      * @return mixed Response from the API
+     * @throws Mailjet_ApiException
      */
-    public function getSubAccountSecret(string $api_key, integer $cache = null)
+    public function getSubAccountSecret(string $api_key, int $cache = null)
     {
         $params = array(
             'method' => 'GET',
@@ -921,11 +919,11 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
 
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
-    public function getTrustDomains(integer $cache = null)
+    public function getTrustDomains(int $cache = null)
     {
         $params = array(
             'method' => 'GET'
@@ -966,16 +964,15 @@ class Mailjet_ApiOverlay
     /**
      * USER : Get the status of one of your trust Domains
      * - url : api.mailjet.com/0.1/userDomainStatus
-     *
-     * @access	public
-     * @throw	Mailjet::Mailjet_ApiException
-     * @param string  $domain      Your domain name (Required)
-     * @param boolean $force_check Set to 1 to force a verification (Optional)
-     * @param integer $cache       Cache period for the object (Optional)
-     *
+     * @access    public
+     * @throw    Mailjet::Mailjet_ApiException
+     * @param string $domain Your domain name (Required)
+     * @param bool $force_check Set to 1 to force a verification (Optional)
+     * @param int|null $cache Cache period for the object (Optional)
      * @return mixed Response from the API
+     * @throws Mailjet_ApiException
      */
-    public function getDomainStatus(string $domain, boolean $force_check = null, integer $cache = null)
+    public function getDomainStatus(string $domain, bool $force_check = null, int $cache = null)
     {
         $params = array(
             'method' => 'POST',
@@ -1023,7 +1020,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -1096,7 +1093,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -1245,7 +1242,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -1293,7 +1290,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $email Sender email address (Required)
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -1342,7 +1339,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -1390,8 +1387,8 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param boolean $click Click tracking : 0=do not track, 1=track (Required)
-     * @param boolean $open  Open tracking : 0=do not track, 1=track (Required)
+     * @param bool $click Click tracking : 0=do not track, 1=track (Required)
+     * @param bool $open  Open tracking : 0=do not track, 1=track (Required)
      *
      * @return mixed Response from the API
      */
@@ -1544,12 +1541,12 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id      Mailjet's Campaign ID (Optional)
-     * @param integer $start   Start offset (Optional)
-     * @param integer $limit   Limit amount of results you want (Optional)
+     * @param int $id      Mailjet's Campaign ID (Optional)
+     * @param int $start   Start offset (Optional)
+     * @param int $limit   Limit amount of results you want (Optional)
      * @param string  $status  Campaign status filter: "draft", "programmed", "sent", "archived". Filters can be combined, separated by a comma (Optional)
      * @param string  $orderby Order results by any returned parameter's name : default=id ASC (Optional)
-     * @param integer $cache   Cache period for the object (Optional)
+     * @param int $cache   Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -1653,11 +1650,11 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id     Mailjet's Campaign ID (Required)
-     * @param integer $start  Start offset (Optional)
-     * @param integer $limit  Limit amount of results you want (Optional)
+     * @param int $id     Mailjet's Campaign ID (Required)
+     * @param int $start  Start offset (Optional)
+     * @param int $limit  Limit amount of results you want (Optional)
      * @param string  $status Message status filter: queued, sent, opened, clicked, bounce, blocked, spam or unsub (Optional)
-     * @param integer $cache  Cache period for the object (Optional)
+     * @param int $cache  Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -1727,11 +1724,11 @@ class Mailjet_ApiOverlay
      * @param string  $subject      Subject of the campaign (Required)
      * @param string  $edition_mode Edition mode : [tool]=WYSYWIG tool [html]=Raw HTML tool (Optional)
      * @param string  $edition_type Edition type : [full]=all steps [light]=step 2 and 3 [ulight]=step 2 only (Optional)
-     * @param integer $list_id      Mailjet's contacts list ID. Required if edition_type = [light] (Optional)
+     * @param int $list_id      Mailjet's contacts list ID. Required if edition_type = [light] (Optional)
      * @param string  $callback     Callback URL. Required if edition_type = [ulight] (Optional)
      * @param string  $footer       [default]=show [none]=hide . Required if edition_mode = [tool] (Optional)
      * @param string  $permalink    [default]=show [none]=hide (Optional)
-     * @param integer $template_id  Mailjet's template ID (Optional)
+     * @param int $template_id  Mailjet's template ID (Optional)
      * @param string  $token        Unique token (Optional)
      * @param string  $reply_to     Replace the default 'reply-to' address (sender email) (Optional)
      * @param string  $title        Used in Mailjet's interface, to replace the subject (Optional)
@@ -1845,16 +1842,16 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id          Mailjet's Campaign ID (Required)
+     * @param int $id          Mailjet's Campaign ID (Required)
      * @param string  $lang        Language : en, fr, de, it, es, nl, sv, pt, ru, ja, lv, is, ro, el, ar, sk (Optional)
      * @param string  $from        Sender email address (Optional)
      * @param string  $from_name   Sender name (Optional)
      * @param string  $subject     Subject of the campaign (Optional)
-     * @param integer $list_id     Mailjet's contacts list ID. Required if edition_type = [light] (Optional)
+     * @param int $list_id     Mailjet's contacts list ID. Required if edition_type = [light] (Optional)
      * @param string  $callback    Callback URL. Required if edition_type = [ulight] (Optional)
      * @param string  $footer      [default]=show [none]=hide . Required if edition_type = [html] (Optional)
      * @param string  $permalink   [default]=show [none]=hide (Optional)
-     * @param integer $template_id Mailjet's template ID (Optional)
+     * @param int $template_id Mailjet's template ID (Optional)
      * @param string  $reply_to    Replace the default 'reply-to' address (sender email) (Optional)
      * @param string  $title       Used in Mailjet's interface, to replace the subject (Optional)
      *
@@ -1961,8 +1958,8 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id    Mailjet's Campaign ID (Required)
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $id    Mailjet's Campaign ID (Required)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -2048,12 +2045,12 @@ class Mailjet_ApiOverlay
      * @param string    $from            Sender email address (Optional)
      * @param string    $from_name       Sender name (Optional)
      * @param string    $to_email        Recipient's email address (Optional)
-     * @param integer   $mj_campaign_id  Mailjet's Campaign ID (Optional)
+     * @param int   $mj_campaign_id  Mailjet's Campaign ID (Optional)
      * @param timestamp $sent_after      Minimum date of sending (Optional)
      * @param timestamp $sent_before     Maximum date of sending (Optional)
-     * @param integer   $start           Start offset (Optional)
-     * @param integer   $limit           Limit amount of results you want (Optional)
-     * @param integer   $cache           Cache period for the object (Optional)
+     * @param int   $start           Start offset (Optional)
+     * @param int   $limit           Limit amount of results you want (Optional)
+     * @param int   $cache           Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -2062,12 +2059,12 @@ class Mailjet_ApiOverlay
         string $from = null,
         string $from_name = null,
         string $to_email = null,
-        integer $mj_campaign_id = null,
+        int $mj_campaign_id = null,
         $sent_after = null,
         $sent_before = null,
-        integer $start = null,
-        integer $limit = null,
-        integer $cache = null
+        int $start = null,
+        int $limit = null,
+        int $cache = null
     )
     {
         $params = array(
@@ -2150,11 +2147,11 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id Mailjet's Campaign ID (Required)
+     * @param int $id Mailjet's Campaign ID (Required)
      *
      * @return mixed Response from the API
      */
-    public function sendCampaign(integer $id)
+    public function sendCampaign(int $id)
     {
         $params = array(
             'method' => 'POST',
@@ -2196,7 +2193,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id   Mailjet's Campaign ID (Required)
+     * @param int $id   Mailjet's Campaign ID (Required)
      * @param string  $html Raw HTML code of your Email. It must contain the unsubscribe tag (in en: [[UNSUB_LINK_EN]]) (Required)
      * @param string  $text Text version of your Email. It must contain the unsubscribe tag (in en: [[UNSUB_LINK_EN]]) (Optional)
      *
@@ -2251,8 +2248,8 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id    Mailjet's Campaign ID (Required)
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $id    Mailjet's Campaign ID (Required)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -2320,7 +2317,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id    Mailjet's Campaign ID (Required)
+     * @param int $id    Mailjet's Campaign ID (Required)
      * @param string  $email Email which will receive the test (Required)
      *
      * @return mixed Response from the API
@@ -2368,7 +2365,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -2416,10 +2413,10 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $category Mailjet's template category ID (Optional)
-     * @param boolean $custom   If true, returns the user's templates (Optional)
+     * @param int $category Mailjet's template category ID (Optional)
+     * @param bool $custom   If true, returns the user's templates (Optional)
      * @param string  $locale   Language : fr_FR, en_US, de_DE, ... (Optional)
-     * @param integer $cache    Cache period for the object (Optional)
+     * @param int $cache    Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -2475,38 +2472,37 @@ class Mailjet_ApiOverlay
     /**
      * MESSAGE : Update a campaign
      * - url : api.mailjet.com/0.1/messageUpdateCampaign
-     *
-     * @access	public
-     * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $id           Mailjet's Campaign ID (Required)
-     * @param string    $status       Status of the campaign : [draft] or [archived] (Optional)
-     * @param string    $lang         Language : en, fr, de, it, es, nl, sv, pt, ru, ja, lv, is, ro, el, ar, sk (Optional)
-     * @param string    $from         Sender email address (Optional)
-     * @param string    $from_name    Sender name (Optional)
-     * @param string    $subject      Subject of the campaign (Optional)
-     * @param integer   $list_id      Mailjet's contacts list ID. Required if edition_type = [light] (Optional)
-     * @param string    $callback     Callback URL. Required if edition_type = [ulight] (Optional)
-     * @param string    $footer       [default]=show [none]=hide . Required if edition_type = [html] (Optional)
-     * @param string    $permalink    [default]=show [none]=hide (Optional)
-     * @param integer   $template_id  Mailjet's template ID (Optional)
-     * @param string    $reply_to     Replace the default 'reply-to' address (sender email) (Optional)
-     * @param string    $title        Used in Mailjet's interface, to replace the subject (Optional)
-     * @param timestamp $sending_date If specified, the campaign will be sent at this date (Optional)
-     *
+     * @access    public
+     * @throw    Mailjet::Mailjet_ApiException
+     * @param int $id Mailjet's Campaign ID (Required)
+     * @param string|null $status Status of the campaign : [draft] or [archived] (Optional)
+     * @param string|null $lang Language : en, fr, de, it, es, nl, sv, pt, ru, ja, lv, is, ro, el, ar, sk (Optional)
+     * @param string|null $from Sender email address (Optional)
+     * @param string|null $from_name Sender name (Optional)
+     * @param string|null $subject Subject of the campaign (Optional)
+     * @param int|null $list_id Mailjet's contacts list ID. Required if edition_type = [light] (Optional)
+     * @param string|null $callback Callback URL. Required if edition_type = [ulight] (Optional)
+     * @param string|null $footer [default]=show [none]=hide . Required if edition_type = [html] (Optional)
+     * @param string|null $permalink [default]=show [none]=hide (Optional)
+     * @param int|null $template_id Mailjet's template ID (Optional)
+     * @param string|null $reply_to Replace the default 'reply-to' address (sender email) (Optional)
+     * @param string|null $title Used in Mailjet's interface, to replace the subject (Optional)
+     * @param null $sending_date If specified, the campaign will be sent at this date (Optional)
      * @return mixed Response from the API
+     * @throws Mailjet_ApiException
      */
     public function updateCampaign(
-        integer $id,
+        int $id,
         string $status = null,
         string $lang = null,
         string $from = null,
         string $from_name = null,
         string $subject = null,
-        integer $list_id = null,
+        int $list_id = null,
         string $callback = null,
         string $footer = null,
         string $permalink = null,
-        integer $template_id = null,
+        int $template_id = null,
         string $reply_to = null,
         string $title = null,
         $sending_date = null
@@ -2609,7 +2605,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contact Mailjet's contact ID or email (Required)
-     * @param integer $cache   Cache period for the object (Optional)
+     * @param int $cache   Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -2655,29 +2651,28 @@ class Mailjet_ApiOverlay
     /**
      * CONTACTS : Get your contacts with some filters
      * - url : api.mailjet.com/0.1/contactList
-     *
-     * @access	public
-     * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $mj_contact_id Mailjet's Contact ID (Optional)
-     * @param integer   $start         Start offset (Optional)
-     * @param integer   $limit         Limit amount of results you want : default=100 (Optional)
-     * @param string    $status        Contacts' status : opened, active, unactive or unsub (Optional)
-     * @param boolean   $blocked       0=blocked, 1=active (Optional)
-     * @param boolean   $unsub         0=subscriber, 1=unsubscribed (Optional)
-     * @param timestamp $last_activity Minimum last activity timestamp (Optional)
-     * @param integer   $cache         Cache period for the object (Optional)
-     *
+     * @access    public
+     * @throw    Mailjet::Mailjet_ApiException
+     * @param int|null $mj_contact_id Mailjet's Contact ID (Optional)
+     * @param int|null $start Start offset (Optional)
+     * @param int|null $limit Limit amount of results you want : default=100 (Optional)
+     * @param string|null $status Contacts' status : opened, active, unactive or unsub (Optional)
+     * @param bool $blocked 0=blocked, 1=active (Optional)
+     * @param bool $unsub 0=subscriber, 1=unsubscribed (Optional)
+     * @param null $last_activity Minimum last activity timestamp (Optional)
+     * @param int|null $cache Cache period for the object (Optional)
      * @return mixed Response from the API
+     * @throws Mailjet_ApiException
      */
     public function getContacts(
-        integer $mj_contact_id = null,
-        integer $start = null,
-        integer $limit = null,
+        int $mj_contact_id = null,
+        int $start = null,
+        int $limit = null,
         string $status = null,
-        boolean $blocked = null,
-        boolean $unsub = null,
+        bool $blocked = null,
+        bool $unsub = null,
         $last_activity = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -2760,16 +2755,15 @@ class Mailjet_ApiOverlay
     /**
      * LIST : Create a contact in a list
      * - url : api.mailjet.com/0.1/listsAddContact
-     *
-     * @access	public
-     * @throw	Mailjet::Mailjet_ApiException
-     * @param string  $contact Mailjet's contact ID or email (Required)
-     * @param integer $list_id Mailjet's List ID (Required)
-     * @param boolean $force   If the contact exists, reset unsub status (Optional)
-     *
+     * @access    public
+     * @throw    Mailjet::Mailjet_ApiException
+     * @param string $contact Mailjet's contact ID or email (Required)
+     * @param int $list_id Mailjet's List ID (Required)
+     * @param bool $force If the contact exists, reset unsub status (Optional)
      * @return mixed Response from the API
+     * @throws Mailjet_ApiException
      */
-    public function createContact(string $contact, integer $list_id, boolean $force = null)
+    public function createContact(string $contact, int $list_id, bool $force = null)
     {
         $params = array(
             'method' => 'POST',
@@ -2816,8 +2810,8 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contacts Serialized list of emails (Required)
-     * @param integer $list_id  Mailjet's List ID (Required)
-     * @param boolean $force    If the contact exists, reset unsub status (Optional)
+     * @param int $list_id  Mailjet's List ID (Required)
+     * @param bool $force    If the contact exists, reset unsub status (Optional)
      *
      * @return mixed Response from the API
      */
@@ -2847,7 +2841,7 @@ class Mailjet_ApiOverlay
      * setContactMetaData()
      * First checks if certain contact meta data field is already created,
      * and if not - creates it in order to be populated by the followed createContacts call
-     * @return boolean
+     * @return bool
      */
     public function setContactMetaData($params = array())
     {
@@ -2931,7 +2925,7 @@ class Mailjet_ApiOverlay
             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
     }
-    
+
     public function getContactData($contactEmail)
     {
         $paramsRequest = array(
@@ -3201,10 +3195,10 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $start   Start offset (Optional)
-     * @param integer $limit   Limit amount of results you want (Optional)
+     * @param int $start   Start offset (Optional)
+     * @param int $limit   Limit amount of results you want (Optional)
      * @param string  $orderby Order results by any returned parameter's name : default=id ASC (Optional)
-     * @param integer $cache   Cache period for the object (Optional)
+     * @param int $cache   Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -3278,7 +3272,7 @@ class Mailjet_ApiOverlay
 
         return $response;
     }
-    
+
     public function getCustomerLists($email){
         if(!is_string($email)){
             return false;
@@ -3290,7 +3284,7 @@ class Mailjet_ApiOverlay
             )
         );
         $response = $this->_api->getResponse();
-        
+
         if ($response && $response->Count > 0) {
             return $response;
         }
@@ -3303,15 +3297,15 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $id            Mailjet's List ID (Required)
-     * @param integer   $start         Start offset (Optional)
-     * @param integer   $limit         Limit amount of results you want (Optional)
+     * @param int   $id            Mailjet's List ID (Required)
+     * @param int   $start         Start offset (Optional)
+     * @param int   $limit         Limit amount of results you want (Optional)
      * @param string    $orderby       Order results by any returned parameter's name : default=id ASC (Optional)
      * @param string    $status        Contacts' status : opened, active, unactive or unsub (Optional)
-     * @param boolean   $blocked       0=blocked, 1=active (Optional)
-     * @param boolean   $unsub         0=subscriber, 1=unsubscribed (Optional)
+     * @param bool   $blocked       0=blocked, 1=active (Optional)
+     * @param bool   $unsub         0=subscriber, 1=unsubscribed (Optional)
      * @param timestamp $last_activity Minimum last activity timestamp (Optional)
-     * @param integer   $cache         Cache period for the object (Optional)
+     * @param int   $cache         Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -3492,7 +3486,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id Mailjet's List ID (Required)
+     * @param int $id Mailjet's List ID (Required)
      *
      * @return mixed Response from the API
      */
@@ -3543,12 +3537,12 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id    Mailjet's List ID (Required)
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $id    Mailjet's List ID (Required)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
-    public function getContactsListEmail(integer $id, integer $cache = null)
+    public function getContactsListEmail(int $id, int $cache = null)
     {
         $params = array(
             'method' => 'GET',
@@ -3594,7 +3588,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contact Mailjet's contact ID or email (Required)
-     * @param integer $id      Mailjet's List ID (Required)
+     * @param int $id      Mailjet's List ID (Required)
      *
      * @return mixed Response from the API
      */
@@ -3642,7 +3636,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contacts Serialized list of emails (Required)
-     * @param integer $id       Mailjet's List ID (Required)
+     * @param int $id       Mailjet's List ID (Required)
      *
      * @return mixed Response from the API
      */
@@ -3689,8 +3683,8 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id    Mailjet's List ID (Required)
-     * @param integer $cache Cache period for the object (Optional)
+     * @param int $id    Mailjet's List ID (Required)
+     * @param int $cache Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
@@ -3740,7 +3734,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $contact Mailjet's contact ID or email (Required)
-     * @param integer $id      Mailjet's List ID (Required)
+     * @param int $id      Mailjet's List ID (Required)
      *
      * @return mixed Response from the API
      */
@@ -3787,7 +3781,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $id    Mailjet's List ID (Required)
+     * @param int $id    Mailjet's List ID (Required)
      * @param string  $label Title of your list (Optional)
      * @param string  $name  List name used as name@lists.mailjet.com (Optional)
      *
@@ -3843,30 +3837,30 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param string    $order       Order direction (Optional)
      * @param string    $order_by    Order by: [date], [link], [by_email], [click_delay], [user_agent] (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getClickedEmails(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         string $order = null,
         string $order_by = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -3949,28 +3943,28 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getDomains(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4049,28 +4043,28 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getBouncedEmails(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4149,28 +4143,28 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getEmailClients(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4249,12 +4243,12 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $campaign_id Mailjet's Campaign ID (Required)
-     * @param integer $cache       Cache period for the object (Optional)
+     * @param int $campaign_id Mailjet's Campaign ID (Required)
+     * @param int $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
-    public function getEmailInformations(integer $campaign_id, integer $cache = null)
+    public function getEmailInformations(int $campaign_id, int $cache = null)
     {
         $params = array(
             'method' => 'GET',
@@ -4299,30 +4293,30 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param string    $status      Email status : queued, sent, opened, clicked, bounce, blocked, spam or unsub (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getSentEmails(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         string $status = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4405,32 +4399,32 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
      * @param string    $to_email    Contact Email address (Optional)
-     * @param integer   $to_id       Mailjet's contact ID (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $to_id       Mailjet's contact ID (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getEmailStatistics(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
+        int $from_type = null,
         string $to_email = null,
-        integer $to_id = null,
-        integer $start = null,
-        integer $limit = null,
+        int $to_id = null,
+        int $start = null,
+        int $limit = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4517,28 +4511,28 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getGeographicDatas(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4617,28 +4611,28 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getOpenedEmails(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4717,28 +4711,28 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getOpenedEmailsStatistics(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4817,32 +4811,32 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer   $campaign_id Mailjet's Campaign ID (Optional)
+     * @param int   $campaign_id Mailjet's Campaign ID (Optional)
      * @param string    $from        Sender email address (Optional)
-     * @param integer   $from_id     Mailjet's Sender ID (Optional)
+     * @param int   $from_id     Mailjet's Sender ID (Optional)
      * @param string    $from_domain Domain (Optional)
-     * @param integer   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
-     * @param integer   $start       Start offset (Optional)
-     * @param integer   $limit       Limit amount of results you want (Optional)
+     * @param int   $from_type   Email type : [0]=all [1]=transactional only [2]=campaigns only (Optional)
+     * @param int   $start       Start offset (Optional)
+     * @param int   $limit       Limit amount of results you want (Optional)
      * @param string    $status      Email status : queued, sent, opened, clicked, bounce, blocked, spam or unsub (Optional)
      * @param timestamp $ts_from     Beginning of the period (Optional)
      * @param timestamp $ts_to       End of the period (Optional)
-     * @param integer   $cache       Cache period for the object (Optional)
+     * @param int   $cache       Cache period for the object (Optional)
      *
      * @return mixed Response from the API
      */
     public function getUserAgents(
-        integer $campaign_id = null,
+        int $campaign_id = null,
         string $from = null,
-        integer $from_id = null,
+        int $from_id = null,
         string $from_domain = null,
-        integer $from_type = null,
-        integer $start = null,
-        integer $limit = null,
+        int $from_type = null,
+        int $start = null,
+        int $limit = null,
         string $status = null,
         $ts_from = null,
         $ts_to = null,
-        integer $cache = null
+        int $cache = null
     )
     {
         $params = array(
@@ -4931,7 +4925,7 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
+     * @param int $cache Cache period for the object - default to 600s = 10m (Optional)
      *
      * @return mixed Response from the API
      */
@@ -4959,7 +4953,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $name  Category name (Required)
-     * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
+     * @param int $cache Cache period for the object - default to 600s = 10m (Optional)
      *
      * @return mixed Response from the API
      */
@@ -4988,7 +4982,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $name  [categoryMethod] name (Required)
-     * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
+     * @param int $cache Cache period for the object - default to 600s = 10m (Optional)
      *
      * @return mixed Response from the API
      */
@@ -5017,7 +5011,7 @@ class Mailjet_ApiOverlay
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
      * @param string  $category Category name (Required)
-     * @param integer $cache    Cache period for the object - default to 600s = 10m (Optional)
+     * @param int $cache    Cache period for the object - default to 600s = 10m (Optional)
      *
      * @return mixed Response from the API
      */
@@ -5045,12 +5039,12 @@ class Mailjet_ApiOverlay
      *
      * @access	public
      * @throw	Mailjet::Mailjet_ApiException
-     * @param integer $code  Code response (Optional)
-     * @param integer $cache Cache period for the object - default to 600s = 10m (Optional)
+     * @param int $code  Code response (Optional)
+     * @param int $cache Cache period for the object - default to 600s = 10m (Optional)
      *
      * @return mixed Response from the API
      */
-    public function getAPIStatus(integer $code = null, $cache = 600)
+    public function getAPIStatus(int $code = null, $cache = 600)
     {
         $params = array(
             'method' => 'GET'
