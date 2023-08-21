@@ -532,7 +532,9 @@ class Mailjet extends Module
         $this->context->controller->addCss($this->_path . '/views/css/style.css');
         $this->context->controller->addCSS($this->_path . '/views/css/bo.css');
         $this->context->controller->addCSS($this->_path . '/views/css/bundlejs_prestashop.css');
-        $this->context->controller->addJquery();
+        if (version_compare(_PS_VERSION_, '8', '<')) {
+            $this->context->controller->addJquery();
+        }
         $this->context->controller->addJs($this->_path . '/views/js/jquery.timer.js');
         $this->context->controller->addJs($this->_path . '/views/js/bo.js');
         $this->context->controller->addJs($this->_path . '/views/js/events.js');
@@ -636,10 +638,9 @@ class Mailjet extends Module
             $this->errors_list[] = $this->l($e->getMessage());
         }
     }
-    
+
     /**
      * Retrieve active segments
-     * @return array
      */
     private function getAutoAssigmentSegments()
     {
@@ -692,7 +693,7 @@ class Mailjet extends Module
             } elseif ($customer->active == 1 && $customer->newsletter == 0) {
                 // Get all lists where customer is subscribed
                 $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
-                
+
                 // Unsubscribe user from all lists where he is subscribed
                 foreach ($subsSegmentListsIds as $listId) {
                     $initialSynchronization->unsubscribe($customer->email, $listId);
@@ -704,7 +705,7 @@ class Mailjet extends Module
             $this->errors_list[] = $this->l($e->getMessage());
         }
     }
-    
+
     /**
      * User profile action
      * @param array $params
@@ -935,7 +936,7 @@ class Mailjet extends Module
                     WHERE id_group = ' . (int)$formatRow['idgroup'] . ' AND id_customer = ' . (int)$id_customer;
                 DB::getInstance()->execute($sql);
             }
-            
+
             $filterIds[$filterId] = $result ? $filterId : false;
         }
         return $filterIds;
@@ -992,7 +993,7 @@ class Mailjet extends Module
 
     public function loadConfiguration()
     {
-        return Db::getInstance()->Execute('INSERT INTO `' . _DB_PREFIX_ . "mj_basecondition` VALUES 
+        return Db::getInstance()->Execute('INSERT INTO `' . _DB_PREFIX_ . "mj_basecondition` VALUES
             (1, 0, '`%1customer` c')")
             && Db::getInstance()->Execute('INSERT INTO `' . _DB_PREFIX_ . "mj_fieldcondition` VALUES
             (2, 1, 105, '', '', 1, NULL),
@@ -1302,7 +1303,7 @@ class Mailjet extends Module
     {
         Configuration::updateValue('PS_MAIL_METHOD', self::DEFAULT_MAIL_OPTION);
     }
-    
+
     public function activateAllEmailMailjet()
     {
         Configuration::updateValue('PS_MAIL_SERVER', $this->mj_mail_server);

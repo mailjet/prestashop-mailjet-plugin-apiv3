@@ -76,7 +76,7 @@ class MailJetPages
     public function initTemplatesAccess()
     {
         $file = __DIR__ . '/../xml/template.xml';
-        if (file_exists($file) && ($xml = simplexml_load_file($file))) {
+        if (file_exists($file) && ($xml = simplexml_load_string(file_get_contents($file)))) {
             $this->default_page = ($this->current_authentication ?
                 (string) $xml->tabs->tab->default_page['name'] :
                 (string) $xml->pages->default_page['name']);
