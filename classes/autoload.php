@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -29,7 +30,7 @@ spl_autoload_register('autoload');
 function autoload($className)
 {
     $classesDir = _PS_MODULE_DIR_ . 'mailjet/classes/';
-    $classesDirArr=iterator_to_array(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir)), true);
+    $classesDirArr = iterator_to_array(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($classesDir)), true);
     foreach (array_keys($classesDirArr) as $filePath) {
         $fileChunks = explode(DIRECTORY_SEPARATOR, $filePath);
         $fileArr = pathinfo(array_pop($fileChunks));

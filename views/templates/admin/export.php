@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2019 PrestaShop
  *
@@ -24,8 +25,8 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(realpath(dirname(__FILE__) . '/../../../../../') . '/config/config.inc.php');
-include_once(_PS_ROOT_DIR_ . '/init.php');
+require_once realpath(dirname(__FILE__) . '/../../../../../') . '/config/config.inc.php';
+require_once _PS_ROOT_DIR_ . '/init.php';
 header('Content-Type: application/octet-stream');
 header('Content-Disposition: attachment; filename="customersegmentation' . time() . '.csv');
 $token_ok = Tools::getAdminToken('AdminModules');
@@ -34,7 +35,7 @@ if (!Tools::getValue('token') && Tools::getValue('token') != $token_ok) {
     die('hack attempt');
 }
 
-include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
 
 $obj = new Segmentation();
 

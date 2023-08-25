@@ -30,57 +30,65 @@
      */
     function checkMerchantSetupState()
     {
-        $.ajax({
-            type: 'POST',
-            url: _PS_MJ_MODULE_DIR_ + 'ajax.php',
-            data: {'method': 'checkMerchantSetupState', 'token': MJ_TOKEN, 'admin_token': MJ_ADMINMODULES_TOKEN},
-            dataType: 'json',
-            success: function (json)
+        $.ajax(
             {
-                if (json && json.result)
-                    window.location.href = json.url;
-            },
-            error: function (xhr, ajaxOptions, thrownError)
-            {
-                // console.log(xhr)
+                type: 'POST',
+                url: _PS_MJ_MODULE_DIR_ + 'ajax.php',
+                data: {'method': 'checkMerchantSetupState', 'token': MJ_TOKEN, 'admin_token': MJ_ADMINMODULES_TOKEN},
+                dataType: 'json',
+                success: function (json) {
+                    if (json && json.result) {
+                        window.location.href = json.url;
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    // console.log(xhr)
+                }
             }
-        });
+        );
     }
 
-    $(document).ready(function () {
+    $(document).ready(
+        function () {
 
-        $('#mj_login_form').submit(function () {
-            var mj_api_key = $('#mj_api_key').val();
-            var mj_secret_key = $('#mj_secret_key').val();
-            var data = {
-                method: 'checkMjAuth',
-                mj_api_key: mj_api_key,
-                mj_secret_key: mj_secret_key
-            };
-            $.post(_PS_MJ_MODULE_DIR_ + 'ajax.php', data, function (response) {
-                if (response === false) {
-                    $('#loading_message').hide();
-                    $('#wrong_credentials_message').show();
+            $('#mj_login_form').submit(
+                function () {
+                    var mj_api_key = $('#mj_api_key').val();
+                    var mj_secret_key = $('#mj_secret_key').val();
+                    var data = {
+                        method: 'checkMjAuth',
+                        mj_api_key: mj_api_key,
+                        mj_secret_key: mj_secret_key
+                    };
+                    $.post(
+                        _PS_MJ_MODULE_DIR_ + 'ajax.php', data, function (response) {
+                            if (response === false) {
+                                $('#loading_message').hide();
+                                $('#wrong_credentials_message').show();
+                            }
+                        }
+                    );
+                    $('#login_button').hide();
+                    $('#wrong_credentials_message').hide();
+                    $('#loading_message').show();
                 }
-            });
-            $('#login_button').hide();
-            $('#wrong_credentials_message').hide();
-            $('#loading_message').show();
-        });
+            );
 
-        switch (MJ_page_name)
-        {
+            switch (MJ_page_name) {
             case MJ_SETUP_STEP_1:
                 var timer = $.timer(checkMerchantSetupState);
                 timer.set({time: 10000, autostart: true});
                 break;
 
             case MJ_LOGIN:
-                $('#MJ_auth_link').click(function () {
-                    $('#MJ_auth_form').submit();
-                    return false;
-                });
-                break;
+                $('#MJ_auth_link').click(
+                    function () {
+                        $('#MJ_auth_form').submit();
+                        return false;
+                    }
+                );
+                    break;
+            }
         }
-    });
+    );
 })(jQuery);

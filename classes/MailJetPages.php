@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -36,6 +37,7 @@ class MailJetPages
 
     /**
      * Available page list (load from xml)
+     *
      * @var array
      */
     public $available_page = array();
@@ -43,6 +45,7 @@ class MailJetPages
     /**
      * Page require an user authentication to the mailjet service
      * (load from xml)
+     *
      * @var array
      */
     public $require_authentication_pages = array();
@@ -118,6 +121,7 @@ class MailJetPages
 
     /**
      * Get current Page
+     *
      * @return array|false|string|string[]|null
      */
     public function getCurrentPageName()/* $account_status) */
@@ -148,7 +152,7 @@ class MailJetPages
     /**
      * Return the template name (btw, check if the page exist)
      *
-     * @param $name
+     * @param  $name
      * @return mixed
      */
     public function getTemplateName($name)
@@ -159,7 +163,8 @@ class MailJetPages
 
     /**
      * Check if the page is available into the list
-     * @param $name
+     *
+     * @param  $name
      * @return bool
      */
     public function isAvailablePage($name)
@@ -170,7 +175,7 @@ class MailJetPages
     /**
      * Check if a page require that the user is logged
      *
-     * @param $page
+     * @param  $page
      * @return bool
      */
     public function isRequireAuthenticationPage($page)

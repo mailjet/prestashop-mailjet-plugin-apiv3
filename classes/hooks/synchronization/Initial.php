@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -26,7 +27,6 @@
 
 class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbstract
 {
-
     const CHUNK_SIZE = 2500;
 
     /**
@@ -94,10 +94,12 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
                 /*
                  * Sets related contact meta data like firstname, lastname, etc...
                  */
-                $this->getApiOverlay()->setContactMetaData(array(
+                $this->getApiOverlay()->setContactMetaData(
+                    array(
                     array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
                     array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
-                ));
+                    )
+                );
             }
 
             $asyncJobResponse = $apiOverlay->asyncManageContactsToList($contacts, $newlyCreatedListId);
@@ -107,11 +109,11 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
                 $segmentSynch->deleteList($newlyCreatedListId);
                 throw new HooksSynchronizationException('There is a problem with the creation of the contacts.');
             }
-//            $batchJobResponse = $apiOverlay->getAsyncJobStatus($newlyCreatedListId, $asyncJobResponse);
-//
-//            if ($batchJobResponse == false) {
-//                throw new HooksSynchronizationException('Batchjob problem');
-//            }
+            //            $batchJobResponse = $apiOverlay->getAsyncJobStatus($newlyCreatedListId, $asyncJobResponse);
+            //
+            //            if ($batchJobResponse == false) {
+            //                throw new HooksSynchronizationException('Batchjob problem');
+            //            }
 
             $start = $start + self::CHUNK_SIZE;
             $allUsers = $this->getActiveCustomers($start, $limit);

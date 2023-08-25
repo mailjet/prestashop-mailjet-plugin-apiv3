@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,8 +25,8 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(realpath(dirname(__FILE__) . '/../../../') . '/config/config.inc.php');
-include_once(_PS_ROOT_DIR_ . '/init.php');
+require_once realpath(dirname(__FILE__) . '/../../../') . '/config/config.inc.php';
+require_once _PS_ROOT_DIR_ . '/init.php';
 
 $response = false;
 /* $token_ok = Tools::getAdminTokenLite('AdminModules'); */
@@ -39,11 +40,11 @@ if (Tools::getValue('idfilter') == 0 && Tools::getValue('action') === 'getQuery'
     die('You have to save the list first.');
 }
 
-include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
 /* include_once(_PS_MODULE_DIR_.'mailjet/classes/MailjetAPI.php'); */
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetTemplate.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/MailJetTemplate.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php';
 
 if (Tools::getValue('action') === 'getQuery') {
     Configuration::updateValue('MJ_PERCENTAGE_SYNC', 0);

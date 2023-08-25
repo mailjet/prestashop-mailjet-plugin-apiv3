@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2019 PrestaShop
  *
@@ -28,7 +29,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-require_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
 
 function upgrade_module_3_6_0($object)
 {

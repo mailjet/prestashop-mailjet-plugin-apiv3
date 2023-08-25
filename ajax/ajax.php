@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,8 +25,8 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(dirname(dirname(dirname(__DIR__))) . '/' . '/config/config.inc.php');
-include_once(_PS_ROOT_DIR_ . '/init.php');
+require_once dirname(dirname(dirname(__DIR__))) . '/' . '/config/config.inc.php';
+require_once _PS_ROOT_DIR_ . '/init.php';
 
 //header('Content-Type: application/json');
 
@@ -42,7 +43,7 @@ if (Tools::getValue('token') !== $token_ok) {
 }
 
 
-include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
 
 $obj = new segmentation();
 
@@ -56,128 +57,128 @@ if (Tools::getValue('action') === 'getIndic') {
 
 if (Tools::getValue('action') === 'getBinder') {
     switch (Tools::getValue('ID')) {
-        case 3: /* order states */
-            $orderStates = OrderState::getOrderStates($obj->getCurrentIdLang());
+    case 3: /* order states */
+        $orderStates = OrderState::getOrderStates($obj->getCurrentIdLang());
 
-            $bindOrderStates = array();
-            foreach ($orderStates as $orderState) {
-                $bindOrderStates[$orderState['id_order_state']] = $orderState['name'];
-            }
+        $bindOrderStates = array();
+        foreach ($orderStates as $orderState) {
+            $bindOrderStates[$orderState['id_order_state']] = $orderState['name'];
+        }
 
-            $bind = array(
-                'return' => array('order'),
-                'values' => $bindOrderStates
-            );
+        $bind = array(
+            'return' => array('order'),
+            'values' => $bindOrderStates
+        );
 
-            die(json_encode($bind));
+        die(json_encode($bind));
         /* break; */
-        case 4: /* payment method used */
-            $res = Db::getInstance()->executeS('SELECT DISTINCT(payment) FROM ' . _DB_PREFIX_ . 'orders');
+    case 4: /* payment method used */
+        $res = Db::getInstance()->executeS('SELECT DISTINCT(payment) FROM ' . _DB_PREFIX_ . 'orders');
 
-            $values = array();
-            foreach ($res as $key => $value) {
-                $values[$value['payment']] = $value['payment'];
-            }
+        $values = array();
+        foreach ($res as $key => $value) {
+            $values[$value['payment']] = $value['payment'];
+        }
 
-            $bind = array(
-                'return' => array('payment-method'),
-                'values' => $values
-            );
+        $bind = array(
+            'return' => array('payment-method'),
+            'values' => $values
+        );
 
-            die(json_encode($bind));
+        die(json_encode($bind));
         /* break; */
-        case 8: /* ca */
-        case 9: /* avg ca */
-            $values = array(
-                1 => $obj->ll(53),
-                2 => $obj->ll(54)
-            );
+    case 8: /* ca */
+    case 9: /* avg ca */
+        $values = array(
+            1 => $obj->ll(53),
+            2 => $obj->ll(54)
+        );
 
-            $bind = array(
-                'return' => array('ca'),
-                'values' => $values
-            );
+        $bind = array(
+            'return' => array('ca'),
+            'values' => $values
+        );
 
-            die(json_encode($bind));
+        die(json_encode($bind));
         /* break; */
-        case 19: /* newsletter subscription */
-            $values = array(
-                1 => $obj->ll(67),
-                0 => $obj->ll(68)
-            );
+    case 19: /* newsletter subscription */
+        $values = array(
+            1 => $obj->ll(67),
+            0 => $obj->ll(68)
+        );
 
-            $bind = array(
-                'return' => array('yn', 'date', 'date'),
-                'values' => $values
-            );
+        $bind = array(
+            'return' => array('yn', 'date', 'date'),
+            'values' => $values
+        );
 
-            die(json_encode($bind));
+        die(json_encode($bind));
         /* break; */
-        case 15: /* gift package */
-        case 16: /* recycled packaging */
-        case 20: /* newsletter optin */
-        case 22: /* voucher */
-        case 23: /* assets */
-        case 24: /* product return */
-        case 34: /* voucher */
-            $values = array(
-                1 => $obj->ll(67),
-                0 => $obj->ll(68)
-            );
+    case 15: /* gift package */
+    case 16: /* recycled packaging */
+    case 20: /* newsletter optin */
+    case 22: /* voucher */
+    case 23: /* assets */
+    case 24: /* product return */
+    case 34: /* voucher */
+        $values = array(
+            1 => $obj->ll(67),
+            0 => $obj->ll(68)
+        );
 
-            $bind = array(
-                'return' => array('yn'),
-                'values' => $values
-            );
+        $bind = array(
+            'return' => array('yn'),
+            'values' => $values
+        );
 
-            die(json_encode($bind));
+        die(json_encode($bind));
         /* break; */
-        case 21: /* origin	 */
-            $sql = 'SELECT DISTINCT(conn.http_referer) AS url FROM ' . _DB_PREFIX_ . 'connections conn
+    case 21: /* origin   */
+        $sql = 'SELECT DISTINCT(conn.http_referer) AS url FROM ' . _DB_PREFIX_ . 'connections conn
 					LEFT JOIN ' . _DB_PREFIX_ . 'guest g on g.id_guest = conn.id_guest
 					LEFT JOIN ' . _DB_PREFIX_ . 'customer c ON c.id_customer = g.id_customer
 					WHERE LENGTH(conn.http_referer) > 0 AND c.id_customer IS NOT NULL';
-            $res = Db::getInstance()->executeS($sql);
+        $res = Db::getInstance()->executeS($sql);
 
-            $values = array();
-            foreach ($res as $key => $value) {
-                $url = $obj->getDomain($value['url']);
-                $values[$url] = $url;
-            }
-            asort($values, SORT_STRING);
+        $values = array();
+        foreach ($res as $key => $value) {
+            $url = $obj->getDomain($value['url']);
+            $values[$url] = $url;
+        }
+        asort($values, SORT_STRING);
 
-            $bind = array(
-                'return' => array('origin'),
-                'values' => $values
-            );
+        $bind = array(
+            'return' => array('origin'),
+            'values' => $values
+        );
 
-            die(json_encode($bind));
+        die(json_encode($bind));
         /* break; */
-        case 27: /* city */
-            $sql = 'SELECT DISTINCT(TRIM(a.city)) AS city FROM ' . _DB_PREFIX_ . 'address a
+    case 27: /* city */
+        $sql = 'SELECT DISTINCT(TRIM(a.city)) AS city FROM ' . _DB_PREFIX_ . 'address a
 					LEFT JOIN ' . _DB_PREFIX_ . 'customer c ON c.id_customer = a.id_customer
 					WHERE c.deleted = 0 AND a.active = 1 AND a.deleted = 0 AND a.city IS NOT NULL';
-            $res = Db::getInstance()->executeS($sql);
+        $res = Db::getInstance()->executeS($sql);
 
-            $values = array();
-            foreach ($res as $key => $value) {
-                $values[$value['city']] = ucwords(mb_strtolower($value['city']));
-            }
-            asort($values, SORT_STRING);
+        $values = array();
+        foreach ($res as $key => $value) {
+            $values[$value['city']] = ucwords(mb_strtolower($value['city']));
+        }
+        asort($values, SORT_STRING);
 
-            $bind = array(
-                'return' => array('city'),
-                'values' => $values
-            );
+        $bind = array(
+            'return' => array('city'),
+            'values' => $values
+        );
 
-            die(json_encode($bind));
+        die(json_encode($bind));
         /* break; */
-        default:
-            $bind = $obj->getBinder(Tools::getValue('ID'));
-            if ($bind != '') {
-                $json = json_encode(explode(';', $bind));
-                die('{"return" : ' . $json . '}');
-            }
+    default:
+        $bind = $obj->getBinder(Tools::getValue('ID'));
+        if ($bind != '') {
+            $json = json_encode(explode(';', $bind));
+            die('{"return" : ' . $json . '}');
+        }
     }
 
     die(''); /* default */
@@ -196,22 +197,22 @@ if (Tools::getValue('action') === 'getCountry') {
 }
 
 if (Tools::getValue('action') === 'date') {
-    include_once(realpath(dirname(__FILE__) . '/../../..') . '/libraries/date.inc.php');
+    include_once realpath(dirname(__FILE__) . '/../../..') . '/libraries/date.inc.php';
     $ret = array();
     switch (Tools::getValue('typedate')) {
-        case 0:
-            $ret = get_week(Tools::getValue('periode') - 1, Tools::getValue('years'));
-            break;
-        case 1:
-            $ret = get_month(Tools::getValue('periode'), Tools::getValue('years'));
-            break;
-        case 2:
-            $ret = get_trimester(Tools::getValue('periode'), Tools::getValue('years'));
-            break;
-        case 3:
-            $ret['start'] = Tools::getValue('periode') . '-01-01';
-            $ret['end'] = Tools::getValue('periode') . '-12-31';
-            break;
+    case 0:
+        $ret = get_week(Tools::getValue('periode') - 1, Tools::getValue('years'));
+        break;
+    case 1:
+        $ret = get_month(Tools::getValue('periode'), Tools::getValue('years'));
+        break;
+    case 2:
+        $ret = get_trimester(Tools::getValue('periode'), Tools::getValue('years'));
+        break;
+    case 3:
+        $ret['start'] = Tools::getValue('periode') . '-01-01';
+        $ret['end'] = Tools::getValue('periode') . '-12-31';
+        break;
     }
     die($ret['start'] . '/' . $ret['end']);
 }
@@ -225,12 +226,12 @@ if (Tools::getValue('action') === 'Save') {
     $replace_customer = false;
     if (Tools::getIsset('replace-customer')) {
         switch (Tools::getValue('replace-customer')) {
-            case 'rep':
-                $replace_customer = true;
-                break;
-            case 'add':
-            default:
-                $replace_customer = false;
+        case 'rep':
+            $replace_customer = true;
+            break;
+        case 'add':
+        default:
+            $replace_customer = false;
         }
     }
 
@@ -285,8 +286,10 @@ if (Tools::getValue('action') === 'addGroup') {
         }
     }
     foreach ($rows as $row) {
-        Db::getInstance()->Execute('INSERT INTO `' . _DB_PREFIX_ . 'customer_group` (`id_customer`, `id_group`)
-            VALUES ("' . pSQL($row[$obj->ll(47)]) . '", "' . ((int) Tools::getValue('idgroup')) . '")');
+        Db::getInstance()->Execute(
+            'INSERT INTO `' . _DB_PREFIX_ . 'customer_group` (`id_customer`, `id_group`)
+            VALUES ("' . pSQL($row[$obj->ll(47)]) . '", "' . ((int) Tools::getValue('idgroup')) . '")'
+        );
     }
 
     die(true);
@@ -452,35 +455,35 @@ function getNumberCustomer($table, $val1, $val2, $op, $field, $range)
 function getNumber($op, $val, $field)
 {
     switch (trim($op)) {
-        case '+':
-            if ($field > $val) {
-                return true;
-            }
-            break;
-        case '+=':
-        case '=+':
-            if ($field >= $val) {
-                return true;
-            }
-            break;
-        case '-':
-            if ($field < $val) {
-                return true;
-            }
-            break;
-        case '-=':
-        case '=-':
-            if ($field <= $val) {
-                return true;
-            }
-            break;
-        case '=':
-            if ($field == $val) {
-                return true;
-            }
-            break;
-        default:
-            return false;
+    case '+':
+        if ($field > $val) {
+            return true;
+        }
+        break;
+    case '+=':
+    case '=+':
+        if ($field >= $val) {
+            return true;
+        }
+        break;
+    case '-':
+        if ($field < $val) {
+            return true;
+        }
+        break;
+    case '-=':
+    case '=-':
+        if ($field <= $val) {
+            return true;
+        }
+        break;
+    case '=':
+        if ($field == $val) {
+            return true;
+        }
+        break;
+    default:
+        return false;
         /* break; */
     }
 }

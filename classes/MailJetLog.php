@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -31,6 +32,7 @@ class MailJetLog
 
     /**
      * Init default value
+     *
      * @static
      */
     public static function init()

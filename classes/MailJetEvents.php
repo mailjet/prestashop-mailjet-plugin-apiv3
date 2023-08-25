@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -33,9 +34,9 @@ class MailJetEvents extends ObjectModel
     protected $fieldsRequired = array('event', 'time');
     private $default_scheme = array();
 
-    const DEFAULT_EVENT = 'open';
-    const ALL_EVENTS_KEYS = 'keys_list';
-    const LIMIT_EVENT = 50;
+    public const DEFAULT_EVENT = 'open';
+    public const ALL_EVENTS_KEYS = 'keys_list';
+    public const LIMIT_EVENT = 50;
 
     private $limit_event;
     public $current_page;
@@ -50,7 +51,7 @@ class MailJetEvents extends ObjectModel
      * Set default value to be able to use the install / uninstall method
      *
      * @param string $event
-     * @param bool $time
+     * @param bool   $time
      */
     public function __construct($event = MailJetEvents::DEFAULT_EVENT, $post_vars = array(), $time = null, $id_events = null)
     {
@@ -74,7 +75,7 @@ class MailJetEvents extends ObjectModel
     /**
      * Get a requested scheme
      *
-     * @param $name
+     * @param  $name
      * @return array
      */
     public function getScheme($name)
@@ -248,14 +249,14 @@ class MailJetEvents extends ObjectModel
 
         foreach ($this->params as $key => $content) {
             switch ($content['type']) {
-                case 'string':
-                    $content['value'] = pSQL($content['value']);
-                    break;
-                case 'int':
-                    $content['value'] = (int) $content['value'];
-                    break;
-                default:
-                    $content['value'] = pSQL($content['value']);
+            case 'string':
+                $content['value'] = pSQL($content['value']);
+                break;
+            case 'int':
+                $content['value'] = (int) $content['value'];
+                break;
+            default:
+                $content['value'] = pSQL($content['value']);
             }
             $fields[$key] = $content['value'];
         }

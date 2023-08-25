@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -28,7 +29,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 {
     /**
      *
-     * @param string $email
+     * @param  string $email
      * @return boolean
      */
     public function subscribe($email, $list_id = null)
@@ -75,8 +76,9 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
     /**
      * Add to a list(same status as in PS)
-     * @param Customer $customer
-     * @param int $mailjet_list_id
+     *
+     * @param  Customer $customer
+     * @param  int      $mailjet_list_id
      * @return boolean
      */
     public function addToList($customer, $mailjet_list_id)
@@ -100,7 +102,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
     /**
      *
-     * @param string $email
+     * @param  string $email
      * @return boolean
      */
     public function unsubscribe($email, $list_id = null)
@@ -135,7 +137,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
         return true;
     }
-    
+
     public function unsubscribeListsExceptMaster($email)
     {
         $apiOverlay = $this->getApiOverlay();
@@ -161,7 +163,8 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
     /**
      * Get segment lists in which a customer is subscribed
-     * @param string $email
+     *
+     * @param  string $email
      * @return [int] $subscribedListsIds
      */
     public function getSubscribedSegmentLists($email)
@@ -182,7 +185,8 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
     /**
      * Remove email from a specific list or from all lists except masterList
-     * @param string $email
+     *
+     * @param  string $email
      * @return boolean
      */
     public function remove($email, $list_id = null)
@@ -224,7 +228,8 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
 
     /**
      * Remove email from all lists even in masterList
-     * @param string $email
+     *
+     * @param  string $email
      * @return boolean
      */
     public function removeFromAllLists($email)

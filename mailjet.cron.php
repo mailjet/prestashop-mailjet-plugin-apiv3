@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,10 +25,10 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-require_once(dirname(__FILE__) . '/../../config/config.inc.php');
-require_once(dirname(__FILE__) . '/../../init.php');
+require_once dirname(__FILE__) . '/../../config/config.inc.php';
+require_once dirname(__FILE__) . '/../../init.php';
 
-require_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
 
 $mailjet = new Mailjet();
 

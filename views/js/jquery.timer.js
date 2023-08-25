@@ -58,17 +58,18 @@
             if (isNaN(time)) {
                 time = 0;
             }
-            window.setTimeout(function () {
-                timer.action();
-            }, time);
+            window.setTimeout(
+                function () {
+                    timer.action();
+                }, time
+            );
             return this;
         };
         this.play = function (reset) {
             if (!this.isActive) {
                 if (reset) {
                     this.setTimer();
-                }
-                else {
+                } else {
                     this.setTimer(this.remaining);
                 }
                 this.isActive = true;
@@ -92,11 +93,9 @@
         this.toggle = function (reset) {
             if (this.isActive) {
                 this.pause();
-            }
-            else if (reset) {
+            } else if (reset) {
                 this.play(true);
-            }
-            else {
+            } else {
                 this.play();
             }
             return this;
@@ -120,9 +119,11 @@
             this.remaining = time;
             this.last = new Date();
             this.clearTimer();
-            this.timeoutObject = window.setTimeout(function () {
-                timer.go();
-            }, time);
+            this.timeoutObject = window.setTimeout(
+                function () {
+                    timer.go();
+                }, time
+            );
         };
         this.go = function () {
             if (this.isActive) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -26,7 +27,6 @@
 
 class MailJetTranslate
 {
-
     public static function getTranslationsByName($name, $iso = false)
     {
         $file = __DIR__ . '/../xml/translate.xml';

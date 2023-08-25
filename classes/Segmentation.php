@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,17 +25,16 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Initial.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/libraries/Mailjet.Overlay.class.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/libraries/Mailjet.Api.class.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetTemplate.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SynchronizationAbstract.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Initial.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/libraries/Mailjet.Overlay.class.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/libraries/Mailjet.Api.class.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/MailJetTemplate.php';
 
 class Segmentation
 {
-
     public $page;
     public $trad;
 
@@ -69,7 +69,8 @@ class Segmentation
         $this->clearCacheLang();
         $this->initLang();
 
-        Context::getContext()->smarty->assign(array(
+        Context::getContext()->smarty->assign(
+            array(
             'mj__PS_BASE_URI__' => __PS_BASE_URI__,
             'mj_PS_JS_DIR_' => _PS_JS_DIR_,
             'mj_MODULE_DIR_' => _MODULE_DIR_,
@@ -105,7 +106,8 @@ class Segmentation
             'mj_groups' => Group::getGroups((int) Context::getContext()->cookie->id_lang),
             'mj_filter_list' => Db::getInstance()->ExecuteS('SELECT * FROM `' . _DB_PREFIX_ . 'mj_filter`'),
             'mj_base_select' => Db::getInstance()->ExecuteS('SELECT id_basecondition, label FROM `' . _DB_PREFIX_ . 'mj_basecondition`')
-        ));
+            )
+        );
 
         return '';
     }
@@ -117,7 +119,7 @@ class Segmentation
             $trad_file = _PS_MODULE_DIR_ . 'mailjet/translations/' . Context::getContext()->language->iso_code . '.php';
             if (file_exists($trad_file)) {
                 $_MODULE = array();
-                @include_once($trad_file);
+                @include_once $trad_file;
 
                 $key = '<{mailjet}prestashop>segmentation_' . md5(str_replace('\'', '\\\'', $string));
             }
@@ -186,45 +188,46 @@ class Segmentation
     public function formatDate($post)
     {
         switch ((int) Context::getContext()->cookie->id_lang) {
-            case 2:
-                $dataToFormat = array(33);
-                if (isset($post['fieldSelect'])) {
-                    foreach ($post['fieldSelect'] as $key => $value) {
-                        if (in_array($value, array(12, 17, 18, 19, 20, 28, 35, 36))) {
-                            if (Tools::strlen($post['value1'][$key]) >= 10) {
-                                $post['value1'][$key] = Tools::substr($post['value1'][$key], 6, 4) . '-' .
-                                Tools::substr($post['value1'][$key], 3, 2) .
-                                '-' .
-                                Tools::substr($post['value1'][$key], 0, 2);
-                            }
-
-                            if (Tools::strlen($post['value2'][$key]) >= 10) {
-                                $post['value2'][$key] = Tools::substr($post['value2'][$key], 6, 4) . '-' .
-                                Tools::substr($post['value2'][$key], 3, 2) .
-                                '-' .
-                                Tools::substr($post['value2'][$key], 0, 2);
-                            }
+        case 2:
+            $dataToFormat = array(33);
+            if (isset($post['fieldSelect'])) {
+                foreach ($post['fieldSelect'] as $key => $value) {
+                    if (in_array($value, array(12, 17, 18, 19, 20, 28, 35, 36))) {
+                        if (Tools::strlen($post['value1'][$key]) >= 10) {
+                            $post['value1'][$key] = Tools::substr($post['value1'][$key], 6, 4) . '-' .
+                            Tools::substr($post['value1'][$key], 3, 2) .
+                            '-' .
+                            Tools::substr($post['value1'][$key], 0, 2);
                         }
-                        if (in_array($value, $dataToFormat)) {
-                            if (Tools::strlen($post['data'][$key]) >= 10) {
-                                $post['data'][$key] = Tools::substr($post['data'][$key], 6, 4) . '-' .
-                                Tools::substr($post['data'][$key], 3, 2) .
-                                '-' .
-                                Tools::substr($post['data'][$key], 0, 2);
-                            }
+
+                        if (Tools::strlen($post['value2'][$key]) >= 10) {
+                            $post['value2'][$key] = Tools::substr($post['value2'][$key], 6, 4) . '-' .
+                            Tools::substr($post['value2'][$key], 3, 2) .
+                            '-' .
+                            Tools::substr($post['value2'][$key], 0, 2);
+                        }
+                    }
+                    if (in_array($value, $dataToFormat)) {
+                        if (Tools::strlen($post['data'][$key]) >= 10) {
+                            $post['data'][$key] = Tools::substr($post['data'][$key], 6, 4) . '-' .
+                            Tools::substr($post['data'][$key], 3, 2) .
+                            '-' .
+                            Tools::substr($post['data'][$key], 0, 2);
                         }
                     }
                 }
-                break;
-            default:
+            }
+            break;
+        default:
         }
         return $post;
     }
 
     /**
      * Retrieves segments of specified type
-     * @param int $segmentIndex
-     * @param int[] $sourceSelect
+     *
+     * @param  int   $segmentIndex
+     * @param  int[] $sourceSelect
      * @return int[]
      */
     public function getSegmentByType($segmentIndex, $sourceSelect)
@@ -239,10 +242,10 @@ class Segmentation
     }
 
     /**
-     * @param array $post
-     * @param bool $live
-     * @param bool $limit
-     * @param bool $having_id_customer
+     * @param  array $post
+     * @param  bool  $live
+     * @param  bool  $limit
+     * @param  bool  $having_id_customer
      * @return string
      * @throws PrestaShopDatabaseException
      */
@@ -297,179 +300,110 @@ class Segmentation
                     }
                     switch ($case) {
                         // Gender
-                        case '11':
-                            $i++;
-                            // In db customer without gender is set to 0 insteat of 9
-                            $gender = $sourceData[$fieldKey] == 9 ? 0 : $sourceData[$fieldKey];
-                            $where .= $logicalOperator . ' c.id_gender ' . $operator . ' ' . $gender;
-                            break;
+                    case '11':
+                        $i++;
+                        // In db customer without gender is set to 0 insteat of 9
+                        $gender = $sourceData[$fieldKey] == 9 ? 0 : $sourceData[$fieldKey];
+                        $where .= $logicalOperator . ' c.id_gender ' . $operator . ' ' . $gender;
+                        break;
                         // Subscription date
-                        case '12':
-                            $i++;
-                            $data = false;
-                            $where .= $logicalOperator . ' c.newsletter = 1 ';
+                    case '12':
+                        $i++;
+                        $data = false;
+                        $where .= $logicalOperator . ' c.newsletter = 1 ';
 
-                            if (Tools::strlen($value1[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[82]);
-                                }
-                                $data = true;
-                                $where .= ' AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
-                                . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
-                            }
-                            if (Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[82]);
-                                }
-                                $data = true;
-                                $where .= 'AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
-                                . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
-                            }
-                            if ($exclude) {
-                                $where .= ' OR c.newsletter_date_add="0000-00-00 00:00:00" ';
-                            }
-
-                            if (!$data) {
+                        if (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
                                 $this->displayRuleError($i, $this->trad[82]);
                             }
-                            break;
+                            $data = true;
+                            $where .= ' AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
+                            . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        }
+                        if (Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value2[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[82]);
+                            }
+                            $data = true;
+                            $where .= 'AND UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
+                            . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        }
+                        if ($exclude) {
+                            $where .= ' OR c.newsletter_date_add="0000-00-00 00:00:00" ';
+                        }
+
+                        if (!$data) {
+                            $this->displayRuleError($i, $this->trad[82]);
+                        }
+                        break;
                         // Country
-                        case '13':
-                            $i++;
-                            $where .= $logicalOperator . ' ad.id_country ' . $operator . ' ' . $sourceData[$fieldKey];
-                            break;
+                    case '13':
+                        $i++;
+                        $where .= $logicalOperator . ' ad.id_country ' . $operator . ' ' . $sourceData[$fieldKey];
+                        break;
                         // Last visit
-                        case '17':
-                            $i++;
-                            break;
+                    case '17':
+                        $i++;
+                        break;
                         // Date of birth
-                        case '18':
-                            $i++;
-                            $data = false;
-                            if (Tools::strlen($value1[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[85]);
-                                }
-                                $data = true;
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $minAction
-                                . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
-                            }
-                            if (Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[85]);
-                                }
-                                $data = true;
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $maxAction
-                                . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
-                            }
-                            if ($exclude) {
-                                $where .= ' OR c.birthday="0000-00-00" ';
-                            }
-                            if (!$data) {
+                    case '18':
+                        $i++;
+                        $data = false;
+                        if (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
                                 $this->displayRuleError($i, $this->trad[85]);
                             }
-                            break;
+                            $data = true;
+                            $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $minAction
+                            . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        }
+                        if (Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[85]);
+                            }
+                            $data = true;
+                            $where .= $logicalOperator . ' UNIX_TIMESTAMP(c.birthday) ' . $maxAction
+                            . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        }
+                        if ($exclude) {
+                            $where .= ' OR c.birthday="0000-00-00" ';
+                        }
+                        if (!$data) {
+                            $this->displayRuleError($i, $this->trad[85]);
+                        }
+                        break;
                         // Newsletter subscription and date
-                        case '19':
-                            $i++;
-                            $where .= $logicalOperator . ' c.newsletter ' . $operator . ' ' . $sourceData[$fieldKey];
-                            if (Tools::strlen($value1[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[82]);
-                                }
-                                $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
-                                . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                    case '19':
+                        $i++;
+                        $where .= $logicalOperator . ' c.newsletter ' . $operator . ' ' . $sourceData[$fieldKey];
+                        if (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[82]);
                             }
-                            if (Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[82]);
-                                }
-                                $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
-                                . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                            $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $minAction
+                            . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        }
+                        if (Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[82]);
                             }
-                            if ($exclude) {
-                                $where .= ' OR c.newsletter_date_add="0000-00-00 00:00:00" ';
-                            }
-                            break;
+                            $where .= 'UNIX_TIMESTAMP(c.newsletter_date_add) ' . $maxAction
+                            . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        }
+                        if ($exclude) {
+                            $where .= ' OR c.newsletter_date_add="0000-00-00 00:00:00" ';
+                        }
+                        break;
                         // Newsletter opt-in
-                        case '20':
-                            $i++;
-                            $where .= $logicalOperator . ' c.optin ' . $operator . ' ' . $sourceData[$fieldKey];
-                            break;
+                    case '20':
+                        $i++;
+                        $where .= $logicalOperator . ' c.optin ' . $operator . ' ' . $sourceData[$fieldKey];
+                        break;
                         // Origin
-                        case '21':
-                            $i++;
-                            // @todo Data is empty allways
-                            if ($sourceData[$fieldKey]) {
-                                if (!in_array('guest', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'guest AS g ON g.id_customer = c.id_customer ';
-                                    $joined_tables[] = 'guest';
-                                }
-                                if (!in_array('connections', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'connections conn ON conn.id_guest = g.id_guest ';
-                                    $joined_tables[] = 'connections';
-                                }
-                                $like = ' LIKE ';
-                                if ($exclude) {
-                                    $like = ' NOT LIKE ';
-                                }
-                                $where .= $logicalOperator . ' conn.http_referer ' . $like . ' "%' . pSQL($sourceData[$fieldKey]) . '%"';
-                            }
-                            break;
-                        // Promo code
-                        case '22':
-                            $i++;
-                            $discount_table = _PS_VERSION_ >= '1.5.0.1' ? 'cart_rule' : 'discount';
-                            if (!in_array($discount_table, $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . $discount_table . ' AS d ON d.id_customer = c.id_customer ';
-                                $joined_tables[] = $discount_table;
-                            }
-                            $where .= $logicalOperator . 'd.active' . $operator . (int) $sourceData[$fieldKey];
-                            break;
-                        // Assets
-                        case '23':
-                            $i++;
-                            break;
-                        // Product return
-                        case '24':
-                            $i++;
-                            if (!in_array('order_return', $joined_tables)) {
-                                $join .= 'LEFT JOIN ' . _DB_PREFIX_ . 'order_return AS oret ON oret.id_customer = c.id_customer';
-                                $joined_tables[] = 'order_return';
-                            }
-                            $where .= $logicalOperator . ' oret.id_customer ' . $operator . ' ' . $sourceData[$fieldKey];
-                            break;
-                        // Address contains
-                        case '25':
-                            $i++;
-                            if (Tools::strlen($sourceData[$fieldKey]) > 0) {
-                                if ($action) {
-                                    // Include
-                                    $where .= $logicalOperator . ' ad.address1 LIKE "%' . pSQL($sourceData[$fieldKey]) . '%" '
-                                    . ' OR ad.address2 LIKE "%' . $sourceData[$fieldKey] . '%" ';
-                                } else {
-                                    // Exclude
-                                    $where .= $logicalOperator . ' ((ad.address1 IS NULL OR ad.address1 NOT LIKE "%' . pSQL($sourceData[$fieldKey]) . '%" ) AND '
-                                    . ' (ad.address2 IS NULL OR ad.address2 NOT LIKE "%' . $sourceData[$fieldKey] . '%" ))';
-                                }
-                            }
-                            break;
-                        // Postcode starts with
-                        case '26':
-                            $i++;
-                            if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
-                                if ($action) {
-                                    // Include
-                                    $where .= $logicalOperator . ' ad.postcode LIKE "' . pSQL($sourceData[$fieldKey]) . '%"';
-                                } else {
-                                    // EXclude
-                                    $where .= $logicalOperator . ' ad.postcode IS NULL OR ad.postcode NOT LIKE "' . pSQL($sourceData[$fieldKey]) . '%"';
-                                }
-                            }
-                            break;
-                        // Date of visit
-                        case '36':
-                            $i++;
+                    case '21':
+                        $i++;
+                        // @todo Data is empty allways
+                        if ($sourceData[$fieldKey]) {
                             if (!in_array('guest', $joined_tables)) {
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'guest AS g ON g.id_customer = c.id_customer ';
                                 $joined_tables[] = 'guest';
@@ -478,30 +412,99 @@ class Segmentation
                                 $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'connections conn ON conn.id_guest = g.id_guest ';
                                 $joined_tables[] = 'connections';
                             }
-                            $operator = ' AND ';
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                $minValue1 = ' >= ';
-                                $maxValue2 = ' <= ';
+                            $like = ' LIKE ';
+                            if ($exclude) {
+                                $like = ' NOT LIKE ';
+                            }
+                            $where .= $logicalOperator . ' conn.http_referer ' . $like . ' "%' . pSQL($sourceData[$fieldKey]) . '%"';
+                        }
+                        break;
+                        // Promo code
+                    case '22':
+                        $i++;
+                        $discount_table = _PS_VERSION_ >= '1.5.0.1' ? 'cart_rule' : 'discount';
+                        if (!in_array($discount_table, $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . $discount_table . ' AS d ON d.id_customer = c.id_customer ';
+                            $joined_tables[] = $discount_table;
+                        }
+                        $where .= $logicalOperator . 'd.active' . $operator . (int) $sourceData[$fieldKey];
+                        break;
+                        // Assets
+                    case '23':
+                        $i++;
+                        break;
+                        // Product return
+                    case '24':
+                        $i++;
+                        if (!in_array('order_return', $joined_tables)) {
+                            $join .= 'LEFT JOIN ' . _DB_PREFIX_ . 'order_return AS oret ON oret.id_customer = c.id_customer';
+                            $joined_tables[] = 'order_return';
+                        }
+                        $where .= $logicalOperator . ' oret.id_customer ' . $operator . ' ' . $sourceData[$fieldKey];
+                        break;
+                        // Address contains
+                    case '25':
+                        $i++;
+                        if (Tools::strlen($sourceData[$fieldKey]) > 0) {
+                            if ($action) {
+                                // Include
+                                $where .= $logicalOperator . ' ad.address1 LIKE "%' . pSQL($sourceData[$fieldKey]) . '%" '
+                                . ' OR ad.address2 LIKE "%' . $sourceData[$fieldKey] . '%" ';
                             } else {
-                                $minValue1 = ' <= ';
-                                $maxValue2 = ' >= ';
-                                $operator = ' OR ';
+                                // Exclude
+                                $where .= $logicalOperator . ' ((ad.address1 IS NULL OR ad.address1 NOT LIKE "%' . pSQL($sourceData[$fieldKey]) . '%" ) AND '
+                                . ' (ad.address2 IS NULL OR ad.address2 NOT LIKE "%' . $sourceData[$fieldKey] . '%" ))';
                             }
-                            if (Tools::strlen($value1[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[100]);
-                                }
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(conn.date_add)' . $minValue1
-                                . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        }
+                        break;
+                        // Postcode starts with
+                    case '26':
+                        $i++;
+                        if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
+                            if ($action) {
+                                // Include
+                                $where .= $logicalOperator . ' ad.postcode LIKE "' . pSQL($sourceData[$fieldKey]) . '%"';
+                            } else {
+                                // EXclude
+                                $where .= $logicalOperator . ' ad.postcode IS NULL OR ad.postcode NOT LIKE "' . pSQL($sourceData[$fieldKey]) . '%"';
                             }
-                            if (Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[100]);
-                                }
-                                $where .= $operator . 'UNIX_TIMESTAMP(conn.date_add)' . $maxValue2
-                                . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        }
+                        break;
+                        // Date of visit
+                    case '36':
+                        $i++;
+                        if (!in_array('guest', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'guest AS g ON g.id_customer = c.id_customer ';
+                            $joined_tables[] = 'guest';
+                        }
+                        if (!in_array('connections', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'connections conn ON conn.id_guest = g.id_guest ';
+                            $joined_tables[] = 'connections';
+                        }
+                        $operator = ' AND ';
+                        if ($ruleAction[$fieldKey] == 'IN') {
+                            $minValue1 = ' >= ';
+                            $maxValue2 = ' <= ';
+                        } else {
+                            $minValue1 = ' <= ';
+                            $maxValue2 = ' >= ';
+                            $operator = ' OR ';
+                        }
+                        if (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[100]);
                             }
-                            break;
+                            $where .= $logicalOperator . ' UNIX_TIMESTAMP(conn.date_add)' . $minValue1
+                            . 'UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        }
+                        if (Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value2[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[100]);
+                            }
+                            $where .= $operator . 'UNIX_TIMESTAMP(conn.date_add)' . $maxValue2
+                            . 'UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        }
+                        break;
                     }
                 }
             }
@@ -523,320 +526,320 @@ class Segmentation
                     $maxValue2 = (int) $value2[$fieldKey];
                     switch ($orderCase) {
                         // Number of orders
-                        case '2':
-                            $i++;
-                            if (strpos($additional_select_column, 'count(o.id_customer) AS "Number of orders"') === false) {
-                                $additional_select_column .= ', count(o.id_customer) AS "Number of orders"';
+                    case '2':
+                        $i++;
+                        if (strpos($additional_select_column, 'count(o.id_customer) AS "Number of orders"') === false) {
+                            $additional_select_column .= ', count(o.id_customer) AS "Number of orders"';
+                        }
+                        $and = '';
+                        if (!$exclude) {
+                            // Include
+                            $min_operator = '>=';
+                            $max_operator = '<=';
+                            $and = ' AND ';
+                        } else {
+                            // Exclude
+                            // Not equal because we cannot exclude e.g. customer with 1 order
+                            $min_operator = '<';
+                            $max_operator = '>';
+                            $and = ' OR ';
+                        }
+                        if ($minValue1 >= 0) {
+                            $having .= ' count(o.id_customer) ' . $min_operator . $minValue1;
+                        }
+                        if ($maxValue2 >= 0) {
+                            if ($having != '') {
+                                $having .= $and;
                             }
-                            $and = '';
-                            if (!$exclude) {
-                                // Include
-                                $min_operator = '>=';
-                                $max_operator = '<=';
-                                $and = ' AND ';
-                            } else {
-                                // Exclude
-                                // Not equal because we cannot exclude e.g. customer with 1 order
-                                $min_operator = '<';
-                                $max_operator = '>';
-                                $and = ' OR ';
-                            }
-                            if ($minValue1 >= 0) {
-                                $having .= ' count(o.id_customer) ' . $min_operator . $minValue1;
-                            }
-                            if ($maxValue2 >= 0) {
-                                if ($having != '') {
-                                    $having .= $and;
-                                }
-                                $having .= ' count(o.id_customer) ' . $max_operator . $maxValue2;
-                            }
-                            $havings[] = $having;
-                            $having = '';
-                            break;
+                            $having .= ' count(o.id_customer) ' . $max_operator . $maxValue2;
+                        }
+                        $havings[] = $having;
+                        $having = '';
+                        break;
                         // Order status
-                        case '3':
-                            $i++;
-                            if (!in_array('order_history', $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_history AS oh ON oh.id_order = o.id_order';
-                                $joined_tables[] = 'order_history';
-                            }
-                            if ($sourceData[$fieldKey] > 0) {
-                                $exclude = $exclude ? ' OR id_order_state is null' : '';
-                                $where .= $logicalOperator . ' id_order_state ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
-                            }
-                            break;
+                    case '3':
+                        $i++;
+                        if (!in_array('order_history', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_history AS oh ON oh.id_order = o.id_order';
+                            $joined_tables[] = 'order_history';
+                        }
+                        if ($sourceData[$fieldKey] > 0) {
+                            $exclude = $exclude ? ' OR id_order_state is null' : '';
+                            $where .= $logicalOperator . ' id_order_state ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
+                        }
+                        break;
                         // Payment method
-                        case '4':
-                            $i++;
-                            $exclude = $exclude ? ' OR o.payment is null' : '';
-                            $where .= $logicalOperator . ' o.payment ' . $action_oprator . '"' . $sourceData[$fieldKey] . '" ' . $exclude;
-                            break;
+                    case '4':
+                        $i++;
+                        $exclude = $exclude ? ' OR o.payment is null' : '';
+                        $where .= $logicalOperator . ' o.payment ' . $action_oprator . '"' . $sourceData[$fieldKey] . '" ' . $exclude;
+                        break;
                         // Product name
-                        case '5':
-                            $i++;
-                            if (!in_array('order_detail', $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
-                                $joined_tables[] = 'order_detail';
-                            }
-                            $exclude = $exclude ? ' OR od.product_id IS NULL ' : '';
-                            $where .= $logicalOperator . ' od.product_id ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
-                            break;
-                        // Category name
-                        case '6':
-                            $i++;
-                            // Exclude problem - One product can be in many categories, so we don`t know from which category is
-                            // and can not exclude it
+                    case '5':
+                        $i++;
+                        if (!in_array('order_detail', $joined_tables)) {
                             $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
-                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'category_product cp ON cp.id_product = od.product_id ';
-                            $exclude = $exclude ? ' OR cp.id_category IS NULL ' : '';
-                            $where .= $logicalOperator . ' cp.id_category ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
-                            break;
+                            $joined_tables[] = 'order_detail';
+                        }
+                        $exclude = $exclude ? ' OR od.product_id IS NULL ' : '';
+                        $where .= $logicalOperator . ' od.product_id ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
+                        break;
+                        // Category name
+                    case '6':
+                        $i++;
+                        // Exclude problem - One product can be in many categories, so we don`t know from which category is
+                        // and can not exclude it
+                        $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail od ON od.id_order = o.id_order ';
+                        $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'category_product cp ON cp.id_product = od.product_id ';
+                        $exclude = $exclude ? ' OR cp.id_category IS NULL ' : '';
+                        $where .= $logicalOperator . ' cp.id_category ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
+                        break;
                         // Brand name
-                        case '7':
-                            $i++;
-                            if (!in_array('order_detail', $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail AS od ON od.id_order = o.id_order ';
-                                $joined_tables[] = 'order_detail';
-                            }
-                            if (!in_array('product', $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'product AS p ON p.id_product = od.product_id ';
-                                $joined_tables[] = 'product';
-                            }
-                            if (!in_array('manufacturer', $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'manufacturer AS m ON m.id_manufacturer = p.id_manufacturer ';
-                                $joined_tables[] = 'manufacturer';
-                            }
+                    case '7':
+                        $i++;
+                        if (!in_array('order_detail', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'order_detail AS od ON od.id_order = o.id_order ';
+                            $joined_tables[] = 'order_detail';
+                        }
+                        if (!in_array('product', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'product AS p ON p.id_product = od.product_id ';
+                            $joined_tables[] = 'product';
+                        }
+                        if (!in_array('manufacturer', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'manufacturer AS m ON m.id_manufacturer = p.id_manufacturer ';
+                            $joined_tables[] = 'manufacturer';
+                        }
 
-                            $exclude = $exclude ? ' OR m.id_manufacturer IS NULL ' : '';
-                            $where .= $logicalOperator . ' m.id_manufacturer ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
-                            break;
+                        $exclude = $exclude ? ' OR m.id_manufacturer IS NULL ' : '';
+                        $where .= $logicalOperator . ' m.id_manufacturer ' . $action_oprator . $sourceData[$fieldKey] . $exclude;
+                        break;
                         // Sales
-                        case '8':
-                            $i++;
-                            # Feature
-                            if (!in_array('currency', $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
-                                $joined_tables[] = 'currency';
+                    case '8':
+                        $i++;
+                        // Feature
+                        if (!in_array('currency', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
+                            $joined_tables[] = 'currency';
+                        }
+
+                        if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
+                                $additional_select_column .= ', cu.conversion_rate';
+                        }
+
+                        // Amount taxes included or excluded
+                        $paid_field = ($sourceData[$fieldKey] == 1) ? 'o.total_paid_tax_incl' : 'o.total_paid_tax_excl';
+
+                        if (!$exclude) {
+                            // Include
+                            $minAction = ' >= ';
+                            $maxAction = ' <= ';
+                            $exclude = '';
+                            $operator = ' AND ';
+                        } else {
+                            // Exclude
+                            $minAction = ' <= ';
+                            $maxAction = ' >= ';
+                            if (strpos($additional_select_column, 'o.total_paid_tax_incl') === false) {
+                                $additional_select_column .= ', o.total_paid_tax_incl';
                             }
+                            $exclude = ' OR o.total_paid_tax_incl IS NULL ';
+                            $operator = ' OR ';
+                        }
 
-                            if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
-                                    $additional_select_column .= ', cu.conversion_rate';
-                            }
-
-                            // Amount taxes included or excluded
-                            $paid_field = ($sourceData[$fieldKey] == 1) ? 'o.total_paid_tax_incl' : 'o.total_paid_tax_excl';
-
-                            if (!$exclude) {
-                                // Include
-                                $minAction = ' >= ';
-                                $maxAction = ' <= ';
-                                $exclude = '';
-                                $operator = ' AND ';
-                            } else {
-                                // Exclude
-                                $minAction = ' <= ';
-                                $maxAction = ' >= ';
-                                if (strpos($additional_select_column, 'o.total_paid_tax_incl') === false) {
-                                    $additional_select_column .= ', o.total_paid_tax_incl';
-                                }
-                                $exclude = ' OR o.total_paid_tax_incl IS NULL ';
-                                $operator = ' OR ';
-                            }
-
-                            $salesTotalPaid = '
-                                sum('.$paid_field.')/cu.conversion_rate / (SELECT count(id_customer)
-                                    FROM '._DB_PREFIX_.'address
+                        $salesTotalPaid = '
+                                sum(' . $paid_field . ')/cu.conversion_rate / (SELECT count(id_customer)
+                                    FROM ' . _DB_PREFIX_ . 'address
                                     WHERE id_customer = c.id_customer
                                     GROUP BY id_customer LIMIT 1)';
 
-                            if (strpos($additional_select_column, $salesTotalPaid) === false) {
-                                $additional_select_column .= ', '. $salesTotalPaid . ' AS "Total paid"';
-                            }
+                        if (strpos($additional_select_column, $salesTotalPaid) === false) {
+                            $additional_select_column .= ', ' . $salesTotalPaid . ' AS "Total paid"';
+                        }
 
-                            $having .= $salesTotalPaid . $minAction . $minValue1;
-                            if ($maxValue2 > 0) {
-                                $having .= $operator . $salesTotalPaid . $maxAction . $maxValue2;
-                            }
-                            $where .= $logicalOperator . 'o.current_state IN(2, 5, 9, 12) ';
-                            $having .= $exclude;
-                            $havings[] = $having;
-                            $having = '';
-                            break;
+                        $having .= $salesTotalPaid . $minAction . $minValue1;
+                        if ($maxValue2 > 0) {
+                            $having .= $operator . $salesTotalPaid . $maxAction . $maxValue2;
+                        }
+                        $where .= $logicalOperator . 'o.current_state IN(2, 5, 9, 12) ';
+                        $having .= $exclude;
+                        $havings[] = $having;
+                        $having = '';
+                        break;
                         // Average sales
-                        case '9':
-                            $i++;
-                            // Get orders with only paid current status
-                            if (!in_array('order_state', $joined_tables)) {
-                                $join .= ' JOIN ' . _DB_PREFIX_ . 'order_state AS os ON os.id_order_state = o.current_state AND os.paid = 1 ';
-                                $joined_tables[] = 'order_state';
-                            }
-                            if (!in_array('currency', $joined_tables)) {
-                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
-                                $joined_tables[] = 'currency';
-                            }
-                            if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
-                                $additional_select_column .= ', cu.conversion_rate';
-                            }
-                            if (strpos($additional_select_column, 'FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) AS "Average sales"') === false) {
-                                $additional_select_column .= ', FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) AS "Average sales"';
-                            }
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                // Include
-                                $minAction = ' >= ';
-                                $maxAction = ' <= ';
-                                $exclude = '';
-                                $operator = ' AND ';
-                            } else {
-                                // Exclude
-                                $minAction = ' <= ';
-                                $maxAction = ' >= ';
-                                $exclude = ' OR o.total_paid_real IS NULL ';
-                                $operator = ' OR ';
-                            }
+                    case '9':
+                        $i++;
+                        // Get orders with only paid current status
+                        if (!in_array('order_state', $joined_tables)) {
+                            $join .= ' JOIN ' . _DB_PREFIX_ . 'order_state AS os ON os.id_order_state = o.current_state AND os.paid = 1 ';
+                            $joined_tables[] = 'order_state';
+                        }
+                        if (!in_array('currency', $joined_tables)) {
+                            $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'currency AS cu ON cu.id_currency = o.id_currency ';
+                            $joined_tables[] = 'currency';
+                        }
+                        if (strpos($additional_select_column, 'cu.conversion_rate') === false) {
+                            $additional_select_column .= ', cu.conversion_rate';
+                        }
+                        if (strpos($additional_select_column, 'FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) AS "Average sales"') === false) {
+                            $additional_select_column .= ', FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) AS "Average sales"';
+                        }
+                        if ($ruleAction[$fieldKey] == 'IN') {
+                            // Include
+                            $minAction = ' >= ';
+                            $maxAction = ' <= ';
+                            $exclude = '';
+                            $operator = ' AND ';
+                        } else {
+                            // Exclude
+                            $minAction = ' <= ';
+                            $maxAction = ' >= ';
+                            $exclude = ' OR o.total_paid_real IS NULL ';
+                            $operator = ' OR ';
+                        }
 
-                            if ($sourceData[$fieldKey] == 1) {
-                                $having .= ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $minAction . $minValue1;
-                                if ($maxValue2 > 0) {
-                                    $having .= $operator . ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
-                                }
+                        if ($sourceData[$fieldKey] == 1) {
+                            $having .= ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $minAction . $minValue1;
+                            if ($maxValue2 > 0) {
+                                $having .= $operator . ' FORMAT((AVG(o.total_paid_real)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
                             }
+                        }
 
-                            if ($sourceData[$fieldKey] == 2) {
-                                $having .= ' FORMAT((AVG(o.total_products)/cu.conversion_rate), 2)' . $minAction . $minValue1;
-                                if ($maxValue2 > 0) {
-                                    $having .= $operator . 'FORMAT((AVG(o.total_products)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
-                                }
+                        if ($sourceData[$fieldKey] == 2) {
+                            $having .= ' FORMAT((AVG(o.total_products)/cu.conversion_rate), 2)' . $minAction . $minValue1;
+                            if ($maxValue2 > 0) {
+                                $having .= $operator . 'FORMAT((AVG(o.total_products)/cu.conversion_rate), 2) ' . $maxAction . $maxValue2;
                             }
-                            $having .= $exclude;
-                            $havings[] = $having;
-                            $having = '';
-                            break;
+                        }
+                        $having .= $exclude;
+                        $havings[] = $having;
+                        $having = '';
+                        break;
                         // Gift package
-                        case '15':
-                            $i++;
-                            $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
-                            $exclude = $action == ' != ' ? ' OR o.gift IS NULL' : '';
-                            $where .= $logicalOperator . ' o.gift ' . $action . (int) $sourceData[$fieldKey] . $exclude;
-                            break;
+                    case '15':
+                        $i++;
+                        $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
+                        $exclude = $action == ' != ' ? ' OR o.gift IS NULL' : '';
+                        $where .= $logicalOperator . ' o.gift ' . $action . (int) $sourceData[$fieldKey] . $exclude;
+                        break;
                         // Recycled packaging
-                        case '16':
-                            $i++;
-                            $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
-                            $exclude = $action == ' != ' ? ' OR o.recyclable IS NULL' : '';
-                            $where .= ' o.recyclable ' . $action . (int) $sourceData[$fieldKey] . $exclude;
-                            break;
+                    case '16':
+                        $i++;
+                        $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
+                        $exclude = $action == ' != ' ? ' OR o.recyclable IS NULL' : '';
+                        $where .= ' o.recyclable ' . $action . (int) $sourceData[$fieldKey] . $exclude;
+                        break;
 
                         // Order date
-                        case '28':
-                            $i++;
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                // Include
-                                $minAction = ' >= ';
-                                $maxAction = ' <= ';
-                                $exclude = '';
-                                $is_negative = '';
-                            } else {
-                                // Exclude
-                                $minAction = ' <= ';
-                                $maxAction = ' >= ';
-                                $exclude = ' OR o.date_add IS NULL ';
-                                $is_negative = ' NOT ';
-                            }
-                            if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[89]);
-                                }
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $is_negative . ' BETWEEN UNIX_TIMESTAMP("' .
-                                        pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
-                            } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[89]);
-                                }
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $minAction
-                                        . ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
-                            } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[89]);
-                                }
-                                $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $maxAction
-                                        . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
-                            } else {
+                    case '28':
+                        $i++;
+                        if ($ruleAction[$fieldKey] == 'IN') {
+                            // Include
+                            $minAction = ' >= ';
+                            $maxAction = ' <= ';
+                            $exclude = '';
+                            $is_negative = '';
+                        } else {
+                            // Exclude
+                            $minAction = ' <= ';
+                            $maxAction = ' >= ';
+                            $exclude = ' OR o.date_add IS NULL ';
+                            $is_negative = ' NOT ';
+                        }
+                        if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
                                 $this->displayRuleError($i, $this->trad[89]);
                             }
-                            $where .= $exclude;
-                            break;
-                        // No order since
-                        case '33':
-                            $i++;
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                $include = ' OR o.date_add IS NULL ';
-                                $sign = ' < ';
-                            } else {
-                                $include = '';
-                                $sign = ' > ';
+                            $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $is_negative . ' BETWEEN UNIX_TIMESTAMP("' .
+                                    pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
+                        } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[89]);
                             }
-                            if (Tools::strlen($sourceData[$fieldKey]) > 0) {
-                                if (!validateDate($sourceData[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[93]);
-                                }
-                                $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $sign . ' UNIX_TIMESTAMP("' . pSQL($sourceData[$fieldKey]) . '")' . $include;
-                            } else {
+                            $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $minAction
+                                    . ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value2[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[89]);
+                            }
+                            $where .= $logicalOperator . ' UNIX_TIMESTAMP(o.date_add) ' . $maxAction
+                                    . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        } else {
+                            $this->displayRuleError($i, $this->trad[89]);
+                        }
+                        $where .= $exclude;
+                        break;
+                        // No order since
+                    case '33':
+                        $i++;
+                        if ($ruleAction[$fieldKey] == 'IN') {
+                            $include = ' OR o.date_add IS NULL ';
+                            $sign = ' < ';
+                        } else {
+                            $include = '';
+                            $sign = ' > ';
+                        }
+                        if (Tools::strlen($sourceData[$fieldKey]) > 0) {
+                            if (!validateDate($sourceData[$fieldKey])) {
                                 $this->displayRuleError($i, $this->trad[93]);
                             }
-                            $order_by .= ' ORDER BY UNIX_TIMESTAMP(o.date_add) DESC';
-                            break;
+                            $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $sign . ' UNIX_TIMESTAMP("' . pSQL($sourceData[$fieldKey]) . '")' . $include;
+                        } else {
+                            $this->displayRuleError($i, $this->trad[93]);
+                        }
+                        $order_by .= ' ORDER BY UNIX_TIMESTAMP(o.date_add) DESC';
+                        break;
                         // Promo code
-                        case '34':
-                            $i++;
-                            #  _DB_PREFIX_ . 'order_discount'; - does not exists
-                            # ps17_order_cart_rule - may be should be used, but it doesnt work as expected
-                            break;
+                    case '34':
+                        $i++;
+                        // _DB_PREFIX_ . 'order_discount'; - does not exists
+                        // ps17_order_cart_rule - may be should be used, but it doesnt work as expected
+                        break;
                         // Order frequency
-                        case '35':
-                            $i++;
-                            if ((int) $sourceData[$fieldKey] == 0) {
-                                $this->displayRuleError($i, $this->trad[95]);
-                            } else {
-                                $having .= ' COUNT(c.id_customer) >= ' . (int) $sourceData[$fieldKey];
-                                $havings[] = $having;
-                                $having = '';
-                            }
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                // Include
-                                $minAction = ' >= ';
-                                $maxAction = ' <= ';
-                                $exclude = '';
-                                $is_negative = '';
-                            } else {
-                                // Exclude
-                                $minAction = ' <= ';
-                                $maxAction = ' >= ';
-                                $exclude = ' OR o.date_add IS NULL ';
-                                $is_negative = ' NOT ';
-                            }
-                            if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[89]);
-                                }
-                                $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $is_negative . 'BETWEEN UNIX_TIMESTAMP("' .
-                                        pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
-                            } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[89]);
-                                }
-                                $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $minAction
-                                        . ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
-                            } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[89]);
-                                }
-                                $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $maxAction
-                                        . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
-                            } else {
+                    case '35':
+                        $i++;
+                        if ((int) $sourceData[$fieldKey] == 0) {
+                            $this->displayRuleError($i, $this->trad[95]);
+                        } else {
+                            $having .= ' COUNT(c.id_customer) >= ' . (int) $sourceData[$fieldKey];
+                            $havings[] = $having;
+                            $having = '';
+                        }
+                        if ($ruleAction[$fieldKey] == 'IN') {
+                            // Include
+                            $minAction = ' >= ';
+                            $maxAction = ' <= ';
+                            $exclude = '';
+                            $is_negative = '';
+                        } else {
+                            // Exclude
+                            $minAction = ' <= ';
+                            $maxAction = ' >= ';
+                            $exclude = ' OR o.date_add IS NULL ';
+                            $is_negative = ' NOT ';
+                        }
+                        if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
                                 $this->displayRuleError($i, $this->trad[89]);
                             }
-                            $where .= $exclude;
-                            break;
+                            $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $is_negative . 'BETWEEN UNIX_TIMESTAMP("' .
+                                    pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
+                        } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[89]);
+                            }
+                            $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $minAction
+                                    . ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value2[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[89]);
+                            }
+                            $where .= $logicalOperator . 'UNIX_TIMESTAMP(o.date_add) ' . $maxAction
+                                    . ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        } else {
+                            $this->displayRuleError($i, $this->trad[89]);
+                        }
+                        $where .= $exclude;
+                        break;
                     }
                 }
             }
@@ -861,144 +864,144 @@ class Segmentation
 
                     switch ($case) {
                         // Number of abandoned carts
-                        case '10':
-                            $i++;
-                            $action = $include ? '>=' : '<=';
+                    case '10':
+                        $i++;
+                        $action = $include ? '>=' : '<=';
+                        if (strpos($additional_select_column, 'o.id_order') === false) {
+                            $additional_select_column .= ', o.id_order';
+                        }
+                        if ($ruleAction[$fieldKey] == 'IN') {
+                            // Include
+                            $having .= ' COUNT(cart.id_cart) >= ' . (int) $value1[$fieldKey];
+                            if ($value2[$fieldKey] != '') {
+                                $having .= ' AND COUNT(cart.id_cart) <=' . (int) $value2[$fieldKey];
+                            }
+                        } else {
+                            // Exclude
+                            $having .= ' o.id_order IS NULL OR COUNT(cart.id_cart) <= ' . (int) $value1[$fieldKey];
+                            if ($value2[$fieldKey] != '') {
+                                $having .= ' OR COUNT(cart.id_cart) >=' . (int) $value2[$fieldKey];
+                            }
+                        }
+                        $havings[] = $having;
+                        $having = '';
+                        break;
+                        // Date of abandoned cart
+                    case '29':
+                        $i++;
+                        // $having .= ' o.id_order IS NULL ';
+                        if ($ruleAction[$fieldKey] == 'IN') {
+                            // Include
+                            $minAction = ' >= ';
+                            $maxAction = ' <= ';
+                            $exclude = '';
+                            $is_negative = '';
+                        } else {
+                            // Exclude
+                            $minAction = ' <= ';
+                            $maxAction = ' >= ';
+                            $exclude = ' OR cart.date_upd IS NULL ';
+                            $is_negative = ' NOT ';
+                        }
+                        if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[103]);
+                            }
+                            $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $is_negative . 'BETWEEN UNIX_TIMESTAMP("' .
+                                pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
+                        } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
+                            if (!validateDate($value1[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[103]);
+                            }
+                            $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $minAction .
+                                ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
+                        } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
+                            if (!validateDate($value2[$fieldKey])) {
+                                $this->displayRuleError($i, $this->trad[103]);
+                            }
+                            $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $maxAction .
+                                ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
+                        } else {
+                            $this->displayRuleError($i, $this->trad[103]);
+                        }
+                        $where .= $exclude;
+                        break;
+                        // Product name
+                    case '30':
+                        $i++;
+                        if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
+                            $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
+                            if (!in_array('cart_product', $joined_tables)) {
+                                $join .= ' JOIN ' . _DB_PREFIX_ . 'cart_product AS cp ON cp.id_cart = cart.id_cart and cp.id_product' . $action . (int) $sourceData[$fieldKey];
+                                $joined_tables[] = 'cart_product';
+                            }
+                            $having .= ' o.id_order IS NULL ';
+                            $havings[] = $having;
+                            $having = '';
+                        }
+                        break;
+                        // Category name
+                    case '31':
+                        $i++;
+                        if (Tools::strlen($sourceData[$fieldKey]) > 0) {
+                            if (!in_array('cart_product', $joined_tables)) {
+                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'cart_product as cp ON(cp.id_cart=cart.id_cart) ';
+                                $joined_tables[] = 'cart_product';
+                            }
+                            if (!in_array('product', $joined_tables)) {
+                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'product as p ON(cp.id_product=p.id_product) ';
+                                $joined_tables[] = 'product';
+                            }
+                            if (!in_array('category_lang', $joined_tables)) {
+                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'category_lang as cl ON(cl.id_category=p.id_category_default) ';
+                                $joined_tables[] = 'category_lang';
+                            }
+                            if ($ruleAction[$fieldKey] == 'IN') {
+                                $action = ' = ';
+                            } else {
+                                $action = ' != ';
+                            }
                             if (strpos($additional_select_column, 'o.id_order') === false) {
                                 $additional_select_column .= ', o.id_order';
                             }
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                // Include
-                                $having .= ' COUNT(cart.id_cart) >= ' . (int) $value1[$fieldKey];
-                                if ($value2[$fieldKey] != '') {
-                                    $having .= ' AND COUNT(cart.id_cart) <=' . (int) $value2[$fieldKey];
-                                }
-                            } else {
-                                // Exclude
-                                $having .= ' o.id_order IS NULL OR COUNT(cart.id_cart) <= ' . (int) $value1[$fieldKey];
-                                if ($value2[$fieldKey] != '') {
-                                    $having .= ' OR COUNT(cart.id_cart) >=' . (int) $value2[$fieldKey];
-                                }
-                            }
+                            $where .= ' AND cl.id_category' . $action . $sourceData[$fieldKey];
+                            $having .= ' COUNT(cart.id_cart) >= 1 and o.id_order IS NULL';
                             $havings[] = $having;
                             $having = '';
-                            break;
-                        // Date of abandoned cart
-                        case '29':
-                            $i++;
-                            #$having .= ' o.id_order IS NULL ';
-                            if ($ruleAction[$fieldKey] == 'IN') {
-                                // Include
-                                $minAction = ' >= ';
-                                $maxAction = ' <= ';
-                                $exclude = '';
-                                $is_negative = '';
-                            } else {
-                                // Exclude
-                                $minAction = ' <= ';
-                                $maxAction = ' >= ';
-                                $exclude = ' OR cart.date_upd IS NULL ';
-                                $is_negative = ' NOT ';
-                            }
-                            if (Tools::strlen($value1[$fieldKey]) > 0 && Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey]) || !validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[103]);
-                                }
-                                $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $is_negative . 'BETWEEN UNIX_TIMESTAMP("' .
-                                    pSQL($value1[$fieldKey]) . ' 00:00:00") AND UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59")';
-                            } elseif (Tools::strlen($value1[$fieldKey]) > 0) {
-                                if (!validateDate($value1[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[103]);
-                                }
-                                $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $minAction .
-                                    ' UNIX_TIMESTAMP("' . pSQL($value1[$fieldKey]) . ' 00:00:00") ';
-                            } elseif (Tools::strlen($value2[$fieldKey]) > 0) {
-                                if (!validateDate($value2[$fieldKey])) {
-                                    $this->displayRuleError($i, $this->trad[103]);
-                                }
-                                $where .= $logicalOperator . 'UNIX_TIMESTAMP(cart.date_upd) ' . $maxAction .
-                                    ' UNIX_TIMESTAMP("' . pSQL($value2[$fieldKey]) . ' 23:59:59") ';
-                            } else {
-                                $this->displayRuleError($i, $this->trad[103]);
-                            }
-                            $where .= $exclude;
-                            break;
-                        // Product name
-                        case '30':
-                            $i++;
-                            if (Tools::strlen((int) $sourceData[$fieldKey]) > 0) {
-                                $action = $ruleAction[$fieldKey] == 'IN' ? ' = ' : ' != ';
-                                if (!in_array('cart_product', $joined_tables)) {
-                                    $join .= ' JOIN ' . _DB_PREFIX_ . 'cart_product AS cp ON cp.id_cart = cart.id_cart and cp.id_product' . $action . (int) $sourceData[$fieldKey];
-                                    $joined_tables[] = 'cart_product';
-                                }
-                                $having .= ' o.id_order IS NULL ';
-                                $havings[] = $having;
-                                $having = '';
-                            }
-                            break;
-                        // Category name
-                        case '31':
-                            $i++;
-                            if (Tools::strlen($sourceData[$fieldKey]) > 0) {
-                                if (!in_array('cart_product', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'cart_product as cp ON(cp.id_cart=cart.id_cart) ';
-                                    $joined_tables[] = 'cart_product';
-                                }
-                                if (!in_array('product', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'product as p ON(cp.id_product=p.id_product) ';
-                                    $joined_tables[] = 'product';
-                                }
-                                if (!in_array('category_lang', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'category_lang as cl ON(cl.id_category=p.id_category_default) ';
-                                    $joined_tables[] = 'category_lang';
-                                }
-                                if ($ruleAction[$fieldKey] == 'IN') {
-                                    $action = ' = ';
-                                } else {
-                                    $action = ' != ';
-                                }
-                                if (strpos($additional_select_column, 'o.id_order') === false) {
-                                    $additional_select_column .= ', o.id_order';
-                                }
-                                $where .= ' AND cl.id_category' . $action . $sourceData[$fieldKey];
-                                $having .= ' COUNT(cart.id_cart) >= 1 and o.id_order IS NULL';
-                                $havings[] = $having;
-                                $having = '';
-                            }
-                            break;
+                        }
+                        break;
                         // Brand name
-                        case '32':
-                            $i++;
-                            if (Tools::strlen($sourceData[$fieldKey]) > 0) {
-                                if (!in_array('cart_product', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'cart_product as cp ON(cp.id_cart=cart.id_cart)';
-                                    $joined_tables[] = 'cart_product';
-                                }
-                                if (!in_array('product', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'product as p ON(cp.id_product=p.id_product)';
-                                    $joined_tables[] = 'product';
-                                }
-                                if (!in_array('manufacturer', $joined_tables)) {
-                                    $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'manufacturer as m ON(m.id_manufacturer=p.id_manufacturer)';
-                                    $joined_tables[] = 'manufacturer';
-                                }
-                                if ($ruleAction[$fieldKey] == 'IN') {
-                                    $action = ' = ';
-                                    $exclude = '';
-                                } else {
-                                    $action = ' != ';
-                                    $exclude = ' OR m.id_manufacturer IS NULL';
-                                }
-                                if (strpos($additional_select_column, 'o.id_order') === false) {
-                                    $additional_select_column .= ', o.id_order';
-                                }
-                                $where .= $logicalOperator . ' m.id_manufacturer ' . $action . $sourceData[$fieldKey] . $exclude;
-                                $having .= ' COUNT(cart.id_cart) >= 1 AND o.id_order IS NULL ';
-                                $havings[] = $having;
-                                $having = '';
+                    case '32':
+                        $i++;
+                        if (Tools::strlen($sourceData[$fieldKey]) > 0) {
+                            if (!in_array('cart_product', $joined_tables)) {
+                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'cart_product as cp ON(cp.id_cart=cart.id_cart)';
+                                $joined_tables[] = 'cart_product';
                             }
-                            break;
+                            if (!in_array('product', $joined_tables)) {
+                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'product as p ON(cp.id_product=p.id_product)';
+                                $joined_tables[] = 'product';
+                            }
+                            if (!in_array('manufacturer', $joined_tables)) {
+                                $join .= ' LEFT JOIN ' . _DB_PREFIX_ . 'manufacturer as m ON(m.id_manufacturer=p.id_manufacturer)';
+                                $joined_tables[] = 'manufacturer';
+                            }
+                            if ($ruleAction[$fieldKey] == 'IN') {
+                                $action = ' = ';
+                                $exclude = '';
+                            } else {
+                                $action = ' != ';
+                                $exclude = ' OR m.id_manufacturer IS NULL';
+                            }
+                            if (strpos($additional_select_column, 'o.id_order') === false) {
+                                $additional_select_column .= ', o.id_order';
+                            }
+                            $where .= $logicalOperator . ' m.id_manufacturer ' . $action . $sourceData[$fieldKey] . $exclude;
+                            $having .= ' COUNT(cart.id_cart) >= 1 AND o.id_order IS NULL ';
+                            $havings[] = $having;
+                            $having = '';
+                        }
+                        break;
                     }
                 }
             }
@@ -1091,9 +1094,11 @@ class Segmentation
 
     public function displayRuleError($id, $error) /* alias */
     {
-        die('<p class="noResult">' .
+        die(
+            '<p class="noResult">' .
                 Tools::safeOutput($this->trad[81]) . ' ' . Tools::safeOutput($id) . ' : ' . Tools::safeOutput($error) .
-                '</p>');
+            '</p>'
+        );
     }
 
     public function getName($idfield, $id)
@@ -1101,12 +1106,12 @@ class Segmentation
         $bind = $this->getFieldBinder($idfield);
         $bind = explode(';', $bind);
         switch ($bind[0]) {
-            case 'product':
-                return (new Product($id, false, Context::getContext()->cookie->id_lang))->name;
-            case 'category':
-                return (new Category($id, Context::getContext()->cookie->id_lang))->name;
-            case 'brand':
-                return (new manufacturer($id, Context::getContext()->cookie->id_lang))->name;
+        case 'product':
+            return (new Product($id, false, Context::getContext()->cookie->id_lang))->name;
+        case 'category':
+            return (new Category($id, Context::getContext()->cookie->id_lang))->name;
+        case 'brand':
+            return (new manufacturer($id, Context::getContext()->cookie->id_lang))->name;
         }
         return false;
     }
@@ -1146,7 +1151,7 @@ class Segmentation
             Db::getInstance()->Execute(
                 'INSERT INTO `' . _DB_PREFIX_ . 'mj_filter` (`name`, `description`, `date_start`,
                 `date_end`, `id_group`, `assignment_auto`, `replace_customer`)
-                VALUES ("' . pSQL($post['name']) . '", "' . pSQL($post['description']) . '", '.
+                VALUES ("' . pSQL($post['name']) . '", "' . pSQL($post['description']) . '", ' .
                 'NULL, NULL, "' . (int) $post['idgroup'] . '", ' .
                 (int) (bool) $auto_assign . ', ' . (int) (bool) $replace_customer . ')'
             );
@@ -1231,7 +1236,7 @@ class Segmentation
     }
 
     /**
-     * @param $id_filter
+     * @param  $id_filter
      * @return string
      * @throws PrestaShopDatabaseException
      */
@@ -1245,20 +1250,20 @@ class Segmentation
     public function translateOp($op)
     {
         switch (trim($op)) {
-            case '+':
-                return '>';
-            case '+=':
-            case '=+':
-                return '>=';
-            case '-':
-                return '<';
-            case '-=':
-            case '=-':
-                return '<=';
-            case '=':
-                return '=';
-            default:
-                return false;
+        case '+':
+            return '>';
+        case '+=':
+        case '=+':
+            return '>=';
+        case '-':
+            return '<';
+        case '-=':
+        case '=-':
+            return '<=';
+        case '=':
+            return '=';
+        default:
+            return false;
         }
     }
 
@@ -1336,10 +1341,10 @@ class Segmentation
     public function getDateByIdLang($date)/* , $id_lang) */
     {
         switch ((int) Context::getContext()->cookie->id_lang) {
-            case 2: // fr
-                $date = Tools::substr($date, 8, 2) . '-' . Tools::substr($date, 5, 2) . '-' . Tools::substr($date, 0, 4);
-                break;
-            default:
+        case 2: // fr
+            $date = Tools::substr($date, 8, 2) . '-' . Tools::substr($date, 5, 2) . '-' . Tools::substr($date, 0, 4);
+            break;
+        default:
         }
 
         return $date;
@@ -1550,7 +1555,7 @@ class Segmentation
     /**
      *
      * @author atanas
-     * @param int $filterId
+     * @param  int $filterId
      * @return int
      */
     public function getMailjetContactListId($filterId)

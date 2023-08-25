@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -26,5 +27,4 @@
 
 class HooksSynchronizationException extends Exception
 {
-
 }
