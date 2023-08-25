@@ -35,7 +35,7 @@ class MailJetLog
      */
     public static function init()
     {
-        MailJetLog::$file = dirname(__FILE__) . '/../logs/ajax.log';
+        MailJetLog::$file = __DIR__ . '/../logs/ajax.log';
     }
 
     private static function lockWrite($handle, $msg)

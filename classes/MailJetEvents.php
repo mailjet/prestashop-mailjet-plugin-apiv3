@@ -86,9 +86,8 @@ class MailJetEvents extends ObjectModel
 
         $file = __DIR__ . '/../xml/events.xml';
         $scheme = array();
-        //...$log = 'Scheme not found';
 
-        if (file_exists($file) && ($xml = simplexml_load_file($file))) {
+        if (file_exists($file) && ($xml = simplexml_load_string(file_get_contents($file)))) {
             foreach ($xml->event as $event) {
                 if ((string) $event['name'] == $name) {
                     // Will set GET / POST Data if exist
@@ -100,15 +99,10 @@ class MailJetEvents extends ObjectModel
                             $scheme[(string) $key] = array('value' => (string) $key, 'type' => (string) $key['type']);
                         }
                     }
-                    //...$log = 'Scheme found';
                 }
             }
         }
 
-
-        // Not used for ajax query, then no need to log it
-        /* if ($name != MailJetEvents::ALL_EVENTS_KEYS)
-          MailJetLog::write(MailJetLog::$file, $log.': '.$name); */
         return $scheme;
     }
 

@@ -24,8 +24,8 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(dirname(__FILE__) . '/../libraries/Mailjet.Api.class.php');
-include_once(dirname(__FILE__) . '/../libraries/Mailjet.Overlay.class.php');
+include_once(__DIR__ . '/../libraries/Mailjet.Api.class.php');
+include_once(__DIR__ . '/../libraries/Mailjet.Overlay.class.php');
 
 class MailjetTemplate
 {
@@ -125,8 +125,8 @@ class MailjetTemplate
      */
     public function initIframeLink()
     {
-        $file = dirname(__FILE__) . '/../xml/iframes.xml';
-        if (file_exists($file) && ($xml = simplexml_load_file($file))) {
+        $file = __DIR__ . '/../xml/iframes.xml';
+        if (file_exists($file) && ($xml = simplexml_load_string(file_get_contents($file)))) {
             foreach ($xml->iframe as $iframe) {
                 $this->iframes_url[(string) $iframe['name']] = (string) str_replace('{lang}', $this->lang, $iframe);
             }
@@ -144,7 +144,7 @@ class MailjetTemplate
     public function fetchTemplate($name)
     {
         if (isset($this->templates[$name])) {
-            $file = dirname(__FILE__) . '/../translations/templates/' . $this->lang . '/' . $name . '.txt';
+            $file = __DIR__ . '/../translations/templates/' . $this->lang . '/' . $name . '.txt';
             if (file_exists($file)) {
                 $template = Tools::file_get_contents($file);
                 $this->templates[$name]['html'] = $template;
@@ -173,12 +173,9 @@ class MailjetTemplate
 
     public function getCampaignURL($name = 'CAMPAIGN', $token = null)
     {
-        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        // $cb = urlencode($ps_shop_domain . 'modules/mailjet/callback_campaign.php');
-
         // Let cb parameter in official version
         $url = $this->mjWebsite . '/campaigns?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&f=am&locale=' . $this->locale;
-        
+
         // Remove cb parameter while fix issue
         // $url = $this->mjWebsite . '/campaigns?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&locale=' . $this->locale;
         $this->iframes_url[$name] = $url;
@@ -186,8 +183,6 @@ class MailjetTemplate
 
     public function getPricingURL($name = 'PRICING', $token = null)
     {
-        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        // $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         if ($token) {
             $url = $this->mjWebsite .
                 '/reseller/pricing?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&locale=' .
@@ -202,8 +197,6 @@ class MailjetTemplate
 
     public function getStatsURL($name = 'STATS', $token = null)
     {
-        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        // $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         $url = $this->mjWebsite .
             '/stats?t=' . $token . '&r=Prestashop-3.0&show_menu=none&f=am&locale=' .
             $this->locale;
@@ -212,8 +205,6 @@ class MailjetTemplate
 
     public function getContactsURL($name = 'CONTACTS', $token = null)
     {
-        // $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
-        // $cb = urlencode($ps_shop_domain . '/modules/mailjet/callback_campaign.php');
         $url = $this->mjWebsite .
             '/contacts?t=' . $token . '&r=Prestashop-3.0&show_menu=none&sp=display&f=am&locale=' .
             $this->locale;

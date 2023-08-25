@@ -33,7 +33,7 @@ class MailJetTranslate
         $translations = array();
         $default_translation = array();
 
-        if (file_exists($file) && ($xml = simplexml_load_file($file))) {
+        if (file_exists($file) && ($xml = simplexml_load_string(file_get_contents($file)))) {
             $iso = ($iso) ? $iso : Context::getContext()->language->iso_code;
 
             if (isset($xml->{$name})) {
