@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,16 +25,14 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(dirname(__FILE__) . '/Exception.php');
+require_once dirname(__FILE__) . '/Exception.php';
 
 /**
  *
  * @author atanas
- *
  */
 abstract class HooksSynchronizationSynchronizationAbstract
 {
-
     /**
      *
      * @var string
@@ -115,7 +114,7 @@ abstract class HooksSynchronizationSynchronizationAbstract
         }
         return $this->masterListId;
     }
-    
+
     public function getMailjetSegmentationLists($listNames)
     {
         if (!is_array($listNames)) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,9 +25,9 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-require_once(dirname(__DIR__, 2) . '/config/config.inc.php');
+require_once dirname(__DIR__, 2) . '/config/config.inc.php';
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_')) {
-    require_once(dirname(__DIR__, 2) . '/init.php');
+    include_once dirname(__DIR__, 2) . '/init.php';
 }
 
 $token_ok = Tools::getAdminToken(
@@ -50,7 +51,7 @@ if (Tools::getIsset('emptyfile')) {
 
 $post = trim(Tools::file_get_contents('php://input'));
 
-require_once(_PS_ROOT_DIR_ . '/config/config.inc.php');
+require_once _PS_ROOT_DIR_ . '/config/config.inc.php';
 
 $method = Tools::getValue('method');
 $back_office_method = Tools::getValue('back_office_method');
@@ -59,7 +60,7 @@ if (in_array($method, $back_office_method)) {
     define('_PS_ADMIN_DIR_', true);
 }
 
-require_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
 
 $method = Tools::isSubmit('method') ? Tools::getValue('method') : '';
 $token = Tools::isSubmit('token') ? Tools::getValue('token') : '';

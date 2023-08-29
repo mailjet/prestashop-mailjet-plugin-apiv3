@@ -5,8 +5,8 @@
  * Connect your Apps and Make our product yours with our powerful API
  * http://www.mailjet.com/ Mailjet SAS Website
  *
- * @author  Mailjet Dev team
- * @author  Oleksandr Mykhailenko (inspired by Sofia)
+ * @author Mailjet Dev team
+ * @author Oleksandr Mykhailenko (inspired by Sofia)
  */
 class ContactProperties extends HooksSynchronizationSynchronizationAbstract
 {

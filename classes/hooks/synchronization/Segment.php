@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -73,7 +74,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param array $contacts
+     * @param array  $contacts
      * @param string $filterId
      * @param string $fiterName
      */
@@ -84,10 +85,12 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
         /*
          * Sets related contact meta data like firstname, lastname, etc...
          */
-        $this->getApiOverlay()->setContactMetaData(array(
+        $this->getApiOverlay()->setContactMetaData(
+            array(
             array('Datatype' => 'str', 'Name' => 'firstname', 'NameSpace' => 'static'),
             array('Datatype' => 'str', 'Name' => 'lastname', 'NameSpace' => 'static')
-        ));
+            )
+        );
 
         if ($existingListId) {
             return $this->update($contacts, $existingListId);
@@ -98,9 +101,9 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param        $mailjetListId
-     * @param        $prestashopFilterId
-     * @param string $newName
+     * @param  $mailjetListId
+     * @param  $prestashopFilterId
+     * @param  string $newName
      * @return bool
      * @throws Mailjet_ApiException
      */
@@ -139,9 +142,9 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param        $res_contacts
-     * @param string $filterId
-     * @param string $fiterName
+     * @param  $res_contacts
+     * @param  string $filterId
+     * @param  string $fiterName
      * @return mixed
      */
     private function create($res_contacts, $filterId, $fiterName)
@@ -217,11 +220,11 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 }
             }
 
-            # Call
+            // Call
             try {
                 if (!empty($sub)) {
                     $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'}(
-                            array(
+                        array(
                                 'method' => 'JSON',
                                 'Action' => 'addforce',
                                 'Contacts' => $contactsToAddSubscrubed
@@ -231,7 +234,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
                 if (!empty($unsub)) {
                     $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'}(
-                            array(
+                        array(
                                 'method' => 'JSON',
                                 'Action' => 'unsub',
                                 'Contacts' => $contactsToAddUnsubscribed
@@ -254,8 +257,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param array $contacts
-     * @param int $existingListId
+     * @param  array $contacts
+     * @param  int   $existingListId
      * @return string
      */
     private function update($contacts, $existingListId)
@@ -367,7 +370,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param string $filterId
+     * @param  string $filterId
      * @return int
      * @throws Mailjet_ApiException
      */
@@ -433,8 +436,8 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
 
     /**
      *
-     * @param string $filterId
-     * @param string $fiterName
+     * @param  string $filterId
+     * @param  string $fiterName
      * @return number
      */
     private function createNewMailjetList($filterId, $fiterName)

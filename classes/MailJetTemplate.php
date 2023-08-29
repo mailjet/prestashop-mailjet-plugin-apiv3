@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,13 +25,13 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(__DIR__ . '/../libraries/Mailjet.Api.class.php');
-include_once(__DIR__ . '/../libraries/Mailjet.Overlay.class.php');
+require_once __DIR__ . '/../libraries/Mailjet.Api.class.php';
+require_once __DIR__ . '/../libraries/Mailjet.Overlay.class.php';
 
 class MailjetTemplate
 {
-    static private $api = null;
-    static private $data_api = null;
+    private static $api = null;
+    private static $data_api = null;
     public static $langCodesMap = array('en' => 'en_US', 'fr' => 'fr_FR', 'de' => 'de_DE', 'es' => 'es_ES');
     private $defaultLang = 'en';
     private $lang;
@@ -84,6 +85,7 @@ class MailjetTemplate
 
     /**
      * Get the api connection
+     *
      * @static
      * @return Mailjet_ApiOverlay|Mailjet_Api|null
      */
@@ -121,6 +123,7 @@ class MailjetTemplate
 
     /**
      * Load the iframe links from xml
+     *
      * @return bool
      */
     public function initIframeLink()
@@ -138,7 +141,7 @@ class MailjetTemplate
     /**
      * Fetch a specific template
      *
-     * @param $name
+     * @param  $name
      * @return bool
      */
     public function fetchTemplate($name)
@@ -163,7 +166,7 @@ class MailjetTemplate
     {
         $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
         $token = Tools::getAdminTokenLite('AdminModules');
-        $sign_up_call_back = urlencode($ps_shop_domain . '/modules/mailjet/callback_signup.php?internaltoken=' .$token);
+        $sign_up_call_back = urlencode($ps_shop_domain . '/modules/mailjet/callback_signup.php?internaltoken=' . $token);
         $url = $this->mjWebsite .
             '/reseller/signup?r=Prestashop-3.0&cb={' . $sign_up_call_back . '}&show_menu=none&sp=display&locale=' .
             $this->locale;
@@ -234,6 +237,7 @@ class MailjetTemplate
 
     /**
      * Get all fetched template
+     *
      * @return array
      */
     public function getTemplates()

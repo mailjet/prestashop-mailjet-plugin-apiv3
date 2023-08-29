@@ -19,7 +19,7 @@
 *
 * @author PrestaShop SA <contact@prestashop.com>
 * @copyright  2007-2017 PrestaShop SA
-* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+* @license  http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 * International Registered Trademark & Property of PrestaShop SA
 */
 
@@ -37,7 +37,7 @@ input.fixed
     width:90px;
 }
 td.fixed {
-    width: 110px;	
+    width: 110px;
 }
 input.alertbox
 {
@@ -93,7 +93,7 @@ div#container_conditiongroups label {
     font-size:12px;
 }
 
-#result table.table tr:nth-child(2n+1) { 
+#result table.table tr:nth-child(2n+1) {
     background-color:#EFEFEF;
 }
 
@@ -126,7 +126,7 @@ button.nostyle {
 /*Add*/
 div.header {
     margin: 0 auto;
-    text-align: center;	
+    text-align: center;
 }
 
 
@@ -145,7 +145,7 @@ button.my_button {
     background: transparent url(../img/sprites-button.png) repeat-x scroll left top !ie;
     padding:2px 0 !ie;
 
-} 
+}
 
 button.my_button:hover {
     background: -moz-linear-gradient(center top , #ffffff, #ededed) repeat scroll 0 0 transparent;
@@ -199,7 +199,7 @@ fieldset.custo .nameFilter .titleFilter {
     float:left;
 }
 input#name {
-    width: 252px;	
+    width: 252px;
 }
 .description
 {
@@ -207,7 +207,7 @@ input#name {
     height: 100px;
     resize: none;
 }
-fieldset #filter_2.custo { 
+fieldset #filter_2.custo {
     padding-left:10px;
 }
 
@@ -219,7 +219,7 @@ fieldset #filter_2.custo {
     text-align:left;
 }
 
-div.filtersDetails { 
+div.filtersDetails {
     font-weight:bold;
 }
 
@@ -251,7 +251,7 @@ h2.grpCond {
     font-family: Arial;
     font-weight: bold;
     font-size : 12px;
-} 
+}
 .size2
 {
     font-size:12px;
@@ -289,7 +289,7 @@ div.blocAction div.rowAction label { text-align: left; width:210px; }
 div.blocAction div.rowAction label.label { width:auto; margin: -4px 0 0 4px; }
 
 
-div.blocAction fieldset.custo { 
+div.blocAction fieldset.custo {
     #background-color: #fff6d3;
     #border:1px solid #ccc;
 }
@@ -363,7 +363,7 @@ span.help2
 
 .grey
 {
-    opacity:0.3; 
+    opacity:0.3;
     background:gray;
 }
 
@@ -390,14 +390,14 @@ dl#filter-help dd {
 }
 
 .perc_sync {
-    float:right;	
+    float:right;
     margin-right:20px;
     padding-top:5px;
     display:none
 }
 
 .div_new_filter {
-    display:none;	
+    display:none;
 }
 
 /* ** ** ******************* ** ** */

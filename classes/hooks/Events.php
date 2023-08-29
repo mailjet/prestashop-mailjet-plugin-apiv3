@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -27,7 +28,7 @@
 class HooksEvents
 {
     /**
-     * @param array $event
+     * @param  array $event
      * @return bool
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
@@ -52,7 +53,7 @@ class HooksEvents
             if (version_compare(_PS_VERSION_, '1.7', '<')) {
                 $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'newsletter WHERE `email` = \'' . pSQL($event['email']) . '\'';
             } else {
-                $sql = 'DELETE FROM '._DB_PREFIX_.'emailsubscription WHERE `email` = \''.pSQL($event['email']).'\'';
+                $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'emailsubscription WHERE `email` = \'' . pSQL($event['email']) . '\'';
             }
 
             return Db::getInstance()->execute($sql);

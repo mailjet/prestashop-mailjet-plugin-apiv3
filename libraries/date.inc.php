@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -82,20 +83,20 @@ function get_date_rel($type, $nb)
     $date = new DateTime();
     $today = $date->getTimestamp();
     switch ($type) {
-        case 0 :
-            $nb = $nb * 7;
-            $rel = strtotime("-$nb day", $today);
-            break;
-        case 1 :
-            $rel = strtotime("-$nb month", $today);
-            break;
-        case 2 :
-            $nb = $nb * 3;
-            $rel = strtotime("-$nb month", $today);
-            break;
-        case 3 :
-            $rel = strtotime("-$nb year", $today);
-            break;
+    case 0:
+        $nb = $nb * 7;
+        $rel = strtotime("-$nb day", $today);
+        break;
+    case 1:
+        $rel = strtotime("-$nb month", $today);
+        break;
+    case 2:
+        $nb = $nb * 3;
+        $rel = strtotime("-$nb month", $today);
+        break;
+    case 3:
+        $rel = strtotime("-$nb year", $today);
+        break;
     }
 
     return date("Y-m-d", $rel);

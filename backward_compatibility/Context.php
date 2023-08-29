@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -26,14 +27,11 @@
 
 // Retro 1.3, 'class_exists' cause problem with autoload...
 if (version_compare(_PS_VERSION_, '1.4', '<')) {
-
     // Not exist for 1.3
     class Shop extends ObjectModel
     {
-
         public function __construct()
         {
-
         }
 
         public static function getShops()
@@ -47,7 +45,6 @@ if (version_compare(_PS_VERSION_, '1.4', '<')) {
         {
             return 1;
         }
-
     }
 
 }
@@ -55,7 +52,6 @@ if (version_compare(_PS_VERSION_, '1.4', '<')) {
 // Not exist for 1.3 and 1.4
 class Context
 {
-
     /**
      * @var Context
      */
@@ -148,8 +144,9 @@ class Context
      */
     public static function getContext()
     {
-        if (!isset(self::$instance))
+        if (!isset(self::$instance)) {
             self::$instance = new Context();
+        }
         return self::$instance;
     }
 
@@ -168,11 +165,11 @@ class Context
      */
     public static function shop()
     {
-        if (!self::$instance->shop->getContextType())
+        if (!self::$instance->shop->getContextType()) {
             return ShopBackwardModule::CONTEXT_ALL;
+        }
         return self::$instance->shop->getContextType();
     }
-
 }
 
 /**
@@ -180,7 +177,6 @@ class Context
  */
 class ShopBackwardModule extends Shop
 {
-
     const CONTEXT_ALL = 1;
 
     public $id = 1;
@@ -189,7 +185,6 @@ class ShopBackwardModule extends Shop
     {
         return ShopBackwardModule::CONTEXT_ALL;
     }
-
 }
 
 /**
@@ -198,9 +193,8 @@ class ShopBackwardModule extends Shop
  */
 class ControllerBackwardModule
 {
-
     /**
-     * @param $js_uri
+     * @param  $js_uri
      * @return void
      */
     public function addJS($js_uri)
@@ -209,13 +203,12 @@ class ControllerBackwardModule
     }
 
     /**
-     * @param $css_uri
-     * @param string $css_media_type
+     * @param  $css_uri
+     * @param  string $css_media_type
      * @return void
      */
     public function addCSS($css_uri, $css_media_type = 'all')
     {
         Tools::addCSS($css_uri, $css_media_type);
     }
-
 }

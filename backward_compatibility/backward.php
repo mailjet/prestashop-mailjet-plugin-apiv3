@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -29,16 +30,19 @@
  * Need to be called for each module in 1.4
  */
 // Get out if the context is already defined
-if (!in_array('Context', get_declared_classes()))
-    require_once(dirname(__FILE__) . '/Context.php');
+if (!in_array('Context', get_declared_classes())) {
+    include_once dirname(__FILE__) . '/Context.php';
+}
 
 // Get out if the Display (BWDisplay to avoid any conflict)) is already defined
-if (!in_array('BWDisplay', get_declared_classes()))
-    require_once(dirname(__FILE__) . '/Display.php');
+if (!in_array('BWDisplay', get_declared_classes())) {
+    include_once dirname(__FILE__) . '/Display.php';
+}
 
 // If not under an object we don't have to set the context
-if (!isset($this) || isset($this->context))
+if (!isset($this) || isset($this->context)) {
     return;
+}
 
 $this->context = Context::getContext();
 $this->smarty = $this->context->smarty;

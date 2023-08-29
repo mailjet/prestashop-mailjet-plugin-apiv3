@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,9 +25,9 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-require_once(dirname(__DIR__, 2) . '/config/config.inc.php');
+require_once dirname(__DIR__, 2) . '/config/config.inc.php';
 if (_PS_VERSION_ < '1.5' || !defined('_PS_ADMIN_DIR_')) {
-    require_once(dirname(__FILE__, 3) . '/init.php');
+    include_once dirname(__FILE__, 3) . '/init.php';
 }
 
 
@@ -39,8 +40,8 @@ if (Tools::getIsset('data')) {
     $data = new stdClass();
 }
 
-require_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
-require_once(_PS_MODULE_DIR_ . 'mailjet/classes/MailJetLog.php');
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/MailJetLog.php';
 
 $mj = new Mailjet();
 

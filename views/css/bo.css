@@ -19,7 +19,7 @@
 *
 * @author PrestaShop SA <contact@prestashop.com>
 * @copyright  2007-2017 PrestaShop SA
-* @license	http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+* @license  http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 * International Registered Trademark & Property of PrestaShop SA
 */
 
@@ -46,7 +46,7 @@ span.help { padding-left:20px; }
 }
 .default_button_style:hover {
     background-color:#232020 !important;
-    border:2px solid #232020 !important;	
+    border:2px solid #232020 !important;
     color:white  !important;
 }
 
@@ -337,7 +337,7 @@ table#vsTable .titleImage {
     line-height: 24px;
 }
 
-.MJ_event_link a {	width: 15px; height: 10px; }
+.MJ_event_link a {  width: 15px; height: 10px; }
 
 .MJ_event_link > input { position: absolute;top:0; left:0;}
 
@@ -354,7 +354,7 @@ table#vsTable .titleImage {
     border-radius: 4px;
     box-shadow: 0px 1px 4px #e3e3e3;
     width:180px;
-    height:45px;	
+    height:45px;
     margin-right:10px;
     text-transform:uppercase;
     text-align:center;
@@ -370,10 +370,10 @@ table#vsTable .titleImage {
 .btn_tab_home span:nth-child(1) { height:45px; }
 
 .home_list_tab {
-    margin-top:20px;	
+    margin-top:20px;
 }
 .home_list_tab li {
-    height:60px;	
+    height:60px;
 }
 
 /* Mailjet style */
@@ -396,14 +396,14 @@ table#vsTable .titleImage {
     width:164px;
     background-size: 164px;
     height:48px;
-	margin-top: 10px;
+    margin-top: 10px;
     margin-left:auto;
     margin-right:auto;
 }
 .center_page {
     margin-left:auto;
     margin-right:auto;
-    width:960px;	
+    width:960px;
 }
 fieldset {
     border: 1px solid #efefef;

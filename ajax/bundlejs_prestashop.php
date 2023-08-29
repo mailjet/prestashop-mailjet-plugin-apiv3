@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2007-2017 PrestaShop
  *
@@ -24,9 +25,9 @@
  * International Registered Trademark & Property of PrestaShop SA
  */
 
-include_once(realpath(dirname(__FILE__) . '/../../../') . '/config/config.inc.php');
-include_once(_PS_ROOT_DIR_ . '/init.php');
-include_once(_PS_MODULE_DIR_ . 'mailjet/mailjet.php');
+require_once dirname(__DIR__, 3) . '/' . '/config/config.inc.php';
+require_once _PS_ROOT_DIR_ . '/init.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
 $return = '';
 
 if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN') || !Configuration::get('SEGMENT_CUSTOMER_TOKEN')) {
