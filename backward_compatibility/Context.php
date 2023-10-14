@@ -117,6 +117,10 @@ class Context
      */
     public $smarty;
 
+    /**
+     * @throws PrestaShopException
+     * @throws PrestaShopDatabaseException
+     */
     public function __construct()
     {
         global $cookie, $cart, $smarty, $link;
@@ -129,12 +133,12 @@ class Context
         $this->link = $link;
 
         $this->controller = new ControllerBackwardModule();
-        $this->currency = new Currency((int) $cookie->id_currency);
-        $this->language = new Language((int) $cookie->id_lang);
-        $this->country = new Country((int) $cookie->id_country);
+        $this->currency = new Currency(isset($cookie->id_currency) ? (int)$cookie->id_currency : null);
+        $this->language = new Language(isset($cookie->id_lang) ? (int)$cookie->id_lang : null);
+        $this->country = new Country(isset($cookie->id_country) ? (int)$cookie->id_country : null);
         $this->shop = new ShopBackwardModule();
-        $this->customer = new Customer((int) $cookie->id_customer);
-        $this->employee = new Employee((int) $cookie->id_employee);
+        $this->customer = new Customer(isset($cookie->id_customer) ? (int)$cookie->id_customer : null);
+        $this->employee = new Employee(isset($cookie->id_employee) ? (int)$cookie->id_employee : null);
     }
 
     /**

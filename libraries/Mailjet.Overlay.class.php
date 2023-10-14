@@ -298,11 +298,12 @@ class Mailjet_ApiOverlay
      */
     private function createErrorsArray()
     {
-        return;
         $response = $this->getAPIStatus();
         $this->_errors = array();
-        foreach ($response->status as $error) {
-            $this->_errors[$error->code] = '[' . $error->code . '] ' . $error->status . ' : ' . $error->description;
+        if (isset($response->status)) {
+            foreach ($response->status as $error) {
+                $this->_errors[$error->code] = '[' . $error->code . '] ' . $error->status . ' : ' . $error->description;
+            }
         }
     }
 
@@ -1030,19 +1031,6 @@ class Mailjet_ApiOverlay
      */
     public function getUser($cache = null)
     {
-        //         $params = array(
-        //             'method' => 'GET'
-        //         );
-        //         if (!is_null($cache))
-        //             $params['cache'] = $cache;
-        //         $response = $this->_api->userInfos($params);
-        //         if ($response !== FALSE)
-        //             return ($response);
-        //         else
-        //             throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
-
-
-
         $paramsProfile = array(
             'method' => 'GET',
         );
@@ -5044,13 +5032,12 @@ class Mailjet_ApiOverlay
     /**
      * HELP : Get response status and status code you'll encounter when calling our API
      * - url : api.mailjet.com/0.1/helpStatus
-     *
      * @access public
      * @throw  Mailjet::Mailjet_ApiException
-     * @param  int $code  Code response (Optional)
-     * @param  int $cache Cache period for the object - default to 600s = 10m (Optional)
-     *
+     * @param int|null $code Code response (Optional)
+     * @param int $cache Cache period for the object - default to 600s = 10m (Optional)
      * @return mixed Response from the API
+     * @throws Mailjet_ApiException
      */
     public function getAPIStatus(int $code = null, $cache = 600)
     {
@@ -5061,14 +5048,14 @@ class Mailjet_ApiOverlay
             $params['code'] = $code;
         }
         if (!is_null($cache)) {
-            $params['cache'] = intval($cache);
+            $params['cache'] = (int)$cache;
         }
 
         $response = $this->_api->helpStatus($params);
         if ($response !== false) {
             return ($response);
-        } else {
-            throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
         }
+
+        throw new Mailjet_ApiException($this->_api->getHTTPCode(), $this->_errors[$this->_api->getHTTPCode()]);
     }
 }
