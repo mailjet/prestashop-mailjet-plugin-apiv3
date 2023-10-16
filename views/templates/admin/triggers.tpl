@@ -28,7 +28,7 @@
     <script type="text/javascript">
         var iso = '{$tinymce_iso|escape:'htmlall':'UTF-8'|default:'en'}';
         var pathCSS = '{$tinymce_pathCSS|escape:'htmlall':'UTF-8'|default:''}';
-        var ad = '{$tinymce_ad|escape:'htmlall':'UTF-8'|default:''}';    
+        var ad = '{$tinymce_ad|escape:'htmlall':'UTF-8'|default:''}';
     </script>
     <script type="text/javascript" src="{$tinymce_pathBase|escape:'htmlall':'UTF-8'|default:'/'}js/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript" src="{$tinymce_pathBase|escape:'htmlall':'UTF-8'|default:'/'}js/tinymce.inc.js"></script>
@@ -175,23 +175,23 @@
 <form action="{$smarty.server.REQUEST_URI|escape:'htmlall':'UTF-8'|default:''}" method="POST">
     <div id="mj_triggers_page" class="center_page">
         <div class="warn">{l s='To activate the triggers you need to set up this cron job' mod='mailjet'} :<br />
-            <input type="text" readonly value="{$cron|escape:'htmlall':'UTF-8'}" size=135" />
+            <input type="text" readonly value="{$cron|escape:'htmlall':'UTF-8'}" style="width: 95%;" />
         </div>
         <fieldset class="hint">
             <legend>{l s='Do you wish to activate eCommerce transactional email ?' mod='mailjet'}</legend>
             <div>
                 <input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_1" value=1 onClick="$('#triggers_options, #triggers_import_export, #mj_senders_list').slideDown()" {if $MJ_allemails_active && $triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_1').click();">{l s='YES' mod='mailjet'}</a> &nbsp;
                 <input type="radio" name="MJ_triggers_active" id="MJ_triggers_active_0" value=0 onClick="$('#triggers_options, #triggers_import_export, #mj_senders_list').slideUp()" {if !$MJ_allemails_active || !$triggers.active}checked{/if} {if !$MJ_allemails_active}disabled{/if} /> <a href="javascript:;" onClick="$('#MJ_triggers_active_0').click();">{l s='NO' mod='mailjet'}</a><br />
-            </div> 
+            </div>
 
             <br />
             <div  id="mj_senders_list" style="color: #9e6014; width:300px; {if !$MJ_allemails_active || !$triggers.active} display:none;{/if} ">
-                {l s='SENDER ADDRESS for transactional emails' mod='mailjet'}                
+                {l s='SENDER ADDRESS for transactional emails' mod='mailjet'}
                 <div class="ui-widget" style="padding-left:0px;">
                     <input name="MJ_senders" id="MJ_senders" style="width:300px; border: 1px solid #9e6014 !important;">
                 </div>
             </div>
-            <br />   
+            <br />
             <input type="submit" name="MJ_set_triggers" id="MJ_set_triggers" value="{l s='Save Changes' mod='mailjet'}" onClick="this.value = ' {l s='Wait please...' mod='mailjet'} ';" class="savebutton button"  {if !$MJ_allemails_active}disabled{/if} style="{if !$MJ_allemails_active}display:none;{/if}" />
             <br />
 
@@ -218,7 +218,7 @@
     {if $sel==6}{l s='Purchase Anniversary promo' mod='mailjet'}{/if}
 {if $sel==7}{l s='Customers who have not ordered since few time' mod='mailjet'}{/if}
 {if $sel==8}{l s='Satisfaction survey' mod='mailjet'}{/if}
-{if $sel==9}{l s='Loyalty points reminder' mod='mailjet'}{/if} : 
+{if $sel==9}{l s='Loyalty points reminder' mod='mailjet'}{/if} :
 </label>
 <div class="mj_radios">
     <input {if !$MJ_allemails_active}disabled{/if} type="radio" name="MJ_triggers_trigger_{$sel|escape:'htmlall':'UTF-8'}_active" id="MJ_triggers_trigger_{$sel|escape:'htmlall':'UTF-8'}_active_1" value=1 {if $triggers.trigger.$sel.active}checked{/if} onClick="$('#MJ_triggers_trigger_{$sel|escape:'htmlall':'UTF-8'}_button').show();" /> <a href="javascript:;" onClick="{if !$MJ_allemails_active}return false;{/if}  $('#MJ_triggers_trigger_{$sel|escape:'htmlall':'UTF-8'}_active_1').click();">{l s='Yes' mod='mailjet'}</a> &nbsp;

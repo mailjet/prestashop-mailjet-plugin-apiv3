@@ -27,11 +27,16 @@
 
 class MailJetTranslate
 {
+    /**
+     * @param $name
+     * @param $iso
+     * @return array
+     */
     public static function getTranslationsByName($name, $iso = false)
     {
         $file = __DIR__ . '/../xml/translate.xml';
-        $translations = array();
-        $default_translation = array();
+        $translations = [];
+        $default_translation = [];
 
         if (file_exists($file) && ($xml = simplexml_load_string(file_get_contents($file)))) {
             $iso = ($iso) ? $iso : Context::getContext()->language->iso_code;

@@ -40,6 +40,11 @@ class MailJetLog
         MailJetLog::$file = __DIR__ . '/../logs/ajax.log';
     }
 
+    /**
+     * @param $handle
+     * @param $msg
+     * @return bool
+     */
     private static function lockWrite($handle, $msg)
     {
         if ($handle && flock($handle, LOCK_EX)) {
@@ -50,6 +55,13 @@ class MailJetLog
         return false;
     }
 
+    /**
+     * @param $file
+     * @param $message
+     * @param $mode
+     * @param $close
+     * @return bool
+     */
     public static function write($file, $message, $mode = 'a+', $close = false)
     {
         $date = date('d/m/Y G:i:s');
@@ -73,6 +85,11 @@ class MailJetLog
         return false;
     }
 
+    /**
+     * @param $file
+     * @param $mode
+     * @return void
+     */
     private static function setHandle($file, $mode)
     {
         if ($file == self::$file && !self::$handle) {

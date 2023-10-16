@@ -29,9 +29,9 @@ class MailJetPages
 {
     /* Used to define the GET/POST value/key to send or get the page type */
 
-    const REQUEST_PAGE_TYPE = 'MJ_request_page';
-    const REQUIRE_PAGE = 1;
-    const ALL_PAGES = 0;
+    public const REQUEST_PAGE_TYPE = 'MJ_request_page';
+    public const REQUIRE_PAGE = 1;
+    public const ALL_PAGES = 0;
 
     public $default_page = 'SETUP_LANDING';
 
@@ -40,7 +40,7 @@ class MailJetPages
      *
      * @var array
      */
-    public $available_page = array();
+    public $available_page = [];
 
     /**
      * Page require an user authentication to the mailjet service
@@ -48,7 +48,7 @@ class MailJetPages
      *
      * @var array
      */
-    public $require_authentication_pages = array();
+    public $require_authentication_pages = [];
     public $current_authentication;
 
     /**
@@ -127,7 +127,7 @@ class MailJetPages
     public function getCurrentPageName()/* $account_status) */
     {
         $page_type =
-            (($page_type = Tools::getValue(MailJetPages::REQUEST_PAGE_TYPE)) && $this->isAvailablePage($page_type))
+            (($page_type = Tools::getValue(self::REQUEST_PAGE_TYPE)) && $this->isAvailablePage($page_type))
             ? $page_type
             : $this->default_page;
 
@@ -141,7 +141,7 @@ class MailJetPages
      */
     public function getPages($require_page = MailJetPages::ALL_PAGES)
     {
-        return $require_page === MailJetPages::ALL_PAGES ? $this->available_page : $this->extractAuthenticationPages();
+        return $require_page === self::ALL_PAGES ? $this->available_page : $this->extractAuthenticationPages();
     }
 
     public function getTemplateTabName($name)
