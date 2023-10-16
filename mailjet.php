@@ -990,9 +990,9 @@ class Mailjet extends Module
 
             if ($result) {
                 if ($customer->active == 1) {
-                    $initialSynchronization->subscribe($customer, $mailjetListID);
+                    $initialSynchronization->subscribe($customer->email, $mailjetListID);
                 } else {
-                    $initialSynchronization->unsubscribe($customer, $mailjetListID);
+                    $initialSynchronization->unsubscribe($customer->email, $mailjetListID);
                 }
             } else {
                 $initialSynchronization->remove($customer->email, $mailjetListID);
@@ -1054,10 +1054,19 @@ class Mailjet extends Module
             );
     }
 
+    /**
+     * @throws SmartyException
+     */
     public function fetchTemplate($path, $name)
     {
         if (_PS_VERSION_ < '1.4') {
             $this->context->smarty->currentTemplate = $name;
+        }
+
+        try {
+            return $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'mailjet' . $path . $name . '.tpl');
+        } catch (SmartyException $smartyException) {
+            $this->context->smarty->clearCache(_PS_MODULE_DIR_ . 'mailjet' . $path . $name . '.tpl');
         }
 
         return $this->context->smarty->fetch(_PS_MODULE_DIR_ . 'mailjet' . $path . $name . '.tpl');
@@ -1138,7 +1147,7 @@ class Mailjet extends Module
             $this->page_name = 'CAMPAIGN3';
         }
         // Activation root file Creation
-        if (Tools::isSubmit('submitCreateRootFile')) {
+        if (Tools::isSubmit('submitCreateRootFile') && MailjetTemplate::getApi() !== null) {
             $api = MailjetTemplate::getApi();
             $infos = $api->getUser();
             $sendersFromApi = $api->getSenders(null, $infos);
@@ -1149,7 +1158,7 @@ class Mailjet extends Module
                         if ($sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN')
                             || $sender->DNS->Domain == Configuration::get('PS_SHOP_DOMAIN_SSL')
                         ) {
-                            $fp = fopen(_PS_ROOT_DIR_ . '/' . $sender->Filename, 'w');
+                            $fp = fopen(_PS_ROOT_DIR_ . '/' . $sender->Filename, 'wb');
                             fclose($fp);
                         }
                     }
@@ -1157,7 +1166,7 @@ class Mailjet extends Module
             }
         }
         // Account settings : details
-        if (Tools::isSubmit('MJ_set_account_details')) {
+        if (Tools::isSubmit('MJ_set_account_details') && MailjetTemplate::getApi() !== null) {
             $api = MailjetTemplate::getApi();
             $api->updateUser(
                 Tools::getValue('MJ_account_address_city'),
@@ -1174,7 +1183,7 @@ class Mailjet extends Module
             $modif = true;
         }
         // Account settings : tracking
-        if (Tools::isSubmit('MJ_set_account_tracking')) {
+        if (Tools::isSubmit('MJ_set_account_tracking') && MailjetTemplate::getApi() !== null) {
             $api = MailjetTemplate::getApi();
             if (Tools::getValue('MJ_account_tracking_clicks') == '1') {
                 $tracking_clicks = true;
@@ -1944,8 +1953,8 @@ class Mailjet extends Module
      */
     public function checkTokenValidity()
     {
-        if (!isset($this->account->{'TOKEN_' . $this->context->employee->id}) 
-            || $this->account->{'IP_' . $this->context->employee->id} != $_SERVER['REMOTE_ADDR'] 
+        if (!isset($this->account->{'TOKEN_' . $this->context->employee->id})
+            || $this->account->{'IP_' . $this->context->employee->id} != $_SERVER['REMOTE_ADDR']
             || ($this->account->{'TIMESTAMP_' . $this->context->employee->id} <= strtotime('-1 day'))
         ) {
             $this->account->{'IP_' . $this->context->employee->id} = $_SERVER['REMOTE_ADDR'];
@@ -1980,7 +1989,7 @@ class Mailjet extends Module
     {
         if (!$this->isAccountSet()) {
             return null;
-        };
+        }
     }
 
     /**
@@ -1991,6 +2000,12 @@ class Mailjet extends Module
         new Mailjet_ApiOverlay($this->account->API_KEY, $this->account->SECRET_KEY);
     }
 
+    /**
+     * @param $apiKey
+     * @param $secretKey
+     * @return bool
+     * @throws Exception
+     */
     public function auth($apiKey, $secretKey)
     {
         $test = new Mailjet_ApiOverlay($apiKey, $secretKey);
