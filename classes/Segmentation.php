@@ -37,11 +37,13 @@ class Segmentation
 {
     public $page;
     public $trad;
-
-    /**
-     * @author atanas
-     */
-    protected $contactListsMap = array();
+    protected $contactListsMap = [];
+    private $tab;
+    private $name;
+    private $_path;
+    private $displayName;
+    private $description;
+    private $fieldSelect;
 
     public function __construct()
     {

@@ -45,30 +45,30 @@ class MailjetTemplate
 
     /* List of available template for webservice call */
 
-    private $templates = array(
+    private $templates = [
         /* SETUP_LANDING */
-        'setup_landing_message' => array(
-            'params' => array('name' => 'setup_landing_message'),
+        'setup_landing_message' => [
+            'params' => ['name' => 'setup_landing_message'],
             'html' => ''
-        ),
-        'setup_landing_bt_more' => array(
-            'params' => array('name' => 'setup_landing_bt_more'),
+        ],
+        'setup_landing_bt_more' => [
+            'params' => ['name' => 'setup_landing_bt_more'],
             'html' => ''
-        ),
-        'setup_landing_bt_activate' => array(
-            'params' => array('name' => 'setup_landing_bt_activate'),
+        ],
+        'setup_landing_bt_activate' => [
+            'params' => ['name' => 'setup_landing_bt_activate'],
             'html' => ''
-        ),
+        ],
         /* SETUP_STEP_0 */
-        'setup_hosting_error_bt_support' => array(
-            'params' => array('name' => 'setup_hosting_error_bt_support'),
+        'setup_hosting_error_bt_support' => [
+            'params' => ['name' => 'setup_hosting_error_bt_support'],
             'html' => ''
-        ),
-        'setup_hosting_error_message' => array(
-            'params' => array('name' => 'setup_hosting_error_message'),
+        ],
+        'setup_hosting_error_message' => [
+            'params' => ['name' => 'setup_hosting_error_message'],
             'html' => ''
-        ),
-    );
+        ],
+    ];
 
     public function __construct()
     {
@@ -93,20 +93,20 @@ class MailjetTemplate
     {
         $obj = new Mailjet();
         if ($with_overlay) {
-            MailjetTemplate::$api = Mailjet_ApiOverlay::getInstance();
-            MailjetTemplate::$api->setKeys(
+            self::$api = Mailjet_ApiOverlay::getInstance();
+            self::$api->setKeys(
                 $obj->getAccountSettingsKey('API_KEY'),
                 $obj->getAccountSettingsKey('SECRET_KEY')
             );
-            MailjetTemplate::$api->secure(false);
+            self::$api->secure(false);
         } else {
-            MailjetTemplate::$api =
+            self::$api =
                 new Mailjet_Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
         }
 
         unset($obj);
 
-        return MailjetTemplate::$api;
+        return self::$api;
     }
 
     public static function getDataApi()

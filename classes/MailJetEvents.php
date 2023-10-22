@@ -27,12 +27,12 @@
 
 class MailJetEvents extends ObjectModel
 {
-    public $params = array();
-    public $post_vars = array();
+    public $params = [];
+    public $post_vars = [];
     protected $table = 'mj_events';
     protected $identifier = 'id_mj_events';
-    protected $fieldsRequired = array('event', 'time');
-    private $default_scheme = array();
+    protected $fieldsRequired = ['event', 'time'];
+    private $default_scheme = [];
 
     public const DEFAULT_EVENT = 'open';
     public const ALL_EVENTS_KEYS = 'keys_list';
@@ -40,20 +40,20 @@ class MailJetEvents extends ObjectModel
 
     private $limit_event;
     public $current_page;
-    public static $definition = array(
+    public static $definition = [
         'table' => 'mj_events',
         'primary' => 'id_mj_events',
         'multilang' => false,
         'multilang_shop' => false
-    );
+    ];
 
     /**
      * Set default value to be able to use the install / uninstall method
      *
      * @param string $event
-     * @param bool   $time
+     * @param int   $time
      */
-    public function __construct($event = MailJetEvents::DEFAULT_EVENT, $post_vars = array(), $time = null, $id_events = null)
+    public function __construct($event = MailJetEvents::DEFAULT_EVENT, $post_vars = [], $time = null, $id_events = null)
     {
         // Get data from Database if id exist
         parent::__construct($id_events);
@@ -63,8 +63,8 @@ class MailJetEvents extends ObjectModel
         }
 
         $this->post_vars = $post_vars;
-        $this->params['event'] = array('value' => $event, 'type' => 'string');
-        $this->params['time'] = array('value' => $time, 'type' => 'int');
+        $this->params['event'] = ['value' => $event, 'type' => 'string'];
+        $this->params['time'] = ['value' => $time, 'type' => 'int'];
 
         $this->initScheme();
 
