@@ -65,6 +65,11 @@ Happy emailing!
 
 
 ## Changelog
+= 3.6.1 =
+* Add support for php 8.2
+* Fixed bugs related to php 8.2
+* Fixed issue when Prestashop is updated from 1.7.x version to 8.x
+
 = 3.6.0 =
 * Support version 8.0.x
 * Code cleanup
