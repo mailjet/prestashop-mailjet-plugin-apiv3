@@ -246,6 +246,11 @@ class Mailjet extends Module
         $this->createTriggers();
         Configuration::updateValue('MJ_ALLEMAILS', 1);
 
+        $updateOrderHook = 'updateOrderStatus';
+        if (version_compare(_PS_VERSION_, '8', '>=')) {
+            $updateOrderHook = 'actionOrderStatusUpdate';
+        }
+
         return (
             parent::install()
             && $this->loadConfiguration()
@@ -269,7 +274,7 @@ class Mailjet extends Module
             && $this->registerHook('orderReturn')
             && $this->registerHook('orderSlip')
             && $this->registerHook('registerGDPRConsent')
-            && $this->registerHook('updateOrderStatus')
+            && $this->registerHook($updateOrderHook)
             && $this->registerHook('updateQuantity')
             && $this->registerHook('actionNewsletterRegistrationAfter')
             && $this->registerHook('actionNewsletterRegistrationBefore')
@@ -882,6 +887,31 @@ class Mailjet extends Module
     }
 
     public function hookUpdateOrderStatus($params)
+    {
+        if (isset($params['id_order'])) {
+            $sql = 'SELECT id_customer
+                FROM ' . _DB_PREFIX_ . 'orders
+                WHERE id_order = ' . (int)$params['id_order'];
+
+            if (($id_customer = (int)Db::getInstance()->getValue($sql)) > 0) {
+                $this->checkAutoAssignment($id_customer);
+            }
+        } elseif (isset($params['cart'])) {
+            $cart = $params['cart'];
+            if ($cart instanceof Cart && isset($cart->id_customer)) {
+                $this->checkAutoAssignment((int)$cart->id_customer);
+            }
+        }
+
+        return '';
+    }
+
+
+    /**
+     * @param $params
+     * @return string
+     */
+    public function hookActionOrderStatusUpdate($params)
     {
         if (isset($params['id_order'])) {
             $sql = 'SELECT id_customer
