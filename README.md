@@ -10,10 +10,12 @@ Boost your ROI and increase your merchant revenue with the Mailjet v3 all-in-one
 
 * Plug-in languages: English, French, German, Spanish 
 * PrestaShop Compatibility: PrestaShop v1.5.0 - v8.0.x
-* PHP Compatibility: requires PHP 5.5 or newer
+* PHP Compatibility: requires PHP 7.1 or newer
 * Mailjet Compatibility: Mailjet account
 * Support: https://app.mailjet.com/support/ticket
 * Requires Mailjet free or paid account
+
+**Important Note:** While the plugin supports PrestaShop 1.5.0+, versions 3.6.1+ require PHP 7.1 or newer due to the use of modern PHP syntax (typed constants). If you are using PHP 5.6 or older, please upgrade your PHP version or use an earlier version of this plugin.
 
 ## Merchant Benefits
 
@@ -69,6 +71,7 @@ Happy emailing!
 * Add support for php 8.2
 * Fixed bugs related to php 8.2
 * Fixed issue when Prestashop is updated from 1.7.x version to 8.x
+* **Breaking change:** Minimum PHP version requirement raised to 7.1+
 
 = 3.6.0 =
 * Support version 8.0.x
