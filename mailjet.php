@@ -266,6 +266,7 @@ class Mailjet extends Module
             && $this->registerHook('displaybackOfficeHeader')
             && $this->registerHook('cancelProduct')
             && $this->registerHook('cart')
+            && $this->registerHook('actionCartSave')
             && $this->registerHook('createAccount')
             && $this->registerHook('header')
             && $this->registerHook('invoice')
@@ -868,12 +869,31 @@ class Mailjet extends Module
         return $this->hookUpdateOrderStatus($params);
     }
 
-    public function hookCart($params)
+    /**
+     * Hook triggered when cart is saved (PrestaShop 1.7.7+)
+     * Replaces deprecated 'cart' hook
+     *
+     * @param array $params
+     * @return string
+     */
+    public function hookActionCartSave($params)
     {
         if (!empty($params['cart'])) {
             $this->checkAutoAssignment((int)$params['cart']->id_customer);
         }
         return '';
+    }
+
+    /**
+     * Hook triggered when cart is saved (PrestaShop < 1.7.7)
+     * @deprecated Use hookActionCartSave() instead
+     *
+     * @param array $params
+     * @return string
+     */
+    public function hookCart($params)
+    {
+        return $this->hookActionCartSave($params);
     }
 
     public function hookAuthentication($params)
