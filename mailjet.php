@@ -127,7 +127,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.6.1';
+        $this->version = '3.6.2';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
 
@@ -268,7 +268,7 @@ class Mailjet extends Module
             && $this->registerHook('cart')
             && $this->registerHook('actionCartSave')
             && $this->registerHook('createAccount')
-            && $this->registerHook('header')
+            && $this->registerHook('displayHeader')
             && $this->registerHook('invoice')
             && $this->registerHook('newOrder')
             && $this->registerHook('orderConfirmation')
@@ -381,7 +381,7 @@ class Mailjet extends Module
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
-    public function hookHeader()
+    public function hookDisplayHeader()
     {
         if (Tools::getIsset('tokp')) {
             if (!$this->context->cart->id) {
