@@ -166,7 +166,12 @@ class MailjetTemplate
     {
         $ps_shop_domain = Context::getContext()->shop->getBaseUrl(true, true);
         $token = Tools::getAdminTokenLite('AdminModules');
-        $sign_up_call_back = urlencode($ps_shop_domain . '/modules/mailjet/callback_signup.php?internaltoken=' . $token);
+        $mailjetModule = Module::getInstanceByName('mailjet');
+        if ($mailjetModule instanceof Mailjet) {
+            $sign_up_call_back = urlencode($mailjetModule->getFrontControllerUrl('signup', ['internaltoken' => $token]));
+        } else {
+            $sign_up_call_back = urlencode($ps_shop_domain . '/modules/mailjet/callback_signup.php?internaltoken=' . $token);
+        }
         $url = $this->mjWebsite .
             '/reseller/signup?r=Prestashop-3.0&cb={' . $sign_up_call_back . '}&show_menu=none&sp=display&locale=' .
             $this->locale;

@@ -637,7 +637,7 @@ function next(page, nb)
 
 function exportCSV()
 {
-    $("#mainForm").attr("action", $("#module_path").val() + "export.php");
+    $("#mainForm").attr("action", $("#module_path").val());
     $("#mainForm").submit();
 }
 

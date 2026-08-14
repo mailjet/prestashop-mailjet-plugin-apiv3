@@ -102,8 +102,8 @@
             <div class="div_new_filter">
                 <h2>{l s='Add a Segment' mod='mailjet'}</h2>
                 <div class="nameFilter">
-                    <form method="post" id="mainForm" action="../modules/mailjet/views/templates/admin/export.php">
-                        <input type="hidden" id="module_path" value="../modules/mailjet/views/templates/admin/" />
+                    <form method="post" id="mainForm" action="{$mj_segmentation_export_url|escape:'htmlall':'UTF-8'|default:''}">
+                        <input type="hidden" id="module_path" value="{$mj_segmentation_export_url|escape:'htmlall':'UTF-8'|default:''}" />
                         <table>
                             <tr>
                                 <td class="segmentNameLabel">{l s='Segment name' mod='mailjet'} <sup>*</sup></td>

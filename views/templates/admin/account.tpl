@@ -93,7 +93,7 @@
             <div>
                 <b>Domain @{$domain->DNS->Domain|escape:'htmlall':'UTF-8'}</b> <i>( {if $domain->Status=='Active'}{l s='enabled' mod='mailjet'}{else}{l s='pending' mod='mailjet'}{/if} )</i><br />
                 <p>
-                    {l s='Root file' mod='mailjet'} : <a href="/modules/mailjet/ajax.php?emptyfile&name={$domain->Filename|escape:'htmlall':'UTF-8'|default:''}"><u>{$domain->Filename|escape:'htmlall':'UTF-8'|default:''}</u></a><br />
+                    {l s='Root file' mod='mailjet'} : <a href="{$MJ_ajax_url|escape:'htmlall':'UTF-8'}&token={$MJ_ADMINMODULES_TOKEN|escape:'url':'UTF-8'}&id_employee={$MJ_id_employee|escape:'url':'UTF-8'}&emptyfile=1&name={$domain->Filename|escape:'htmlall':'UTF-8'|default:''}"><u>{$domain->Filename|escape:'htmlall':'UTF-8'|default:''}</u></a><br />
                     <i>{l s='File to put at your root folder to activate your domain' mod='mailjet'}</i>
                 </p>
             </div>

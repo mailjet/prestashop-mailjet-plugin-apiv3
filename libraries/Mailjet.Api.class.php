@@ -276,7 +276,7 @@ class Mailjet_Api
         curl_setopt($this->_curl_handle, CURLOPT_URL, $url);
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array("Content-Type: " . $contType));
-        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->_curl_handle, CURLOPT_USERAGENT, 'prestashop-3.0');
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey . ':' . $this->_secretKey);
@@ -742,7 +742,7 @@ class Mailjet_Api
 
         curl_setopt($this->_curl_handle, CURLOPT_URL, $url);
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->_curl_handle, CURLOPT_TIMEOUT, 10); //timeout in seconds
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey . ':' . $this->_secretKey);
