@@ -24,6 +24,7 @@
 *}
 <script type="text/javascript">
     var _PS_MJ_MODULE_DIR_ = "{$MJ_base_dir|escape:'javascript':'UTF-8'|default:''}";
+    var MJ_AJAX_URL = "{$MJ_ajax_url|escape:'javascript':'UTF-8'|default:''}";
     var MJ_TOKEN = "{$MJ_TOKEN|escape:'javascript':'UTF-8'|default:''}";
     var MJ_ADMINMODULES_TOKEN = "{$MJ_ADMINMODULES_TOKEN|escape:'javascript':'UTF-8'|default:''}";
 

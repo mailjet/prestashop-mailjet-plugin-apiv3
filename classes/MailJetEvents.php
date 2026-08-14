@@ -276,7 +276,7 @@ class MailJetEvents extends ObjectModel
             $scheme = $this->default_scheme;
         }
         foreach ($scheme as $key => $case) {
-            $fields[$key] = $case['title'];
+            $fields[$key] = isset($case['title']) ? $case['title'] : $key;
         }
         return $fields;
     }

@@ -35,7 +35,11 @@
                 var paramList = ['autostart', 'time'];
                 for (var arg in paramList) {
                     if (func[paramList[arg]] != undefined) {
-                        eval(paramList[arg] + " = func[paramList[arg]]");
+                        if (paramList[arg] === 'autostart') {
+                            autostart = func[paramList[arg]];
+                        } else if (paramList[arg] === 'time') {
+                            time = func[paramList[arg]];
+                        }
                     }
                 }
                 ;

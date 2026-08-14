@@ -73,7 +73,7 @@ class MailJetLog
         self::setHandle($file, $mode);
 
         if (!$exist) {
-            chmod($file, 0666);
+            chmod($file, 0640);
         }
 
         if (self::$handle && self::lockWrite(self::$handle, '[' . $date . '] ' . $message)) {

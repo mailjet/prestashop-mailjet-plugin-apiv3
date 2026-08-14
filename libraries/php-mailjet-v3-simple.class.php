@@ -291,7 +291,7 @@ class MailjetPHPWrapper
         curl_setopt($curl_handle, CURLOPT_URL, $url);
         curl_setopt($curl_handle, CURLOPT_USERAGENT, 'mailjet-api-v3-php-simple/' . $this->wrapperVersion . '; PHP v. ' . phpversion());
         curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($curl_handle, CURLOPT_USERPWD, $this->apiKey . ':' . $this->secretKey);
         $this->_request_post = false;

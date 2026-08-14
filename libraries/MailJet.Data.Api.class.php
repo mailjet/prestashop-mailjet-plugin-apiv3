@@ -556,7 +556,7 @@ class mailjetdata
 
         curl_setopt($this->_curl_handle, CURLOPT_URL, $this->_api_url . $Uri);
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->_curl_handle, CURLOPT_USERPWD, $this->_apiKey . ':' . $this->_secretKey);
         curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, array("Content-Type: " . $MimeType));

@@ -27,10 +27,8 @@
 
 require_once dirname(__DIR__, 5) . '/' . '/config/config.inc.php';
 require_once _PS_ROOT_DIR_ . '/init.php';
-
-if (Tools::getValue('token') != Configuration::get('SEGMENT_CUSTOMER_TOKEN')) {
-    exit();
-}
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/MailjetEndpointAuth.php';
+MailjetEndpointAuth::validateAdminModuleToken();
 
 function getTable($header, $data, $id)
 {

@@ -25,6 +25,11 @@
 
 (function ($, undifened) {
 
+    function getMailjetAjaxUrl()
+    {
+        return MJ_AJAX_URL || (_PS_MJ_MODULE_DIR_ + 'ajax.php');
+    }
+
     /**
      * Check if the customer finished his setup under the iframe
      */
@@ -33,7 +38,7 @@
         $.ajax(
             {
                 type: 'POST',
-                url: _PS_MJ_MODULE_DIR_ + 'ajax.php',
+                url: getMailjetAjaxUrl(),
                 data: {'method': 'checkMerchantSetupState', 'token': MJ_TOKEN, 'admin_token': MJ_ADMINMODULES_TOKEN},
                 dataType: 'json',
                 success: function (json) {
@@ -61,7 +66,7 @@
                         mj_secret_key: mj_secret_key
                     };
                     $.post(
-                        _PS_MJ_MODULE_DIR_ + 'ajax.php', data, function (response) {
+                        getMailjetAjaxUrl(), data, function (response) {
                             if (response === false) {
                                 $('#loading_message').hide();
                                 $('#wrong_credentials_message').show();
