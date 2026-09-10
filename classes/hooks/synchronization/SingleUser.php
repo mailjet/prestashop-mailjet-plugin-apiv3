@@ -107,7 +107,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      */
     public function unsubscribe($email, $list_id = null)
     {
-        // Sans list_id valide, ne jamais désabonner toutes les listes du compte : on journalise et on abandonne.
+        // Without a valid list_id, never unsubscribe from all the account lists: log and abort.
         if (empty($list_id)) {
             MailJetLog::write(
                 MailJetLog::$file,

@@ -823,8 +823,7 @@ class Mailjet extends Module
             } elseif ($customer->newsletter == 0) {
                 // $initialSynchronization->unsubscribe($customer->email);
 
-                // Ajouter appel à la fonction getSubscribedSegmentLists()
-                // Pour chaque list, appeler unsuscribe avec l'id de la liste en paramètre
+                // Call getSubscribedSegmentLists() and unsubscribe the customer from each of these lists
                 $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
                 foreach ($subsSegmentListsIds as $listId) {
                     $initialSynchronization->unsubscribe($customer->email, $listId);
