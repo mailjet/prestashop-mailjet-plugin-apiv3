@@ -818,12 +818,19 @@ class Mailjet extends Module
         $customer = $params['object'];
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
-            $this->checkAutoAssignment($customer->id);
             if ($customer->deleted == 1) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->newsletter == 0) {
-                $initialSynchronization->unsubscribe($customer->email);
+                // $initialSynchronization->unsubscribe($customer->email);
+
+                // Ajouter appel à la fonction getSubscribedSegmentLists()
+                // Pour chaque list, appeler unsuscribe avec l'id de la liste en paramètre
+                $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
+                foreach ($subsSegmentListsIds as $listId) {
+                    $initialSynchronization->unsubscribe($customer->email, $listId);
+                }
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
+                $this->checkAutoAssignment($customer->id);
                 $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
