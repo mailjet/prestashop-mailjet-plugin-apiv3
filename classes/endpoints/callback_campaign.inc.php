@@ -57,7 +57,7 @@ if ($data->next_step_url) {
         $res_campaign = Db::getInstance()->GetRow($sql);
 
         if (empty($res_campaign)) {
-            $token_presta = md5(uniqid('mj', true));
+            $token_presta = bin2hex(random_bytes(16));
             $sql = 'INSERT INTO ' . _DB_PREFIX_ . 'mj_campaign (campaign_id, token_presta, date_add)
 			VALUES (' . $campaignId . ', \'' . $token_presta . '\', NOW())';
             Db::getInstance()->Execute($sql);

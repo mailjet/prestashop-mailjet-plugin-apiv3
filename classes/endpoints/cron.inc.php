@@ -351,7 +351,7 @@ if ($mailjet->triggers['active']) {
                     while ($code_length < 8 || (int) findCode($code)) {
                         $code = '';
                         for ($i = 0; $i < 8; $i++) {
-                            $code .= Tools::substr($alphanum, mt_rand(1, Tools::strlen($alphanum)) - 1, 1);
+                            $code .= Tools::substr($alphanum, random_int(0, Tools::strlen($alphanum) - 1), 1);
                         }
                         $code_length = Tools::strlen($code);
                     }
