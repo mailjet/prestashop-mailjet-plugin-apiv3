@@ -107,35 +107,22 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      */
     public function unsubscribe($email, $list_id = null)
     {
-        if ($list_id) {
-            $contact = array(
-                "Email" => $email,   // Mandatory field!
-                "Action" => "unsub",
+        // Without a valid list_id, never unsubscribe from all the account lists: log and abort.
+        if (empty($list_id)) {
+            MailJetLog::write(
+                MailJetLog::$file,
+                'Mailjet::unsubscribe() called without a valid list_id for ' . $email . ', call aborted.'
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
-
-            if (!$response || !($response->Count > 0)) {
-                return false;
-            }
-        } else {
-            $apiOverlay = $this->getApiOverlay();
-
-            $lists = $apiOverlay->getContactsLists();
-
-            foreach ($lists as $list) {
-                $contact = array(
-                    "Email" => $email,   // Mandatory field!
-                    "Action" => "unsub",
-                );
-                $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
-
-                if (!$response || !($response->Count > 0)) {
-                    return false;
-                }
-            }
+            return false;
         }
 
-        return true;
+        $contact = array(
+            "Email" => $email,   // Mandatory field!
+            "Action" => "unsub",
+        );
+        $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
+
+        return $response && $response->Count > 0;
     }
 
     public function unsubscribeListsExceptMaster($email)
@@ -165,19 +152,31 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      * Get segment lists in which a customer is subscribed
      *
      * @param  string $email
-     * @return [int] $subscribedListsIds
+     * @return int[] $subscribedListsIds
      */
     public function getSubscribedSegmentLists($email)
     {
         $apiOverlay = $this->getApiOverlay();
         $lists = $apiOverlay->getCustomerLists($email);
         if (!$lists) {
-            return false;
+            return array();
         }
         $subscribedListsIds = array();
         foreach ($lists->Data as $list) {
-            if ($list->IsUnsub == false) {
-                $subscribedListsIds[] = $list->ID;
+            // The getcontactslists endpoint uses ListID/IsUnsubscribed, not the ContactsList ID/IsUnsub fields.
+            $listId = isset($list->ListID) ? $list->ListID : (isset($list->ID) ? $list->ID : null);
+            $isUnsub = isset($list->IsUnsubscribed) ? $list->IsUnsubscribed : (isset($list->IsUnsub) ? $list->IsUnsub : null);
+
+            if (empty($listId)) {
+                MailJetLog::write(
+                    MailJetLog::$file,
+                    'Mailjet::getSubscribedSegmentLists() received an entry without a usable list id: ' . json_encode($list)
+                );
+                continue;
+            }
+
+            if ($isUnsub == false) {
+                $subscribedListsIds[] = $listId;
             }
         }
         return $subscribedListsIds;
