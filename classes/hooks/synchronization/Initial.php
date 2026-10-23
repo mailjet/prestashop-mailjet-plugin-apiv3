@@ -69,6 +69,7 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
         $limit = self::CHUNK_SIZE;
         $allUsers = $this->getActiveCustomers($start, $limit);
         $firstLoop = true;
+        $trackingConsent = MailjetTrackingConsent::create();
 
         while (!empty($allUsers)) {
             $rest_contacts = count($allUsers);
@@ -83,9 +84,12 @@ class HooksSynchronizationInitial extends HooksSynchronizationSynchronizationAbs
                 $userInfo = array_pop($allUsers);
                 $contacts[] = array(
                     'Email' => $userInfo['email'],
-                    'Properties' => array(
-                        'firstname' => $userInfo['firstname'],
-                        'lastname' => $userInfo['lastname']
+                    'Properties' => array_merge(
+                        array(
+                            'firstname' => $userInfo['firstname'],
+                            'lastname' => $userInfo['lastname']
+                        ),
+                        $trackingConsent->getContactProperties((int) $userInfo['id_customer'])
                     )
                 );
             }

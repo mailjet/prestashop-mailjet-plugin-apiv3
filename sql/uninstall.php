@@ -40,3 +40,8 @@ $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_condition`';
 $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_basecondition`';
 $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_sourcecondition`';
 $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_fieldcondition`';
+
+/* * * ** GDPR TRACKING CONSENT ** ** */
+
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/consent/MailjetTrackingConsentDbStorage.php';
+$sql = array_merge($sql, MailjetTrackingConsentDbStorage::getUninstallSql());

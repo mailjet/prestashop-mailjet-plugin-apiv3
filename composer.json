@@ -1,0 +1,18 @@
+{
+    "name": "mailjet/prestashop-mailjet-plugin-apiv3",
+    "description": "Mailjet module for PrestaShop",
+    "type": "prestashop-module",
+    "license": "AFL-3.0",
+    "require": {
+        "php": ">=7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "config": {
+        "prepend-autoloader": false
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}

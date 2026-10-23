@@ -52,6 +52,7 @@ require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/ContactProperties.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/consent/MailjetTrackingConsent.php';
 
 
 class Mailjet extends Module
@@ -127,7 +128,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.7.0';
+        $this->version = '3.8.0';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
         $this->ps_versions_compliancy = [
@@ -251,6 +252,10 @@ class Mailjet extends Module
             'actionNewsletterRegistrationAfter',
             'actionNewsletterRegistrationBefore',
             'actionControllerInitBefore',
+            'additionalCustomerFormFields',
+            'validateCustomerFormFields',
+            'actionCustomerAccountUpdate',
+            'actionMailAlterMessageBeforeSend',
         ];
 
         if (version_compare(_PS_VERSION_, '8', '>=')) {
@@ -269,6 +274,65 @@ class Mailjet extends Module
         }
 
         return true;
+    }
+
+    /**
+     * Hooks added in 3.8.0 for the GDPR tracking consent, also used by the upgrade script
+     *
+     * @return bool
+     */
+    public function registerTrackingConsentHooks()
+    {
+        foreach ([
+            'additionalCustomerFormFields',
+            'validateCustomerFormFields',
+            'actionCustomerAccountUpdate',
+            'actionMailAlterMessageBeforeSend',
+            version_compare(_PS_VERSION_, '8', '>=') ? 'displayAdminCustomers' : 'adminCustomers',
+        ] as $hook) {
+            if (!$this->isRegisteredInHook($hook) && !$this->registerHook($hook)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Default tracking consent settings. The feature is disabled until the merchant enables it.
+     *
+     * @return bool
+     */
+    public function installTrackingConsentConfiguration()
+    {
+        if (Configuration::get(MailjetTrackingConsent::CONFIG_PROPERTY) === false) {
+            Configuration::updateValue(MailjetTrackingConsent::CONFIG_ENABLED, 0);
+            Configuration::updateValue(MailjetTrackingConsent::CONFIG_PROPERTY, MailjetTrackingConsent::DEFAULT_PROPERTY);
+        }
+
+        $labels = [];
+        foreach (Language::getLanguages(false) as $lang) {
+            $labels[$lang['id_lang']] = $this->getDefaultTrackingConsentLabel($lang['iso_code']);
+        }
+
+        return Configuration::get(MailjetTrackingConsent::CONFIG_LABEL)
+            || Configuration::updateValue(MailjetTrackingConsent::CONFIG_LABEL, $labels);
+    }
+
+    /**
+     * @param string $iso
+     * @return string
+     */
+    private function getDefaultTrackingConsentLabel($iso)
+    {
+        $labels = [
+            'fr' => 'J\'accepte le suivi des ouvertures et des clics de vos emails',
+            'de' => 'Ich bin mit der Erfassung von Öffnungen und Klicks in E-Mails einverstanden',
+            'es' => 'Acepto el seguimiento de aperturas y clics en los correos electrónicos',
+            'it' => 'Accetto il tracciamento delle aperture e dei clic nelle email',
+        ];
+
+        return isset($labels[$iso]) ? $labels[$iso] : 'I agree to open/click tracking of your emails';
     }
 
     /**
@@ -346,6 +410,7 @@ class Mailjet extends Module
             parent::install()
             && $this->loadConfiguration()
             && $this->registerModuleHooks()
+            && $this->installTrackingConsentConfiguration()
         );
     }
 
@@ -388,12 +453,14 @@ class Mailjet extends Module
                     continue;
                 }
             }
+            $trackingConsent = MailjetTrackingConsent::create();
             $data[] = [
                 'Email' => $email,
                 'Firstname' => $firstname,
                 'Lastname' => $lastname,
                 'Last campaign sent' => $lastCampaignSent->format('Y-m-d H:i:s'),
-                'Creation date' => $creationDate->format('Y-m-d H:i:s')
+                'Creation date' => $creationDate->format('Y-m-d H:i:s'),
+                'Open/click tracking consent' => $trackingConsent->hasConsentForEmail($email) ? 'yes' : 'no',
             ];
             return json_encode($data);
         }
@@ -434,6 +501,10 @@ class Mailjet extends Module
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
         Configuration::deleteByName('MJ_ALLEMAILS');
+        Configuration::deleteByName(MailjetTrackingConsent::CONFIG_ENABLED);
+        Configuration::deleteByName(MailjetTrackingConsent::CONFIG_LABEL);
+        Configuration::deleteByName(MailjetTrackingConsent::CONFIG_PROPERTY);
+        Configuration::deleteByName(MailjetTrackingConsent::CONFIG_PROPERTIES_CREATED);
         $this->configToDefault();
         unset($this->account);
         unset($this->triggers);
@@ -818,6 +889,7 @@ class Mailjet extends Module
         $customer = $params['object'];
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
+            MailjetTrackingConsent::create()->updateEmail((int) $customer->id, $customer->email);
             $this->checkAutoAssignment($customer->id);
             if ($customer->deleted == 1) {
                 $initialSynchronization->removeFromAllLists($customer->email);
@@ -837,7 +909,21 @@ class Mailjet extends Module
      */
     public function hookDisplayAdminCustomers($params)
     {
-        //TODO implement in the future
+        $idCustomer = !empty($params['id_customer']) ? (int) $params['id_customer'] : (int) Tools::getValue('id_customer');
+        if (!$idCustomer) {
+            return '';
+        }
+
+        $trackingConsent = MailjetTrackingConsent::create();
+        $this->context->smarty->assign(
+            [
+                'MJ_tracking_consent_enabled' => $trackingConsent->isEnabled(),
+                'MJ_tracking_consent_status' => $trackingConsent->getStatus($idCustomer),
+                'MJ_tracking_consent_history' => $trackingConsent->getHistory($idCustomer, 10),
+            ]
+        );
+
+        return $this->fetchTemplate('/views/templates/hook/', 'admin_customer_tracking_consent');
     }
 
     /**
@@ -845,7 +931,7 @@ class Mailjet extends Module
      */
     public function hookAdminCustomers($params)
     {
-        $this->hookDisplayAdminCustomers($params);
+        return $this->hookDisplayAdminCustomers($params);
     }
 
     public function hookActionObjectCustomerDeleteBefore($params)
@@ -899,6 +985,11 @@ class Mailjet extends Module
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
 
         try {
+            MailjetTrackingConsent::create()->setConsentFromForm(
+                (int) $params['newCustomer']->id,
+                $params['newCustomer']->email,
+                Tools::getValue(MailjetTrackingConsent::FIELD_NAME)
+            );
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
                 $initialSynchronization->subscribe($params['newCustomer']);
             }
@@ -915,6 +1006,90 @@ class Mailjet extends Module
     public function hookCreateAccount($params)
     {
         return $this->hookActionCustomerAccountAdd($params);
+    }
+
+    /**
+     * Customer saved his identity form in the front office (PrestaShop 1.7+)
+     *
+     * @param array $params
+     * @return void
+     */
+    public function hookActionCustomerAccountUpdate($params)
+    {
+        if (empty($params['customer']->id)) {
+            return;
+        }
+
+        try {
+            MailjetTrackingConsent::create()->setConsentFromForm(
+                (int) $params['customer']->id,
+                $params['customer']->email,
+                Tools::getValue(MailjetTrackingConsent::FIELD_NAME)
+            );
+        } catch (Exception $e) {
+            $this->errors_list[] = $this->l($e->getMessage());
+        }
+    }
+
+    /**
+     * Tracking consent checkbox on the registration, checkout and identity forms (PrestaShop 1.7+).
+     * It is independent of the native "newsletter" and "optin" checkboxes.
+     *
+     * @param array $params
+     * @return FormField[]
+     */
+    public function hookAdditionalCustomerFormFields($params)
+    {
+        $trackingConsent = MailjetTrackingConsent::create();
+        if (!$trackingConsent->isEnabled() || !class_exists('FormField')) {
+            return [];
+        }
+
+        $label = Configuration::get(MailjetTrackingConsent::CONFIG_LABEL, (int) $this->context->language->id);
+        $field = (new FormField())
+            ->setName(MailjetTrackingConsent::FIELD_NAME)
+            ->setType('checkbox')
+            ->setLabel($label ?: $this->getDefaultTrackingConsentLabel($this->context->language->iso_code))
+            ->setRequired(false);
+
+        if (Tools::isSubmit('submitCreate') || Tools::getIsset(MailjetTrackingConsent::FIELD_NAME)) {
+            $field->setValue((bool) Tools::getValue(MailjetTrackingConsent::FIELD_NAME));
+        } elseif (!empty($this->context->customer->id) && $this->context->customer->isLogged()) {
+            $field->setValue($trackingConsent->hasConsent((int) $this->context->customer->id));
+        }
+
+        return [$field];
+    }
+
+    /**
+     * The checkbox is optional, there is nothing to reject
+     *
+     * @param array $params
+     * @return FormField[]
+     */
+    public function hookValidateCustomerFormFields($params)
+    {
+        return isset($params['fields']) ? $params['fields'] : [];
+    }
+
+    /**
+     * Disable Mailjet open/click tracking on every email sent by PrestaShop to a recipient
+     * who did not consent (or withdrew the consent)
+     *
+     * @param array $params
+     * @return void
+     */
+    public function hookActionMailAlterMessageBeforeSend($params)
+    {
+        if (empty($params['message'])) {
+            return;
+        }
+
+        try {
+            MailjetTrackingConsent::create()->applyToMessage($params['message']);
+        } catch (Exception $e) {
+            MailJetLog::write(MailJetLog::$file, 'Tracking consent: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -1625,6 +1800,9 @@ class Mailjet extends Module
                 $output = $this->displayConfirmation($this->l('Settings updated'));
             }
         }
+        if (Tools::isSubmit('submitMailjetTrackingConsent')) {
+            $output .= $this->processTrackingConsentForm();
+        }
         switch ($this->page_name) {
         case 'SETUP_LANDING':
             $mt = new MailjetTemplate();
@@ -1802,7 +1980,8 @@ class Mailjet extends Module
         if ($this->page_name === 'CONTACTS') {
             $this->context->smarty->assign(
                 [
-                'MJ_contact_list_form' => '<div class="center_page">' . $this->displayForm() . '</div>'
+                'MJ_contact_list_form' => '<div class="center_page">' . $this->displayForm()
+                    . $this->displayTrackingConsentForm() . '</div>'
                 ]
             );
         }
@@ -1858,6 +2037,107 @@ class Mailjet extends Module
         $helper->submit_action = 'submit' . $this->name;
         $helper->fields_value['contact_list'] = Configuration::get('contact_list');
         $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
+
+        return $helper->generateForm([$form]);
+    }
+
+    /**
+     * @return string
+     */
+    private function processTrackingConsentForm()
+    {
+        $property = trim((string) Tools::getValue(MailjetTrackingConsent::CONFIG_PROPERTY));
+        if (!preg_match('/^[A-Za-z][A-Za-z0-9_]{0,63}$/', $property)) {
+            return $this->displayError(
+                $this->l('The Mailjet contact property may contain only letters, digits and underscores.')
+            );
+        }
+
+        $labels = [];
+        foreach (Language::getLanguages(false) as $lang) {
+            $label = trim((string) Tools::getValue(MailjetTrackingConsent::CONFIG_LABEL . '_' . $lang['id_lang']));
+            $labels[$lang['id_lang']] = $label !== '' ? $label : $this->getDefaultTrackingConsentLabel($lang['iso_code']);
+        }
+
+        Configuration::updateValue(
+            MailjetTrackingConsent::CONFIG_ENABLED,
+            (int) (bool) Tools::getValue(MailjetTrackingConsent::CONFIG_ENABLED)
+        );
+        Configuration::updateValue(MailjetTrackingConsent::CONFIG_LABEL, $labels);
+        Configuration::updateValue(MailjetTrackingConsent::CONFIG_PROPERTY, $property);
+
+        $trackingConsent = MailjetTrackingConsent::create();
+        if ($trackingConsent->isEnabled() && !$trackingConsent->ensureProperties()) {
+            return $this->displayWarning(
+                $this->l('Settings updated, but the tracking consent properties could not be created in Mailjet.')
+            );
+        }
+
+        return $this->displayConfirmation($this->l('Settings updated'));
+    }
+
+    /**
+     * @return string
+     */
+    public function displayTrackingConsentForm()
+    {
+        $form = [
+            'form' => [
+                'legend' => [
+                    'title' => $this->l('GDPR - Email tracking consent'),
+                    'icon' => 'icon-shield',
+                ],
+                'description' => $this->l('Adds an "open/click tracking" checkbox, independent of the newsletter subscription, to the registration and account forms. Emails sent through Mailjet to customers who did not consent, or withdrew their consent, are sent with open and click tracking disabled. Consent changes are synchronized with the Mailjet contact property below in both directions (Mailjet changes are imported by the module cron task).'),
+                'input' => [
+                    [
+                        'type' => 'switch',
+                        'label' => $this->l('Enable tracking consent'),
+                        'name' => MailjetTrackingConsent::CONFIG_ENABLED,
+                        'is_bool' => true,
+                        'values' => [
+                            ['id' => 'active_on', 'value' => 1, 'label' => $this->l('Yes')],
+                            ['id' => 'active_off', 'value' => 0, 'label' => $this->l('No')],
+                        ],
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->l('Checkbox label'),
+                        'name' => MailjetTrackingConsent::CONFIG_LABEL,
+                        'lang' => true,
+                    ],
+                    [
+                        'type' => 'text',
+                        'label' => $this->l('Mailjet contact property'),
+                        'name' => MailjetTrackingConsent::CONFIG_PROPERTY,
+                        'desc' => $this->l('Boolean contact property storing the consent. A datetime property with the "_date" suffix stores the date of the last change.'),
+                        'required' => true,
+                    ],
+                ],
+                'submit' => [
+                    'title' => $this->l('Save'),
+                    'class' => 'btn btn-primary',
+                ],
+            ],
+        ];
+
+        $helper = new HelperForm();
+        $helper->table = $this->table;
+        $helper->name_controller = $this->name;
+        $helper->token = Tools::getAdminTokenLite('AdminModules');
+        $helper->currentIndex = AdminController::$currentIndex . '&' . http_build_query(
+            ['configure' => $this->name, MailJetPages::REQUEST_PAGE_TYPE => 'CONTACTS']
+        );
+        $helper->submit_action = 'submitMailjetTrackingConsent';
+        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
+        $helper->languages = $this->context->controller->getLanguages();
+        $helper->fields_value[MailjetTrackingConsent::CONFIG_ENABLED] =
+            (int) Configuration::get(MailjetTrackingConsent::CONFIG_ENABLED);
+        $helper->fields_value[MailjetTrackingConsent::CONFIG_PROPERTY] =
+            Configuration::get(MailjetTrackingConsent::CONFIG_PROPERTY) ?: MailjetTrackingConsent::DEFAULT_PROPERTY;
+        foreach (Language::getLanguages(false) as $lang) {
+            $helper->fields_value[MailjetTrackingConsent::CONFIG_LABEL][$lang['id_lang']] =
+                Configuration::get(MailjetTrackingConsent::CONFIG_LABEL, $lang['id_lang']);
+        }
 
         return $helper->generateForm([$form]);
     }
@@ -2481,6 +2761,11 @@ class Mailjet extends Module
             //$sMessage->headers->setEncoding('Q');
             $sMessage->attach(new \Swift_Message_Part(strip_tags($message), 'text/plain', '8bit', 'utf-8'));
             $sMessage->attach(new \Swift_Message_Part($message, 'text/html', '8bit', 'utf-8'));
+            if (MailjetTrackingConsent::create()->shouldDisableTracking([$to])) {
+                foreach (MailjetTrackingConsent::getDisableTrackingHeaders() as $name => $value) {
+                    $sMessage->headers->set($name, $value);
+                }
+            }
 
             /* Send mail */
             $send = $swift->send($sMessage, $to, new \Swift_Address($from, $from_name));
@@ -2525,6 +2810,7 @@ class Mailjet extends Module
                 ->setFrom([$from => $from_name])
                 ->setTo([$to])
                 ->setBody($message, 'text/html');
+            MailjetTrackingConsent::create()->applyToMessage($message);
 
             // $message->addPart($message, 'text/plain', 'utf-8');
             //$message->addPart($message, 'text/html', 'utf-8');

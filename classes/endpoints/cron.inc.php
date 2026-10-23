@@ -51,6 +51,13 @@ function findCode($code)
     }
 }
 
+/* GDPR tracking consent: retry pending pushes, then import consent changes made in Mailjet */
+try {
+    MailjetTrackingConsent::create()->synchronizeFromMailjet();
+} catch (Exception $e) {
+    MailJetLog::write(MailJetLog::$file, 'Tracking consent synchronization: ' . $e->getMessage());
+}
+
 if ($mailjet->triggers['active']) {
     $template = array();
 
