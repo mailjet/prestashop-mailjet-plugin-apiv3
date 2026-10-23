@@ -108,6 +108,8 @@ CNIL / Garante guidance on email tracking pixels described in the
 * GDPR: two-way synchronization of the consent with a Mailjet contact property (push on change, pull by cron)
 * GDPR: open and click tracking disabled for emails sent to recipients without consent; no value means no consent
 * Unit tests (`composer install && composer test`)
+* Fixed fatal error `Swift_SmtpTransport::newInstance()` in trigger emails on PrestaShop 8 / SwiftMailer 6 (#157), added Symfony Mailer support for PrestaShop 9
+* Trigger emails which fail to send are no longer recorded as sent
 
 = 3.6.1 =
 * Add support for php 8.2

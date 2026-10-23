@@ -2777,52 +2777,75 @@ class Mailjet extends Module
         }
     }
 
+    /**
+     * Send a trigger email through the Mailjet SMTP relay.
+     * SwiftMailer 5 (PS 1.6.1.5 - 1.7), SwiftMailer 6 (PS 8, no more ::newInstance() factories)
+     * and Symfony Mailer (PS 9, SwiftMailer removed) are supported.
+     *
+     * @param string $subject
+     * @param string $message HTML body
+     * @param string $to
+     * @return bool
+     */
     public static function sendMail1615($subject, $message, $to)
     {
+        $account = json_decode(Configuration::get('MAILJET'), true);
+        $from = $account['EMAIL'];
+        $from_name = Configuration::get('PS_SHOP_NAME');
+        $subject = '[' . $from_name . '] ' . $subject;
+        $host = Configuration::get('PS_MAIL_SERVER');
+        $port = (int) Configuration::get('PS_MAIL_SMTP_PORT');
+        // PrestaShop stores "off" when there is no encryption
+        $encryption = in_array(Configuration::get('PS_MAIL_SMTP_ENCRYPTION'), ['ssl', 'tls'], true)
+            ? Configuration::get('PS_MAIL_SMTP_ENCRYPTION')
+            : null;
+
         try {
-            $account = json_decode(Configuration::get('MAILJET'), true);
-            $from = $account['EMAIL'];
-            $from_name = Configuration::get('PS_SHOP_NAME');
+            if (class_exists('Swift_SmtpTransport')) {
+                $transport = (new \Swift_SmtpTransport($host, $port, $encryption))
+                    ->setUsername($account['API_KEY'])
+                    ->setPassword($account['SECRET_KEY']);
+                $mailer = new \Swift_Mailer($transport);
 
-            $transport = \Swift_SmtpTransport::newInstance(
-                Configuration::get('PS_MAIL_SERVER'),
-                Configuration::get('PS_MAIL_SMTP_PORT'),
-                Configuration::get('PS_MAIL_SMTP_ENCRYPTION')
-            )
-                ->setUsername($account['API_KEY'])
-                ->setPassword($account['SECRET_KEY']);
+                $email = (new \Swift_Message($subject))
+                    ->setFrom([$from => $from_name])
+                    ->setTo([$to])
+                    ->setBody($message, 'text/html');
+            } elseif (class_exists('Symfony\Component\Mailer\Mailer')) {
+                $dsn = sprintf(
+                    '%s://%s:%s@%s:%d',
+                    $encryption === 'ssl' ? 'smtps' : 'smtp',
+                    rawurlencode($account['API_KEY']),
+                    rawurlencode($account['SECRET_KEY']),
+                    $host,
+                    $port
+                );
+                $mailer = new \Symfony\Component\Mailer\Mailer(\Symfony\Component\Mailer\Transport::fromDsn($dsn));
 
-            /*
-              You could alternatively use a different transport such as Sendmail or Mail:
+                $email = (new \Symfony\Component\Mime\Email())
+                    ->from(new \Symfony\Component\Mime\Address($from, (string) $from_name))
+                    ->to($to)
+                    ->subject($subject)
+                    ->html($message);
+            } else {
+                MailJetLog::write(MailJetLog::$file, 'sendMail: no SwiftMailer or Symfony Mailer available');
 
-              // Sendmail
-              $transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
-
-              // Mail
-              $transport = Swift_MailTransport::newInstance();
-             */
-
-            // Create the Mailer using your created Transport
-            $mailer = \Swift_Mailer::newInstance($transport);
-
-            // Create a message
-            $message = \Swift_Message::newInstance('[' . $from_name . '] ' . $subject)
-                ->setFrom([$from => $from_name])
-                ->setTo([$to])
-                ->setBody($message, 'text/html');
-            MailjetTrackingConsent::create()->applyToMessage($message);
-
-            // $message->addPart($message, 'text/plain', 'utf-8');
-            //$message->addPart($message, 'text/html', 'utf-8');
-            // Send the message
-            if ($mailer->send($message)) {
-                $result = true;
+                return false;
             }
-        } catch (\Swift_SwiftException $e) {
-            $result = $e->getMessage();
-        }
 
-        return $result;
+            MailjetTrackingConsent::create()->applyToMessage($email);
+
+            // Symfony Mailer returns nothing and throws on failure
+            $sent = $mailer->send($email);
+
+            return $sent === null || (bool) $sent;
+        } catch (Exception $e) {
+            // Swift_SwiftException and Symfony TransportExceptionInterface both extend Exception.
+            // Returning false keeps the cron from recording the trigger as sent.
+            MailJetLog::write(MailJetLog::$file, 'sendMail: ' . $e->getMessage());
+
+            return false;
+        }
     }
 
     /**
