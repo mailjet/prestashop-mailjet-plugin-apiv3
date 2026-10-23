@@ -140,3 +140,8 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'mj_fieldcondition` (
 					binder VARCHAR(250),
 					PRIMARY KEY (id_fieldcondition)
 					);';
+
+/* * * ** GDPR TRACKING CONSENT ** ** */
+
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/consent/MailjetTrackingConsentDbStorage.php';
+$sql = array_merge($sql, MailjetTrackingConsentDbStorage::getInstallSql());

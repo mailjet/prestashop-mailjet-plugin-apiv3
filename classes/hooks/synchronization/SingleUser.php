@@ -64,9 +64,12 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                 "Action" => $action,
                 'Email' => $email->email,
                 'Name' => $email->firstname,
-                'Properties' => array(
-                    'firstname' => $email->firstname,
-                    'lastname' => $email->lastname
+                'Properties' => array_merge(
+                    array(
+                        'firstname' => $email->firstname,
+                        'lastname' => $email->lastname
+                    ),
+                    MailjetTrackingConsent::create()->getContactProperties((int) $email->id)
                 )
             );
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
@@ -89,9 +92,12 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                 "Action" => $action,
                 'Email' => $customer->email,
                 'Name' => $customer->firstname,
-                'Properties' => array(
-                    'firstname' => $customer->firstname,
-                    'lastname' => $customer->lastname
+                'Properties' => array_merge(
+                    array(
+                        'firstname' => $customer->firstname,
+                        'lastname' => $customer->lastname
+                    ),
+                    MailjetTrackingConsent::create()->getContactProperties((int) $customer->id)
                 )
             );
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $mailjet_list_id);

@@ -4,3 +4,5 @@ config_*.xml
 backward_compatibility
 /nbproject/*
 logs/*.log
+/vendor/
+.phpunit.result.cache

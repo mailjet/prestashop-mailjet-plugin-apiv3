@@ -66,7 +66,49 @@ Happy emailing!
 
 
 
+## GDPR - Email tracking consent
+
+Since 3.8.0 the module can collect a consent to open/click tracking, separate from the newsletter subscription
+(a customer can be subscribed without consenting to tracking, and the other way round). It follows the
+CNIL / Garante guidance on email tracking pixels described in the
+[Mailjet documentation](https://documentation.mailjet.com/hc/en-us/articles/51109335532571-Email-Tracking-Pixels-and-Consent-CNIL-and-Garante-Guidance).
+
+**Configuration:** Mailjet module > Contacts > "GDPR - Email tracking consent":
+* *Enable tracking consent* - disabled by default, nothing changes until it is enabled.
+* *Checkbox label* - per language.
+* *Mailjet contact property* - boolean contact property holding the consent (default `ps_tracking_consent`).
+  A datetime property with the `_date` suffix (`ps_tracking_consent_date`) holds the date of the last change.
+  Both are created in Mailjet automatically.
+
+**Behaviour when enabled:**
+* An optional "I agree to open/click tracking" checkbox is added to the registration, checkout and
+  "My personal information" forms (PrestaShop 1.7+, `additionalCustomerFormFields` hook). It is independent of the
+  native `newsletter` and `optin` fields. Unchecking it withdraws the consent.
+* The consent is stored per customer in `ps_mj_tracking_consent` (value, source, date of the last change) and every
+  change is appended to `ps_mj_tracking_consent_history` for audit. Both are shown on the back office customer page and
+  included in the GDPR data export.
+* **No stored value = no consent = no tracking.** Existing customers have no value after the upgrade, so tracking is
+  disabled for them until they consent.
+* PrestaShop → Mailjet: consent and withdrawal are pushed to the Mailjet contact property immediately, and are
+  also sent with the initial contact synchronization. Failed pushes are retried by the cron task.
+* Mailjet → PrestaShop: Mailjet does not send a webhook for consent changes, so the module cron task
+  (`Triggers` page, cron URL) imports the values of the contact property changed in Mailjet. A local change which
+  has not reached Mailjet yet takes precedence. Run the cron at least daily so withdrawals made in Mailjet are applied.
+* Every email PrestaShop sends through Mailjet SMTP to a recipient without consent (or with withdrawn consent) gets the
+  `X-Mailjet-TrackOpen: 0` and `X-Mailjet-TrackClick: 0` headers, so it is sent without open and click tracking. If
+  any recipient of a message (To, Cc or Bcc) did not consent, tracking is disabled for the whole message. This applies to
+  transactional emails (`actionMailAlterMessageBeforeSend` hook, PrestaShop 1.7.5+) and to the module trigger emails.
+  Campaigns are created and sent in the Mailjet application, where the contact tracking preference applies.
+* The account-level tracking settings remain the maximum tracking level: consent can only restrict tracking.
+
 ## Changelog
+= 3.8.0 =
+* GDPR: open/click tracking consent checkbox, independent of the newsletter subscription (configurable, multilingual label)
+* GDPR: consent value, date and history stored per customer and displayed in the customer back office page
+* GDPR: two-way synchronization of the consent with a Mailjet contact property (push on change, pull by cron)
+* GDPR: open and click tracking disabled for emails sent to recipients without consent; no value means no consent
+* Unit tests (`composer install && composer test`)
+
 = 3.6.1 =
 * Add support for php 8.2
 * Fixed bugs related to php 8.2
