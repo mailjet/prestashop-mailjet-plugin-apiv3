@@ -3,7 +3,7 @@
 /**
  * Mailjet Public API / The real-time Cloud Emailing platform
  * Connect your Apps and Make our product yours with our powerful API
- * http://www.mailjet.com/ Mailjet SAS Website
+ * https://www.mailjet.com/ Mailjet SAS Website
  *
  * @author Mailjet Dev team
  * @author Oleksandr Mykhailenko (inspired by Sofia)

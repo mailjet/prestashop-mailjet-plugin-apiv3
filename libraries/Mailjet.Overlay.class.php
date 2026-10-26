@@ -4,10 +4,10 @@
  * Mailjet Public API Overlay / The real-time Cloud Emailing platform
  *
  * Connect your Apps and Make our product yours with our powerful API
- * http://www.mailjet.com/ Mailjet SAS Website
+ * https://www.mailjet.com/ Mailjet SAS Website
  *
  * @author    David Coullet at Mailjet Dev team
- * @copyright Copyright (c) 2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
+ * @copyright Copyright (c) 2016, Mailjet SAS, https://www.mailjet.com/Terms-of-use.htm
  * @file
  *
  * @mainpage PHP5 Mailjet API lib Code Source Documentation
@@ -44,11 +44,11 @@
  *
  * @subsection REQUIRED Required :
  * - PHP 5.3+
- * - Account on http://www.mailjet.com and your Api & Secret keys
+ * - Account on https://www.mailjet.com and your Api & Secret keys
  *
  * @section COPYRIGHT Copyright
  * Copyright (c) 2013, Mailjet SAS
- * http://www.mailjet.com/Terms-of-use.htm
+ * https://www.mailjet.com/Terms-of-use.htm
  */
 
 // ---------------------------------------------------------------------
@@ -62,7 +62,7 @@ require_once 'Mailjet.Parameters.class.php';
  * Mailjet Public API Overlay Class
  *
  * This class offers an abstract layer to use our powerful API.
- * http://www.mailjet.com/docs/api
+ * https://www.mailjet.com/docs/api
  *
  * @code{.php}
  * $mj = Mailjet\ApiOverlay::getInstance();

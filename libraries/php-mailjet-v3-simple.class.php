@@ -5,7 +5,7 @@
  *
  * @package API v0.3
  * @author  Mailjet
- * @link    http://api.mailjet.com/
+ * @link    https://api.mailjet.com/
  *
  * For PHP v >= 5.3
  */
@@ -15,7 +15,7 @@ class MailjetPHPWrapper
     const WRAPPER_VERSION = '1.1.0';
     // MailjetPHPWrapper API version
     var $version = 'v3';
-    // Connect with https protocol
+    // Connect with https protocol (always, the Mailjet API is HTTPS-only)
     var $secure = true;
     // Mode debug ? 0 : none; 1 : errors only; 2 : all
     var $debug = 0;
@@ -75,9 +75,9 @@ class MailjetPHPWrapper
     private function getApiUrl($preprod)
     {
         if ($preprod) {
-            return (($this->secure) ? 'https' : 'http') . '://api.preprod.mailjet.com/' . $this->version . '0';
+            return 'https://api.preprod.mailjet.com/' . $this->version . '0';
         } else {
-            return (($this->secure) ? 'https' : 'http') . '://api.mailjet.com/' . $this->version;
+            return 'https://api.mailjet.com/' . $this->version;
         }
     }
     public function curl_setopt_custom_postfields($curl_handle, $postfields, $headers = null)

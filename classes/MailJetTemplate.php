@@ -98,7 +98,6 @@ class MailjetTemplate
                 $obj->getAccountSettingsKey('API_KEY'),
                 $obj->getAccountSettingsKey('SECRET_KEY')
             );
-            self::$api->secure(false);
         } else {
             self::$api =
                 new Mailjet_Api($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));

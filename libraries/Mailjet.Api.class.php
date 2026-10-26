@@ -4,11 +4,11 @@
  * Mailjet Public API / The real-time Cloud Emailing platform
  *
  * Connect your Apps and Make our product yours with our powerful API
- * http://www.mailjet.com/ Mailjet SAS Website
+ * https://www.mailjet.com/ Mailjet SAS Website
  *
  * @author    David Coullet
  * @author    Mailjet Dev team
- * @copyright Copyright (c) 2012-2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
+ * @copyright Copyright (c) 2012-2016, Mailjet SAS, https://www.mailjet.com/Terms-of-use.htm
  * @file
  */
 // ---------------------------------------------------------------------
@@ -17,7 +17,7 @@
  * Mailjet Public API Main Class
  *
  * This class enables you to connect your Apps and use our powerful API.
- * http://www.mailjet.com/docs/api
+ * https://www.mailjet.com/docs/api
  *
  * updated on 2013-08-11
  *
@@ -49,8 +49,7 @@ class Mailjet_Api
     private $_secretKey = '';
 
     /**
-     * Secure flag to connect through https protocol
-     * You can edit directly
+     * Secure flag: always TRUE, the Mailjet API is HTTPS-only
      *
      * @access private
      * @var    boolean $_secure
@@ -213,7 +212,7 @@ class Mailjet_Api
             $this->_secretKey = $secretKey;
         }
         $this->_apiUrl =
-            (($this->_secure) ? 'https' : 'http') . '://api' . $this->env . 'mailjet.com/v3/' . $this->_version;
+            'https://api' . $this->env . 'mailjet.com/v3/' . $this->_version;
     }
 
     /**
@@ -262,10 +261,7 @@ class Mailjet_Api
         }
 
         $this->_debugCallUrl = $this->_apiUrl = $url =
-            (($this->_secure)
-                ? 'https'
-                : 'http'
-            ) . '://api' . $this->env . 'mailjet.com/v3/DATA/' . $method . '/' . $id . '/' . $type
+            'https://api' . $this->env . 'mailjet.com/v3/DATA/' . $method . '/' . $id . '/' . $type
                 . '/' . $contType;
 
 
@@ -397,20 +393,17 @@ class Mailjet_Api
     }
 
     /**
-     * Secure or not the transaction through https
+     * Kept for backward compatibility only.
+     * The Mailjet API is HTTPS-only: plain HTTP is not supported, so the transaction is always secured.
      *
      * @access public
      * @uses   Mailjet::Api::$_apiUrl
-     * @param  boolean $secure TRUE to secure the transaction, FALSE otherwise
+     * @param  boolean $secure Ignored, HTTPS is always used
      */
     public function secure($secure = true)
     {
-        $this->_secure = $secure;
-        $protocol = 'http';
-        if ($secure) {
-            $protocol = 'https';
-        }
-        $this->_apiUrl = preg_replace('/http(s)?:\/\//', $protocol . '://', $this->_apiUrl);
+        $this->_secure = true;
+        $this->_apiUrl = preg_replace('/^http:\/\//i', 'https://', $this->_apiUrl);
     }
 
     /**
@@ -561,7 +554,7 @@ class Mailjet_Api
     public function resetRequest()
     {
         $this->_apiUrl =
-            (($this->_secure) ? 'https' : 'http') . '://api' . $this->env . 'mailjet.com/v3/' . $this->_version;
+            'https://api' . $this->env . 'mailjet.com/v3/' . $this->_version;
         $this->_request_post = false;
     }
 

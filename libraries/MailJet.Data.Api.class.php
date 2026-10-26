@@ -4,11 +4,11 @@
  * Mailjet Public DATA API / The real-time Cloud Emailing platform
  *
  * Connect your Apps and Make our product yours with our powerful API
- * http://www.mailjet.com/ Mailjet SAS Website
+ * https://www.mailjet.com/ Mailjet SAS Website
  *
  * @author    David Coullet
  * @author    Mailjet Dev team
- * @copyright Copyright (c) 2012-2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
+ * @copyright Copyright (c) 2012-2016, Mailjet SAS, https://www.mailjet.com/Terms-of-use.htm
  * @file
  */
 // ---------------------------------------------------------------------
@@ -36,7 +36,7 @@ class MailjetDataType
  * Mailjet Public DATA API Main Class
  *
  * This class enables you to connect your Apps and use our powerful API.
- * http://www.mailjet.com/docs/api
+ * https://www.mailjet.com/docs/api
  *
  * updated on 2013-09-03
  *
@@ -208,7 +208,7 @@ class mailjetdata
         if (isset($secretKey)) {
             $this->_secretKey = $secretKey;
         }
-        $this->_api_url = 'http://' . $this->_api_url . $this->_version;
+        $this->_api_url = 'https://' . $this->_api_url . $this->_version;
         //$this->_api = new Api($this->_apiKey, $this->_secretKey, $secure);
         $this->_api = new Mailjet_Api($this->_apiKey, $this->_secretKey);
         $this->secure($secure);
@@ -299,16 +299,13 @@ class mailjetdata
      * @access public
      * @uses   MailjetData::$_api
      * @uses   MailjetData::$_api_url
-     * @param  boolean $secure TRUE to secure the transaction, FALSE otherwise
+     * @param  boolean $secure Ignored, HTTPS is always used
      */
     public function secure($secure = true)
     {
-        $protocol = 'http';
-        if ($secure) {
-            $protocol = 'https';
-        }
-        $this->_api_url = preg_replace('/http(s)?:\/\//', $protocol . '://', $this->_api_url);
-        $this->_api->secure($secure);
+        // The Mailjet API is HTTPS-only: the flag is kept for backward compatibility and ignored.
+        $this->_api_url = preg_replace('/^http:\/\//i', 'https://', $this->_api_url);
+        $this->_api->secure(true);
     }
 
     /**
