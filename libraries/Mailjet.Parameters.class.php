@@ -4,10 +4,10 @@
  * Mailjet Public API Overlay Data Type / The real-time Cloud Emailing platform
  *
  * Connect your Apps and Make our product yours with our powerful API
- * http://www.mailjet.com/ Mailjet SAS Website
+ * https://www.mailjet.com/ Mailjet SAS Website
  *
  * @author    David Coullet at Mailjet Dev team
- * @copyright Copyright (c) 2016, Mailjet SAS, http://www.mailjet.com/Terms-of-use.htm
+ * @copyright Copyright (c) 2016, Mailjet SAS, https://www.mailjet.com/Terms-of-use.htm
  * @file
  */
 // ---------------------------------------------------------------------
@@ -15,7 +15,7 @@
 /**
  * Mailjet Public API Parameters class
  *
- * http://www.mailjet.com/docs/api
+ * https://www.mailjet.com/docs/api
  *
  * @code{.php}
  * $parameters = new Mailjet\Parameters();

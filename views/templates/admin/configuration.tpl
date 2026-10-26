@@ -36,7 +36,7 @@
                 {foreach from=$MJ_tab_page key=MJ_key item=MJ_title}
                     {if $MJ_key == 'PRICING'}
                         <li {if $MJ_page_name == $MJ_key}class="active"{/if}>
-                            <a href="http://www.mailjet.com/pricing" target="_blank">{$MJ_title|escape:'htmlall':'UTF-8'|default:''}</a>
+                            <a href="https://www.mailjet.com/pricing" target="_blank">{$MJ_title|escape:'htmlall':'UTF-8'|default:''}</a>
                         </li>
                     {else}
                         <li {if $MJ_page_name == $MJ_key}class="active"{/if}>
