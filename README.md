@@ -102,6 +102,10 @@ CNIL / Garante guidance on email tracking pixels described in the
 * The account-level tracking settings remain the maximum tracking level: consent can only restrict tracking.
 
 ## Changelog
+= 3.8.1 =
+* Security: all Mailjet API calls are sent over HTTPS only (ahead of the Mailjet API HTTP deprecation). The overlay API client was forced to plain HTTP; `secure(false)` is now ignored by the bundled API clients
+* Pricing and documentation links switched to HTTPS
+
 = 3.8.0 =
 * GDPR: open/click tracking consent checkbox, independent of the newsletter subscription (configurable, multilingual label)
 * GDPR: consent value, date and history stored per customer and displayed in the customer back office page
