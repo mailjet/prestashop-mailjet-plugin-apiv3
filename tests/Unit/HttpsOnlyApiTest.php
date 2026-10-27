@@ -15,7 +15,9 @@ class HttpsOnlyApiTest extends TestCase
     private static function readProperty($object, $name)
     {
         $property = new ReflectionProperty($object, $name);
-        $property->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true); // no-op since 8.1, deprecated in 8.5
+        }
 
         return $property->getValue($object);
     }
@@ -55,7 +57,9 @@ class HttpsOnlyApiTest extends TestCase
         $wrapper->secure = false;
 
         $method = new ReflectionMethod($wrapper, 'getApiUrl');
-        $method->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true); // no-op since 8.1, deprecated in 8.5
+        }
 
         $this->assertSame('https://api.mailjet.com/v3', $method->invoke($wrapper, false));
         $this->assertStringStartsWith('https://', $method->invoke($wrapper, true));
