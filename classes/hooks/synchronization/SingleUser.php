@@ -27,6 +27,34 @@
 
 class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronizationAbstract
 {
+    const SEGMENT_SUBSCRIBE = 'subscribe';
+    const SEGMENT_UNSUBSCRIBE = 'unsubscribe';
+    const SEGMENT_REMOVE = 'remove';
+
+    /**
+     * What to do with a customer in an auto-assigned segment list.
+     *
+     * Matching a segment is not consent: only an active customer with
+     * newsletter = 1 is subscribed. A matching customer without consent is
+     * kept with the unsubscribed status, so the segment never mails him.
+     *
+     * @param  object $customer         Customer (active, newsletter)
+     * @param  bool   $matchesSegment
+     * @return string one of the SEGMENT_* constants
+     */
+    public static function getSegmentListAction($customer, $matchesSegment)
+    {
+        if (!$matchesSegment) {
+            return self::SEGMENT_REMOVE;
+        }
+
+        if ((int) $customer->active === 1 && (int) $customer->newsletter === 1) {
+            return self::SEGMENT_SUBSCRIBE;
+        }
+
+        return self::SEGMENT_UNSUBSCRIBE;
+    }
+
     /**
      *
      * @param  string $email
