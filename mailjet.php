@@ -1362,14 +1362,16 @@ class Mailjet extends Module
             $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
             $mailjetListID = $obj->getMailjetContactListId($filterId);
 
-            if ($result) {
-                if ($customer->active == 1) {
+            // A matching segment never subscribes a customer without newsletter consent
+            switch (HooksSynchronizationSingleUser::getSegmentListAction($customer, (bool) $result)) {
+                case HooksSynchronizationSingleUser::SEGMENT_SUBSCRIBE:
                     $initialSynchronization->subscribe($customer->email, $mailjetListID);
-                } else {
+                    break;
+                case HooksSynchronizationSingleUser::SEGMENT_UNSUBSCRIBE:
                     $initialSynchronization->unsubscribe($customer->email, $mailjetListID);
-                }
-            } else {
-                $initialSynchronization->remove($customer->email, $mailjetListID);
+                    break;
+                default:
+                    $initialSynchronization->remove($customer->email, $mailjetListID);
             }
         }
         return $this;
