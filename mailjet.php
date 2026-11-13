@@ -128,7 +128,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.8.2';
+        $this->version = '3.9.0';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
         $this->ps_versions_compliancy = [
@@ -246,6 +246,7 @@ class Mailjet extends Module
             'actionAdminCustomersControllerDeleteBefore',
             'actionExportGDPRData',
             'actionObjectCustomerDeleteBefore',
+            'actionObjectCustomerUpdateBefore',
             'actionObjectCustomerUpdateAfter',
             'displayBackOfficeHeader',
             'registerGDPRConsent',
@@ -269,6 +270,22 @@ class Mailjet extends Module
 
         foreach ($hooks as $hook) {
             if (!$this->registerHook($hook)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Hooks added in 3.9.0 for the audit fixes, also used by the upgrade script
+     *
+     * @return bool
+     */
+    public function registerAuditFixHooks()
+    {
+        foreach (['actionObjectCustomerUpdateBefore'] as $hook) {
+            if (!$this->isRegisteredInHook($hook) && !$this->registerHook($hook)) {
                 return false;
             }
         }
@@ -874,6 +891,49 @@ class Mailjet extends Module
     }
 
     /**
+     * Customer values as stored before the current update, by id_customer
+     *
+     * @var array<int, array{email: string, newsletter: int}>
+     */
+    private static $customerSnapshots = [];
+
+    /**
+     * Keep the stored email and newsletter flag, so the "after" hook can tell
+     * what changed in this update.
+     *
+     * @param array $params
+     */
+    public function hookActionObjectCustomerUpdateBefore($params)
+    {
+        $customer = isset($params['object']) ? $params['object'] : null;
+        if (!$customer || !$customer->id) {
+            return;
+        }
+
+        $row = Db::getInstance()->getRow(
+            'SELECT `email`, `newsletter` FROM `' . _DB_PREFIX_ . 'customer`
+            WHERE `id_customer` = ' . (int) $customer->id
+        );
+        if ($row) {
+            self::$customerSnapshots[(int) $customer->id] = [
+                'email' => (string) $row['email'],
+                'newsletter' => (int) $row['newsletter'],
+            ];
+        }
+    }
+
+    /**
+     * Values stored before the current update, null when the "before" hook did not run
+     *
+     * @param  int $idCustomer
+     * @return array|null
+     */
+    private function getCustomerSnapshot($idCustomer)
+    {
+        return isset(self::$customerSnapshots[(int) $idCustomer]) ? self::$customerSnapshots[(int) $idCustomer] : null;
+    }
+
+    /**
      * User profile action
      *
      * @param array $params
@@ -881,6 +941,8 @@ class Mailjet extends Module
     public function hookActionObjectCustomerUpdateAfter($params)
     {
         $customer = $params['object'];
+        $snapshot = $this->getCustomerSnapshot($customer->id);
+        unset(self::$customerSnapshots[(int) $customer->id]);
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
             MailjetTrackingConsent::create()->updateEmail((int) $customer->id, $customer->email);
@@ -891,7 +953,11 @@ class Mailjet extends Module
                 $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $this->checkAutoAssignment($customer->id);
-                $initialSynchronization->subscribe($customer);
+                $initialSynchronization->subscribe(
+                    $customer,
+                    null,
+                    HooksSynchronizationSingleUser::isExplicitOptIn($snapshot ? $snapshot['newsletter'] : null, $customer)
+                );
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -986,7 +1052,8 @@ class Mailjet extends Module
                 Tools::getValue(MailjetTrackingConsent::FIELD_NAME)
             );
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']);
+                // Newsletter box ticked on the registration form: explicit opt-in
+                $initialSynchronization->subscribe($params['newCustomer'], null, true);
             }
             $this->checkAutoAssignment($params['newCustomer']->id);
         } catch (Exception $e) {
@@ -1097,7 +1164,8 @@ class Mailjet extends Module
             try {
                 $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
                 $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                $initialSynchronization->subscribe($params['email'], $masterListId);
+                // Registration accepted by the newsletter module (after double opt-in): explicit opt-in
+                $initialSynchronization->subscribe($params['email'], $masterListId, true);
             } catch (Exception $e) {
                 $this->errors_list[] = $this->l($e->getMessage());
             }
@@ -1133,7 +1201,7 @@ class Mailjet extends Module
 
         try {
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']);
+                $initialSynchronization->subscribe($params['newCustomer'], null, true);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());

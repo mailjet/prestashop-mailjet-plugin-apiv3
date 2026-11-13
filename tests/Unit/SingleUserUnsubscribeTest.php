@@ -5,37 +5,7 @@ use PHPUnit\Framework\TestCase;
 require_once dirname(__DIR__, 2) . '/libraries/Mailjet.Overlay.class.php';
 require_once dirname(__DIR__, 2) . '/classes/hooks/synchronization/SynchronizationAbstract.php';
 require_once dirname(__DIR__, 2) . '/classes/hooks/synchronization/SingleUser.php';
-
-/**
- * Records list calls instead of calling the Mailjet API
- */
-class FakeUnsubscribeApiOverlay extends Mailjet_ApiOverlay
-{
-    public $customerLists = false;
-    public $accountLists = array();
-    public $calls = array();
-
-    public function __construct()
-    {
-    }
-
-    public function getCustomerLists($email)
-    {
-        return $this->customerLists;
-    }
-
-    public function getContactsLists($start = null, $limit = null, $orderby = null, $cache = null)
-    {
-        return $this->accountLists;
-    }
-
-    public function addDetailedContactToList($contact, $listID)
-    {
-        $this->calls[] = array($contact['Action'], $contact['Email'], $listID);
-
-        return (object) array('Count' => 1);
-    }
-}
+require_once dirname(__DIR__) . '/Support/FakeUnsubscribeApiOverlay.php';
 
 /**
  * DE-11736: a customer saved with newsletter = 0 must only be unsubscribed from
