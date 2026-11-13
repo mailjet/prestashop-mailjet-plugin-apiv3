@@ -102,6 +102,11 @@ CNIL / Garante guidance on email tracking pixels described in the
 * The account-level tracking settings remain the maximum tracking level: consent can only restrict tracking.
 
 ## Changelog
+= 3.8.2 =
+* Fixed: saving a customer with newsletter = 0 (e.g. via the webservice) unsubscribed the contact from every list of the Mailjet account. The contact is now unsubscribed only from the lists it is subscribed to
+* Fixed: lists of a contact were read with the wrong field names (`ListID` / `IsUnsub` returned by `getcontactslists`), so per-list unsubscription never applied
+* Unsubscribing without a list id is now refused and logged instead of falling back to all account lists
+
 = 3.8.1 =
 * Security: all Mailjet API calls are sent over HTTPS only (ahead of the Mailjet API HTTP deprecation). The overlay API client was forced to plain HTTP; `secure(false)` is now ignored by the bundled API clients
 * Pricing and documentation links switched to HTTPS
