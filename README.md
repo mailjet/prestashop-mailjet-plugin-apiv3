@@ -102,6 +102,20 @@ CNIL / Garante guidance on email tracking pixels described in the
 * The account-level tracking settings remain the maximum tracking level: consent can only restrict tracking.
 
 ## Changelog
+= 3.9.0 =
+Fixes from the September 2026 module audit. The rules they follow are in `docs/scope-rules.md`.
+* Consent: an auto-assigned segment no longer subscribes a customer without newsletter consent
+* Consent: routine updates and syncs use `addnoforce`, so a contact who unsubscribed in Mailjet is not resubscribed. `addforce` is only used for an explicit opt-in
+* Consent: the legacy newsletter form handling in `hookDisplayHeader` is removed. It subscribed addresses before validation and double opt-in
+* Consent: a newsletter withdrawal (form, back office, newsletter = 0) unsubscribes the contact from every managed list, not only the master list
+* Fixed: Mailjet unsubscribes are applied to guest newsletter subscribers who have no customer account
+* Fixed: the module only unsubscribes from or removes contacts on the lists it manages (master list and segment lists), never on other lists that use the same API key
+* Fixed: after an email change, the previous address is removed from the lists (front office and back office)
+* Fixed: every deletion workflow (single, bulk, webservice, soft delete) removes the contact from all managed lists, master list included
+* Reliability: failed Mailjet list calls are queued and retried by the cron, and the configuration page shows them
+* Reliability: the event webhook answers 2xx only after the events are applied, so Mailjet retries when processing fails
+* New hooks `actionObjectCustomerUpdateBefore` and `actionObjectCustomerDeleteAfter`, and a new table `mj_pending_operation` (3.9.0 upgrade script)
+
 = 3.8.2 =
 * Fixed: saving a customer with newsletter = 0 (e.g. via the webservice) unsubscribed the contact from every list of the Mailjet account. The contact is now unsubscribed only from the lists it is subscribed to
 * Fixed: lists of a contact were read with the wrong field names (`ListID` / `IsUnsub` returned by `getcontactslists`), so per-list unsubscription never applied
