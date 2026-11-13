@@ -128,7 +128,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.8.1';
+        $this->version = '3.8.2';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
         $this->ps_versions_compliancy = [
@@ -864,13 +864,7 @@ class Mailjet extends Module
             if ($customer->active == 0) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 0) {
-                // Get all lists where customer is subscribed
-                $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
-
-                // Unsubscribe user from all lists where he is subscribed
-                foreach ($subsSegmentListsIds as $listId) {
-                    $initialSynchronization->unsubscribe($customer->email, $listId);
-                }
+                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
             }
@@ -890,12 +884,13 @@ class Mailjet extends Module
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
             MailjetTrackingConsent::create()->updateEmail((int) $customer->id, $customer->email);
-            $this->checkAutoAssignment($customer->id);
             if ($customer->deleted == 1) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->newsletter == 0) {
-                $initialSynchronization->unsubscribe($customer->email);
+                // Only the lists the contact is subscribed to, never every list of the account
+                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
+                $this->checkAutoAssignment($customer->id);
                 $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {

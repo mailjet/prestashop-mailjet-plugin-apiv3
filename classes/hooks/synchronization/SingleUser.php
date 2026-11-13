@@ -107,41 +107,49 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
+     * Unsubscribe an email from one contact list.
+     *
+     * A list id is mandatory: without it nothing is sent, so a contact is never
+     * unsubscribed from every list of the Mailjet account (including lists which
+     * are not managed by PrestaShop).
      *
      * @param  string $email
+     * @param  int    $list_id
      * @return boolean
      */
     public function unsubscribe($email, $list_id = null)
     {
-        if ($list_id) {
-            $contact = array(
-                "Email" => $email,   // Mandatory field!
-                "Action" => "unsub",
-            );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
+        if (empty($list_id)) {
+            $this->log('unsubscribe() called without a list id for ' . $email . ', nothing unsubscribed');
 
-            if (!$response || !($response->Count > 0)) {
-                return false;
-            }
-        } else {
-            $apiOverlay = $this->getApiOverlay();
+            return false;
+        }
 
-            $lists = $apiOverlay->getContactsLists();
+        $contact = array(
+            "Email" => $email,   // Mandatory field!
+            "Action" => "unsub",
+        );
+        $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
 
-            foreach ($lists as $list) {
-                $contact = array(
-                    "Email" => $email,   // Mandatory field!
-                    "Action" => "unsub",
-                );
-                $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
+        return $response && $response->Count > 0;
+    }
 
-                if (!$response || !($response->Count > 0)) {
-                    return false;
-                }
+    /**
+     * Unsubscribe an email from every list it is currently subscribed to.
+     *
+     * @param  string $email
+     * @return boolean false if at least one unsubscription failed
+     */
+    public function unsubscribeFromSubscribedLists($email)
+    {
+        $success = true;
+        foreach ($this->getSubscribedSegmentLists($email) as $listId) {
+            if (!$this->unsubscribe($email, $listId)) {
+                $success = false;
             }
         }
 
-        return true;
+        return $success;
     }
 
     public function unsubscribeListsExceptMaster($email)
@@ -170,23 +178,47 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     /**
      * Get segment lists in which a customer is subscribed
      *
+     * The contact/{email}/getcontactslists endpoint returns ListID and IsUnsub
+     * (not the ID field of the contactslist resource).
+     *
      * @param  string $email
-     * @return [int] $subscribedListsIds
+     * @return int[]
      */
     public function getSubscribedSegmentLists($email)
     {
-        $apiOverlay = $this->getApiOverlay();
-        $lists = $apiOverlay->getCustomerLists($email);
-        if (!$lists) {
-            return false;
+        $lists = $this->getApiOverlay()->getCustomerLists($email);
+        if (!$lists || empty($lists->Data)) {
+            return array();
         }
+
         $subscribedListsIds = array();
         foreach ($lists->Data as $list) {
-            if ($list->IsUnsub == false) {
-                $subscribedListsIds[] = $list->ID;
+            $listId = isset($list->ListID) ? $list->ListID : (isset($list->ID) ? $list->ID : null);
+            if (empty($listId)) {
+                $this->log('getSubscribedSegmentLists() skipped an entry without a list id: ' . json_encode($list));
+                continue;
             }
+
+            $isUnsub = isset($list->IsUnsub) ? $list->IsUnsub
+                : (isset($list->IsUnsubscribed) ? $list->IsUnsubscribed : false);
+            if (filter_var($isUnsub, FILTER_VALIDATE_BOOLEAN)) {
+                continue;
+            }
+
+            $subscribedListsIds[] = (int) $listId;
         }
+
         return $subscribedListsIds;
+    }
+
+    /**
+     * @param string $message
+     */
+    private function log($message)
+    {
+        if (class_exists('MailJetLog') && MailJetLog::$file) {
+            MailJetLog::write(MailJetLog::$file, 'HooksSynchronizationSingleUser::' . $message);
+        }
     }
 
     /**
