@@ -53,6 +53,7 @@ require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.ph
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/ContactProperties.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/consent/MailjetTrackingConsent.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/queue/MailjetPendingOperationQueue.php';
 
 
 class Mailjet extends Module
@@ -812,6 +813,34 @@ class Mailjet extends Module
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
+        }
+    }
+
+    /**
+     * Mailjet operations which could not be sent are retried by the cron. Tell the
+     * merchant about the ones still waiting and the ones given up (DE-11715).
+     */
+    private function addPendingOperationsNotice()
+    {
+        try {
+            $queue = MailjetPendingOperationQueue::create();
+            $failed = $queue->countFailed();
+            $pending = $queue->countPending();
+        } catch (Exception $e) {
+            return;
+        }
+
+        if ($failed > 0) {
+            $this->errors_list[] = sprintf(
+                $this->l('%d contact update(s) could not be sent to Mailjet after several retries. Check the module log and the contacts in Mailjet.'),
+                $failed
+            );
+        }
+        if ($pending > 0) {
+            $this->errors_list[] = sprintf(
+                $this->l('%d contact update(s) failed and are waiting to be retried by the cron task.'),
+                $pending
+            );
         }
     }
 
@@ -2042,6 +2071,8 @@ class Mailjet extends Module
         $infos = $api->getUser();
         $mjSenders = $api->getSenders(null, $infos);
         $currentSender = Configuration::get('PS_SHOP_EMAIL');
+
+        $this->addPendingOperationsNotice();
 
         $this->context->smarty->assign(
             [

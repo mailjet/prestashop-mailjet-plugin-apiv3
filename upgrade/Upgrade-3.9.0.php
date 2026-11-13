@@ -30,12 +30,20 @@ if (!defined('_PS_VERSION_')) {
 }
 
 require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/queue/MailjetPendingOperationDbStorage.php';
 
 /**
  * Audit fixes (DE-11505): hooks used to detect what changed in a customer update.
  */
 function upgrade_module_3_9_0($object)
 {
+    // Retry queue for Mailjet operations which failed (DE-11715)
+    foreach (MailjetPendingOperationDbStorage::getInstallSql() as $sql) {
+        if (!Db::getInstance()->execute($sql)) {
+            return false;
+        }
+    }
+
     // Global value written on every back-office customer save, never read (DE-11567)
     Configuration::deleteByName('PREVIOUS_MJ_USER_MAIL');
 
