@@ -51,6 +51,21 @@ function findCode($code)
     }
 }
 
+/* Mailjet list operations which failed earlier (API error or unavailable): retry them */
+try {
+    $pendingSync = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+    $retried = $pendingSync->retryPendingOperations();
+    if ($retried['retried'] > 0) {
+        MailJetLog::write(
+            MailJetLog::$file,
+            'Pending operations: ' . $retried['retried'] . ' retried, ' . $retried['succeeded'] . ' succeeded, '
+            . $retried['failed'] . ' given up'
+        );
+    }
+} catch (Exception $e) {
+    MailJetLog::write(MailJetLog::$file, 'Pending operations: ' . $e->getMessage());
+}
+
 /* GDPR tracking consent: retry pending pushes, then import consent changes made in Mailjet */
 try {
     MailjetTrackingConsent::create()->synchronizeFromMailjet();
