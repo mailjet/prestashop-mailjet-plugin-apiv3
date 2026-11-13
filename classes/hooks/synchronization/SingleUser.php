@@ -60,6 +60,22 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
+     * Previous address when this update changed the customer email, otherwise null
+     *
+     * @param  string|null $previousEmail email stored before the update, null if unknown
+     * @param  object      $customer
+     * @return string|null
+     */
+    public static function getReplacedEmail($previousEmail, $customer)
+    {
+        if (empty($previousEmail) || empty($customer->email)) {
+            return null;
+        }
+
+        return strcasecmp(trim($previousEmail), trim($customer->email)) === 0 ? null : $previousEmail;
+    }
+
+    /**
      * @param  bool $explicitOptIn
      * @return string
      */
