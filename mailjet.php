@@ -864,13 +864,7 @@ class Mailjet extends Module
             if ($customer->active == 0) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 0) {
-                // Get all lists where customer is subscribed
-                $subsSegmentListsIds = $initialSynchronization->getSubscribedSegmentLists($customer->email);
-
-                // Unsubscribe user from all lists where he is subscribed
-                foreach ($subsSegmentListsIds as $listId) {
-                    $initialSynchronization->unsubscribe($customer->email, $listId);
-                }
+                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
             }
@@ -890,12 +884,13 @@ class Mailjet extends Module
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
             MailjetTrackingConsent::create()->updateEmail((int) $customer->id, $customer->email);
-            $this->checkAutoAssignment($customer->id);
             if ($customer->deleted == 1) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->newsletter == 0) {
-                $initialSynchronization->unsubscribe($customer->email);
+                // Only the lists the contact is subscribed to, never every list of the account
+                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
+                $this->checkAutoAssignment($customer->id);
                 $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
