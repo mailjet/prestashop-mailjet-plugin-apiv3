@@ -36,5 +36,8 @@ require_once _PS_MODULE_DIR_ . 'mailjet/mailjet.php';
  */
 function upgrade_module_3_9_0($object)
 {
+    // Global value written on every back-office customer save, never read (DE-11567)
+    Configuration::deleteByName('PREVIOUS_MJ_USER_MAIL');
+
     return $object->registerAuditFixHooks();
 }

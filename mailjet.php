@@ -518,6 +518,7 @@ class Mailjet extends Module
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
         Configuration::deleteByName('MJ_ALLEMAILS');
+        Configuration::deleteByName('PREVIOUS_MJ_USER_MAIL');
         Configuration::deleteByName(MailjetTrackingConsent::CONFIG_ENABLED);
         Configuration::deleteByName(MailjetTrackingConsent::CONFIG_LABEL);
         Configuration::deleteByName(MailjetTrackingConsent::CONFIG_PROPERTY);
@@ -770,8 +771,8 @@ class Mailjet extends Module
      */
     public function hookActionAdminCustomersControllerSaveBefore()
     {
-        $customer = new Customer(Tools::getValue('id_customer'));
-        Configuration::updateValue('PREVIOUS_MJ_USER_MAIL', $customer->email);
+        // The previous email is read by hookActionObjectCustomerUpdateBefore(), which runs
+        // for back-office and front-office edits alike (DE-11567).
     }
 
     /**
@@ -931,6 +932,16 @@ class Mailjet extends Module
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
             MailjetTrackingConsent::create()->updateEmail((int) $customer->id, $customer->email);
+
+            // Email changed A -> B: the old address must not stay on the shop's lists
+            $previousEmail = HooksSynchronizationSingleUser::getReplacedEmail(
+                $snapshot ? $snapshot['email'] : null,
+                $customer
+            );
+            if ($previousEmail !== null) {
+                $initialSynchronization->removeFromAllLists($previousEmail);
+            }
+
             if ($customer->deleted == 1) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->newsletter == 0) {
