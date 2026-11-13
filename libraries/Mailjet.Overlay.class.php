@@ -3041,7 +3041,7 @@ class Mailjet_ApiOverlay
 
 
 
-    public function asyncManageContactsToList($contacts, $list_id, $force = 'addforce')
+    public function asyncManageContactsToList($contacts, $list_id, $force = 'addnoforce')
     {
         $obj = new Mailjet();
         $this->_apiPHPWrapper = new MailjetPHPWrapper($obj->getAccountSettingsKey('API_KEY'), $obj->getAccountSettingsKey('SECRET_KEY'));
