@@ -22,7 +22,13 @@ class SingleUserUnsubscribeTest extends TestCase
     protected function setUp(): void
     {
         $this->overlay = new FakeUnsubscribeApiOverlay();
-        $this->overlay->accountLists = array((object) array('ID' => 1), (object) array('ID' => 2), (object) array('ID' => 3));
+        Configuration::$values = array();
+        $this->overlay->accountLists = array(
+            (object) array('ID' => 1, 'Name' => 'PrestaShop Customers Master List'),
+            (object) array('ID' => 2, 'Name' => '3idfvipcustomers'),
+            (object) array('ID' => 3, 'Name' => '3idfsecondsegment'),
+            (object) array('ID' => 4, 'Name' => 'Blog readers (other business)'),
+        );
         $this->sync = new HooksSynchronizationSingleUser($this->overlay);
     }
 
