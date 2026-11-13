@@ -550,24 +550,11 @@ class Mailjet extends Module
         }
 
         /*
-         * RM: 29680 - add prestashop newsletter sunscribers to Mailjet master contact list
+         * Newsletter form submissions are handled by hookActionNewsletterRegistrationAfter()
+         * and hookActionNewsletterRegistrationBefore(), which the newsletter module only
+         * triggers for a validated request (after double opt-in confirmation when enabled).
+         * Reading submitNewsletter here subscribed the address before any validation.
          */
-        if (Tools::isSubmit('submitNewsletter')) {
-            try {
-                $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-
-                // UnSubscribe
-                if (Tools::getValue('action') == '1') {
-                    // Remove customer from all lists(and segment lists)
-                    $initialSynchronization->remove(Tools::getValue('email'), $masterListId);
-                } elseif (Tools::getValue('action') == '0') { // Subscribe - to the Mailjet master list
-                    $initialSynchronization->subscribe(Tools::getValue('email'), $masterListId);
-                }
-            } catch (Exception $e) {
-                $this->errors_list[] = $this->l($e->getMessage());
-            }
-        }
     }
 
     /**
