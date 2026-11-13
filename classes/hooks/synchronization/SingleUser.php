@@ -381,6 +381,22 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
+     * Erasure of a deleted customer: removed (not unsubscribed) from every managed
+     * list, master list included. The single entry point for every deletion workflow.
+     *
+     * @param  string $email
+     * @return bool
+     */
+    public function erase($email)
+    {
+        if (empty($email)) {
+            return false;
+        }
+
+        return $this->removeFromAllLists($email);
+    }
+
+    /**
      * Remove email from all managed lists, master list included.
      * Lists not managed by the shop are left untouched.
      *
