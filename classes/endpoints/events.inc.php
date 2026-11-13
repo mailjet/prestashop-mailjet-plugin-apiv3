@@ -106,7 +106,14 @@ foreach ($allEvents as $key => $event) {
         break;
 
     case 'unsub':
-        /* => do action */
+        // Only unsubscriptions from a list managed by this shop are applied (see docs/scope-rules.md)
+        if (!empty($event['mj_list_id'])) {
+            $listScope = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+            if (!$listScope->isManagedList($event['mj_list_id'])) {
+                header('HTTP/1.1 200 Ok');
+                break;
+            }
+        }
         $hooksEvents = new HooksEvents();
         $hooksEvents->unsubscribe($event);
         break;

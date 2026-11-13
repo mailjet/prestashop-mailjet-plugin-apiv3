@@ -115,6 +115,57 @@ abstract class HooksSynchronizationSynchronizationAbstract
         return $this->masterListId;
     }
 
+    /**
+     * Ids of the Mailjet lists this shop manages: the master list and the
+     * segment lists ("<id_filter>idf<name>"). Lists created outside the module
+     * on the same API key are never included. See docs/scope-rules.md.
+     *
+     * @param  bool $includeMaster
+     * @return int[]
+     */
+    public function getManagedListIds($includeMaster = true)
+    {
+        $masterListId = (int) $this->getAlreadyCreatedMasterListId();
+        $managed = array();
+        if ($includeMaster && $masterListId) {
+            $managed[] = $masterListId;
+        }
+
+        $lists = $this->getApiOverlay()->getContactsLists();
+        if (is_array($lists)) {
+            foreach ($lists as $list) {
+                if (!isset($list->ID, $list->Name) || (int) $list->ID === $masterListId) {
+                    continue;
+                }
+                if (self::isSegmentListName($list->Name)) {
+                    $managed[] = (int) $list->ID;
+                }
+            }
+        }
+
+        return array_values(array_unique($managed));
+    }
+
+    /**
+     * @param  int|string $listId
+     * @return bool
+     */
+    public function isManagedList($listId)
+    {
+        return !empty($listId) && in_array((int) $listId, $this->getManagedListIds(), true);
+    }
+
+    /**
+     * Segment lists are created as "<id_filter>idf<name>" by HooksSynchronizationSegment
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public static function isSegmentListName($name)
+    {
+        return (bool) preg_match('/^[0-9]+idf/', (string) $name);
+    }
+
     public function getMailjetSegmentationLists($listNames)
     {
         if (!is_array($listNames)) {
