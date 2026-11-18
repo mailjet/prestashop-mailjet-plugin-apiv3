@@ -38,6 +38,13 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     const ACTION_NOFORCE = 'addnoforce';
 
     /**
+     * Lists unsubscribed by the last unsubscribeFromSubscribedLists() call
+     *
+     * @var int[]
+     */
+    private $lastUnsubscribedListIds = array();
+
+    /**
      * True when the newsletter flag goes from 0 to 1 in this update, i.e. the
      * contact (or the merchant on his behalf) opted in just now.
      *
@@ -198,6 +205,36 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
+     * Newsletter consent withdrawn: the single entry point for every withdrawal
+     * (newsletter form, back office, customer saved with newsletter = 0).
+     *
+     * The contact is unsubscribed (not removed) from every managed list it is
+     * subscribed to: master list and segment lists. The master list is always
+     * included, even when the list lookup returns nothing, so a guest who only
+     * registered through the newsletter form is covered too.
+     *
+     * @param  string $email
+     * @return bool false if at least one list could not be updated
+     */
+    public function withdraw($email)
+    {
+        if (empty($email)) {
+            return false;
+        }
+
+        $success = $this->unsubscribeFromSubscribedLists($email);
+
+        $masterListId = (int) $this->getAlreadyCreatedMasterListId();
+        if ($masterListId && !in_array($masterListId, $this->lastUnsubscribedListIds, true)) {
+            if (!$this->unsubscribe($email, $masterListId)) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
      * Unsubscribe an email from every managed list it is currently subscribed to.
      * Lists not managed by the shop are left untouched.
      *
@@ -207,12 +244,14 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     public function unsubscribeFromSubscribedLists($email)
     {
         $success = true;
+        $this->lastUnsubscribedListIds = array();
         $subscribed = $this->getSubscribedSegmentLists($email);
         $managed = $subscribed ? $this->getManagedListIds() : array();
         foreach ($subscribed as $listId) {
             if (!in_array((int) $listId, $managed, true)) {
                 continue;
             }
+            $this->lastUnsubscribedListIds[] = (int) $listId;
             if (!$this->unsubscribe($email, $listId)) {
                 $success = false;
             }

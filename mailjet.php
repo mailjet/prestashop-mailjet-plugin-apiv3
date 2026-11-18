@@ -639,8 +639,7 @@ class Mailjet extends Module
                 if ($subscriber = Db::getInstance()->getRow($sql)) {
                     if (!empty($subscriber['email'])) {
                         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                        $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                        $initialSynchronization->unsubscribe($subscriber['email'], $masterListId);
+                        $initialSynchronization->withdraw($subscriber['email']);
                     }
                 }
             }
@@ -674,8 +673,7 @@ class Mailjet extends Module
                 if ($subscriber = Db::getInstance()->getRow($sql)) {
                     if (!empty($subscriber['email'])) {
                         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                        $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                        $initialSynchronization->remove($subscriber['email'], $masterListId);
+                        $initialSynchronization->withdraw($subscriber['email']);
                     }
                 }
             }
@@ -868,7 +866,7 @@ class Mailjet extends Module
             if ($customer->active == 0) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 0) {
-                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
+                $initialSynchronization->withdraw($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
             }
@@ -937,7 +935,7 @@ class Mailjet extends Module
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->newsletter == 0) {
                 // Only the lists the contact is subscribed to, never every list of the account
-                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
+                $initialSynchronization->withdraw($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $this->checkAutoAssignment($customer->id);
                 $initialSynchronization->subscribe(
@@ -1168,8 +1166,8 @@ class Mailjet extends Module
         if (empty($params['error']) && $params['action'] == '1') {
             try {
                 $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                $initialSynchronization->remove($params['email'], $masterListId);
+                // Withdrawal covers every managed list tied to the newsletter consent, not only the master list
+                $initialSynchronization->withdraw($params['email']);
             } catch (Exception $e) {
                 $this->errors_list[] = $this->l($e->getMessage());
             }
