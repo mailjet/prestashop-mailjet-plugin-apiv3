@@ -31,6 +31,36 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     const SEGMENT_UNSUBSCRIBE = 'unsubscribe';
     const SEGMENT_REMOVE = 'remove';
 
+    /** Explicit, recorded opt-in: may resubscribe a contact who unsubscribed */
+    const ACTION_FORCE = 'addforce';
+
+    /** Routine update: never changes an unsubscribed contact back to subscribed */
+    const ACTION_NOFORCE = 'addnoforce';
+
+    /**
+     * True when the newsletter flag goes from 0 to 1 in this update, i.e. the
+     * contact (or the merchant on his behalf) opted in just now.
+     *
+     * @param  int|string|null $previousNewsletter newsletter value before the update, null if unknown
+     * @param  object          $customer
+     * @return bool
+     */
+    public static function isExplicitOptIn($previousNewsletter, $customer)
+    {
+        return $previousNewsletter !== null
+            && (int) $previousNewsletter === 0
+            && (int) $customer->newsletter === 1;
+    }
+
+    /**
+     * @param  bool $explicitOptIn
+     * @return string
+     */
+    public static function getSubscribeAction($explicitOptIn)
+    {
+        return $explicitOptIn ? self::ACTION_FORCE : self::ACTION_NOFORCE;
+    }
+
     /**
      * What to do with a customer in an auto-assigned segment list.
      *
@@ -56,11 +86,16 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
+     * Routine calls use addnoforce, so a contact who unsubscribed in Mailjet
+     * stays unsubscribed. Pass $explicitOptIn = true only for an opt-in made
+     * just now by the contact (see docs/scope-rules.md).
      *
-     * @param  string $email
+     * @param  string|Customer $email
+     * @param  int|null        $list_id
+     * @param  bool            $explicitOptIn
      * @return boolean
      */
-    public function subscribe($email, $list_id = null)
+    public function subscribe($email, $list_id = null, $explicitOptIn = false)
     {
         $api = $this->getApi();
         $update_list_id = $list_id ?: $this->getAlreadyCreatedMasterListId();
@@ -83,11 +118,11 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
         if (is_string($email)) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
-                "Action" => "addforce",
+                "Action" => self::getSubscribeAction($explicitOptIn),
             );
             $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
         } elseif (is_object($email)) {
-            $action = $email->newsletter == 1 ? 'addforce' : 'unsub';
+            $action = $email->newsletter == 1 ? self::getSubscribeAction($explicitOptIn) : 'unsub';
             $contact = array(
                 "Action" => $action,
                 'Email' => $email->email,
@@ -115,7 +150,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     public function addToList($customer, $mailjet_list_id)
     {
         if (is_object($customer)) {
-            $action = $customer->newsletter == 1 ? 'addforce' : 'unsub';
+            $action = $customer->newsletter == 1 ? self::ACTION_NOFORCE : 'unsub';
             $contact = array(
                 "Action" => $action,
                 'Email' => $customer->email,
