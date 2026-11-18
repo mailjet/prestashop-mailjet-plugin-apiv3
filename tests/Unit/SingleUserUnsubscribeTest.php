@@ -5,37 +5,7 @@ use PHPUnit\Framework\TestCase;
 require_once dirname(__DIR__, 2) . '/libraries/Mailjet.Overlay.class.php';
 require_once dirname(__DIR__, 2) . '/classes/hooks/synchronization/SynchronizationAbstract.php';
 require_once dirname(__DIR__, 2) . '/classes/hooks/synchronization/SingleUser.php';
-
-/**
- * Records list calls instead of calling the Mailjet API
- */
-class FakeUnsubscribeApiOverlay extends Mailjet_ApiOverlay
-{
-    public $customerLists = false;
-    public $accountLists = array();
-    public $calls = array();
-
-    public function __construct()
-    {
-    }
-
-    public function getCustomerLists($email)
-    {
-        return $this->customerLists;
-    }
-
-    public function getContactsLists($start = null, $limit = null, $orderby = null, $cache = null)
-    {
-        return $this->accountLists;
-    }
-
-    public function addDetailedContactToList($contact, $listID)
-    {
-        $this->calls[] = array($contact['Action'], $contact['Email'], $listID);
-
-        return (object) array('Count' => 1);
-    }
-}
+require_once dirname(__DIR__) . '/Support/FakeUnsubscribeApiOverlay.php';
 
 /**
  * DE-11736: a customer saved with newsletter = 0 must only be unsubscribed from
@@ -52,7 +22,13 @@ class SingleUserUnsubscribeTest extends TestCase
     protected function setUp(): void
     {
         $this->overlay = new FakeUnsubscribeApiOverlay();
-        $this->overlay->accountLists = array((object) array('ID' => 1), (object) array('ID' => 2), (object) array('ID' => 3));
+        Configuration::$values = array();
+        $this->overlay->accountLists = array(
+            (object) array('ID' => 1, 'Name' => 'PrestaShop Customers Master List'),
+            (object) array('ID' => 2, 'Name' => '3idfvipcustomers'),
+            (object) array('ID' => 3, 'Name' => '3idfsecondsegment'),
+            (object) array('ID' => 4, 'Name' => 'Blog readers (other business)'),
+        );
         $this->sync = new HooksSynchronizationSingleUser($this->overlay);
     }
 

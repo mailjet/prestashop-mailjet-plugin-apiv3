@@ -226,7 +226,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                     $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $newListId . '/managemanycontacts'}(
                         array(
                                 'method' => 'JSON',
-                                'Action' => 'addforce',
+                                'Action' => 'addnoforce',
                                 'Contacts' => $contactsToAddSubscrubed
                             )
                     );
@@ -350,7 +350,7 @@ class HooksSynchronizationSegment extends HooksSynchronizationSynchronizationAbs
                 $response = $this->getApiOverlay()->getApi()->{'contactslist/' . $existingListId . '/managemanycontacts'}(
                     array(
                         'method' => 'JSON',
-                        'Action' => 'addforce',
+                        'Action' => 'addnoforce',
                         'Contacts' => $contactsToAdd
                     )
                 );

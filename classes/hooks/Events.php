@@ -28,37 +28,97 @@
 class HooksEvents
 {
     /**
-     * @param  array $event
-     * @return bool
+     * Apply an unsubscription made in Mailjet to the shop.
+     *
+     * Customer accounts and guest newsletter subscribers (emailsubscription,
+     * no customer account) are handled independently, both in the shop of
+     * the current context.
+     *
+     * @param  array $event Mailjet event, needs an 'email' key
+     * @return bool true only if every change was saved
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     public function unsubscribe(array $event)
     {
-        if (!array_key_exists('email', $event)) {
+        if (empty($event['email']) || !is_string($event['email'])) {
             return false;
         }
 
-        if (!$event['email']) {
-            return false;
-        }
+        $email = $event['email'];
+        $success = true;
 
-        $customerClass = new Customer();
-        $customer = $customerClass->getByEmail($event['email']);
-
-        if ($customer) {
-            $customer->newsletter = 0;
-            $customer->update();
-
-            if (version_compare(_PS_VERSION_, '1.7', '<')) {
-                $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'newsletter WHERE `email` = \'' . pSQL($event['email']) . '\'';
-            } else {
-                $sql = 'DELETE FROM ' . _DB_PREFIX_ . 'emailsubscription WHERE `email` = \'' . pSQL($event['email']) . '\'';
+        foreach ($this->findCustomerIds($email) as $idCustomer) {
+            $customer = $this->loadCustomer($idCustomer);
+            if (!$customer || !$customer->id || (int) $customer->newsletter === 0) {
+                continue;
             }
 
-            return Db::getInstance()->execute($sql);
+            $customer->newsletter = 0;
+            if (!$customer->update()) {
+                $success = false;
+            }
         }
 
-        return true;
+        if (!$this->deleteNewsletterSubscription($email)) {
+            $success = false;
+        }
+
+        return $success;
+    }
+
+    /**
+     * Ids of the not deleted customers using this email in the current shop (group)
+     *
+     * @param  string $email
+     * @return int[]
+     */
+    protected function findCustomerIds($email)
+    {
+        $rows = Db::getInstance()->executeS(
+            'SELECT `id_customer` FROM `' . _DB_PREFIX_ . 'customer`
+            WHERE `email` = \'' . pSQL($email) . '\' AND `deleted` = 0' .
+            $this->getShopRestriction(true)
+        );
+
+        return is_array($rows) ? array_map('intval', array_column($rows, 'id_customer')) : array();
+    }
+
+    /**
+     * @param  int $idCustomer
+     * @return Customer
+     */
+    protected function loadCustomer($idCustomer)
+    {
+        return new Customer((int) $idCustomer);
+    }
+
+    /**
+     * Remove the guest newsletter registration of this email, if any
+     *
+     * @param  string $email
+     * @return bool
+     */
+    protected function deleteNewsletterSubscription($email)
+    {
+        $table = version_compare(_PS_VERSION_, '1.7', '<') ? 'newsletter' : 'emailsubscription';
+
+        return (bool) Db::getInstance()->execute(
+            'DELETE FROM `' . _DB_PREFIX_ . $table . '`
+            WHERE `email` = \'' . pSQL($email) . '\'' . $this->getShopRestriction(false)
+        );
+    }
+
+    /**
+     * @param  bool $customerSharing restrict on the shops sharing customers (customer table)
+     * @return string SQL condition starting with " AND", or an empty string
+     */
+    protected function getShopRestriction($customerSharing)
+    {
+        if (!class_exists('Shop') || !method_exists('Shop', 'addSqlRestriction')) {
+            return '';
+        }
+
+        return $customerSharing ? Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) : Shop::addSqlRestriction(false);
     }
 }

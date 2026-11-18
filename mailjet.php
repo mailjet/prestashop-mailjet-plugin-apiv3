@@ -52,7 +52,9 @@ require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/ContactProperties.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/WebhookProcessor.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/consent/MailjetTrackingConsent.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/queue/MailjetPendingOperationQueue.php';
 
 
 class Mailjet extends Module
@@ -128,7 +130,7 @@ class Mailjet extends Module
         $this->displayName = 'Mailjet';
         $this->description = $this->l('Create contact lists and client segment groups, drag-n-drop newsletters, define client re-engagement triggers, follow and analyze all email user interaction, minimize negative user engagement events(blocked, unsubs and spam) and optimise deliverability and revenue generation. Get started today with 6000 free emails per month.');
         $this->author = 'PrestaShop';
-        $this->version = '3.8.2';
+        $this->version = '3.9.0';
         $this->module_key = 'c81a68225f14a65239de29ee6b78d87b';
         $this->tab = 'advertising_marketing';
         $this->ps_versions_compliancy = [
@@ -246,6 +248,8 @@ class Mailjet extends Module
             'actionAdminCustomersControllerDeleteBefore',
             'actionExportGDPRData',
             'actionObjectCustomerDeleteBefore',
+            'actionObjectCustomerDeleteAfter',
+            'actionObjectCustomerUpdateBefore',
             'actionObjectCustomerUpdateAfter',
             'displayBackOfficeHeader',
             'registerGDPRConsent',
@@ -269,6 +273,22 @@ class Mailjet extends Module
 
         foreach ($hooks as $hook) {
             if (!$this->registerHook($hook)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Hooks added in 3.9.0 for the audit fixes, also used by the upgrade script
+     *
+     * @return bool
+     */
+    public function registerAuditFixHooks()
+    {
+        foreach (['actionObjectCustomerUpdateBefore', 'actionObjectCustomerDeleteAfter'] as $hook) {
+            if (!$this->isRegisteredInHook($hook) && !$this->registerHook($hook)) {
                 return false;
             }
         }
@@ -501,6 +521,7 @@ class Mailjet extends Module
         Configuration::deleteByName('MAILJET');
         Configuration::deleteByName('MJ_TRIGGERS');
         Configuration::deleteByName('MJ_ALLEMAILS');
+        Configuration::deleteByName('PREVIOUS_MJ_USER_MAIL');
         Configuration::deleteByName(MailjetTrackingConsent::CONFIG_ENABLED);
         Configuration::deleteByName(MailjetTrackingConsent::CONFIG_LABEL);
         Configuration::deleteByName(MailjetTrackingConsent::CONFIG_PROPERTY);
@@ -533,24 +554,11 @@ class Mailjet extends Module
         }
 
         /*
-         * RM: 29680 - add prestashop newsletter sunscribers to Mailjet master contact list
+         * Newsletter form submissions are handled by hookActionNewsletterRegistrationAfter()
+         * and hookActionNewsletterRegistrationBefore(), which the newsletter module only
+         * triggers for a validated request (after double opt-in confirmation when enabled).
+         * Reading submitNewsletter here subscribed the address before any validation.
          */
-        if (Tools::isSubmit('submitNewsletter')) {
-            try {
-                $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-
-                // UnSubscribe
-                if (Tools::getValue('action') == '1') {
-                    // Remove customer from all lists(and segment lists)
-                    $initialSynchronization->remove(Tools::getValue('email'), $masterListId);
-                } elseif (Tools::getValue('action') == '0') { // Subscribe - to the Mailjet master list
-                    $initialSynchronization->subscribe(Tools::getValue('email'), $masterListId);
-                }
-            } catch (Exception $e) {
-                $this->errors_list[] = $this->l($e->getMessage());
-            }
-        }
     }
 
     /**
@@ -635,8 +643,7 @@ class Mailjet extends Module
                 if ($subscriber = Db::getInstance()->getRow($sql)) {
                     if (!empty($subscriber['email'])) {
                         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                        $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                        $initialSynchronization->unsubscribe($subscriber['email'], $masterListId);
+                        $initialSynchronization->withdraw($subscriber['email']);
                     }
                 }
             }
@@ -670,8 +677,7 @@ class Mailjet extends Module
                 if ($subscriber = Db::getInstance()->getRow($sql)) {
                     if (!empty($subscriber['email'])) {
                         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                        $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                        $initialSynchronization->remove($subscriber['email'], $masterListId);
+                        $initialSynchronization->withdraw($subscriber['email']);
                     }
                 }
             }
@@ -768,8 +774,8 @@ class Mailjet extends Module
      */
     public function hookActionAdminCustomersControllerSaveBefore()
     {
-        $customer = new Customer(Tools::getValue('id_customer'));
-        Configuration::updateValue('PREVIOUS_MJ_USER_MAIL', $customer->email);
+        // The previous email is read by hookActionObjectCustomerUpdateBefore(), which runs
+        // for back-office and front-office edits alike (DE-11567).
     }
 
     /**
@@ -808,6 +814,34 @@ class Mailjet extends Module
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
+        }
+    }
+
+    /**
+     * Mailjet operations which could not be sent are retried by the cron. Tell the
+     * merchant about the ones still waiting and the ones given up (DE-11715).
+     */
+    private function addPendingOperationsNotice()
+    {
+        try {
+            $queue = MailjetPendingOperationQueue::create();
+            $failed = $queue->countFailed();
+            $pending = $queue->countPending();
+        } catch (Exception $e) {
+            return;
+        }
+
+        if ($failed > 0) {
+            $this->errors_list[] = sprintf(
+                $this->l('%d contact update(s) could not be sent to Mailjet after several retries. Check the module log and the contacts in Mailjet.'),
+                $failed
+            );
+        }
+        if ($pending > 0) {
+            $this->errors_list[] = sprintf(
+                $this->l('%d contact update(s) failed and are waiting to be retried by the cron task.'),
+                $pending
+            );
         }
     }
 
@@ -864,13 +898,56 @@ class Mailjet extends Module
             if ($customer->active == 0) {
                 $initialSynchronization->removeFromAllLists($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 0) {
-                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
+                $initialSynchronization->withdraw($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $initialSynchronization->subscribe($customer);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
         }
+    }
+
+    /**
+     * Customer values as stored before the current update, by id_customer
+     *
+     * @var array<int, array{email: string, newsletter: int}>
+     */
+    private static $customerSnapshots = [];
+
+    /**
+     * Keep the stored email and newsletter flag, so the "after" hook can tell
+     * what changed in this update.
+     *
+     * @param array $params
+     */
+    public function hookActionObjectCustomerUpdateBefore($params)
+    {
+        $customer = isset($params['object']) ? $params['object'] : null;
+        if (!$customer || !$customer->id) {
+            return;
+        }
+
+        $row = Db::getInstance()->getRow(
+            'SELECT `email`, `newsletter` FROM `' . _DB_PREFIX_ . 'customer`
+            WHERE `id_customer` = ' . (int) $customer->id
+        );
+        if ($row) {
+            self::$customerSnapshots[(int) $customer->id] = [
+                'email' => (string) $row['email'],
+                'newsletter' => (int) $row['newsletter'],
+            ];
+        }
+    }
+
+    /**
+     * Values stored before the current update, null when the "before" hook did not run
+     *
+     * @param  int $idCustomer
+     * @return array|null
+     */
+    private function getCustomerSnapshot($idCustomer)
+    {
+        return isset(self::$customerSnapshots[(int) $idCustomer]) ? self::$customerSnapshots[(int) $idCustomer] : null;
     }
 
     /**
@@ -881,17 +958,33 @@ class Mailjet extends Module
     public function hookActionObjectCustomerUpdateAfter($params)
     {
         $customer = $params['object'];
+        $snapshot = $this->getCustomerSnapshot($customer->id);
+        unset(self::$customerSnapshots[(int) $customer->id]);
         $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
         try {
             MailjetTrackingConsent::create()->updateEmail((int) $customer->id, $customer->email);
+
+            // Email changed A -> B: the old address must not stay on the shop's lists
+            $previousEmail = HooksSynchronizationSingleUser::getReplacedEmail(
+                $snapshot ? $snapshot['email'] : null,
+                $customer
+            );
+            if ($previousEmail !== null) {
+                $initialSynchronization->removeFromAllLists($previousEmail);
+            }
+
             if ($customer->deleted == 1) {
-                $initialSynchronization->removeFromAllLists($customer->email);
+                $this->eraseCustomerEmail($customer->email, (int) $customer->id);
             } elseif ($customer->newsletter == 0) {
                 // Only the lists the contact is subscribed to, never every list of the account
-                $initialSynchronization->unsubscribeFromSubscribedLists($customer->email);
+                $initialSynchronization->withdraw($customer->email);
             } elseif ($customer->active == 1 && $customer->newsletter == 1) {
                 $this->checkAutoAssignment($customer->id);
-                $initialSynchronization->subscribe($customer);
+                $initialSynchronization->subscribe(
+                    $customer,
+                    null,
+                    HooksSynchronizationSingleUser::isExplicitOptIn($snapshot ? $snapshot['newsletter'] : null, $customer)
+                );
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -929,20 +1022,61 @@ class Mailjet extends Module
         return $this->hookDisplayAdminCustomers($params);
     }
 
+    /**
+     * Deletions are handled once the customer is deleted, see hookActionObjectCustomerDeleteAfter().
+     * Kept registered for existing installs.
+     *
+     * @param array $params
+     */
     public function hookActionObjectCustomerDeleteBefore($params)
     {
-        $customer = $params['object'];
+    }
 
-        if (!$customer->id) {
+    /**
+     * Customer deleted, by any workflow: back office (single and bulk), webservice,
+     * another module. Soft deletions (deleted = 1) go through
+     * hookActionObjectCustomerUpdateAfter() and end up in the same place.
+     *
+     * @param array $params
+     */
+    public function hookActionObjectCustomerDeleteAfter($params)
+    {
+        $customer = isset($params['object']) ? $params['object'] : null;
+        if (!$customer || empty($customer->email)) {
             return;
         }
 
-        $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+        $this->eraseCustomerEmail($customer->email, (int) $customer->id);
+    }
+
+    /**
+     * Erasure of a deleted customer: the address is removed from every list managed
+     * by the shop, master list included (docs/scope-rules.md). Skipped while another
+     * not deleted customer account still uses the address.
+     *
+     * @param string $email
+     * @param int    $idDeletedCustomer
+     * @return bool
+     */
+    private function eraseCustomerEmail($email, $idDeletedCustomer)
+    {
+        $stillUsed = (int) Db::getInstance()->getValue(
+            'SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'customer`
+            WHERE `email` = \'' . pSQL($email) . '\' AND `deleted` = 0
+            AND `id_customer` != ' . (int) $idDeletedCustomer
+        );
+        if ($stillUsed > 0) {
+            return true;
+        }
 
         try {
-            $singleUserSynchronization->remove($customer->email);
+            $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+
+            return $singleUserSynchronization->erase($email);
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
+
+            return false;
         }
     }
 
@@ -954,19 +1088,8 @@ class Mailjet extends Module
      */
     public function hookActionAdminCustomersControllerDeleteBefore()
     {
-        $customer = new Customer(Tools::getValue('id_customer'));
-
-        if (!$customer->id) {
-            return;
-        }
-
-        $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-
-        try {
-            $singleUserSynchronization->removeFromAllLists($customer->email);
-        } catch (Exception $e) {
-            $this->errors_list[] = $this->l($e->getMessage());
-        }
+        // The back office deletes through Customer::delete() (or an update with deleted = 1),
+        // which runs the object hooks: the erasure happens there, once, after the deletion.
     }
 
     /**
@@ -986,7 +1109,8 @@ class Mailjet extends Module
                 Tools::getValue(MailjetTrackingConsent::FIELD_NAME)
             );
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']);
+                // Newsletter box ticked on the registration form: explicit opt-in
+                $initialSynchronization->subscribe($params['newCustomer'], null, true);
             }
             $this->checkAutoAssignment($params['newCustomer']->id);
         } catch (Exception $e) {
@@ -1097,7 +1221,8 @@ class Mailjet extends Module
             try {
                 $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
                 $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                $initialSynchronization->subscribe($params['email'], $masterListId);
+                // Registration accepted by the newsletter module (after double opt-in): explicit opt-in
+                $initialSynchronization->subscribe($params['email'], $masterListId, true);
             } catch (Exception $e) {
                 $this->errors_list[] = $this->l($e->getMessage());
             }
@@ -1113,8 +1238,8 @@ class Mailjet extends Module
         if (empty($params['error']) && $params['action'] == '1') {
             try {
                 $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-                $masterListId = $initialSynchronization->getAlreadyCreatedMasterListId();
-                $initialSynchronization->remove($params['email'], $masterListId);
+                // Withdrawal covers every managed list tied to the newsletter consent, not only the master list
+                $initialSynchronization->withdraw($params['email']);
             } catch (Exception $e) {
                 $this->errors_list[] = $this->l($e->getMessage());
             }
@@ -1133,7 +1258,7 @@ class Mailjet extends Module
 
         try {
             if ($params['newCustomer']->active == 1 && $params['newCustomer']->newsletter == 1) {
-                $initialSynchronization->subscribe($params['newCustomer']);
+                $initialSynchronization->subscribe($params['newCustomer'], null, true);
             }
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
@@ -1362,14 +1487,16 @@ class Mailjet extends Module
             $initialSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
             $mailjetListID = $obj->getMailjetContactListId($filterId);
 
-            if ($result) {
-                if ($customer->active == 1) {
+            // A matching segment never subscribes a customer without newsletter consent
+            switch (HooksSynchronizationSingleUser::getSegmentListAction($customer, (bool) $result)) {
+                case HooksSynchronizationSingleUser::SEGMENT_SUBSCRIBE:
                     $initialSynchronization->subscribe($customer->email, $mailjetListID);
-                } else {
+                    break;
+                case HooksSynchronizationSingleUser::SEGMENT_UNSUBSCRIBE:
                     $initialSynchronization->unsubscribe($customer->email, $mailjetListID);
-                }
-            } else {
-                $initialSynchronization->remove($customer->email, $mailjetListID);
+                    break;
+                default:
+                    $initialSynchronization->remove($customer->email, $mailjetListID);
             }
         }
         return $this;
@@ -1945,6 +2072,8 @@ class Mailjet extends Module
         $infos = $api->getUser();
         $mjSenders = $api->getSenders(null, $infos);
         $currentSender = Configuration::get('PS_SHOP_EMAIL');
+
+        $this->addPendingOperationsNotice();
 
         $this->context->smarty->assign(
             [

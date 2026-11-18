@@ -27,12 +27,104 @@
 
 class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronizationAbstract
 {
+    const SEGMENT_SUBSCRIBE = 'subscribe';
+    const SEGMENT_UNSUBSCRIBE = 'unsubscribe';
+    const SEGMENT_REMOVE = 'remove';
+
+    /** Explicit, recorded opt-in: may resubscribe a contact who unsubscribed */
+    const ACTION_FORCE = 'addforce';
+
+    /** Routine update: never changes an unsubscribed contact back to subscribed */
+    const ACTION_NOFORCE = 'addnoforce';
+
     /**
+     * Lists unsubscribed by the last unsubscribeFromSubscribedLists() call
      *
-     * @param  string $email
+     * @var int[]
+     */
+    private $lastUnsubscribedListIds = array();
+
+    /** @var MailjetPendingOperationQueue|null */
+    private $pendingQueue;
+
+    /** @var bool */
+    private $pendingQueueResolved = false;
+
+    /**
+     * True when the newsletter flag goes from 0 to 1 in this update, i.e. the
+     * contact (or the merchant on his behalf) opted in just now.
+     *
+     * @param  int|string|null $previousNewsletter newsletter value before the update, null if unknown
+     * @param  object          $customer
+     * @return bool
+     */
+    public static function isExplicitOptIn($previousNewsletter, $customer)
+    {
+        return $previousNewsletter !== null
+            && (int) $previousNewsletter === 0
+            && (int) $customer->newsletter === 1;
+    }
+
+    /**
+     * Previous address when this update changed the customer email, otherwise null
+     *
+     * @param  string|null $previousEmail email stored before the update, null if unknown
+     * @param  object      $customer
+     * @return string|null
+     */
+    public static function getReplacedEmail($previousEmail, $customer)
+    {
+        if (empty($previousEmail) || empty($customer->email)) {
+            return null;
+        }
+
+        return strcasecmp(trim($previousEmail), trim($customer->email)) === 0 ? null : $previousEmail;
+    }
+
+    /**
+     * @param  bool $explicitOptIn
+     * @return string
+     */
+    public static function getSubscribeAction($explicitOptIn)
+    {
+        return $explicitOptIn ? self::ACTION_FORCE : self::ACTION_NOFORCE;
+    }
+
+    /**
+     * What to do with a customer in an auto-assigned segment list.
+     *
+     * Matching a segment is not consent: only an active customer with
+     * newsletter = 1 is subscribed. A matching customer without consent is
+     * kept with the unsubscribed status, so the segment never mails him.
+     *
+     * @param  object $customer         Customer (active, newsletter)
+     * @param  bool   $matchesSegment
+     * @return string one of the SEGMENT_* constants
+     */
+    public static function getSegmentListAction($customer, $matchesSegment)
+    {
+        if (!$matchesSegment) {
+            return self::SEGMENT_REMOVE;
+        }
+
+        if ((int) $customer->active === 1 && (int) $customer->newsletter === 1) {
+            return self::SEGMENT_SUBSCRIBE;
+        }
+
+        return self::SEGMENT_UNSUBSCRIBE;
+    }
+
+    /**
+     * Routine calls use addnoforce, so a contact who unsubscribed in Mailjet
+     * stays unsubscribed. Pass $explicitOptIn = true only for an opt-in made
+     * just now by the contact (see docs/scope-rules.md).
+     *
+     * @param  string|Customer $email
+     * @param  int|null        $list_id
+     * @param  bool            $explicitOptIn
      * @return boolean
      */
-    public function subscribe($email, $list_id = null)
+    public function subscribe($email, $list_id = null, $explicitOptIn = false)
     {
         $api = $this->getApi();
         $update_list_id = $list_id ?: $this->getAlreadyCreatedMasterListId();
@@ -55,11 +147,10 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
         if (is_string($email)) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
-                "Action" => "addforce",
+                "Action" => self::getSubscribeAction($explicitOptIn),
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
         } elseif (is_object($email)) {
-            $action = $email->newsletter == 1 ? 'addforce' : 'unsub';
+            $action = $email->newsletter == 1 ? self::getSubscribeAction($explicitOptIn) : 'unsub';
             $contact = array(
                 "Action" => $action,
                 'Email' => $email->email,
@@ -72,9 +163,11 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                     MailjetTrackingConsent::create()->getContactProperties((int) $email->id)
                 )
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
+        } else {
+            return false;
         }
-        return $response && $response->Count > 0 ? true : false;
+
+        return $this->sendContact($contact, $update_list_id);
     }
 
     /**
@@ -87,7 +180,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     public function addToList($customer, $mailjet_list_id)
     {
         if (is_object($customer)) {
-            $action = $customer->newsletter == 1 ? 'addforce' : 'unsub';
+            $action = $customer->newsletter == 1 ? self::ACTION_NOFORCE : 'unsub';
             $contact = array(
                 "Action" => $action,
                 'Email' => $customer->email,
@@ -100,8 +193,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                     MailjetTrackingConsent::create()->getContactProperties((int) $customer->id)
                 )
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $mailjet_list_id);
-            return $response && $response->Count > 0 ? true : false;
+            return $this->sendContact($contact, $mailjet_list_id);
         }
         return false;
     }
@@ -129,13 +221,42 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             "Email" => $email,   // Mandatory field!
             "Action" => "unsub",
         );
-        $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
-
-        return $response && $response->Count > 0;
+        return $this->sendContact($contact, $list_id);
     }
 
     /**
-     * Unsubscribe an email from every list it is currently subscribed to.
+     * Newsletter consent withdrawn: the single entry point for every withdrawal
+     * (newsletter form, back office, customer saved with newsletter = 0).
+     *
+     * The contact is unsubscribed (not removed) from every managed list it is
+     * subscribed to: master list and segment lists. The master list is always
+     * included, even when the list lookup returns nothing, so a guest who only
+     * registered through the newsletter form is covered too.
+     *
+     * @param  string $email
+     * @return bool false if at least one list could not be updated
+     */
+    public function withdraw($email)
+    {
+        if (empty($email)) {
+            return false;
+        }
+
+        $success = $this->unsubscribeFromSubscribedLists($email);
+
+        $masterListId = (int) $this->getAlreadyCreatedMasterListId();
+        if ($masterListId && !in_array($masterListId, $this->lastUnsubscribedListIds, true)) {
+            if (!$this->unsubscribe($email, $masterListId)) {
+                $success = false;
+            }
+        }
+
+        return $success;
+    }
+
+    /**
+     * Unsubscribe an email from every managed list it is currently subscribed to.
+     * Lists not managed by the shop are left untouched.
      *
      * @param  string $email
      * @return boolean false if at least one unsubscription failed
@@ -143,7 +264,14 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     public function unsubscribeFromSubscribedLists($email)
     {
         $success = true;
-        foreach ($this->getSubscribedSegmentLists($email) as $listId) {
+        $this->lastUnsubscribedListIds = array();
+        $subscribed = $this->getSubscribedSegmentLists($email);
+        $managed = $subscribed ? $this->getManagedListIds() : array();
+        foreach ($subscribed as $listId) {
+            if (!in_array((int) $listId, $managed, true)) {
+                continue;
+            }
+            $this->lastUnsubscribedListIds[] = (int) $listId;
             if (!$this->unsubscribe($email, $listId)) {
                 $success = false;
             }
@@ -152,27 +280,27 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
         return $success;
     }
 
+    /**
+     * Unsubscribe an email from the managed segment lists (master list excluded)
+     *
+     * @param  string $email
+     * @return boolean
+     */
     public function unsubscribeListsExceptMaster($email)
     {
-        $apiOverlay = $this->getApiOverlay();
-
-        $lists = $apiOverlay->getContactsLists();
-
-        $masterListId = $this->getAlreadyCreatedMasterListId();
-        foreach ($lists as $list) {
-            if ($list->ID == $masterListId) {
-                continue;
-            }
+        $success = true;
+        foreach ($this->getManagedListIds(false) as $listId) {
             $contact = array(
                 "Email" => $email, // Mandatory field!
                 "Action" => "unsub",
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
-
-            if (!$response || !($response->Count > 0)) {
-                return false;
+            // A failure is queued for retry; the other lists are still processed
+            if (!$this->sendContact($contact, $listId)) {
+                $success = false;
             }
         }
+
+        return $success;
     }
 
     /**
@@ -222,71 +350,165 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
-     * Remove email from a specific list or from all lists except masterList
+     * Remove email from a specific list or from all managed lists except masterList
      *
      * @param  string $email
      * @return boolean
      */
     public function remove($email, $list_id = null)
     {
-        if ($list_id) {
+        $listIds = $list_id ? array($list_id) : $this->getManagedListIds(false);
+
+        $success = true;
+        foreach ($listIds as $listId) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
                 "Action" => "remove",
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
-
-            if (!$response || !($response->Count > 0)) {
-                return false;
-            }
-        } else {
-            $apiOverlay = $this->getApiOverlay();
-
-            $lists = $apiOverlay->getContactsLists();
-
-            $masterListId = $this->getAlreadyCreatedMasterListId();
-            foreach ($lists as $list) {
-                if ($list->ID == $masterListId) {
-                    continue;
-                }
-                $contact = array(
-                    "Email" => $email,   // Mandatory field!
-                    "Action" => "remove",
-                );
-                $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
-
-                if (!$response || !($response->Count > 0)) {
-                    return false;
-                }
+            if (!$this->sendContact($contact, $listId)) {
+                $success = false;
             }
         }
 
-        return true;
+        return $success;
     }
 
     /**
-     * Remove email from all lists even in masterList
+     * Erasure of a deleted customer: removed (not unsubscribed) from every managed
+     * list, master list included. The single entry point for every deletion workflow.
+     *
+     * @param  string $email
+     * @return bool
+     */
+    public function erase($email)
+    {
+        if (empty($email)) {
+            return false;
+        }
+
+        return $this->removeFromAllLists($email);
+    }
+
+    /**
+     * Remove email from all managed lists, master list included.
+     * Lists not managed by the shop are left untouched.
      *
      * @param  string $email
      * @return boolean
      */
     public function removeFromAllLists($email)
     {
-        $apiOverlay = $this->getApiOverlay();
-
-        $lists = $apiOverlay->getContactsLists();
-
-        foreach ($lists as $list) {
+        $success = true;
+        foreach ($this->getManagedListIds() as $listId) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
                 "Action" => "remove",
             );
-            $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
-
-            if (!$response || !($response->Count > 0)) {
-                return false;
+            if (!$this->sendContact($contact, $listId)) {
+                $success = false;
             }
         }
-        return true;
+
+        return $success;
+    }
+
+    /**
+     * Send one contact operation to one list and check the result.
+     *
+     * A failed or rejected request is recorded in the pending operation queue
+     * and retried by the cron; a successful one drops any older pending
+     * operation for the same address and list, so a retry never overrides a
+     * newer change.
+     *
+     * @param  array $contact        Email, Action and optional Name/Properties
+     * @param  int   $listId
+     * @param  bool  $queueOnFailure false when called by the retry itself
+     * @return bool
+     */
+    protected function sendContact(array $contact, $listId, $queueOnFailure = true)
+    {
+        $error = null;
+        try {
+            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
+            $success = $response && isset($response->Count) && $response->Count > 0;
+            if (!$success) {
+                $error = 'Mailjet rejected the request or did not answer';
+            }
+        } catch (Exception $e) {
+            $success = false;
+            $error = $e->getMessage();
+        }
+
+        $queue = $this->getPendingQueue();
+        if ($success) {
+            if ($queue) {
+                $queue->resolve($contact['Email'], $listId);
+            }
+
+            return true;
+        }
+
+        $this->log('sendContact() ' . $contact['Action'] . ' ' . $contact['Email'] . ' on list ' . $listId . ' failed: ' . $error);
+        if ($queue && $queueOnFailure) {
+            $queue->enqueue($contact, $listId, $error);
+        }
+
+        return false;
+    }
+
+    /**
+     * Retry the operations which failed earlier (called by the cron)
+     *
+     * @param  int $limit
+     * @return array{retried: int, succeeded: int, failed: int}
+     */
+    public function retryPendingOperations($limit = 100)
+    {
+        $queue = $this->getPendingQueue();
+        if (!$queue) {
+            return array('retried' => 0, 'succeeded' => 0, 'failed' => 0);
+        }
+
+        $self = $this;
+
+        return $queue->retry(function (array $contact, $listId) use ($self) {
+            return $self->sendQueuedContact($contact, $listId);
+        }, $limit);
+    }
+
+    /**
+     * @internal used by retryPendingOperations()
+     *
+     * @param  array $contact
+     * @param  int   $listId
+     * @return bool
+     */
+    public function sendQueuedContact(array $contact, $listId)
+    {
+        return $this->sendContact($contact, $listId, false);
+    }
+
+    /**
+     * @param MailjetPendingOperationQueue|null $queue
+     */
+    public function setPendingQueue($queue)
+    {
+        $this->pendingQueue = $queue;
+        $this->pendingQueueResolved = true;
+    }
+
+    /**
+     * @return MailjetPendingOperationQueue|null
+     */
+    protected function getPendingQueue()
+    {
+        if (!$this->pendingQueueResolved) {
+            $this->pendingQueueResolved = true;
+            if (class_exists('Db') && class_exists('MailjetPendingOperationQueue')) {
+                $this->pendingQueue = MailjetPendingOperationQueue::create();
+            }
+        }
+
+        return $this->pendingQueue;
     }
 }
