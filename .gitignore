@@ -6,3 +6,6 @@ backward_compatibility
 logs/*.log
 /vendor/
 .phpunit.result.cache
+
+# Staging secrets (DE-11745)
+staging/.env
