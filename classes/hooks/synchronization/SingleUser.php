@@ -198,7 +198,8 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
-     * Unsubscribe an email from every list it is currently subscribed to.
+     * Unsubscribe an email from every managed list it is currently subscribed to.
+     * Lists not managed by the shop are left untouched.
      *
      * @param  string $email
      * @return boolean false if at least one unsubscription failed
@@ -206,7 +207,12 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     public function unsubscribeFromSubscribedLists($email)
     {
         $success = true;
-        foreach ($this->getSubscribedSegmentLists($email) as $listId) {
+        $subscribed = $this->getSubscribedSegmentLists($email);
+        $managed = $subscribed ? $this->getManagedListIds() : array();
+        foreach ($subscribed as $listId) {
+            if (!in_array((int) $listId, $managed, true)) {
+                continue;
+            }
             if (!$this->unsubscribe($email, $listId)) {
                 $success = false;
             }
@@ -215,27 +221,27 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
         return $success;
     }
 
+    /**
+     * Unsubscribe an email from the managed segment lists (master list excluded)
+     *
+     * @param  string $email
+     * @return boolean
+     */
     public function unsubscribeListsExceptMaster($email)
     {
-        $apiOverlay = $this->getApiOverlay();
-
-        $lists = $apiOverlay->getContactsLists();
-
-        $masterListId = $this->getAlreadyCreatedMasterListId();
-        foreach ($lists as $list) {
-            if ($list->ID == $masterListId) {
-                continue;
-            }
+        foreach ($this->getManagedListIds(false) as $listId) {
             $contact = array(
                 "Email" => $email, // Mandatory field!
                 "Action" => "unsub",
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list->ID);
+            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
 
             if (!$response || !($response->Count > 0)) {
                 return false;
             }
         }
+
+        return true;
     }
 
     /**
@@ -285,7 +291,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
-     * Remove email from a specific list or from all lists except masterList
+     * Remove email from a specific list or from all managed lists except masterList
      *
      * @param  string $email
      * @return boolean
@@ -303,20 +309,12 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                 return false;
             }
         } else {
-            $apiOverlay = $this->getApiOverlay();
-
-            $lists = $apiOverlay->getContactsLists();
-
-            $masterListId = $this->getAlreadyCreatedMasterListId();
-            foreach ($lists as $list) {
-                if ($list->ID == $masterListId) {
-                    continue;
-                }
+            foreach ($this->getManagedListIds(false) as $listId) {
                 $contact = array(
                     "Email" => $email,   // Mandatory field!
                     "Action" => "remove",
                 );
-                $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
+                $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
 
                 if (!$response || !($response->Count > 0)) {
                     return false;
@@ -328,23 +326,20 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
     }
 
     /**
-     * Remove email from all lists even in masterList
+     * Remove email from all managed lists, master list included.
+     * Lists not managed by the shop are left untouched.
      *
      * @param  string $email
      * @return boolean
      */
     public function removeFromAllLists($email)
     {
-        $apiOverlay = $this->getApiOverlay();
-
-        $lists = $apiOverlay->getContactsLists();
-
-        foreach ($lists as $list) {
+        foreach ($this->getManagedListIds() as $listId) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
                 "Action" => "remove",
             );
-            $response = $apiOverlay->addDetailedContactToList($contact, $list->ID);
+            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
 
             if (!$response || !($response->Count > 0)) {
                 return false;
