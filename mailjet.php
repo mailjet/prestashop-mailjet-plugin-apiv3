@@ -52,6 +52,7 @@ require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/SingleUser
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/Segment.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/synchronization/ContactProperties.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/Events.php';
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/hooks/WebhookProcessor.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/consent/MailjetTrackingConsent.php';
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/queue/MailjetPendingOperationQueue.php';
 
