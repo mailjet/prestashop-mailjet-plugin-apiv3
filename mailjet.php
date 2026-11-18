@@ -246,6 +246,7 @@ class Mailjet extends Module
             'actionAdminCustomersControllerDeleteBefore',
             'actionExportGDPRData',
             'actionObjectCustomerDeleteBefore',
+            'actionObjectCustomerDeleteAfter',
             'actionObjectCustomerUpdateBefore',
             'actionObjectCustomerUpdateAfter',
             'displayBackOfficeHeader',
@@ -284,7 +285,7 @@ class Mailjet extends Module
      */
     public function registerAuditFixHooks()
     {
-        foreach (['actionObjectCustomerUpdateBefore'] as $hook) {
+        foreach (['actionObjectCustomerUpdateBefore', 'actionObjectCustomerDeleteAfter'] as $hook) {
             if (!$this->isRegisteredInHook($hook) && !$this->registerHook($hook)) {
                 return false;
             }
@@ -943,7 +944,7 @@ class Mailjet extends Module
             }
 
             if ($customer->deleted == 1) {
-                $initialSynchronization->removeFromAllLists($customer->email);
+                $this->eraseCustomerEmail($customer->email, (int) $customer->id);
             } elseif ($customer->newsletter == 0) {
                 // Only the lists the contact is subscribed to, never every list of the account
                 $initialSynchronization->withdraw($customer->email);
@@ -991,20 +992,61 @@ class Mailjet extends Module
         return $this->hookDisplayAdminCustomers($params);
     }
 
+    /**
+     * Deletions are handled once the customer is deleted, see hookActionObjectCustomerDeleteAfter().
+     * Kept registered for existing installs.
+     *
+     * @param array $params
+     */
     public function hookActionObjectCustomerDeleteBefore($params)
     {
-        $customer = $params['object'];
+    }
 
-        if (!$customer->id) {
+    /**
+     * Customer deleted, by any workflow: back office (single and bulk), webservice,
+     * another module. Soft deletions (deleted = 1) go through
+     * hookActionObjectCustomerUpdateAfter() and end up in the same place.
+     *
+     * @param array $params
+     */
+    public function hookActionObjectCustomerDeleteAfter($params)
+    {
+        $customer = isset($params['object']) ? $params['object'] : null;
+        if (!$customer || empty($customer->email)) {
             return;
         }
 
-        $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+        $this->eraseCustomerEmail($customer->email, (int) $customer->id);
+    }
+
+    /**
+     * Erasure of a deleted customer: the address is removed from every list managed
+     * by the shop, master list included (docs/scope-rules.md). Skipped while another
+     * not deleted customer account still uses the address.
+     *
+     * @param string $email
+     * @param int    $idDeletedCustomer
+     * @return bool
+     */
+    private function eraseCustomerEmail($email, $idDeletedCustomer)
+    {
+        $stillUsed = (int) Db::getInstance()->getValue(
+            'SELECT COUNT(*) FROM `' . _DB_PREFIX_ . 'customer`
+            WHERE `email` = \'' . pSQL($email) . '\' AND `deleted` = 0
+            AND `id_customer` != ' . (int) $idDeletedCustomer
+        );
+        if ($stillUsed > 0) {
+            return true;
+        }
 
         try {
-            $singleUserSynchronization->remove($customer->email);
+            $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
+
+            return $singleUserSynchronization->erase($email);
         } catch (Exception $e) {
             $this->errors_list[] = $this->l($e->getMessage());
+
+            return false;
         }
     }
 
@@ -1016,19 +1058,8 @@ class Mailjet extends Module
      */
     public function hookActionAdminCustomersControllerDeleteBefore()
     {
-        $customer = new Customer(Tools::getValue('id_customer'));
-
-        if (!$customer->id) {
-            return;
-        }
-
-        $singleUserSynchronization = new HooksSynchronizationSingleUser(MailjetTemplate::getApi());
-
-        try {
-            $singleUserSynchronization->removeFromAllLists($customer->email);
-        } catch (Exception $e) {
-            $this->errors_list[] = $this->l($e->getMessage());
-        }
+        // The back office deletes through Customer::delete() (or an update with deleted = 1),
+        // which runs the object hooks: the erasure happens there, once, after the deletion.
     }
 
     /**
