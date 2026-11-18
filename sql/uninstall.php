@@ -45,3 +45,8 @@ $sql[] = 'DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'mj_fieldcondition`';
 
 require_once _PS_MODULE_DIR_ . 'mailjet/classes/consent/MailjetTrackingConsentDbStorage.php';
 $sql = array_merge($sql, MailjetTrackingConsentDbStorage::getUninstallSql());
+
+/* * * ** PENDING MAILJET OPERATIONS (retry queue) ** ** */
+
+require_once _PS_MODULE_DIR_ . 'mailjet/classes/queue/MailjetPendingOperationDbStorage.php';
+$sql = array_merge($sql, MailjetPendingOperationDbStorage::getUninstallSql());

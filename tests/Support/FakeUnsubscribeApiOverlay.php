@@ -9,6 +9,12 @@ class FakeUnsubscribeApiOverlay extends Mailjet_ApiOverlay
     public $accountLists = array();
     public $calls = array();
 
+    /** @var int[] list ids for which the API call fails */
+    public $failingLists = array();
+
+    /** @var bool the API call throws instead of returning */
+    public $throw = false;
+
     public function __construct()
     {
     }
@@ -35,6 +41,13 @@ class FakeUnsubscribeApiOverlay extends Mailjet_ApiOverlay
     public function addDetailedContactToList($contact, $listID)
     {
         $this->calls[] = array($contact['Action'], $contact['Email'], $listID);
+        if (in_array($listID, $this->failingLists)) {
+            if ($this->throw) {
+                throw new Exception('API unavailable');
+            }
+
+            return false;
+        }
 
         return (object) array('Count' => 1);
     }

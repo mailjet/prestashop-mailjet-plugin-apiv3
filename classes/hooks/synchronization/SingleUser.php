@@ -44,6 +44,12 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      */
     private $lastUnsubscribedListIds = array();
 
+    /** @var MailjetPendingOperationQueue|null */
+    private $pendingQueue;
+
+    /** @var bool */
+    private $pendingQueueResolved = false;
+
     /**
      * True when the newsletter flag goes from 0 to 1 in this update, i.e. the
      * contact (or the merchant on his behalf) opted in just now.
@@ -143,7 +149,6 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                 "Email" => $email,   // Mandatory field!
                 "Action" => self::getSubscribeAction($explicitOptIn),
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
         } elseif (is_object($email)) {
             $action = $email->newsletter == 1 ? self::getSubscribeAction($explicitOptIn) : 'unsub';
             $contact = array(
@@ -158,9 +163,11 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                     MailjetTrackingConsent::create()->getContactProperties((int) $email->id)
                 )
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $update_list_id);
+        } else {
+            return false;
         }
-        return $response && $response->Count > 0 ? true : false;
+
+        return $this->sendContact($contact, $update_list_id);
     }
 
     /**
@@ -186,8 +193,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
                     MailjetTrackingConsent::create()->getContactProperties((int) $customer->id)
                 )
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $mailjet_list_id);
-            return $response && $response->Count > 0 ? true : false;
+            return $this->sendContact($contact, $mailjet_list_id);
         }
         return false;
     }
@@ -215,9 +221,7 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
             "Email" => $email,   // Mandatory field!
             "Action" => "unsub",
         );
-        $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
-
-        return $response && $response->Count > 0;
+        return $this->sendContact($contact, $list_id);
     }
 
     /**
@@ -284,19 +288,19 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      */
     public function unsubscribeListsExceptMaster($email)
     {
+        $success = true;
         foreach ($this->getManagedListIds(false) as $listId) {
             $contact = array(
                 "Email" => $email, // Mandatory field!
                 "Action" => "unsub",
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
-
-            if (!$response || !($response->Count > 0)) {
-                return false;
+            // A failure is queued for retry; the other lists are still processed
+            if (!$this->sendContact($contact, $listId)) {
+                $success = false;
             }
         }
 
-        return true;
+        return $success;
     }
 
     /**
@@ -353,31 +357,20 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      */
     public function remove($email, $list_id = null)
     {
-        if ($list_id) {
+        $listIds = $list_id ? array($list_id) : $this->getManagedListIds(false);
+
+        $success = true;
+        foreach ($listIds as $listId) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
                 "Action" => "remove",
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $list_id);
-
-            if (!$response || !($response->Count > 0)) {
-                return false;
-            }
-        } else {
-            foreach ($this->getManagedListIds(false) as $listId) {
-                $contact = array(
-                    "Email" => $email,   // Mandatory field!
-                    "Action" => "remove",
-                );
-                $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
-
-                if (!$response || !($response->Count > 0)) {
-                    return false;
-                }
+            if (!$this->sendContact($contact, $listId)) {
+                $success = false;
             }
         }
 
-        return true;
+        return $success;
     }
 
     /**
@@ -405,17 +398,117 @@ class HooksSynchronizationSingleUser extends HooksSynchronizationSynchronization
      */
     public function removeFromAllLists($email)
     {
+        $success = true;
         foreach ($this->getManagedListIds() as $listId) {
             $contact = array(
                 "Email" => $email,   // Mandatory field!
                 "Action" => "remove",
             );
-            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
-
-            if (!$response || !($response->Count > 0)) {
-                return false;
+            if (!$this->sendContact($contact, $listId)) {
+                $success = false;
             }
         }
-        return true;
+
+        return $success;
+    }
+
+    /**
+     * Send one contact operation to one list and check the result.
+     *
+     * A failed or rejected request is recorded in the pending operation queue
+     * and retried by the cron; a successful one drops any older pending
+     * operation for the same address and list, so a retry never overrides a
+     * newer change.
+     *
+     * @param  array $contact        Email, Action and optional Name/Properties
+     * @param  int   $listId
+     * @param  bool  $queueOnFailure false when called by the retry itself
+     * @return bool
+     */
+    protected function sendContact(array $contact, $listId, $queueOnFailure = true)
+    {
+        $error = null;
+        try {
+            $response = $this->getApiOverlay()->addDetailedContactToList($contact, $listId);
+            $success = $response && isset($response->Count) && $response->Count > 0;
+            if (!$success) {
+                $error = 'Mailjet rejected the request or did not answer';
+            }
+        } catch (Exception $e) {
+            $success = false;
+            $error = $e->getMessage();
+        }
+
+        $queue = $this->getPendingQueue();
+        if ($success) {
+            if ($queue) {
+                $queue->resolve($contact['Email'], $listId);
+            }
+
+            return true;
+        }
+
+        $this->log('sendContact() ' . $contact['Action'] . ' ' . $contact['Email'] . ' on list ' . $listId . ' failed: ' . $error);
+        if ($queue && $queueOnFailure) {
+            $queue->enqueue($contact, $listId, $error);
+        }
+
+        return false;
+    }
+
+    /**
+     * Retry the operations which failed earlier (called by the cron)
+     *
+     * @param  int $limit
+     * @return array{retried: int, succeeded: int, failed: int}
+     */
+    public function retryPendingOperations($limit = 100)
+    {
+        $queue = $this->getPendingQueue();
+        if (!$queue) {
+            return array('retried' => 0, 'succeeded' => 0, 'failed' => 0);
+        }
+
+        $self = $this;
+
+        return $queue->retry(function (array $contact, $listId) use ($self) {
+            return $self->sendQueuedContact($contact, $listId);
+        }, $limit);
+    }
+
+    /**
+     * @internal used by retryPendingOperations()
+     *
+     * @param  array $contact
+     * @param  int   $listId
+     * @return bool
+     */
+    public function sendQueuedContact(array $contact, $listId)
+    {
+        return $this->sendContact($contact, $listId, false);
+    }
+
+    /**
+     * @param MailjetPendingOperationQueue|null $queue
+     */
+    public function setPendingQueue($queue)
+    {
+        $this->pendingQueue = $queue;
+        $this->pendingQueueResolved = true;
+    }
+
+    /**
+     * @return MailjetPendingOperationQueue|null
+     */
+    protected function getPendingQueue()
+    {
+        if (!$this->pendingQueueResolved) {
+            $this->pendingQueueResolved = true;
+            if (class_exists('Db') && class_exists('MailjetPendingOperationQueue')) {
+                $this->pendingQueue = MailjetPendingOperationQueue::create();
+            }
+        }
+
+        return $this->pendingQueue;
     }
 }
