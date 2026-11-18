@@ -1,0 +1,42 @@
+# Staging for the 3.9.0 audit fixes (DE-11745). Test data only: never point it at a production Mailjet account.
+#   cp staging/.env.example staging/.env   # fill in the TEST sub-account keys
+#   docker compose -f staging/docker-compose.yml --env-file staging/.env up -d
+# Shop:    http://localhost:8080        Back office: http://localhost:8080/admin-dev  (admin@example.com / see .env)
+# Mail:    http://localhost:8025        (Mailpit catches every email the shop sends, incl. double opt-in)
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: prestashop
+    ports: ["3307:3306"]
+    volumes: [db:/var/lib/mysql]
+
+  mail:
+    image: axllent/mailpit:latest
+    ports: ["8025:8025"]
+
+  shop:
+    image: prestashop/prestashop:${PS_VERSION:-8.2}
+    depends_on: [db, mail]
+    ports: ["8080:80"]
+    environment:
+      DB_SERVER: db
+      DB_NAME: prestashop
+      DB_USER: root
+      DB_PASSWD: ${DB_PASSWORD}
+      DB_PREFIX: ps_
+      PS_INSTALL_AUTO: 1
+      PS_DOMAIN: localhost:8080
+      PS_FOLDER_ADMIN: admin-dev
+      PS_FOLDER_INSTALL: install-dev
+      PS_DEV_MODE: 1
+      ADMIN_MAIL: admin@example.com
+      ADMIN_PASSWD: ${ADMIN_PASSWORD}
+    volumes:
+      - shop:/var/www/html
+      # The module under test, live from this checkout
+      - ..:/var/www/html/modules/mailjet
+volumes:
+  db:
+  shop:
